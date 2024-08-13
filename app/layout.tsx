@@ -40,10 +40,12 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light">
           {/* Redux store provider */}
           <StoreProvider>
-            {/* Navbar */}
-            <Navbar />
-            {/* Content */}
-            {children}
+            <main className="mx-auto max-w-[1920px]">
+              {/* Navbar */}
+              <Navbar />
+              {/* Content */}
+              {children}
+            </main>
 
             {/* Notification component */}
             <Toaster

@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { UserPopup } from "@/components/navbar/UserPopup";
-// import { ModeToggle } from "@/components/theme/theme-toggle";
 import { useAppSelector } from "@/lib/hooks";
 import LogoText from "../LogoText";
 import CustomButton from "../auth/CustomButton";
@@ -26,14 +25,10 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          {/* <ModeToggle /> */}
-
           <SelectLanguage />
 
           {isLoggedIn ? (
-            <>
-              <UserPopup />
-            </>
+            <UserPopup />
           ) : (
             <>
               <Link href={`/auth/sign-up`} className="font-bold">
