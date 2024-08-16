@@ -36,3 +36,39 @@ export const navLinks = [
     location: "/specialists",
   },
 ];
+
+// Navbar Links for logged In User
+export const navLinksForAuth = [
+  {
+    label: "Home",
+    location: "/",
+  },
+  {
+    label: "Notifications",
+    location: "/notifications",
+  },
+  {
+    label: "Profile",
+    location: "/profile",
+  },
+  {
+    label: "Appointments",
+    location: "/appointments",
+  },
+  {
+    label: "Settings",
+    location: "/settings",
+  },
+  {
+    label: "FAQ’s & Support",
+    location: "/faqs",
+  },
+  {
+    label: "Doctors",
+    location: "/doctors",
+  },
+  {
+    label: "Specialists",
+    location: "/specialists",
+  },
+];

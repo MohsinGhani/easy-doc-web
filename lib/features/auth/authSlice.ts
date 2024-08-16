@@ -7,12 +7,15 @@ import { toast } from "sonner";
 // Define a type for the slice state
 interface authState {
   user: {
-    name: string;
-    avatar: string;
+    given_name: string;
+    family_name: string;
     email: string;
-    phone: string;
     role: string;
     userId: string;
+    verified: boolean;
+    avatar?: string;
+    licence?: string;
+    
   };
   loading: boolean;
   error: string | null;
@@ -22,12 +25,13 @@ interface authState {
 // Define the initial state using that type
 const initialState: authState = {
   user: {
-    name: "",
+    given_name: "",
+    family_name: "",
     avatar: "",
     email: "",
-    phone: "",
     role: "",
     userId: "",
+    verified: false,
   },
   loading: false,
   error: null,
@@ -39,13 +43,15 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     signin: (state, action: PayloadAction<any>) => {
-      const { payload: data } = action.payload;
+      const { payload } = action.payload;
+
       const user = {
-        name: data.name,
-        email: data.email,
-        phone: data.phone_number,
-        role: data["custom:role"],
-        userId: data.sub,
+        given_name: payload.given_name,
+        family_name: payload.family_name,
+        email: payload.email,
+        role: payload["custom:role"],
+        verified: payload["custom:role"] === "doctor" ? false : true,
+        userId: payload.sub,
       };
 
       Cookies.set("auth", JSON.stringify(user));
@@ -96,7 +102,6 @@ export const authSlice = createSlice({
         state.error = null;
       })
       .addCase(authThunks.confirmCode.fulfilled, (state) => {
-        Object.assign(state, initialState);
         state.loading = false;
       })
       .addCase(
@@ -172,7 +177,7 @@ export const authSlice = createSlice({
           toast.error(action.payload);
         }
       )
-      
+
       .addCase(authThunks.confirmPasswordReset.pending, (state) => {
         state.loading = true;
         state.error = null;

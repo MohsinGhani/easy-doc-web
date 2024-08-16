@@ -11,7 +11,7 @@ import {
 const SelectLanguage = () => {
   return (
     <Select>
-      <SelectTrigger className="font-semibold border-none shadow-none">
+      <SelectTrigger className="font-semibold border-none shadow-none flex">
         <div className="flex items-center gap-1 cursor-pointer">
           <Globe className="size-6" />
           <SelectValue placeholder="Language" />

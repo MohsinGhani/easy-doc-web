@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar/Navbar"; // Importing the Navbar component from the specified path
+// import { Navbar } from "@/components/navbar/Navbar"; // Importing the Navbar component from the specified path
 
 /**
  * The DemoLayout function is a default layout component.

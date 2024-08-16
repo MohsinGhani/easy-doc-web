@@ -1,17 +1,10 @@
 "use client";
 
-// Importing the LandingPage component from the components/home directory
 import LandingPage from "@/components/home/LandingPage";
 import { useAppSelector } from "@/lib/hooks";
 
-// This is the Home component. It's the main page of our application.
-// It's defined as a default export, which means it can be imported and used
-// in other parts of the application without having to use curly braces.
 export default function Home() {
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
-  // This function returns the LandingPage component.
-  // The LandingPage component is the main page of our application.
-  // It's the component that will be rendered when the user visits the home page.
   return (
     <div>
       {isLoggedIn ? (
@@ -21,6 +14,8 @@ export default function Home() {
           </h1>
           <h6 className="text-center text-muted-foreground">
             Your role is, {user?.role}
+            <br />
+            You are {user?.verified ? "" : "not"} verified
           </h6>
         </div>
       ) : (

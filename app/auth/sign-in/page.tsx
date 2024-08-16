@@ -1,15 +1,10 @@
-"use client";
-
-// Importing the SignInForm component from the @/components/auth directory
 import SignInForm from "@/components/auth/SignInForm";
 import Image from "next/image";
 
-// Exporting a default function named SignInPage
-// This function returns a JSX element which is an instance of the SignInForm component
 export default function SignInPage() {
   return (
-    <div className="flex items-center justify-center w-full h-full gap-[88px]">
-      <div className="hidden md:block w-full max-w-[700px] h-[936px]">
+    <div className="@container flex items-center justify-center w-full h-full gap-[88px] py-[20px] sm:py-2">
+      <div className="@6xl:block hidden w-[700px] h-[936px]">
         <Image
           src="/assets/images/register-img.png"
           alt="logo"
@@ -19,7 +14,7 @@ export default function SignInPage() {
         />
       </div>
 
-      <div className="w-full md:w-[40%] mx-auto md:pr-[130px] lg:px-1 sm:px-10 px-5">
+      <div className="@6xl:w-[80%] w-full flex items-center justify-center lg:px-1 sm:px-10 px-4">
         <SignInForm />
       </div>
     </div>

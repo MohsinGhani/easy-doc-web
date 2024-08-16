@@ -2,11 +2,6 @@ import { z } from "zod";
 
 export const UserSignupSchema = z
   .object({
-    name: z
-      .string({
-        required_error: "Name is required",
-      })
-      .optional(),
     given_name: z
       .string()
       .min(3, "Name must be at least 3 characters")
@@ -41,6 +36,14 @@ export const UserSignupSchema = z
       .min(1),
     role: z.enum(["doctor", "patient"]),
     confirmationCode: z.string().trim().min(6).max(6),
+    licence: z
+      .string()
+      .trim()
+      .min(6)
+      .max(6)
+      .refine((val: string) => /^[A-Z]{2}[0-9]{4}$/.test(val), {
+        message: "Licence must be in format: AA1234",
+      }),
   })
   .refine(
     (data: { password: string; confirmPassword: string }) =>

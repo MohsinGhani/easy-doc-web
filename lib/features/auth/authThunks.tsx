@@ -1,8 +1,9 @@
+"use client";
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { signin as signinAction, signout as signoutAction } from "./authSlice";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
-
 import {
   signIn,
   signUp,
@@ -14,36 +15,38 @@ import {
   confirmResetPassword,
   getCurrentUser,
 } from "aws-amplify/auth";
-import { userPoolClientId } from "@/constants";
+import {
+  ConfirmCodePayload,
+  ConfirmResetPasswordPayload,
+  ResendConfirmationCodePayload,
+  ResetPasswordPayload,
+  SigninPayload,
+  SignupPayload,
+} from "@/types/auth";
+import { handleTokenStorage } from "@/helpers/auth";
 
 export const authThunks = {
   signup: createAsyncThunk(
     "auth/signup",
-    async (
-      {
-        values,
-      }: {
-        values: {
-          given_name: string;
-          family_name: string;
-          email: string;
-          password: string;
-          role: string;
-        };
-        router: any;
-      },
-      { rejectWithValue }
-    ) => {
+    async ({ values }: { values: SignupPayload }, { rejectWithValue }) => {
       try {
+        const { email, password, given_name, family_name, role, licence } =
+          values;
+
+        // const displayName = `${role === "doctor" ? "Dr. " : ""}${given_name}`;
+
         const { nextStep } = await signUp({
-          username: values.email,
-          password: values.password,
+          username: email,
+          password: password,
           options: {
             userAttributes: {
-              given_name: values.given_name,
-              family_name: values.family_name,
-              email: values.email,
-              "custom:role": values.role,
+              given_name,
+              family_name,
+              email,
+              "custom:role": role,
+              // "custom:displayName": displayName,
+              "custom:verified": role === "doctor" ? "false" : "true",
+              "custom:licence": role === "doctor" ? licence : "",
             },
           },
         });
@@ -52,8 +55,40 @@ export const authThunks = {
 
         return codeDeliveryDetails;
       } catch (error: any) {
-        console.log("🚀 ~ error:", error);
         return rejectWithValue(error.message || "Something went wrong");
+      }
+    }
+  ),
+
+  confirmCode: createAsyncThunk(
+    "auth/confirmCode",
+    async (
+      { values, router }: { values: ConfirmCodePayload; router: any },
+      { rejectWithValue, dispatch }
+    ) => {
+      try {
+        await confirmSignUp({
+          username: values.email,
+          confirmationCode: values.confirmationCode,
+        });
+
+        await signIn({
+          username: values.email,
+          password: values.password,
+        });
+
+        const { userId } = await getCurrentUser();
+        const payload = handleTokenStorage(userId);
+
+        dispatch(signinAction({ payload }));
+        toast.success("Sign in successful!, you'll be redirected shortly");
+
+        setTimeout(() => {
+          router.push(`/`);
+        }, 2000);
+      } catch (error: any) {
+        toast.error(error.message);
+        return rejectWithValue(error.message);
       }
     }
   ),
@@ -61,13 +96,7 @@ export const authThunks = {
   signin: createAsyncThunk(
     "auth/signin",
     async (
-      {
-        values,
-        router,
-      }: {
-        values: { email: string; password: string };
-        router: any;
-      },
+      { values, router }: { values: SigninPayload; router: any },
       { rejectWithValue, dispatch }
     ) => {
       try {
@@ -77,96 +106,18 @@ export const authThunks = {
         });
 
         const { userId } = await getCurrentUser();
-
-        const token =
-          localStorage.getItem(
-            `CognitoIdentityServiceProvider.${userPoolClientId}.${userId}.idToken`
-          ) || "";
-
-        !Cookies.get("token") && Cookies.set("token", token);
-
-        const payload = decodeJWT(token).payload;
+        const payload = handleTokenStorage(userId);
 
         dispatch(signinAction({ payload }));
 
         toast.success("Sign in successful!");
         router.push(`/`);
       } catch (error: any) {
-        console.log("🚀 ~ error:", error);
-        if (error._type === "UserNotConfirmedException") {
-          toast.error("Please confirm your email");
-        } else {
-          toast.error("Sign in failed!");
-        }
-        return rejectWithValue(error.response.data.message);
-      }
-    }
-  ),
-
-  confirmCode: createAsyncThunk(
-    "auth/confirmCode",
-    async (
-      {
-        values,
-        router,
-      }: {
-        values: { confirmationCode: string; email: string; password: string };
-        router: any;
-      },
-      { rejectWithValue, dispatch }
-    ) => {
-      const { email, password, confirmationCode } = values;
-      console.log("🚀 ~ email, password, confirmationCode:", email, password, confirmationCode)
-      try {
-        await confirmSignUp({
-          username: email,
-          confirmationCode: confirmationCode,
-        });
-
-        await signIn({
-          username: email,
-          password: password,
-        });
-
-        const { userId } = await getCurrentUser();
-
-        const token =
-          localStorage.getItem(
-            `CognitoIdentityServiceProvider.${userPoolClientId}.${userId}.idToken`
-          ) || "";
-
-        !Cookies.get("token") && Cookies.set("token", token);
-
-        const payload = decodeJWT(token).payload;
-
-        dispatch(signinAction({ payload }));
-
-        toast.success("Sign in successful!, you'll be redirected shortly");
-        router.push(`/`);
-      } catch (error: any) {
-        toast.error(error.message);
-        return rejectWithValue(error.message);
-      }
-    }
-  ),
-
-  resendConfirmationCode: createAsyncThunk(
-    "auth/resendConfirmationCode",
-    async (
-      {
-        values,
-      }: {
-        values: { email: string };
-      },
-      { rejectWithValue, dispatch }
-    ) => {
-      try {
-        await resendSignUpCode({
-          username: values.email,
-        });
-        toast.success("Code sent successfully");
-      } catch (error: any) {
-        toast.error(error.message);
+        toast.error(
+          error._type === "UserNotConfirmedException"
+            ? "Please confirm your email"
+            : "Sign in failed!"
+        );
         return rejectWithValue(error.message);
       }
     }
@@ -177,15 +128,29 @@ export const authThunks = {
     async (router: any, { rejectWithValue, dispatch }) => {
       try {
         await signOut();
+        Cookies.remove("token");
 
-        Cookies.get("token") && Cookies.remove("token");
-
-        toast.success("Logged out Successfully");
         dispatch(signoutAction());
+        toast.success("Logged out Successfully");
         router.push("/auth/sign-in");
-        return true;
       } catch (error: any) {
-        return rejectWithValue(error.response.data.message);
+        return rejectWithValue(error.message);
+      }
+    }
+  ),
+
+  resendConfirmationCode: createAsyncThunk(
+    "auth/resendConfirmationCode",
+    async (
+      { values }: { values: ResendConfirmationCodePayload },
+      { rejectWithValue }
+    ) => {
+      try {
+        await resendSignUpCode({ username: values.email });
+        toast.success("Code sent successfully");
+      } catch (error: any) {
+        toast.error(error.message);
+        return rejectWithValue(error.message);
       }
     }
   ),
@@ -193,26 +158,16 @@ export const authThunks = {
   requestPasswordReset: createAsyncThunk(
     "auth/requestPasswordReset",
     async (
-      {
-        email,
-        router,
-      }: {
-        email: string;
-        router: any;
-      },
+      { values, router }: { values: ResetPasswordPayload; router: any },
       { rejectWithValue }
     ) => {
       try {
-        const { nextStep } = await resetPassword({
-          username: email,
-        });
-
-        const { codeDeliveryDetails }: any = nextStep;
-
-        toast.success("Password reset code sent to your email.");
+        const { email } = values;
+        const { nextStep } = await resetPassword({ username: email });
         router.push(
-          `/auth/confirm-password-reset?email=${email}&destination=${codeDeliveryDetails.destination}`
+          `/auth/confirm-password-reset?email=${email}&destination=${nextStep.codeDeliveryDetails.destination}`
         );
+        toast.success("Code sent successfully");
       } catch (error: any) {
         toast.error(error.message || "Failed to request password reset.");
         return rejectWithValue(error.message || "Something went wrong");
@@ -223,20 +178,11 @@ export const authThunks = {
   confirmPasswordReset: createAsyncThunk(
     "auth/confirmPasswordReset",
     async (
-      {
-        code,
-        email,
-        newPassword,
-        router,
-      }: {
-        email: string;
-        code: string;
-        newPassword: string;
-        router: any;
-      },
+      { values, router }: { values: ConfirmResetPasswordPayload; router: any },
       { rejectWithValue }
     ) => {
       try {
+        const { email, code, newPassword } = values;
         await confirmResetPassword({
           username: email,
           confirmationCode: code,

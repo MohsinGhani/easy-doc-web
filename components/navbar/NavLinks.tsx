@@ -9,7 +9,7 @@ interface LinkItem {
 
 const NavLinks = () => {
   return (
-    <div className="flex items-center gap-10">
+    <div className="hidden @6xl:flex items-center gap-10">
       {navLinks.map(({ label, location }: LinkItem, index: number) => (
         <Link href={location} key={index}>
           {label}

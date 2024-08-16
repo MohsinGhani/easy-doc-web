@@ -1,8 +1,6 @@
 "use client";
 
-import { authThunks } from "@/lib/features/auth/authThunks";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/lib/hooks";
 import {
   ConfirmResetPassword,
   ConfirmResetPasswordSchema,
@@ -17,47 +15,45 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Icons } from "@/components/ui/icons";
 import CustomFormField, { FormFieldType } from "./CustomFormField";
 import { Form } from "@/components/ui/form";
 import { useSearchParams } from "next/navigation";
+import { SpinnerIcon } from "../ui/icons";
+import { useAuth } from "@/hooks/useAuth";
 
-// ConfirmResetPasswordForm component displays a form for confirming email
 const ConfirmResetPasswordForm = () => {
-  // Get the search params from the URL
   const searchParams = useSearchParams();
-  // Get the dispatch function from the Redux store
-  const dispatch = useAppDispatch();
-  // Get the router object from Next.js
-  const router = useRouter();
+  const { confirmResetPassword, resetPassword } = useAuth();
 
-  // Get the loading state from the Redux store
   const { loading } = useAppSelector((state) => state.auth);
 
-  // Get the email and destination from the search params
   const { email = "", destination = "" } = Object.fromEntries(searchParams);
 
-  // Initialize the form with the ConfirmResetPassword schema
   const form = useForm<ConfirmResetPassword>({
     resolver: zodResolver(ConfirmResetPasswordSchema),
   });
 
-  // Handle form submission
-  const onSubmit = async ({
-    confirmationCode,
-    newPassword,
-  }: ConfirmResetPassword) => {
-    dispatch(
-      authThunks.confirmPasswordReset({
-        email,
-        code: confirmationCode,
-        newPassword,
-        router,
-      })
-    );
+  const resendResetPasswordCode = async () => {
+    const values = {
+      email,
+    };
+
+    resetPassword(values);
   };
 
-  // Render the form
+  const onSubmit = async ({
+    newPassword,
+    confirmationCode,
+  }: ConfirmResetPassword) => {
+    const values = {
+      code: confirmationCode,
+      email,
+      newPassword,
+    };
+
+    confirmResetPassword(values);
+  };
+
   return (
     <div className="flex items-center justify-center w-full h-screen">
       <Form {...form}>
@@ -68,7 +64,7 @@ const ConfirmResetPasswordForm = () => {
           <Card className="w-full max-w-md">
             <CardHeader>
               <CardTitle className="space-y-4">
-                We Emailed You
+                <span>We Emailed You</span>
                 <p className="text-gray-500">
                   Your code is on the way. To log in, enter the code we emailed
                   to {destination}. It may take a minute to arrive.
@@ -104,14 +100,8 @@ const ConfirmResetPasswordForm = () => {
               <Button
                 className="ml-auto w-fit"
                 variant={"link"}
-                onClick={() =>
-                  dispatch(
-                    authThunks.requestPasswordReset({
-                      email,
-                      router,
-                    })
-                  )
-                }
+                onClick={resendResetPasswordCode}
+                type="button"
               >
                 Resend Code
               </Button>
@@ -120,7 +110,7 @@ const ConfirmResetPasswordForm = () => {
             <CardFooter className="pt-0">
               <Button className="w-full" disabled={loading} type="submit">
                 {loading && (
-                  <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />
+                  <SpinnerIcon className="w-4 h-4 mr-2 animate-spin" />
                 )}{" "}
                 {loading ? "Resetting Password..." : "Reset Password"}
               </Button>

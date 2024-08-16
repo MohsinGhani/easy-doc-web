@@ -3,9 +3,14 @@
 import { useFormContext } from "react-hook-form";
 import { CardDescription, CardTitle } from "../ui/card";
 import CustomFormField, { FormFieldType } from "./CustomFormField";
+import { Button } from "../ui/button";
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { useAppDispatch } from "@/lib/hooks";
 
 const EnterOtpForm = ({ destination = "" }: { destination?: string }) => {
   const { control } = useFormContext();
+  const dispatch = useAppDispatch();
+  const email = control?._fields?.email?._f?.value;
 
   return (
     <>
@@ -28,6 +33,22 @@ const EnterOtpForm = ({ destination = "" }: { destination?: string }) => {
         control={control}
         name="confirmationCode"
       />
+
+      <CardDescription className="self-end">
+        <Button
+          className="font-semibold text-primary hover:text-primary/80"
+          variant={"link"}
+          onClick={() =>
+            dispatch(
+              authThunks.resendConfirmationCode({
+                values: { email },
+              })
+            )
+          }
+        >
+          Resend OTP?
+        </Button>
+      </CardDescription>
     </>
   );
 };

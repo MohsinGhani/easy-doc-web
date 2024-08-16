@@ -1,28 +1,32 @@
 "use client";
 
 import { useAppSelector } from "@/lib/hooks";
-import { UserSignin, UserSigninSchema } from "@/models/User";
+import { ForgotPassword, ForgotPasswordSchema } from "@/models/User";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { CardDescription } from "@/components/ui/card";
-import { GoogleIcon, SpinnerIcon } from "@/components/ui/icons";
+import { SpinnerIcon } from "@/components/ui/icons";
 import CustomFormField, { FormFieldType } from "./CustomFormField";
 import { Form } from "@/components/ui/form";
 import LogoText from "../LogoText";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
-const SignInForm = () => {
-  const { signin } = useAuth();
+const ResetPasswordForm = () => {
   const { loading } = useAppSelector((state) => state.auth);
+  const { resetPassword } = useAuth();
 
-  const form = useForm<UserSignin>({
-    resolver: zodResolver(UserSigninSchema),
+  const form = useForm<ForgotPassword>({
+    resolver: zodResolver(ForgotPasswordSchema),
   });
 
-  const onSubmit = (values: UserSignin) => {
-    signin(values);
+  const onSubmit = ({ email }: ForgotPassword) => {
+    const values = {
+      email,
+    };
+
+    resetPassword(values);
   };
 
   return (
@@ -35,9 +39,10 @@ const SignInForm = () => {
           <LogoText className="text-4xl text-center" />
 
           <div className="space-y-2">
-            <h1 className="text-2xl font-semibold">Welcome Back 👋</h1>
+            <h1 className="text-2xl font-semibold">Reset Your Password</h1>
             <p className="text-muted-foreground">
-              We are happy to have you back
+              Enter your email and we&lsquo;ll send you a link to reset your
+              password. Please check it.
             </p>
           </div>
 
@@ -50,20 +55,12 @@ const SignInForm = () => {
             placeholder="ex: abc@example.com"
           />
 
-          {/* Password */}
-          <CustomFormField
-            fieldType={FormFieldType.PASSWORD}
-            control={form.control}
-            name="password"
-            label="Password"
-          />
-
           <CardDescription className="self-end">
             <Link
               className="font-semibold text-primary hover:text-primary/80"
-              href={"/auth/forgot-password"}
+              href={"/auth/sign-in"}
             >
-              Forgot password?
+              Back to Login?
             </Link>
           </CardDescription>
 
@@ -74,40 +71,14 @@ const SignInForm = () => {
             className="w-full"
           >
             {loading && <SpinnerIcon className="w-4 h-4 mr-2 animate-spin" />}
-            {loading ? "Loading..." : "Login"}
-          </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or
-              </span>
-            </div>
-          </div>
-
-          <Button
-            size={"xl"}
-            variant="outline"
-            type="button"
-            disabled={loading}
-          >
-            {loading ? (
-              <SpinnerIcon className="h-4 w-4 animate-spin" />
-            ) : (
-              <GoogleIcon className="h-4 w-4" />
-            )}
-            {"    "}
-            <span className="ml-4">Sign in with Google</span>
+            {loading ? "Loading..." : "Reset Password"}
           </Button>
 
           <CardDescription className="text-center">
             Don&apos;t you have an account?
             <Link
               className="font-semibold text-blue-500"
-              href={"/auth/sign-in"}
+              href={"/auth/sign-up"}
             >
               Create an account
             </Link>
@@ -121,4 +92,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default ResetPasswordForm;
