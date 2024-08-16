@@ -1,22 +1,21 @@
 "use client";
 
+import Link from "next/link";
+import LogoText from "@/components/LogoText";
+
+import { useRef, useState } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import { UserSignup, UserSignupSchema } from "@/models/User";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-import { CardDescription } from "../ui/card";
-import Link from "next/link";
-import { Button } from "../ui/button";
+import { CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { SpinnerIcon } from "@/components/ui/icons";
-import { useRef, useState } from "react";
-import LogoText from "../LogoText";
-import Stepper from "./Stepper";
+import { SuccessPage, Stepper } from "@/components/auth";
 import { Status } from "rc-steps/lib/interface";
 import { useAuth } from "@/hooks/useAuth";
 import { getStepContent } from "@/helpers/getStepContent";
-import SuccessPage from "./SuccessPage";
 
 const SignUpForm = () => {
   const { signup, confirmCode } = useAuth();
@@ -31,7 +30,10 @@ const SignUpForm = () => {
 
   const onSubmit = (values: UserSignup) => {
     confirmCode(values);
-    setActiveStep(3);
+    if (!error && !loading) {
+      setActiveStep(activeStep + 1);
+      setStatus("process");
+    }
   };
 
   const handleNext = async () => {
@@ -118,7 +120,7 @@ const SignUpForm = () => {
                   Verifying...
                 </>
               ) : (
-                "Verify"
+                <>Verify</>
               )}
             </Button>
           ) : (

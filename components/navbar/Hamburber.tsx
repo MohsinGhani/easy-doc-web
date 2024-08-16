@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetClose,
-} from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { MenuIcon } from "lucide-react";
@@ -14,6 +9,7 @@ import LogoText from "../LogoText";
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface LinkItem {
   label: string;
@@ -23,9 +19,15 @@ interface LinkItem {
 export default function Hamburber() {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
+  const { signout } = useAuth();
 
   const handleSheetToggle = () => {
     setOpen(!open);
+  };
+
+  const handleSignout = () => {
+    setOpen(!open);
+    signout();
   };
 
   return (
@@ -43,7 +45,6 @@ export default function Hamburber() {
       </SheetTrigger>
       <SheetContent side="right" className="overflow-y-auto">
         <Link href="/" className="flex items-center gap-2 py-4">
-          {/* <MountainIcon className="h-6 w-6" /> */}
           <LogoText />
         </Link>
         <nav className="grid gap-4">
@@ -60,6 +61,29 @@ export default function Hamburber() {
                   </Link>
                 )
               )}
+
+              <div className="grid gap-4">
+                <Link
+                  href={`/profile`}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "xl" }),
+                    "rounded-full text-primary border-primary font-bold"
+                  )}
+                  onClick={handleSheetToggle}
+                >
+                  Profile
+                </Link>
+
+                <Button
+                  className={cn(
+                    buttonVariants({ size: "xl" }),
+                    "rounded-full font-bold"
+                  )}
+                  onClick={handleSignout}
+                >
+                  Logo out
+                </Button>
+              </div>
             </>
           ) : (
             <>

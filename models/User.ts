@@ -43,7 +43,8 @@ export const UserSignupSchema = z
       .max(6)
       .refine((val: string) => /^[A-Z]{2}[0-9]{4}$/.test(val), {
         message: "Licence must be in format: AA1234",
-      }),
+      })
+      .optional(),
   })
   .refine(
     (data: { password: string; confirmPassword: string }) =>
