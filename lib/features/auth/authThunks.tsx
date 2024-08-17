@@ -82,9 +82,10 @@ export const authThunks = {
 
         dispatch(signinAction({ payload }));
         toast.success("Sign in successful!, you'll be redirected shortly");
+        const role = payload["custom:role"];
 
         setTimeout(() => {
-          router.push(`/`);
+          router.push(role === "doctor" ? `/dashboard` : `/`);
         }, 2000);
       } catch (error: any) {
         toast.error(error.message);

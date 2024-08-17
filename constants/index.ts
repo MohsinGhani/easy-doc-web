@@ -72,3 +72,59 @@ export const navLinksForAuth = [
     location: "/specialists",
   },
 ];
+
+// Sidebar Links for logged In Doctor's
+export const sideNavLinksForDoctor = [
+  {
+    label: "Overview",
+    location: "/profile",
+  },
+  {
+    label: "Patient's Requests",
+    location: "/requests",
+  },
+  {
+    label: "Appointments",
+    location: "/appointments",
+  },
+  {
+    label: "Available Timings",
+    location: "/available-timings",
+  },
+  {
+    label: "My Patients",
+    location: "/my-patients",
+  },
+  {
+    label: "Specialities & Services",
+    location: "/specialities-services",
+  },
+  {
+    label: "Patient's Reviews",
+    location: "/reviews",
+  },
+  {
+    label: "Messages",
+    location: "/messages",
+  },
+  {
+    label: "Payout Settings",
+    location: "/payout-settings",
+  },
+  {
+    label: "Blogs",
+    location: "/blogs",
+  },
+  // {
+  //   label: "FAQ’s & Support",
+  //   location: "/faqs",
+  // },
+  // {
+  //   label: "Doctors",
+  //   location: "/doctors",
+  // },
+  // {
+  //   label: "Specialists",
+  //   location: "/specialists",
+  // },
+];

@@ -4,11 +4,20 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const SuccessPage = () => {
   return (
-    <div className="fixed inset-0 z-[10] bg-black/80 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-h-screen w-full h-full flex items-center justify-center">
-      <div className="w-[422px] h-[396px] p-16 rounded-[10px] bg-white flex-col justify-center items-center gap-2.5 inline-flex border">
+    <Dialog open={true}>
+      <DialogContent className="sm:max-w-[425px] h-[396px] p-16 rounded-[10px] bg-white flex-col justify-center items-center gap-2.5 inline-flex border">
         <div className="h-[270px] flex-col justify-start items-center gap-8 flex">
           <Image
             src={"/assets/images/success.png"}
@@ -27,8 +36,8 @@ const SuccessPage = () => {
             </Link>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
