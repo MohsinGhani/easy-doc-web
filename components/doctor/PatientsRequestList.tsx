@@ -40,7 +40,9 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, LucideCheck, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import RequestReviewSheet from "./RequestReviewSheet";
 
 const approvalRequests = [
   {
@@ -209,13 +211,21 @@ const ComprehensivePaginatedTable = () => {
     {
       header: "Actions",
       cell: ({ row }: any) => (
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => handlePreview(row.original)}
-        >
-          <EyeIcon className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => handlePreview(row.original)}
+          >
+            <EyeIcon className="h-5 w-5 cursor-pointer" />
+          </Button>
+          <Button variant="outline" size="icon" onClick={() => {}}>
+            <X className="h-5 w-5 cursor-pointer" />
+          </Button>
+          <Button variant="default" size="icon" onClick={() => {}}>
+            <LucideCheck className="h-5 w-5 cursor-pointer" />
+          </Button>
+        </div>
       ),
     },
   ];
@@ -236,9 +246,6 @@ const ComprehensivePaginatedTable = () => {
     <Card>
       <CardHeader>
         <CardTitle>Approval Requests</CardTitle>
-        <CardDescription>
-          Review and manage patient approval requests
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -277,6 +284,11 @@ const ComprehensivePaginatedTable = () => {
                   onClick={() =>
                     table.getCanPreviousPage() && table.previousPage()
                   }
+                  className={cn(
+                    table.getCanPreviousPage()
+                      ? "cursor-pointer"
+                      : "cursor-not-allowed"
+                  )}
                 >
                   Previous
                 </PaginationPrevious>
@@ -294,6 +306,11 @@ const ComprehensivePaginatedTable = () => {
               <PaginationItem>
                 <PaginationNext
                   onClick={() => table.getCanNextPage() && table.nextPage()}
+                  className={cn(
+                    table.getCanNextPage()
+                      ? "cursor-pointer"
+                      : "cursor-not-allowed"
+                  )}
                 >
                   Next
                 </PaginationNext>
@@ -303,57 +320,11 @@ const ComprehensivePaginatedTable = () => {
         </div>
       </CardContent>
 
-      <Sheet open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Approval Request Preview</SheetTitle>
-            <SheetDescription>
-              Detailed view of the approval request
-            </SheetDescription>
-          </SheetHeader>
-          {selectedRequest && (
-            <div className="p-4">
-              <div className="mb-4">
-                <div className="font-medium text-lg">
-                  {selectedRequest.name}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {selectedRequest.email}
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className="font-medium">Gender:</div>
-                <div>{selectedRequest.gender}</div>
-              </div>
-              <div className="mb-4">
-                <div className="font-medium">Birth Date:</div>
-                <div>{selectedRequest.birthDate}</div>
-              </div>
-              <div className="mb-4">
-                <div className="font-medium">Address:</div>
-                <div>{selectedRequest.address}</div>
-              </div>
-              <div className="mb-4">
-                <div className="font-medium">Speciality:</div>
-                <div>{selectedRequest.speciality}</div>
-              </div>
-              <div className="mb-4">
-                <div className="font-medium">Scheduled Date:</div>
-                <div>{selectedRequest.scheduledDate}</div>
-              </div>
-              <div className="mb-4">
-                <div className="font-medium">Consultation Type:</div>
-                <div>{selectedRequest.consultationType}</div>
-              </div>
-            </div>
-          )}
-          <SheetClose asChild>
-            <Button variant="outline" className="mt-4">
-              Close
-            </Button>
-          </SheetClose>
-        </SheetContent>
-      </Sheet>
+      <RequestReviewSheet
+        open={isPreviewOpen}
+        setOpen={setIsPreviewOpen}
+        selectedRequest={selectedRequest}
+      />
     </Card>
   );
 };
