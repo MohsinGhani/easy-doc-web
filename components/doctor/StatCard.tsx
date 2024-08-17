@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { appointmentsThunks } from "@/lib/features/appointments/appointmentsThunks";
+// import { appointmentsThunks } from "@/lib/features/appointments/appointmentsThunks";
 
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -23,14 +23,14 @@ interface Props {
 }
 
 const AppointmentsEnumCard = ({ heading, className, status, icon }: Props) => {
-  const { appointments } = useAppSelector((state) => state.appointments);
-  const dispatch = useAppDispatch();
+  // const { appointments } = useAppSelector((state) => state.appointments);
+  // const dispatch = useAppDispatch();
 
-  const filteredAppointments = appointments.filter((a) => a.status === status);
+  // const filteredAppointments = appointments.filter((a) => a.status === status);
 
-  useEffect(() => {
-    dispatch(appointmentsThunks.getAllAppointments());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(appointmentsThunks.getAllAppointments());
+  // }, [dispatch]);
 
   return (
     <Card
@@ -63,7 +63,8 @@ const AppointmentsEnumCard = ({ heading, className, status, icon }: Props) => {
                     className
                   )}
                 >
-                  {filteredAppointments.length}
+                  {/* {filteredAppointments.length} */}
+                  250
                 </span>
               </TooltipTrigger>
               <TooltipContent
