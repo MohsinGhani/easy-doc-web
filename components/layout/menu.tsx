@@ -13,10 +13,13 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Ellipsis, LogOut } from "lucide-react";
-import { getMenuList } from "./menu-list";
-import { Input } from "../ui/input";
+import { getMenuList } from "@/components/layout/menu-list";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import { useAppSelector } from "@/lib/hooks";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -26,10 +29,17 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const { signout } = useAuth();
+  const { avatar, email, family_name, given_name } = useAppSelector(
+    (state) => state.auth.user
+  );
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
-      <div className="mb-6 mt-6 w-[90%] mx-auto">
+      <div
+        className={cn("mb-6 mt-6 w-[90%] mx-auto", {
+          hidden: !isOpen,
+        })}
+      >
         <Input placeholder="Search" type="search" />
       </div>
 
@@ -114,23 +124,39 @@ export function Menu({ isOpen }: MenuProps) {
             <TooltipProvider disableHoverableContent>
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
-                  <Button
-                    onClick={signout}
-                    variant="outline"
-                    className="w-full justify-center h-10 mt-5"
-                  >
-                    <span className={cn(isOpen === false ? "" : "mr-4")}>
-                      <LogOut size={18} />
-                    </span>
-                    <p
+                  <div className="flex items-start">
+                    <Avatar
                       className={cn(
-                        "whitespace-nowrap",
+                        "w-8 h-8 mr-2",
                         isOpen === false ? "opacity-0 hidden" : "opacity-100"
                       )}
                     >
-                      Sign out
-                    </p>
-                  </Button>
+                      <AvatarImage src={avatar} alt="Avatar" />
+                      <AvatarFallback className="bg-transparent">
+                        JD
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div
+                      className={cn(
+                        "whitespace-nowrap flex flex-col items-start gap-0 text-xs",
+                        isOpen === false ? "opacity-0 hidden" : "opacity-100"
+                      )}
+                    >
+                      <h6>{given_name + " " + family_name}</h6>
+                      <span>{email}</span>
+                    </div>
+
+                    <Button
+                      onClick={signout}
+                      variant="ghost"
+                      className="w-full justify-center flex-1"
+                    >
+                      <span className={cn(isOpen === false ? "" : "mr-4")}>
+                        <LogOut size={18} />
+                      </span>
+                    </Button>
+                  </div>
                 </TooltipTrigger>
                 {isOpen === false && (
                   <TooltipContent side="right">Sign out</TooltipContent>

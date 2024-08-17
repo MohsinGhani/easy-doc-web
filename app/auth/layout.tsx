@@ -1,3 +1,5 @@
+import { Navbar } from "@/components/navbar/Navbar";
+
 export default function DemoLayout({
   children,
 }: {
@@ -5,7 +7,7 @@ export default function DemoLayout({
 }) {
   return (
     <div>
-      {/* <Navbar /> */}
+      <Navbar />
       <main className="max-w-[1440px] mx-auto">{children}</main>
     </div>
   );
