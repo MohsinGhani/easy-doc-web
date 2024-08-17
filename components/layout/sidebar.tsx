@@ -3,7 +3,6 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/layout/menu";
 import { SidebarToggle } from "@/components/layout/sidebar-toggle";
 import { useSidebarToggle } from "@/lib/features/sidebar/sidebarSlice";
@@ -23,25 +22,17 @@ export function Sidebar() {
     >
       <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} />
       <div className="relative h-full flex flex-col px-3 py-4 overflow-y-auto shadow-md dark:shadow-zinc-800">
-        <Button
-          className={cn(
-            "transition-transform ease-in-out duration-300 mb-1",
-            sidebar?.isOpen === false ? "translate-x-1" : "translate-x-0"
-          )}
-          variant="link"
-          asChild
+        <Link
+          href="/dashboard"
+          className="transition-transform ease-in-out duration-300 mb-1 text-center"
         >
-          <Link href="/profile" className="">
-            <LogoText
-              className={cn(
-                "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",
-                sidebar?.isOpen === false
-                  ? "-translate-x-96 opacity-0 hidden"
-                  : "translate-x-0 opacity-100"
-              )}
-            />
-          </Link>
-        </Button>
+          <LogoText
+            variant={!sidebar?.isOpen ? "sm" : "lg"}
+            className={cn(
+              "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300"
+            )}
+          />
+        </Link>
         <Menu isOpen={sidebar?.isOpen} />
       </div>
     </aside>

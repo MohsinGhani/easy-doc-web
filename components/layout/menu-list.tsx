@@ -8,6 +8,8 @@ import {
   HandCoinsIcon,
   MessageCircleMore,
   MessageCircleMoreIcon,
+  Settings,
+  LifeBuoy,
 } from "lucide-react";
 
 type Submenu = {
@@ -35,9 +37,9 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "",
       menus: [
         {
-          href: "/profile",
+          href: "/dashboard",
           label: "Overview",
-          active: pathname === "/profile",
+          active: pathname === "/dashboard",
           icon: HomeIcon,
           submenus: [],
         },
@@ -102,6 +104,20 @@ export function getMenuList(pathname: string): Group[] {
           label: "Blogs",
           active: pathname === "/blogs",
           icon: HomeIcon,
+          submenus: [],
+        },
+        {
+          href: "/faqs-and-support",
+          label: "FAQ’s & Support",
+          active: pathname === "/faqs-and-support",
+          icon: LifeBuoy,
+          submenus: [],
+        },
+        {
+          href: "/settings",
+          label: "Profile Settings",
+          active: pathname === "/settings",
+          icon: Settings,
           submenus: [],
         },
       ],

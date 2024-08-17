@@ -3,7 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { Navbar } from "@/components/navbar/Navbar";
+// import { Navbar } from "@/components/navbar/Navbar";
 
 import { cn } from "@/lib/utils";
 import StoreProvider from "@/lib/StoreProvider";
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: "Easy Doc | An online appointment booking platform",
 };
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -34,7 +34,7 @@ export default function RootLayout({
         {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
         <ThemeProvider attribute="class" defaultTheme="light">
           <StoreProvider>
-            <Navbar />
+            {/* <Navbar /> */}
             {children}
 
             <Toaster

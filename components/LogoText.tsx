@@ -1,9 +1,22 @@
 import React from "react";
 
-const LogoText = ({ className = "" }: { className?: string }) => {
+interface LogoTextProps {
+  className?: string;
+  variant?: "lg" | "sm";
+}
+
+const LogoText = ({ className = "", variant = "lg" }: LogoTextProps) => {
   return (
     <h1 className={`text-3xl font-bold ${className}`}>
-      Easy<span className="text-primary">Doc</span>
+      {variant === "lg" ? (
+        <>
+          Easy<span className="text-primary">Doc</span>
+        </>
+      ) : (
+        <>
+          E<span className="text-primary">D</span>
+        </>
+      )}
     </h1>
   );
 };
