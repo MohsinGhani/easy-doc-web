@@ -160,9 +160,9 @@ const approvalRequests = [
 
 const ComprehensivePaginatedTable = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState<any>(null);
 
-  const handlePreview = (request) => {
+  const handlePreview = (request: any) => {
     setSelectedRequest(request);
     setIsPreviewOpen(true);
   };
@@ -170,12 +170,12 @@ const ComprehensivePaginatedTable = () => {
   const columns = [
     {
       header: "S.no",
-      accessorFn: (row) => `${row.id}`,
+      accessorFn: (row: any) => `${row.id}`,
     },
     {
       header: "Patient's Name",
       accessorKey: "name",
-      cell: ({ row }) => (
+      cell: ({ row }: any) => (
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage src={row.original.avatarUrl} alt="Avatar" />
@@ -192,7 +192,7 @@ const ComprehensivePaginatedTable = () => {
     },
     {
       header: "Age - Gender",
-      accessorFn: (row) => `${row.age} - ${row.gender}`,
+      accessorFn: (row: any) => `${row.age} - ${row.gender}`,
     },
     {
       header: "Speciality",
@@ -208,7 +208,7 @@ const ComprehensivePaginatedTable = () => {
     },
     {
       header: "Actions",
-      cell: ({ row }) => (
+      cell: ({ row }: any) => (
         <Button
           variant="outline"
           size="icon"
@@ -274,8 +274,9 @@ const ComprehensivePaginatedTable = () => {
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
+                  onClick={() =>
+                    table.getCanPreviousPage() && table.previousPage()
+                  }
                 >
                   Previous
                 </PaginationPrevious>
@@ -292,8 +293,7 @@ const ComprehensivePaginatedTable = () => {
               ))}
               <PaginationItem>
                 <PaginationNext
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
+                  onClick={() => table.getCanNextPage() && table.nextPage()}
                 >
                   Next
                 </PaginationNext>
