@@ -10,7 +10,6 @@ import {
   signOut,
   confirmSignUp,
   resendSignUpCode,
-  decodeJWT,
   resetPassword,
   confirmResetPassword,
   getCurrentUser,
@@ -111,8 +110,9 @@ export const authThunks = {
 
         dispatch(signinAction({ payload }));
 
+        const role = payload["custom:role"];
         toast.success("Sign in successful!");
-        router.push(`/`);
+        router.push(role === "doctor" ? `/dashboard` : `/`);
       } catch (error: any) {
         toast.error(
           error._type === "UserNotConfirmedException"
