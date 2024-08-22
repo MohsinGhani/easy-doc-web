@@ -4,7 +4,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
   SheetClose,
   Sheet,
   SheetFooter,
@@ -12,7 +11,7 @@ import {
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import RejectRequestDialog from "./RejectRequestDialog";
+import RejectRequestDialog from "../RejectRequestDialog";
 
 interface RequestReviewSheetProps {
   selectedRequest: any;
@@ -25,6 +24,9 @@ const RequestReviewSheet = ({
   open,
   setOpen,
 }: RequestReviewSheetProps) => {
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent className="sm:max-w-[600px] overflow-x-scroll">
@@ -201,13 +203,18 @@ const RequestReviewSheet = ({
 
         <SheetFooter className="items-center justify-center gap-4 flex-row">
           <RejectRequestDialog
-            verificationId={selectedRequest?._id}
-            doctorName={selectedRequest?.name}
+            name={selectedRequest?.name}
+            onReject={() => console.log("rejected", selectedRequest.id)}
+            trigger={
+              <Button size={"lg"} variant={"outline"}>
+                Reject
+              </Button>
+            }
           />
 
-          <SheetClose>
-            <Button size={"lg"}>Accept</Button>
-          </SheetClose>
+          <Button size={"lg"} onClick={handleClose}>
+            Accept
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

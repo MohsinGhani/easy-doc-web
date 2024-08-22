@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-// import { Navbar } from "@/components/navbar/Navbar";
 
 import { cn } from "@/lib/utils";
 import StoreProvider from "@/lib/StoreProvider";
 
-const fontSans = FontSans({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--outfit",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -28,13 +28,12 @@ export default function Layout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          outfit.variable
         )}
       >
         {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
         <ThemeProvider attribute="class" defaultTheme="light">
           <StoreProvider>
-            {/* <Navbar /> */}
             {children}
 
             <Toaster

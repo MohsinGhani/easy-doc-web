@@ -65,7 +65,7 @@ const DoctorDashboardPage = () => {
 
           <DoctorChart />
 
-          <PatientsRequestList />
+          <PatientsRequestList headerType={"secondary"} />
         </div>
 
         <Card>

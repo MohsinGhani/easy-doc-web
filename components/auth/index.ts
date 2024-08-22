@@ -6,7 +6,6 @@ import ResetPasswordForm from "./ResetPasswordForm";
 import SelectRoleForm from "./SelectRoleForm";
 import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
-import SuccessPage from "./SuccessPage";
 import Stepper from "./Stepper";
 
 export {
@@ -18,6 +17,5 @@ export {
   SelectRoleForm,
   SignInForm,
   SignUpForm,
-  SuccessPage,
   Stepper,
 };
