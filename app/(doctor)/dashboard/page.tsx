@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import DoctorChart from "@/components/doctor/DoctorChart";
 import PatientsRequestList from "@/components/doctor/PatientsRequestList";
 import Image from "next/image";
+import PatientsReviewsList from "@/components/doctor/PatientsReviewsList";
+import MessagesSidebar from "@/components/messages/messages-sidebar";
 
 const DoctorDashboardPage = () => {
   return (
     <ContentLayout title="Doctor | Dashboard">
       <main className="flex gap-6 lg:gap-4 lg:flex-row flex-col">
-        <div className="space-y-4 w-full">
+        <div className="space-y-4 lg:w-[70%] w-full">
           <Card>
             <div className="w-full flex gap-5 lg:h-52 h-[400px] items-center flex-col lg:flex-row justify-between overflow-hidden">
               <CardContent className="p-5 lg:text-left text-center space-y-4">
@@ -66,18 +68,16 @@ const DoctorDashboardPage = () => {
           <DoctorChart />
 
           <PatientsRequestList headerType={"secondary"} />
+
+          <PatientsReviewsList viewAll={true} />
         </div>
 
-        <Card>
-          <CardContent className="space-y-4 p-6 w-full">
-            <h1 className="text-lg font-bold ">Upcoming Appointments</h1>
-            <p className="text-muted-foreground">
-              You have got 3 new requests from patient{" "}
-            </p>
-
-            <Button>Check request</Button>
-          </CardContent>
-        </Card>
+        <div className="lg:w-[30%] w-full">
+          <MessagesSidebar
+            className="w-full flex min-h-[500px]"
+            navigate={false}
+          />
+        </div>
       </main>
     </ContentLayout>
   );

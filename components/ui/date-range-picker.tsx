@@ -1,26 +1,77 @@
-"use client"
-
-import * as React from "react"
-import { addDays, format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import { DateRange } from "react-day-picker"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import * as React from "react";
+import {
+  addDays,
+  format,
+  isWithinInterval,
+  setYear,
+  startOfDay,
+  endOfDay,
+} from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { Table } from "@tanstack/react-table";
+import { TimePicker } from "./time-picker";
 
-export function DatePickerWithRange({
+interface DatePickerWithRangeProps<TData> {
+  table: Table<TData>;
+  className?: string;
+}
+
+export function DatePickerWithRange<TData>({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  })
+  table,
+}: DatePickerWithRangeProps<TData>) {
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
+  const [startTime, setStartTime] = React.useState<Date>(new Date());
+  const [endTime, setEndTime] = React.useState<Date>(new Date());
+
+  const filterTableData = React.useCallback(() => {
+    if (dateRange?.from && dateRange?.to) {
+      const start = setYear(
+        new Date(
+          dateRange.from.setHours(startTime.getHours(), startTime.getMinutes())
+        ),
+        2024
+      );
+      const end = setYear(
+        new Date(
+          dateRange.to.setHours(endTime.getHours(), endTime.getMinutes())
+        ),
+        2024
+      );
+
+      table.getColumn("scheduledDate")?.setFilterValue({ start, end });
+    } else {
+      table.getColumn("scheduledDate")?.setFilterValue(undefined);
+    }
+  }, [table, dateRange, startTime, endTime]);
+
+  React.useEffect(() => {
+    filterTableData();
+  }, [filterTableData]);
+
+  const handleDateSelect = (newDateRange: DateRange | undefined) => {
+    if (newDateRange?.from && newDateRange?.to) {
+      const diffTime = Math.abs(
+        newDateRange.to.getTime() - newDateRange.from.getTime()
+      );
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 90) {
+        // If range is more than 90 days, adjust the 'to' date
+        newDateRange.to = addDays(newDateRange.from, 90);
+      }
+    }
+    setDateRange(newDateRange);
+  };
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -30,36 +81,53 @@ export function DatePickerWithRange({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              "lg:w-[300px]  justify-start text-left font-normal",
+              !dateRange && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
+            {dateRange?.from ? (
+              dateRange.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {format(dateRange.from, "MMM dd, HH:mm")} -{" "}
+                  {format(dateRange.to, "MMM dd, HH:mm")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(dateRange.from, "MMM dd, HH:mm")
               )
             ) : (
-              <span>Pick a date</span>
+              <span>Pick a date range</span>
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-          />
+        <PopoverContent className="w-auto p-0" align="start" side="left">
+          <div className="p-4 space-y-4">
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={new Date()}
+              selected={dateRange}
+              onSelect={handleDateSelect}
+              numberOfMonths={2}
+              disabled={(date) =>
+                date < startOfDay(new Date()) || date > addDays(new Date(), 90)
+              }
+            />
+            <div className="flex justify-between">
+              <TimePicker
+                value={startTime}
+                onChange={setStartTime}
+                label="Start Time"
+              />
+              <TimePicker
+                value={endTime}
+                onChange={setEndTime}
+                label="End Time"
+              />
+            </div>
+          </div>
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

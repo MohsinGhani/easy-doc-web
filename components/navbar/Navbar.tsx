@@ -11,10 +11,15 @@ import Hamburber from "./Hamburber";
 import { buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 
-export const Navbar = () => {
+export const Navbar = ({ className }: { className?: string }) => {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
   return (
-    <header className="@container w-full flex items-center justify-center bg-background lg:px-[100px] md:px-[50px] sm:px-[30px] px-4 mt-8 max-w-[1400px] mx-auto mb-10">
+    <header
+      className={cn(
+        "@container w-full flex items-center justify-center bg-background lg:px-[100px] md:px-[50px] sm:px-[30px] px-4 mt-8 max-w-[1400px] mx-auto mb-16",
+        className
+      )}
+    >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-10">
           <div className="flex items-center space-x-3 cursor-pointer">

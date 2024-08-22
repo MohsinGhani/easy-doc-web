@@ -15,11 +15,14 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Ellipsis, LogOut } from "lucide-react";
-import { getMenuList } from "@/components/layout/menu-list";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
+import {
+  getFilteredMenuList,
+  getMenuList,
+} from "@/components/layout/menu-list";
 import { useAppSelector } from "@/lib/hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import SearchInput from "../SearchInput";
+import { useEffect, useState } from "react";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -27,11 +30,17 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
-  const menuList = getMenuList(pathname);
+  const [menuList, setMenuList] = useState(getMenuList(pathname));
+  const [value, setValue] = useState("");
   const { signout } = useAuth();
   const { avatar, email, family_name, given_name } = useAppSelector(
     (state) => state.auth.user
   );
+
+  useEffect(() => {
+    const filteredMenu = getFilteredMenuList(pathname, value);
+    setMenuList(filteredMenu);
+  }, [value, pathname]);
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -40,7 +49,7 @@ export function Menu({ isOpen }: MenuProps) {
           hidden: !isOpen,
         })}
       >
-        <Input placeholder="Search" type="search" />
+        <SearchInput searchKey="search" value={value} setValue={setValue} />
       </div>
 
       <nav className="mt-8 h-full w-full">

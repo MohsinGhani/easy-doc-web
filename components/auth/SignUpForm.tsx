@@ -12,10 +12,10 @@ import { CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { SpinnerIcon } from "@/components/ui/icons";
-import { Stepper } from "@/components/auth";
+import { SignUpStepper } from "@/components/auth/Stepper";
 import { Status } from "rc-steps/lib/interface";
 import { useAuth } from "@/hooks/useAuth";
-import { getStepContent } from "@/helpers/getStepContent";
+import { getSignupFormContent } from "@/helpers/getStepContent";
 import SuccessPage from "../SuccessPage";
 
 const SignUpForm = () => {
@@ -101,13 +101,13 @@ const SignUpForm = () => {
       >
         <LogoText className="text-4xl text-center" />
 
-        <Stepper
+        <SignUpStepper
           activeStep={activeStep}
           setActiveStep={setActiveStep}
           status={status}
         />
 
-        {getStepContent(activeStep, destinationRef.current)}
+        {getSignupFormContent(activeStep, destinationRef.current)}
 
         <>
           {activeStep === 2 ? (

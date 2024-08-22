@@ -35,7 +35,7 @@ export const useAuth = () => {
   };
 
   const resetPassword = (values: ResetPasswordPayload) => {
-    dispatch(authThunks.requestPasswordReset({ values, router }));
+    dispatch(authThunks.requestPasswordReset({ values }));
   };
 
   const confirmResetPassword = (values: ConfirmResetPasswordPayload) => {

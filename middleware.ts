@@ -21,16 +21,23 @@ export async function middleware(req: NextRequest, res: NextResponse) {
     const isPublicRoute = publicRoutes.includes(pathname);
     const isProtectedRoute = privateRoutes.includes(pathname);
     const token = req.cookies.get("token")?.value || "";
-    const { "custom:role": role } = decodeJWT(token).payload;
-
-    if (isPublicRoute && token) {
-      return NextResponse.redirect(
-        new URL(role === "doctor" ? "/dashboard" : "/admin/dashboard", req.url)
-      );
-    }
 
     if (isProtectedRoute && !token) {
       return NextResponse.redirect(new URL("/auth/sign-in", req.url));
+    }
+
+    const { "custom:role": role, email_verified } = decodeJWT(token).payload;
+
+    if (!role) return NextResponse.redirect(new URL("/auth/sign-in", req.url));
+
+    if (!email_verified) {
+      return NextResponse.redirect(new URL("/auth/verify-email", req.url));
+    }
+
+    if (isPublicRoute && token) {
+      return NextResponse.redirect(
+        new URL(role === "doctor" ? "/dashboard" : "/admin", req.url)
+      );
     }
 
     return NextResponse.next();

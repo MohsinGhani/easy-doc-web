@@ -6,9 +6,9 @@ export default function DemoLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Navbar />
-      <main className="max-w-[1440px] mx-auto">{children}</main>
-    </div>
+    <>
+      <Navbar className="" />
+      <section className="pb-16">{children}</section>
+    </>
   );
 }

@@ -3,7 +3,7 @@ import SignUpForm from "@/components/auth/SignUpForm";
 
 export default function SignUpPage() {
   return (
-    <div className="@container flex items-center justify-center w-full h-full gap-[88px] py-[20px] sm:py-2">
+    <div className="@container flex items-center justify-center w-full h-full gap-[88px]">
       <div className="@6xl:block hidden w-[700px] h-[936px]">
         <Image
           src="/assets/images/register-img.png"

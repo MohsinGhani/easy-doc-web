@@ -79,9 +79,9 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/patient-reviews",
+          href: "/patients-reviews",
           label: "Patient’s Reviews",
-          active: pathname === "/patient-reviews",
+          active: pathname === "/patients-reviews",
           icon: HandCoinsIcon,
           submenus: [],
         },
@@ -123,4 +123,31 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
   ];
+}
+
+export function getFilteredMenuList(
+  pathname: string,
+  searchValue: string
+): Group[] {
+  const originalMenuList = getMenuList(pathname);
+
+  return originalMenuList
+    .map((group) => ({
+      ...group,
+      menus: group.menus
+        .filter(
+          (menu) =>
+            menu.label.toLowerCase().includes(searchValue.toLowerCase()) ||
+            menu.submenus.some((submenu) =>
+              submenu.label.toLowerCase().includes(searchValue.toLowerCase())
+            )
+        )
+        .map((menu) => ({
+          ...menu,
+          submenus: menu.submenus.filter((submenu) =>
+            submenu.label.toLowerCase().includes(searchValue.toLowerCase())
+          ),
+        })),
+    }))
+    .filter((group) => group.menus.length > 0);
 }

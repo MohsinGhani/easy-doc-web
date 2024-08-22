@@ -17,6 +17,21 @@ const nextConfig = {
         hostname: "images.unsplash.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "randomuser.me",
+        port: "",
+      },
     ],
   },
 };
