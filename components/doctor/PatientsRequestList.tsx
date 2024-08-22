@@ -1,52 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  flexRender,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetClose,
-} from "@/components/ui/sheet";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { EyeIcon, LucideCheck, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import * as React from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { LucideSearch } from "lucide-react";
 import RequestReviewSheet from "./RequestReviewSheet";
+import RejectRequestDialog from "../RejectRequestDialog";
+import SuccessPage from "../SuccessPage";
+import Link from "next/link";
+import { getColumns } from "../table/columns";
+import { PendingRequest } from "@/types/table";
+import { DataTable } from "../table/data-table";
 
-const approvalRequests = [
+const approvalRequests: PendingRequest[] = [
   {
-    id: 1,
+    id: "1",
     name: "Liam Johnson",
     email: "liam@example.com",
     gender: "Male",
@@ -62,7 +29,7 @@ const approvalRequests = [
     consultationType: "Routine Checkup",
   },
   {
-    id: 2,
+    id: "2",
     name: "Emma Wilson",
     email: "emma@example.com",
     gender: "Female",
@@ -79,7 +46,7 @@ const approvalRequests = [
   },
   // Add more dummy data for pagination
   {
-    id: 3,
+    id: "3",
     name: "Noah Brown",
     email: "noah@example.com",
     gender: "Male",
@@ -95,7 +62,7 @@ const approvalRequests = [
     consultationType: "Initial Consultation",
   },
   {
-    id: 4,
+    id: "4",
     name: "Ava Davis",
     email: "ava@example.com",
     gender: "Female",
@@ -111,7 +78,7 @@ const approvalRequests = [
     consultationType: "Skin Check",
   },
   {
-    id: 5,
+    id: "5",
     name: "Sophia Martinez",
     email: "sophia@example.com",
     gender: "Female",
@@ -127,7 +94,7 @@ const approvalRequests = [
     consultationType: "Follow-up",
   },
   {
-    id: 6,
+    id: "6",
     name: "James Lee",
     email: "james@example.com",
     gender: "Male",
@@ -143,7 +110,7 @@ const approvalRequests = [
     consultationType: "Routine Checkup",
   },
   {
-    id: 7,
+    id: "7",
     name: "Mia Garcia",
     email: "mia@example.com",
     gender: "Female",
@@ -160,164 +127,43 @@ const approvalRequests = [
   },
 ];
 
-const ComprehensivePaginatedTable = () => {
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState<any>(null);
+interface PatientsRequestListProps {
+  headerType?: "primary" | "secondary";
+}
 
-  const handlePreview = (request: any) => {
+const PatientsRequestList = ({
+  headerType = "primary",
+}: PatientsRequestListProps) => {
+  const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+  const [selectedRequest, setSelectedRequest] =
+    React.useState<PendingRequest>(null);
+  const [isSuccessOpen, setIsSuccessOpen] = React.useState(false);
+  const isPrimaryHeader = headerType === "primary";
+
+  const handlePreview = (request: PendingRequest) => {
     setSelectedRequest(request);
     setIsPreviewOpen(true);
   };
 
-  const columns = [
-    {
-      header: "S.no",
-      accessorFn: (row: any) => `${row.id}`,
-    },
-    {
-      header: "Patient's Name",
-      accessorKey: "name",
-      cell: ({ row }: any) => (
-        <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage src={row.original.avatarUrl} alt="Avatar" />
-            <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="font-medium">{row.original.name}</div>
-            <div className="text-sm text-muted-foreground">
-              {row.original.email}
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      header: "Age - Gender",
-      accessorFn: (row: any) => `${row.age} - ${row.gender}`,
-    },
-    {
-      header: "Speciality",
-      accessorKey: "speciality",
-    },
-    {
-      header: "Appointment Date & Time",
-      accessorKey: "scheduledDate",
-    },
-    {
-      header: "Consultation Type",
-      accessorKey: "consultationType",
-    },
-    {
-      header: "Actions",
-      cell: ({ row }: any) => (
-        <div className="flex items-center gap-1.5 text-muted-foreground">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handlePreview(row.original)}
-          >
-            <EyeIcon className="h-5 w-5 cursor-pointer" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={() => {}}>
-            <X className="h-5 w-5 cursor-pointer" />
-          </Button>
-          <Button variant="default" size="icon" onClick={() => {}}>
-            <LucideCheck className="h-5 w-5 cursor-pointer" />
-          </Button>
-        </div>
-      ),
-    },
-  ];
+  const handleAcceptRequest = (request: PendingRequest) => {
+    setIsSuccessOpen(true);
+  };
 
-  const table = useReactTable({
-    data: approvalRequests,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 5,
-      },
-    },
+  const columns = getColumns({
+    type: "requests",
+    handleAcceptRequest,
+    handlePreview,
   });
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Approval Requests</CardTitle>
-      </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-
-        <div className="mt-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() =>
-                    table.getCanPreviousPage() && table.previousPage()
-                  }
-                  className={cn(
-                    table.getCanPreviousPage()
-                      ? "cursor-pointer"
-                      : "cursor-not-allowed"
-                  )}
-                >
-                  Previous
-                </PaginationPrevious>
-              </PaginationItem>
-              {[...Array(table.getPageCount())].map((_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    onClick={() => table.setPageIndex(index)}
-                    isActive={table.getState().pagination.pageIndex === index}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => table.getCanNextPage() && table.nextPage()}
-                  className={cn(
-                    table.getCanNextPage()
-                      ? "cursor-pointer"
-                      : "cursor-not-allowed"
-                  )}
-                >
-                  Next
-                </PaginationNext>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
+        <DataTable
+          columns={columns}
+          data={approvalRequests}
+          isPrimaryHeader={isPrimaryHeader}
+          title="Patient's Requests"
+        />
       </CardContent>
 
       <RequestReviewSheet
@@ -325,8 +171,16 @@ const ComprehensivePaginatedTable = () => {
         setOpen={setIsPreviewOpen}
         selectedRequest={selectedRequest}
       />
+
+      <SuccessPage
+        heading="Patient Request Accepted"
+        linkText="Okay"
+        linkHref="#"
+        open={isSuccessOpen}
+        setOpen={setIsSuccessOpen}
+      />
     </Card>
   );
 };
 
-export default ComprehensivePaginatedTable;
+export default PatientsRequestList;
