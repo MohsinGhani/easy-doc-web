@@ -24,7 +24,7 @@ const PatientsRequestList = ({
 }: PatientsRequestListProps) => {
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [selectedRequest, setSelectedRequest] =
-    React.useState<PendingRequest | null>(() => null);
+    React.useState<PendingRequest | null>(null);
   const [isSuccessOpen, setIsSuccessOpen] = React.useState(false);
   const isPrimaryHeader = headerType === "primary";
 
