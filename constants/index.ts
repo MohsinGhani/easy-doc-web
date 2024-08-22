@@ -73,58 +73,33 @@ export const navLinksForAuth = [
   },
 ];
 
-// Sidebar Links for logged In Doctor's
-export const sideNavLinksForDoctor = [
+export const faqs = [
   {
-    label: "Overview",
-    location: "/profile",
+    question: "How can I get access to my patients’ medical records?",
+    answer:
+      "Yes. You can get access to your patients’ medical records using your Uvodo account.",
+    id: 1,
   },
   {
-    label: "Patient's Requests",
-    location: "/requests",
+    question: "Can I use my existing domain with Uvodo?",
+    answer:
+      "Yes, you can connect your existing domain. Uvodo also provides a forever free uvo.do domain suffix to all sellers upon creating an account.",
+    id: 2,
   },
   {
-    label: "Appointments",
-    location: "/appointments",
+    question:
+      "Can I sell my products with Uvodo without creating an online store?",
+    answer: "Yes. It adheres to the WAI-ARIA design pattern.",
+    id: 3,
   },
   {
-    label: "Available Timings",
-    location: "/available-timings",
+    question: "Is there a setup fee for using Uvodo?",
+    answer: "Yes. It adheres to the WAI-ARIA design pattern.",
+    id: 4,
   },
   {
-    label: "My Patients",
-    location: "/my-patients",
+    question: "How do I get started with Uvodo?",
+    answer: "Yes. It adheres to the WAI-ARIA design pattern.",
+    id: 5,
   },
-  {
-    label: "Specialities & Services",
-    location: "/specialities-services",
-  },
-  {
-    label: "Patient's Reviews",
-    location: "/reviews",
-  },
-  {
-    label: "Messages",
-    location: "/messages",
-  },
-  {
-    label: "Payout Settings",
-    location: "/payout-settings",
-  },
-  {
-    label: "Blogs",
-    location: "/blogs",
-  },
-  // {
-  //   label: "FAQ’s & Support",
-  //   location: "/faqs",
-  // },
-  // {
-  //   label: "Doctors",
-  //   location: "/doctors",
-  // },
-  // {
-  //   label: "Specialists",
-  //   location: "/specialists",
-  // },
 ];

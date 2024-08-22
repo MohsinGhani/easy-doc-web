@@ -32,8 +32,6 @@ export const authThunks = {
         const { email, password, given_name, family_name, role, licence } =
           values;
 
-        // const displayName = `${role === "doctor" ? "Dr. " : ""}${given_name}`;
-
         const { nextStep } = await signUp({
           username: email,
           password: password,
@@ -43,7 +41,6 @@ export const authThunks = {
               family_name,
               email,
               "custom:role": role,
-              // "custom:displayName": displayName,
               "custom:verified": role === "doctor" ? "false" : "true",
               "custom:licence": role === "doctor" ? licence : "",
             },
@@ -51,6 +48,8 @@ export const authThunks = {
         });
 
         const { codeDeliveryDetails }: any = nextStep;
+
+        Cookies.set("auth", JSON.stringify({ email }));
 
         return codeDeliveryDetails;
       } catch (error: any) {
@@ -71,21 +70,23 @@ export const authThunks = {
           confirmationCode: values.confirmationCode,
         });
 
-        await signIn({
-          username: values.email,
-          password: values.password,
-        });
+        if (values.password) {
+          await signIn({
+            username: values.email,
+            password: values.password,
+          });
 
-        const { userId } = await getCurrentUser();
-        const payload = handleTokenStorage(userId);
+          const { userId } = await getCurrentUser();
+          const payload = handleTokenStorage(userId);
+          dispatch(signinAction({ payload }));
+          toast.success("Sign in successful!, you'll be redirected shortly");
+          const role = payload["custom:role"];
 
-        dispatch(signinAction({ payload }));
-        toast.success("Sign in successful!, you'll be redirected shortly");
-        const role = payload["custom:role"];
-
-        setTimeout(() => {
           router.push(role === "doctor" ? `/dashboard` : `/`);
-        }, 2000);
+        } else {
+          toast.success("Email verification successful!, yaou can sign in now");
+          router.push("/auth/sign-in");
+        }
       } catch (error: any) {
         toast.error(error.message);
         return rejectWithValue(error.message);
@@ -100,6 +101,7 @@ export const authThunks = {
       { rejectWithValue, dispatch }
     ) => {
       try {
+        // TODO: check if user is verified by email
         await signIn({
           username: values.email,
           password: values.password,
@@ -114,12 +116,25 @@ export const authThunks = {
         toast.success("Sign in successful!");
         router.push(role === "doctor" ? `/dashboard` : `/`);
       } catch (error: any) {
-        toast.error(
-          error._type === "UserNotConfirmedException"
-            ? "Please confirm your email"
-            : "Sign in failed!"
-        );
-        return rejectWithValue(error.message);
+        console.log("🚀 ~ Full error object:", error);
+
+        // Check for different possible properties on the error object
+        const errorType = error.__type || error.code || error.name;
+
+        if (errorType === "UserNotConfirmedException") {
+          // Handle case where user has not confirmed their email
+          router.push("/auth/verify-email");
+          return rejectWithValue("Please confirm your email!");
+        } else if (errorType === "NotAuthorizedException") {
+          // Handle case where credentials are incorrect
+          return rejectWithValue("Incorrect username or password!");
+        } else if (errorType === "UserNotFoundException") {
+          // Handle case where the user doesn't exist
+          return rejectWithValue("User does not exist!");
+        }
+
+        // Fallback error message
+        return rejectWithValue("Sign in failed!");
       }
     }
   ),
@@ -159,15 +174,12 @@ export const authThunks = {
   requestPasswordReset: createAsyncThunk(
     "auth/requestPasswordReset",
     async (
-      { values, router }: { values: ResetPasswordPayload; router: any },
+      { values }: { values: ResetPasswordPayload },
       { rejectWithValue }
     ) => {
       try {
         const { email } = values;
-        const { nextStep } = await resetPassword({ username: email });
-        router.push(
-          `/auth/confirm-password-reset?email=${email}&destination=${nextStep.codeDeliveryDetails.destination}`
-        );
+        resetPassword({ username: email });
         toast.success("Code sent successfully");
       } catch (error: any) {
         toast.error(error.message || "Failed to request password reset.");

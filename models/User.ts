@@ -80,32 +80,27 @@ export const ConfirmCodeSchema = z.object({
     .max(6, { message: "Code must be exactly 6 characters long" }),
 });
 
-export const ForgotPasswordSchema = z
+export const ResetPasswordSchema = z
   .object({
+    confirmationCode: z.string().min(1, "Confirmation code is required"),
+    newPassword: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
     email: z
       .string({
         required_error: "Email is required",
       })
       .email("Invalid email address"),
   })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  })
   .refine((data) => data.email.includes("@"), {
     message: "Invalid email address",
     path: ["email"],
   });
 
-export const ConfirmResetPasswordSchema = z
-  .object({
-    confirmationCode: z.string().min(1, "Confirmation code is required"),
-    newPassword: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
 export type UserSignup = z.infer<typeof UserSignupSchema>;
 export type ConfirmCode = z.infer<typeof ConfirmCodeSchema>;
 export type UserSignin = z.infer<typeof UserSigninSchema>;
-export type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
-export type ConfirmResetPassword = z.infer<typeof ConfirmResetPasswordSchema>;
+export type ResetPassword = z.infer<typeof ResetPasswordSchema>;

@@ -30,6 +30,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
 import { ContentLayout } from "@/components/layout/content-layout";
+import ManageExperiences from "@/components/doctor/ManageExperiences";
+import ManageEducation from "@/components/doctor/ManageEducation";
+import ManageAwards from "@/components/doctor/ManageAwards";
 
 export default function DoctorProfilePage() {
   return (
@@ -121,7 +124,7 @@ export default function DoctorProfilePage() {
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="pl-3 text-left font-normal text-muted-foreground"
+                          className="pl-3 text-left font-normal text-muted-foreground w-full"
                         >
                           Pick a date
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -201,6 +204,15 @@ export default function DoctorProfilePage() {
                 <Button>Save Changes</Button>
               </CardFooter>
             </Card>
+          </TabsContent>
+          <TabsContent value="experience">
+            <ManageExperiences />
+          </TabsContent>
+          <TabsContent value="education">
+            <ManageEducation />
+          </TabsContent>
+          <TabsContent value="awards">
+            <ManageAwards />
           </TabsContent>
         </Tabs>
       </section>

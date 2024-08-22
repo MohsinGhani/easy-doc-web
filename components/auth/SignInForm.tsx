@@ -22,11 +22,15 @@ const SignInForm = () => {
   });
 
   const onSubmit = (values: UserSignin) => {
-    signin(values);
+    try {
+      signin(values);
+    } catch (error) {
+      console.log("🚀 ~ onSubmit ~ error:", error);
+    }
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-screen">
+    <div className="flex items-center justify-center w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -104,10 +108,10 @@ const SignInForm = () => {
           </Button>
 
           <CardDescription className="text-center">
-            Don&apos;t you have an account?
+            <span>Don&apos;t you have an account? </span>
             <Link
               className="font-semibold text-blue-500"
-              href={"/auth/sign-in"}
+              href={"/auth/sign-up"}
             >
               Create an account
             </Link>

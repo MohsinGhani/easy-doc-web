@@ -15,7 +15,7 @@ export interface SigninPayload {
 export interface ConfirmCodePayload {
   confirmationCode: string;
   email: string;
-  password: string;
+  password?: string;
 }
 
 export interface ResendConfirmationCodePayload {

@@ -118,7 +118,6 @@ export const authSlice = createSlice({
         state.error = null;
       })
       .addCase(authThunks.resendConfirmationCode.fulfilled, (state) => {
-        Object.assign(state, initialState);
         state.loading = false;
       })
       .addCase(
