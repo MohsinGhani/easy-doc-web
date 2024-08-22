@@ -12,10 +12,11 @@ import { CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { SpinnerIcon } from "@/components/ui/icons";
-import { SuccessPage, Stepper } from "@/components/auth";
+import { Stepper } from "@/components/auth";
 import { Status } from "rc-steps/lib/interface";
 import { useAuth } from "@/hooks/useAuth";
 import { getStepContent } from "@/helpers/getStepContent";
+import SuccessPage from "../SuccessPage";
 
 const SignUpForm = () => {
   const { signup, confirmCode } = useAuth();
@@ -87,7 +88,9 @@ const SignUpForm = () => {
   };
 
   if (activeStep === 3) {
-    return <SuccessPage />;
+    return (
+      <SuccessPage heading="Account Created!" linkText="Okay" linkHref="/" />
+    );
   }
 
   return (
