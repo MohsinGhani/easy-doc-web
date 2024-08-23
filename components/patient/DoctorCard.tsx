@@ -10,10 +10,7 @@ interface DoctorCardProps {
 
 const DoctorCard = ({ doctor }: DoctorCardProps) => {
   return (
-    <CardContent
-      key={index}
-      className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0"
-    >
+    <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0">
       <div className="relative">
         <Image
           src={doctor.imageUrl}

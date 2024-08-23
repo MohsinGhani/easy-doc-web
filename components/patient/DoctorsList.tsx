@@ -1,6 +1,4 @@
-import Image from "next/image";
-import { Heart, Star } from "lucide-react";
-import { CardContent } from "../ui/card";
+import DoctorCard from "./DoctorCard";
 
 const doctors: Doctor[] = [
   {
@@ -43,8 +41,7 @@ export default function DoctorsList() {
     <div className="w-full lg:col-span-3">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {doctors.map((doctor, index) => (
-            <DoctorCard doctor={doctor} />
-          
+          <DoctorCard doctor={doctor} key={index} />
         ))}
       </div>
     </div>
