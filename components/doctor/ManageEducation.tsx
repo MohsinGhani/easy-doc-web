@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -28,6 +27,8 @@ import Image from "next/image";
 import AddExperienceDialog from "./AddExperienceDialog";
 import { Trash2 } from "lucide-react";
 import DeleteDialog from "../DeleteDialog";
+import { degrees, fields, institutes } from "@/constants";
+import { SelectWithSearch } from "../SelectWithSearch";
 
 export default function ManageEducation() {
   const [educations, setEducations] = useState([
@@ -101,136 +102,42 @@ export default function ManageEducation() {
                 <div className="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
                   <div className="grid gap-1.5">
                     <Label htmlFor={`institute-${edu.id}`}>Institute</Label>
-                    <Select
-                      value={edu.institute}
-                      onValueChange={(value) => {
+                    <SelectWithSearch
+                      items={institutes}
+                      placeholder="Select institute..."
+                      onSelect={(value) => {
                         const newEducation = educations.map((ex) =>
                           ex.id === edu.id ? { ...ex, institute: value } : ex
                         );
                         setEducations(newEducation);
                       }}
-                    >
-                      <SelectTrigger id={`institute-${edu.id}`}>
-                        <SelectValue placeholder="Select Institute" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Oxford University">
-                          Oxford University
-                        </SelectItem>
-                        <SelectItem value="Harvard University">
-                          Harvard University
-                        </SelectItem>
-                        <SelectItem value="Stanford University">
-                          Stanford University
-                        </SelectItem>
-                        <SelectItem value="University of California Berkeley">
-                          University of California Berkeley
-                        </SelectItem>
-                        <SelectItem value="University of Cambridge">
-                          University of Cambridge
-                        </SelectItem>
-                        <SelectItem value="University College London">
-                          University College London
-                        </SelectItem>
-                        <SelectItem value="University of Washington Seattle">
-                          University of Washington Seattle
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
                   <div className="grid gap-1.5">
                     <Label htmlFor={`degree-${edu.id}`}>Degree</Label>
-                    <Select
-                      value={edu.degree}
-                      onValueChange={(value) => {
+                    <SelectWithSearch
+                      items={degrees}
+                      placeholder="Select Degree..."
+                      onSelect={(value) => {
                         const newEducation = educations.map((ex) =>
                           ex.id === edu.id ? { ...ex, degree: value } : ex
                         );
                         setEducations(newEducation);
                       }}
-                    >
-                      <SelectTrigger id={`degree-${edu.id}`}>
-                        <SelectValue placeholder="Select Degree" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="MBBS">MBBS</SelectItem>
-                        <SelectItem value="B Pharmacy">B Pharmacy</SelectItem>
-                        <SelectItem value="BSc Psychology">
-                          BSc Psychology
-                        </SelectItem>
-                        <SelectItem value="BSc Biomedical Science">
-                          BSc Biomedical Science
-                        </SelectItem>
-                        <SelectItem value="B.Sc. Medical Laboratory Technology (BMLT)">
-                          B.Sc. Medical Laboratory Technology (BMLT)
-                        </SelectItem>
-                        <SelectItem value="B.Sc. Nutrition and Dietetics">
-                          B.Sc. Nutrition and Dietetics
-                        </SelectItem>
-                        <SelectItem value="Agricultural Sciences">
-                          Agricultural Sciences
-                        </SelectItem>
-                        <SelectItem value="Paramedical Courses">
-                          Paramedical Courses
-                        </SelectItem>
-                        <SelectItem value="Bachelor of Physiotherapy">
-                          Bachelor of Physiotherapy
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
                   <div className="grid gap-1.5">
                     <Label htmlFor={`field-${edu.id}`}>Field of study</Label>
-                    <Select
-                      value={edu.field}
-                      onValueChange={(value) => {
+                    <SelectWithSearch
+                      items={fields}
+                      placeholder="Select Field..."
+                      onSelect={(value) => {
                         const newEducation = educations.map((ex) =>
                           ex.id === edu.id ? { ...ex, field: value } : ex
                         );
                         setEducations(newEducation);
                       }}
-                    >
-                      <SelectTrigger id={`field-${edu.id}`}>
-                        <SelectValue placeholder="Select Field" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Cardiology">Cardiology</SelectItem>
-                        <SelectItem value="Dermatology">Dermatology</SelectItem>
-                        <SelectItem value="Doctor of Physical Therapy (DPT)">
-                          Doctor of Physical Therapy (DPT)
-                        </SelectItem>
-                        <SelectItem value="Bachelor of Dental Surgery (BDS)">
-                          Bachelor of Dental Surgery (BDS)
-                        </SelectItem>
-                        <SelectItem value="Medical Laboratory Technology">
-                          Medical Laboratory Technology
-                        </SelectItem>
-                        <SelectItem value="Biotechnology">
-                          Biotechnology
-                        </SelectItem>
-                        <SelectItem value="Nanotechnology">
-                          Nanotechnology
-                        </SelectItem>
-                        <SelectItem value="Microbiology">
-                          Microbiology
-                        </SelectItem>
-                        <SelectItem value="Psychology">Psychology</SelectItem>
-                        <SelectItem value="Biomedical Engineering">
-                          Biomedical Engineering
-                        </SelectItem>
-                        <SelectItem value="Nursing">Nursing</SelectItem>
-                        <SelectItem value="Biogenetics">Biogenetics</SelectItem>
-                        <SelectItem value="BHMS (Bachelor of Homeopathic Medicine & Surgery)">
-                          BHMS (Bachelor of Homeopathic Medicine & Surgery)
-                        </SelectItem>
-                        <SelectItem value="Intensive Care">
-                          Intensive Care
-                        </SelectItem>
-                        <SelectItem value="Biochemistry">
-                          Biochemistry
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
                 </div>
 

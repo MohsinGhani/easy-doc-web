@@ -15,31 +15,31 @@ export const useAuth = () => {
   const router = useRouter();
 
   const signup = (values: SignupPayload) => {
-    dispatch(authThunks.signup({ values }));
+    return dispatch(authThunks.signup({ values }));
   };
 
   const signin = (values: SigninPayload) => {
-    dispatch(authThunks.signin({ values, router }));
+    return dispatch(authThunks.signin({ values, router }));
   };
 
   const signout = () => {
-    dispatch(authThunks.signout(router));
+    return dispatch(authThunks.signout(router));
   };
 
   const confirmCode = (values: ConfirmCodePayload) => {
-    dispatch(authThunks.confirmCode({ values, router }));
+    return dispatch(authThunks.confirmCode({ values, router }));
   };
 
   const resendConfirmationCode = (values: ResendConfirmationCodePayload) => {
-    dispatch(authThunks.resendConfirmationCode({ values }));
+    return dispatch(authThunks.resendConfirmationCode({ values }));
   };
 
   const resetPassword = (values: ResetPasswordPayload) => {
-    dispatch(authThunks.requestPasswordReset({ values }));
+    return dispatch(authThunks.requestPasswordReset({ values }));
   };
 
   const confirmResetPassword = (values: ConfirmResetPasswordPayload) => {
-    dispatch(authThunks.confirmPasswordReset({ values, router }));
+    return dispatch(authThunks.confirmPasswordReset({ values, router }));
   };
 
   return {

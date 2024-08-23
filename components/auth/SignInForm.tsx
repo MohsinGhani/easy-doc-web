@@ -22,11 +22,7 @@ const SignInForm = () => {
   });
 
   const onSubmit = (values: UserSignin) => {
-    try {
-      signin(values);
-    } catch (error) {
-      console.log("🚀 ~ onSubmit ~ error:", error);
-    }
+    signin(values);
   };
 
   return (

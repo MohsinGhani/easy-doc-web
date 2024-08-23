@@ -103,7 +103,7 @@ const ResetPasswordForm = () => {
           )}
 
           <CardDescription className="text-center">
-            Don&apos;t you have an account?
+            <span>Don&apos;t you have an account? </span>
             <Link
               className="font-semibold text-blue-500"
               href={"/auth/sign-up"}

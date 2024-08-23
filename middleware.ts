@@ -26,17 +26,16 @@ export async function middleware(req: NextRequest, res: NextResponse) {
       return NextResponse.redirect(new URL("/auth/sign-in", req.url));
     }
 
-    const { "custom:role": role, email_verified } = decodeJWT(token).payload;
+    const { "custom:role": role } = decodeJWT(token).payload;
 
     if (!role) return NextResponse.redirect(new URL("/auth/sign-in", req.url));
 
-    if (!email_verified) {
-      return NextResponse.redirect(new URL("/auth/verify-email", req.url));
-    }
-
     if (isPublicRoute && token) {
       return NextResponse.redirect(
-        new URL(role === "doctor" ? "/dashboard" : "/admin", req.url)
+        new URL(
+          role === "doctor" ? "/dashboard" : role === "admin" ? "/admin" : "/",
+          req.url
+        )
       );
     }
 

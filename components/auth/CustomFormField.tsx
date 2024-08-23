@@ -27,6 +27,7 @@ export enum FormFieldType {
   CHECKBOX = "checkbox",
   PHONE_INPUT = "phoneInput",
   ROLE_SELECT = "role",
+  COMBOBOX = "combobox",
 }
 
 interface CustomProps {

@@ -18,7 +18,7 @@ const ChatSheet = ({ chat, open, setOpen }: ChatSheetProps) => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent className="sm:max-w-[600px] overflow-y-scroll min-h-screen">
+      <SheetContent className="sm:max-w-[600px] overflow-y-scroll h-screen">
         <MessageContainer
           chatId={chat?.chatId || ""}
           href="dashboard"

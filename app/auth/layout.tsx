@@ -6,9 +6,9 @@ export default function DemoLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Navbar className="" />
-      <section className="pb-16">{children}</section>
-    </>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow">{children}</main>
+    </div>
   );
 }

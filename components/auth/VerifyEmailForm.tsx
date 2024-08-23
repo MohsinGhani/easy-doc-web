@@ -1,6 +1,5 @@
 "use client";
 
-import { useAppSelector } from "@/lib/hooks";
 import { ConfirmCode, ConfirmCodeSchema } from "@/models/User";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -14,11 +13,13 @@ import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useDelayedButton } from "@/hooks/useDelayedButton";
+import { useAppSelector } from "@/lib/hooks";
 
 const VerifyEmailForm = () => {
   const { loading } = useAppSelector((state) => state.auth);
   const { resendConfirmationCode, confirmCode } = useAuth();
-  const { email } = useAppSelector((state) => state.auth.user);
+  const { searchParams } = new URL(window.location.href);
+  const email = searchParams.get("email") || "";
   const isEnabled = useDelayedButton(60000);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const VerifyEmailForm = () => {
           <div className="space-y-2">
             <h1 className="text-2xl font-semibold">Verify Your Email</h1>
             <p className="text-muted-foreground">
-              Enter the code that we sent to your email.
+              Enter the code that we sent to <strong>{email}</strong>
             </p>
           </div>
 

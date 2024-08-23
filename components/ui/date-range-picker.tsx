@@ -10,7 +10,7 @@ import {
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -74,60 +74,59 @@ export function DatePickerWithRange<TData>({
   };
 
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "lg:w-[300px]  justify-start text-left font-normal",
-              !dateRange && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {dateRange?.from ? (
-              dateRange.to ? (
-                <>
-                  {format(dateRange.from, "MMM dd, HH:mm")} -{" "}
-                  {format(dateRange.to, "MMM dd, HH:mm")}
-                </>
-              ) : (
-                format(dateRange.from, "MMM dd, HH:mm")
-              )
+    <Popover>
+      <PopoverTrigger
+        className={cn(buttonVariants({ variant: "outline" }))}
+        id="date"
+      >
+        <div
+          className={cn(
+            "flex items-center justify-start text-left font-normal overflow-hidden",
+            !dateRange && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {dateRange?.from ? (
+            dateRange.to ? (
+              <>
+                {format(dateRange.from, "MMM dd, HH:mm")} -{" "}
+                {format(dateRange.to, "MMM dd, HH:mm")}
+              </>
             ) : (
-              <span>Pick a date range</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start" side="left">
-          <div className="p-4 space-y-4">
-            <Calendar
-              initialFocus
-              mode="range"
-              defaultMonth={new Date()}
-              selected={dateRange}
-              onSelect={handleDateSelect}
-              numberOfMonths={2}
-              disabled={(date) =>
-                date < startOfDay(new Date()) || date > addDays(new Date(), 90)
-              }
+              format(dateRange.from, "MMM dd, HH:mm")
+            )
+          ) : (
+            <span>Pick a date range</span>
+          )}
+        </div>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0">
+        <div className="p-4 space-y-4">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={new Date()}
+            selected={dateRange}
+            onSelect={handleDateSelect}
+            numberOfMonths={2}
+            disabled={(date) =>
+              date < startOfDay(new Date()) || date > addDays(new Date(), 90)
+            }
+          />
+          <div className="flex justify-between">
+            <TimePicker
+              value={startTime}
+              onChange={setStartTime}
+              label="Start Time"
             />
-            <div className="flex justify-between">
-              <TimePicker
-                value={startTime}
-                onChange={setStartTime}
-                label="Start Time"
-              />
-              <TimePicker
-                value={endTime}
-                onChange={setEndTime}
-                label="End Time"
-              />
-            </div>
+            <TimePicker
+              value={endTime}
+              onChange={setEndTime}
+              label="End Time"
+            />
           </div>
-        </PopoverContent>
-      </Popover>
-    </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
