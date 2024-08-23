@@ -82,7 +82,9 @@ export const authThunks = {
           toast.success("Sign in successful!, you'll be redirected shortly");
           const role = payload["custom:role"];
 
-          router.push(role === "doctor" ? `/dashboard` : `/`);
+          router.push(
+            role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
+          );
         } else {
           toast.success("Email verification successful!, yaou can sign in now");
           router.push("/auth/sign-in");
@@ -101,11 +103,17 @@ export const authThunks = {
       { rejectWithValue, dispatch }
     ) => {
       try {
-        // TODO: check if user is verified by email
-        await signIn({
+        const { nextStep } = await signIn({
           username: values.email,
           password: values.password,
         });
+
+        if (nextStep.signInStep === "CONFIRM_SIGN_UP") {
+          router.push("/auth/verify-email?email=" + values.email);
+          return rejectWithValue("Please verify your email first!");
+        }
+
+        console.log("nextStep", nextStep);
 
         const { userId } = await getCurrentUser();
         const payload = handleTokenStorage(userId);
@@ -114,27 +122,24 @@ export const authThunks = {
 
         const role = payload["custom:role"];
         toast.success("Sign in successful!");
-        router.push(role === "doctor" ? `/dashboard` : `/`);
+        router.push(
+          role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
+        );
       } catch (error: any) {
-        console.log("🚀 ~ Full error object:", error);
+        console.log(error.message);
+        const errorType =
+          error.__type || error.code || error.name || error.message || error;
 
-        // Check for different possible properties on the error object
-        const errorType = error.__type || error.code || error.name;
-
-        if (errorType === "UserNotConfirmedException") {
-          // Handle case where user has not confirmed their email
-          router.push("/auth/verify-email");
-          return rejectWithValue("Please confirm your email!");
-        } else if (errorType === "NotAuthorizedException") {
-          // Handle case where credentials are incorrect
+        if (errorType === "NotAuthorizedException") {
           return rejectWithValue("Incorrect username or password!");
-        } else if (errorType === "UserNotFoundException") {
-          // Handle case where the user doesn't exist
-          return rejectWithValue("User does not exist!");
+        } else if (
+          errorType === "UserNotFoundException" ||
+          errorType === "User does not exist."
+        ) {
+          return rejectWithValue("User does not exist.");
         }
 
-        // Fallback error message
-        return rejectWithValue("Sign in failed!");
+        return rejectWithValue("Sign-in failed. Please try again.");
       }
     }
   ),

@@ -23,6 +23,7 @@ import Link from "next/link";
 import MessageCard from "@/components/messages/MessageCard";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/lib/hooks";
 
 interface MessageContainerProps {
   chatId: string;
@@ -39,6 +40,7 @@ const MessageContainer = ({
 }: MessageContainerProps) => {
   const [message, setMessage] = useState("");
   const currentChat = chats.find((c) => c.chatId === chatId);
+  const userId = useAppSelector((state) => state.auth.user.userId);
 
   const handleSend = () => {
     if (!message.trim()) return;
@@ -46,7 +48,7 @@ const MessageContainer = ({
 
     currentChat?.messages.push({
       author: {
-        userId: "1",
+        userId,
       },
       text: message,
       replies: [],
@@ -59,7 +61,7 @@ const MessageContainer = ({
   return (
     <>
       <div
-        className={cn("flex items-center lg:gap-4 sm:gap-3 gap-1", className)}
+        className={cn("flex items-center lg:gap-4 sm:gap-3 gap-1 ", className)}
       >
         <TooltipProvider>
           <Tooltip>
@@ -120,7 +122,7 @@ const MessageContainer = ({
         ))}
       </div>
 
-      <div className="flex items-center justify-between gap-4 mt-20">
+      <div className="flex items-center justify-between gap-4 fixed bottom-1 py-4 sm:w-[60%] sm:[65%] mx-auto">
         <Mic className="w-4 h-4 text-[#374151]" />
         <ImageIcon className="w-4 h-4 text-[#374151]" />
         <Paperclip className="w-4 h-4 text-[#374151]" />
@@ -130,7 +132,7 @@ const MessageContainer = ({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Aa"
-          className="flex-1 w-full border resize-none overflow-hidden bg-background"
+          className="flex-1 border resize-none overflow-hidden bg-background"
         />
         <Button size={"icon"} variant={"ghost"} onClick={handleSend}>
           <Image

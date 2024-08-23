@@ -1,20 +1,10 @@
 import SignInForm from "@/components/auth/SignInForm";
-import Image from "next/image";
 
 export default function SignInPage() {
   return (
-    <div className="@container flex items-center justify-center w-full h-full gap-[88px]">
-      <div className="@6xl:block hidden w-[700px] h-[936px]">
-        <Image
-          src="/assets/images/register-img.png"
-          alt="logo"
-          width={1000}
-          height={1000}
-          className="w-full h-full object-contain"
-        />
-      </div>
-
-      <div className="@6xl:w-[80%] w-full flex items-center justify-center lg:px-1 sm:px-10 px-4">
+    <div className="flex items-center justify-center w-full min-h-[calc(100vh-72px)]">
+      <div className="hidden lg:block fixed left-0 top-[72px] w-1/2 h-[calc(100vh-72px)] bg-[url(/assets/images/register-img.png)] bg-left bg-contain bg-no-repeat" />
+      <div className="lg:w-1/2 lg:ml-auto w-full flex items-center justify-center lg:px-1 sm:px-10 px-4 my-[32px]">
         <SignInForm />
       </div>
     </div>

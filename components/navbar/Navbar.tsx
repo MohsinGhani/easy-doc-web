@@ -16,7 +16,7 @@ export const Navbar = ({ className }: { className?: string }) => {
   return (
     <header
       className={cn(
-        "@container w-full flex items-center justify-center bg-background lg:px-[100px] md:px-[50px] sm:px-[30px] px-4 mt-8 max-w-[1400px] mx-auto mb-16",
+        "@container sticky top-0 z-50 w-full flex items-center justify-center bg-background/80 backdrop-blur-sm lg:px-[100px] md:px-[50px] sm:px-[30px] px-4 py-4 max-w-[1400px] mx-auto",
         className
       )}
     >

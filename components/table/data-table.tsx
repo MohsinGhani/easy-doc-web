@@ -99,8 +99,8 @@ export function DataTable<TData, TValue>({
             </Link>
           </div>
         ) : (
-          <div className="flex items-center justify-between gap-4">
-            <div className="relative flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative col-span-2">
               <Input
                 placeholder={`Search by ${searchKey}`}
                 value={
@@ -121,16 +121,16 @@ export function DataTable<TData, TValue>({
               </div>
             </div>
 
-            <DatePickerWithRange table={table} className="lg:grid hidden" />
+            <DatePickerWithRange table={table} className="" />
 
             <DropdownMenu>
-              <DropdownMenuTrigger asChild className="hidden lg:flex">
-                <Button variant={"outline"} className="w-28 px-4 py-2">
+              <DropdownMenuTrigger asChild className="">
+                <Button variant={"outline"} className="w-full md:w-28px-4 py-2">
                   <Filter className="w-4 h-4 mr-2" />
                   <span>Filter by</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent >
                 {table
                   .getAllColumns()
                   .filter((column) => column.getCanSort())
@@ -149,39 +149,6 @@ export function DataTable<TData, TValue>({
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <Popover>
-              <PopoverTrigger asChild className="flex lg:hidden">
-                <Button variant={"outline"} className="w-28 px-4 py-2">
-                  <Filter className="w-4 h-4 mr-2" />
-                  <span>Filter by</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="space-y-1 flex flex-col items-start p-6"
-                side="left"
-              >
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanSort())
-                  .map((column) => {
-                    return (
-                      <Button
-                        key={column.id}
-                        className="capitalize w-fit"
-                        variant={"outline"}
-                        onClick={() =>
-                          column.toggleSorting(column.getIsSorted() === "asc")
-                        }
-                      >
-                        {column.id}
-                      </Button>
-                    );
-                  })}
-
-                <DatePickerWithRange table={table} className="" />
-              </PopoverContent>
-            </Popover>
           </div>
         )}
       </CardHeader>

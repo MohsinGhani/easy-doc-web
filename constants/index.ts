@@ -103,3 +103,70 @@ export const faqs = [
     id: 5,
   },
 ];
+
+// Institutes to be selected by the doctor
+export const institutes = [
+  { value: "oxford university", label: "Oxford University" },
+  { value: "harvard university", label: "Harvard University" },
+  { value: "stanford university", label: "Stanford University" },
+  { value: "university of california berkeley", label: "University of California Berkeley" },
+  { value: "university of cambridge", label: "University of Cambridge" },
+  { value: "university college london", label: "University College London" },
+  { value: "university of washington seattle", label: "University of Washington Seattle" },
+];
+
+// Degrees to be selected by the doctor
+export const degrees = [
+  { value: "mbbs", label: "MBBS" },
+  { value: "b pharmacy", label: "B Pharmacy" },
+  { value: "bsc psychology", label: "BSc Psychology" },
+  { value: "bsc biomedical science", label: "BSc Biomedical Science" },
+  {
+    value: "b.sc. medical laboratory technology (bmlt)",
+    label: "B.Sc. Medical Laboratory Technology (BMLT)"
+  },
+  {
+    value: "b.sc. nutrition and dietetics",
+    label: "B.Sc. Nutrition and Dietetics"
+  },
+  { value: "agricultural sciences", label: "Agricultural Sciences" },
+  { value: "paramedical courses", label: "Paramedical Courses" },
+  {
+    value: "bachelor of physiotherapy",
+    label: "Bachelor of Physiotherapy"
+  }
+];
+
+// Fields of studies to be selected by the doctor
+export const fields = [
+  { value: "cardiology", label: "Cardiology" },
+  { value: "dermatology", label: "Dermatology" },
+  {
+    value: "doctor of physical therapy (dpt)",
+    label: "Doctor of Physical Therapy (DPT)"
+  },
+  {
+    value: "bachelor of dental surgery (bds)",
+    label: "Bachelor of Dental Surgery (BDS)"
+  },
+  {
+    value: "medical laboratory technology",
+    label: "Medical Laboratory Technology"
+  },
+  { value: "biotechnology", label: "Biotechnology" },
+  { value: "nanotechnology", label: "Nanotechnology" },
+  { value: "microbiology", label: "Microbiology" },
+  { value: "psychology", label: "Psychology" },
+  {
+    value: "biomedical engineering",
+    label: "Biomedical Engineering"
+  },
+  { value: "nursing", label: "Nursing" },
+  { value: "biogenetics", label: "Biogenetics" },
+  {
+    value: "bhms (bachelor of homeopathic medicine & surgery)",
+    label: "BHMS (Bachelor of Homeopathic Medicine & Surgery)"
+  },
+  { value: "intensive care", label: "Intensive Care" },
+  { value: "biochemistry", label: "Biochemistry" }
+];

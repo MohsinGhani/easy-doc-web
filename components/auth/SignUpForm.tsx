@@ -42,6 +42,7 @@ const SignUpForm = () => {
 
     if (activeStep === 0) {
       keysToCheck = ["role"] as const;
+      debugger;
     } else if (activeStep === 1) {
       keysToCheck = [
         "given_name",
@@ -77,7 +78,12 @@ const SignUpForm = () => {
         licence: role === "doctor" ? form.getValues().licence : "",
       };
 
-      signup(values);
+      signup(values).then((data: any) => {
+        if (data.error) {
+          return setStatus("error");
+        }
+      });
+
       destinationRef.current = email;
     }
 
@@ -106,9 +112,7 @@ const SignUpForm = () => {
           setActiveStep={setActiveStep}
           status={status}
         />
-
         {getSignupFormContent(activeStep, destinationRef.current)}
-
         <>
           {activeStep === 2 ? (
             <Button
@@ -138,7 +142,6 @@ const SignUpForm = () => {
             </Button>
           )}
         </>
-
         <CardDescription className="text-center">
           Already have an account?{" "}
           <Link className="font-semibold text-blue-500" href={"/auth/sign-in"}>

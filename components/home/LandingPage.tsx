@@ -7,7 +7,7 @@ import { Navbar } from "../navbar/Navbar";
 const LandingPage = () => {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="w-full mx-auto flex justify-between h-full gap-5 px-12">
         <div className="space-y-7 flex flex-col text-center items-center justify-center h-[400px] mx-auto mt-20">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
