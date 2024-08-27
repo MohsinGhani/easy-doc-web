@@ -58,14 +58,14 @@ export function Menu({ isOpen }: MenuProps) {
       </Link>
 
       <div
-        className={cn("mb-6 mt-6 w-[90%] mx-auto space-y-6", {
+        className={cn("mb-6 mt-6 w-[90%] mx-auto", {
           hidden: !isOpen,
         })}
       >
         <SearchInput searchKey="search" value={value} setValue={setValue} />
 
 
-        <ProfileCompletionCard />{" "}
+{/*         <ProfileCompletionCard /> */}
       </div>
 
       <nav className="mt-8 w-full">
