@@ -9,7 +9,7 @@ export default function ChatDetailsPage({
 }) {
   return (
     <>
-      <MessageContainer chatId={chatId} />
+      <MessageContainer chatId={chatId} className="w-full h-full" />
     </>
   );
 }

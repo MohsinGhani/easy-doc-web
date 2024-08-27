@@ -59,7 +59,7 @@ export default function ManageExperiences() {
           {experiences.map((exp, index) => (
             <AccordionItem value={`item-${index}`} key={exp.id}>
               <AccordionTrigger
-                className="hover:no-underline p-4 data-[state=open]:bg-secondary"
+                className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6"
                 DeleteIcon={
                   <>
                     <DeleteDialog
@@ -75,16 +75,20 @@ export default function ManageExperiences() {
                   </>
                 }
               >
-                <div className="flex items-center mb-4 w-full gap-6">
+                <div className="flex sm:flex-row flex-col items-start sm:items-center sm:gap-6 gap-3 w-full">
                   <Image
                     src={exp.icon}
                     alt="Hospital"
-                    className="w-14 h-14 rounded mr-2"
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded mr-2 object-cover object-center"
                     width={56}
                     height={56}
                   />
-                  <Separator orientation="vertical" className="mx-2 w-2" />
-                  <div className="flex flex-col items-start">
+                  <Separator
+                    orientation="vertical"
+                    className="hidden sm:block h-14 "
+                  />
+
+                  <div className="flex flex-col items-start w-full">
                     <h3 className="font-semibold">{exp.hospitalName}</h3>
                     <p className="text-sm text-gray-500">
                       {exp.startDate} - {exp.endDate}
@@ -92,9 +96,10 @@ export default function ManageExperiences() {
                   </div>
                 </div>
               </AccordionTrigger>
+
               <AccordionContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
                     <Label htmlFor={`title-${exp.id}`}>Title</Label>
                     <Input
                       id={`title-${exp.id}`}
@@ -109,7 +114,7 @@ export default function ManageExperiences() {
                       }}
                     />
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`hospital-${exp.id}`}>Hospital Name</Label>
                     <Input
                       id={`hospital-${exp.id}`}
@@ -124,7 +129,7 @@ export default function ManageExperiences() {
                       }}
                     />
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`city-${exp.id}`}>City</Label>
                     <Select
                       value={exp.city}
@@ -145,7 +150,7 @@ export default function ManageExperiences() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`employment-${exp.id}`}>Employment</Label>
                     <Select
                       value={exp.employment}
@@ -166,7 +171,7 @@ export default function ManageExperiences() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`start-date-${exp.id}`}>Start Date</Label>
                     <Input
                       id={`start-date-${exp.id}`}
@@ -182,7 +187,7 @@ export default function ManageExperiences() {
                       }}
                     />
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`end-date-${exp.id}`}>End Date</Label>
                     <Input
                       id={`end-date-${exp.id}`}
@@ -221,7 +226,7 @@ export default function ManageExperiences() {
                     </label>
                   </div>
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 space-y-1.5">
                   <Label htmlFor={`description-${exp.id}`}>Description</Label>
                   <Textarea
                     id={`description-${exp.id}`}

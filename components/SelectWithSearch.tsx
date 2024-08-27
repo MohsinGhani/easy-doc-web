@@ -20,6 +20,7 @@ import {
 interface SelectWithSearchProps {
   items: { value: string; label: string }[];
   placeholder?: string;
+  className?: string;
   onSelect: (value: string) => void;
 }
 
@@ -27,6 +28,7 @@ export function SelectWithSearch({
   items,
   placeholder = "Select an item...",
   onSelect,
+  className,
 }: SelectWithSearchProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -54,7 +56,7 @@ export function SelectWithSearch({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={cn("w-[200px] justify-between", className)}
         >
           {value
             ? items.find((item) => item.value === value)?.label

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,8 +17,8 @@ interface AddTimeSlotDialogProps {
 
 export function AddTimeSlotDialog({ day }: AddTimeSlotDialogProps) {
   const [open, setOpen] = useState(false);
-  const [startTime, setStartTime] = useState("09:00 AM");
-  const [endTime, setEndTime] = useState("09:30 AM");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("09:30");
   const dispatch = useAppDispatch();
 
   const handleAddSlot = () => {

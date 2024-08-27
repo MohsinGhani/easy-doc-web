@@ -18,28 +18,37 @@ interface TimeInputProps {
 
 export function TimeInput({ id, value, onChange }: TimeInputProps) {
   const [hours, minutes] = value.split(":");
-  const period = parseInt(hours) >= 12 ? "PM" : "AM";
-  const displayHours = parseInt(hours) % 12 || 12;
+  const numericHours = parseInt(hours);
+  const period = numericHours >= 12 ? "PM" : "AM";
+  const displayHours = numericHours % 12 || 12;
 
   const handleHourChange = (newHours: string) => {
-    const h = parseInt(newHours);
+    let h = parseInt(newHours);
     if (h >= 1 && h <= 12) {
-      const newValue = `${period === "PM" ? (h % 12) + 12 : h % 12}:${minutes}`;
-      onChange(newValue.padStart(5, "0"));
+      if (period === "PM" && h !== 12) h += 12;
+      if (period === "AM" && h === 12) h = 0; // Handle 12 AM as 00:XX
+      const newValue = `${h.toString().padStart(2, "0")}:${minutes}`;
+      onChange(newValue);
     }
   };
 
   const handleMinuteChange = (newMinutes: string) => {
     const m = parseInt(newMinutes);
     if (m === 0 || m === 30) {
-      onChange(`${hours}:${newMinutes.padStart(2, "0")}`);
+      const newValue = `${hours}:${m.toString().padStart(2, "0")}`;
+      onChange(newValue);
     }
   };
 
   const handlePeriodChange = (newPeriod: string) => {
-    const h = parseInt(hours);
-    const newHours = newPeriod === "PM" ? (h % 12) + 12 : h % 12;
-    onChange(`${newHours.toString().padStart(2, "0")}:${minutes}`);
+    let h = parseInt(hours);
+    if (newPeriod === "PM" && h < 12) {
+      h += 12;
+    } else if (newPeriod === "AM" && h >= 12) {
+      h -= 12;
+    }
+    const newValue = `${h.toString().padStart(2, "0")}:${minutes}`;
+    onChange(newValue);
   };
 
   return (
@@ -49,9 +58,9 @@ export function TimeInput({ id, value, onChange }: TimeInputProps) {
         type="number"
         min={1}
         max={12}
-        value={displayHours}
+        value={displayHours.toString()}
         onChange={(e) => handleHourChange(e.target.value)}
-        className="w-14"
+        className="w-14 p-2"
       />
       <span>:</span>
       <Select value={minutes} onValueChange={handleMinuteChange}>

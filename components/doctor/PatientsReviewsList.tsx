@@ -73,12 +73,9 @@ const PatientsReviewsList = ({
         </CardHeader>
       )}
       <CardContent className="space-y-4 p-6 w-full">
-        {ratings.map((rating) => (
+        {ratings.map((rating, i) => (
           <>
-            <div
-              className="flex items-start gap-4 justify-between"
-              key={rating.name}
-            >
+            <div className="flex items-start gap-4 justify-between" key={i}>
               <div className="flex items-start gap-4">
                 <Avatar>
                   <AvatarImage
@@ -96,7 +93,9 @@ const PatientsReviewsList = ({
                   <p className="text-muted-foreground text-sm">
                     {rating.city}, {rating.country}
                   </p>
-                  <p className="sm:text-sm text-xs sm:font-medium font-normal">{rating.message}</p>
+                  <p className="sm:text-sm text-xs sm:font-medium font-normal">
+                    {rating.message}
+                  </p>
                 </div>
               </div>
               <CommentRatings

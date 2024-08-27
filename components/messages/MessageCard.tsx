@@ -16,15 +16,17 @@ const MessageCard = ({ message }: { message: Message }) => {
   return (
     <div
       className={cn(
-        "max-w-72 p-1 rounded-lg flex-col justify-start items-start gap-2.5 inline-flex bg-secondary text-secondary-foreground",
+        "max-w-72 p-[6px] rounded-lg flex-col justify-start items-start gap-2.5 inline-flex bg-secondary text-secondary-foreground",
         {
-          "bg-primary/80 text-primary-foreground self-end": isMine,
+          "bg-primary/80 text-primary-foreground self-end rounded-br-none":
+            isMine,
+          "rounded-bl-none": !isMine,
         }
       )}
     >
       <div className="space-y-2 relative">
         {attachments.map((attachment) => (
-          <AttachmentCard attachment={attachment} key={attachment.name} />
+          <AttachmentCard attachment={attachment} key={attachment.name} />  
         ))}
         <p className="text-base font-normal px-2">{text}</p>
       </div>

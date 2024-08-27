@@ -7,6 +7,7 @@ import PatientsRequestList from "@/components/doctor/PatientsRequestList";
 import Image from "next/image";
 import PatientsReviewsList from "@/components/doctor/PatientsReviewsList";
 import MessagesSidebar from "@/components/messages/messages-sidebar";
+import UpcomingAppointmentCard from "@/components/doctor/UpcomingAppointmentCard";
 
 const DoctorDashboardPage = () => {
   return (
@@ -72,7 +73,13 @@ const DoctorDashboardPage = () => {
           <PatientsReviewsList viewAll={true} />
         </div>
 
-        <div className="lg:w-[30%] w-full">
+        <div className="lg:w-[30%] w-full gap-4">
+          <Card>
+            <CardContent>
+              <UpcomingAppointmentCard />
+            </CardContent>
+          </Card>
+
           <MessagesSidebar
             className="w-full flex min-h-[500px]"
             navigate={false}

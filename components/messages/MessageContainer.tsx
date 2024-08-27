@@ -1,18 +1,8 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
 import { chats } from "@/types/chat";
-import {
-  ArrowLeft,
-  Paperclip,
-  Phone,
-  Image as ImageIcon,
-  Video,
-  Mic,
-} from "lucide-react";
+import { ArrowLeft, Phone, Video } from "lucide-react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipContent,
@@ -21,9 +11,10 @@ import {
 } from "@/components/ui/tooltip";
 import Link from "next/link";
 import MessageCard from "@/components/messages/MessageCard";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { useAppSelector } from "@/lib/hooks";
+import { ScrollArea } from "../ui/scroll-area";
+import AddANote from "./AddANote";
+import SendMessageButton from "./SendMessageButton";
 
 interface MessageContainerProps {
   chatId: string;
@@ -38,30 +29,17 @@ const MessageContainer = ({
   handleClose,
   className,
 }: MessageContainerProps) => {
-  const [message, setMessage] = useState("");
   const currentChat = chats.find((c) => c.chatId === chatId);
-  const userId = useAppSelector((state) => state.auth.user.userId);
 
-  const handleSend = () => {
-    if (!message.trim()) return;
-    console.log(message);
-
-    currentChat?.messages.push({
-      author: {
-        userId,
-      },
-      text: message,
-      replies: [],
-      attachments: [],
-    });
-
-    setMessage("");
-  };
+  if (!currentChat) return null;
 
   return (
-    <>
+    <ScrollArea className="[&>div>div[style]]:!block relative w-full h-full">
       <div
-        className={cn("flex items-center lg:gap-4 sm:gap-3 gap-1 ", className)}
+        className={cn(
+          "flex items-center lg:gap-4 sm:gap-3 gap-1 lg:py-[33px] lg:px-[47px] sm:px5 sm:py-5 px-4 py-3 bg-white mt-16",
+          className
+        )}
       >
         <TooltipProvider>
           <Tooltip>
@@ -112,38 +90,25 @@ const MessageContainer = ({
         </div>
       </div>
 
-      <Separator className="my-6" />
+      <AddANote />
 
-      <p className="text-black text-sm font-normal text-center">Yesterday</p>
+      <div className="lg:py-6 md:py-4 py-2 lg:px-12 md:px-6 px-4">
+        <p className="text-black text-sm font-normal text-center mb-[30px]">
+          Yesterday
+        </p>
 
-      <div className="relative flex flex-col gap-4 flex-1">
-        {currentChat?.messages.map((message, i) => (
-          <MessageCard key={i} message={message} />
-        ))}
-      </div>
+        <div className="relative flex flex-col gap-4 grow mb-20">
+          {currentChat?.messages.map((message, i) => (
+            <MessageCard key={i} message={message} />
+          ))}
+        </div>
 
-      <div className="flex items-center justify-between gap-4 fixed bottom-1 py-4 sm:w-[60%] sm:[65%] mx-auto">
-        <Mic className="w-4 h-4 text-[#374151]" />
-        <ImageIcon className="w-4 h-4 text-[#374151]" />
-        <Paperclip className="w-4 h-4 text-[#374151]" />
-
-        <Input
-          autoComplete="off"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Aa"
-          className="flex-1 border resize-none overflow-hidden bg-background"
+        <SendMessageButton
+          currentChat={currentChat}
+          nonSticky={href === "messages"}
         />
-        <Button size={"icon"} variant={"ghost"} onClick={handleSend}>
-          <Image
-            src={"/assets/icons/send.svg"}
-            alt="send"
-            width={15}
-            height={15}
-          />
-        </Button>
       </div>
-    </>
+    </ScrollArea>
   );
 };
 
