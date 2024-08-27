@@ -25,7 +25,7 @@ interface RatingsProps extends React.HTMLAttributes<HTMLDivElement> {
   Icon?: React.ReactElement;
   variant?: keyof typeof ratingVariants;
   onRatingChange?: (rating: number) => void;
-  disabled?: boolean; // Add disabled prop
+  disabled?: boolean;
 }
 
 export const CommentRatings = ({
@@ -36,7 +36,7 @@ export const CommentRatings = ({
   Icon = <Star />,
   variant = "default",
   onRatingChange,
-  disabled = false, // Default to false if disabled prop is not provided
+  disabled = false,
   ...props
 }: RatingsProps) => {
   const [hoverRating, setHoverRating] = useState<number | null>(null);
@@ -91,7 +91,8 @@ export const CommentRatings = ({
       onMouseLeave={handleMouseLeave}
       {...props}
     >
-      <div className="flex items-center" onMouseEnter={handleMouseEnter}>
+      {/* For larger screens, show full star ratings */}
+      <div className="hidden sm:flex items-center" onMouseEnter={handleMouseEnter}>
         {[...Array(fullStars)].map((_, i) =>
           React.cloneElement(Icon, {
             key: i,
@@ -119,9 +120,11 @@ export const CommentRatings = ({
           })
         )}
       </div>
-      {/* <span className="text-xs text-muted-foreground font-semibold">
-        Current Rating: {`${currentRating}`}
-      </span> */}
+
+      {/* For mobile screens, show rating count */}
+      <div className="sm:hidden flex items-center justify-center bg-yellow-400 text-white px-2 py-1 rounded-md">
+        {currentRating}/{totalStars}
+      </div>
     </div>
   );
 };

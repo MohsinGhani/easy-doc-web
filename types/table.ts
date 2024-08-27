@@ -28,7 +28,7 @@ export type BaseAppointment = {
 export type Payment = {
   method: string;
   id: string;
-  scheduledDate: DateRange;
+  paymentDate: string;
   amount: string;
 };
 

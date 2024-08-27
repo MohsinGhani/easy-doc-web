@@ -44,11 +44,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Separator } from "../ui/separator";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -130,7 +126,7 @@ export function DataTable<TData, TValue>({
                   <span>Filter by</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent >
+              <DropdownMenuContent>
                 {table
                   .getAllColumns()
                   .filter((column) => column.getCanSort())
@@ -153,13 +149,17 @@ export function DataTable<TData, TValue>({
         )}
       </CardHeader>
 
+      {!isPrimaryHeader && <Separator />}
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className={cn(header.column.columnDef.meta?.className)}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -180,7 +180,10 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className={cn(cell.column.columnDef.meta?.className)}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

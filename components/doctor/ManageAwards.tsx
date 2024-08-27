@@ -12,13 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -28,6 +21,7 @@ import Image from "next/image";
 import AddExperienceDialog from "./AddExperienceDialog";
 import { Trash2 } from "lucide-react";
 import DeleteDialog from "../DeleteDialog";
+import { Separator } from "../ui/separator";
 
 export default function ManageAwards() {
   const [awards, setAwards] = useState([
@@ -56,7 +50,7 @@ export default function ManageAwards() {
           {awards.map((award, index) => (
             <AccordionItem value={`item-${index}`} key={award.id}>
               <AccordionTrigger
-                className="hover:no-underline"
+                className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6"
                 DeleteIcon={
                   <>
                     <DeleteDialog
@@ -72,29 +66,32 @@ export default function ManageAwards() {
                   </>
                 }
               >
-                <div className="flex justify-between items-center mb-4 w-full">
-                  <div className="flex items-center">
-                    <Image
-                      src={award.icon}
-                      alt="Hospital"
-                      className="w-10 h-10 rounded mr-2"
-                      width={40}
-                      height={40}
-                    />
-                    <div className="flex flex-col items-start">
-                      <h3 className="font-semibold">
-                        {award.awardName} at {award.hospital}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {award.startDate} - {award.endDate}
-                      </p>
-                    </div>
+                <div className="flex sm:flex-row flex-col items-start sm:items-center sm:gap-6 gap-3 w-full">
+                  <Image
+                    src={award.icon}
+                    alt="Hospital"
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded mr-2 object-cover object-center"
+                    width={56}
+                    height={56}
+                  />
+                  <Separator
+                    orientation="vertical"
+                    className="hidden sm:block h-14 "
+                  />
+                  <div className="flex flex-col items-start w-full">
+                    <h3 className="font-semibold text-center sm:text-left">
+                      {award.awardName} at {award.hospital}
+                    </h3>
+                    <p className="text-sm text-muted-foreground text-center sm:text-left">
+                      {award.startDate} - {award.endDate}
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>
+
               <AccordionContent className="px-1">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
                     <Label htmlFor={`awardName-${award.id}`}>Award name</Label>
                     <Input
                       id={`awardName-${award.id}`}
@@ -107,9 +104,10 @@ export default function ManageAwards() {
                         );
                         setAwards(newAward);
                       }}
+                      className="px-3"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`hospital-${award.id}`}>
                       Hospital Name
                     </Label>
@@ -124,9 +122,10 @@ export default function ManageAwards() {
                         );
                         setAwards(newAward);
                       }}
+                      className="px-3"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`start-date-${award.id}`}>Start Date</Label>
                     <Input
                       id={`start-date-${award.id}`}
@@ -140,9 +139,10 @@ export default function ManageAwards() {
                         );
                         setAwards(newAward);
                       }}
+                      className="px-3"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-1.5">
                     <Label htmlFor={`end-date-${award.id}`}>End Date</Label>
                     <Input
                       id={`end-date-${award.id}`}
@@ -156,6 +156,7 @@ export default function ManageAwards() {
                         );
                         setAwards(newAward);
                       }}
+                      className="px-3"
                     />
                   </div>
                 </div>
@@ -181,7 +182,7 @@ export default function ManageAwards() {
                     </label>
                   </div>
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 space-y-1.5">
                   <Label htmlFor={`description-${award.id}`}>Description</Label>
                   <Textarea
                     id={`description-${award.id}`}
@@ -195,6 +196,7 @@ export default function ManageAwards() {
                       );
                       setAwards(newAward);
                     }}
+                    className="px-3"
                   />
                 </div>
               </AccordionContent>

@@ -29,6 +29,7 @@ import { Trash2 } from "lucide-react";
 import DeleteDialog from "../DeleteDialog";
 import { degrees, fields, institutes } from "@/constants";
 import { SelectWithSearch } from "../SelectWithSearch";
+import { Separator } from "../ui/separator";
 
 export default function ManageEducation() {
   const [educations, setEducations] = useState([
@@ -61,7 +62,7 @@ export default function ManageEducation() {
           {educations.map((edu, index) => (
             <AccordionItem value={`item-${index}`} key={edu.id}>
               <AccordionTrigger
-                className="hover:no-underline"
+                className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6"
                 DeleteIcon={
                   <>
                     <DeleteDialog
@@ -77,24 +78,27 @@ export default function ManageEducation() {
                   </>
                 }
               >
-                <div className="flex justify-between items-center mb-4 w-full">
-                  <div className="flex items-center">
-                    <Image
-                      src={edu.icon}
-                      alt="Hospital"
-                      className="w-10 h-10 rounded mr-2"
-                      width={40}
-                      height={40}
-                    />
-                    <div className="flex flex-col items-start">
-                      <h3 className="font-semibold">{edu.institute}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {edu.degree}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {edu.startDate} - {edu.endDate}
-                      </p>
-                    </div>
+                <div className="flex sm:flex-row flex-col items-start sm:items-center sm:gap-6 gap-3 w-full">
+                  <Image
+                    src={edu.icon}
+                    alt="Hospital"
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded mr-2 object-cover object-center"
+                    width={56}
+                    height={56}
+                  />
+                  <Separator
+                    orientation="vertical"
+                    className="hidden sm:block h-14 "
+                  />
+
+                  <div className="flex flex-col items-start w-full">
+                    <h3 className="font-semibold">{edu.institute}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {edu.degree}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {edu.startDate} - {edu.endDate}
+                    </p>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -111,6 +115,7 @@ export default function ManageEducation() {
                         );
                         setEducations(newEducation);
                       }}
+                      className="w-full"
                     />
                   </div>
                   <div className="grid gap-1.5">
@@ -124,6 +129,7 @@ export default function ManageEducation() {
                         );
                         setEducations(newEducation);
                       }}
+                      className="w-full"
                     />
                   </div>
                   <div className="grid gap-1.5">
@@ -137,6 +143,7 @@ export default function ManageEducation() {
                         );
                         setEducations(newEducation);
                       }}
+                      className="w-full"
                     />
                   </div>
                 </div>
@@ -155,6 +162,7 @@ export default function ManageEducation() {
                       );
                       setEducations(newEducation);
                     }}
+                    className="w-full"
                   />
                 </div>
 
@@ -173,6 +181,7 @@ export default function ManageEducation() {
                         );
                         setEducations(newEducation);
                       }}
+                      className="w-full"
                     />
                   </div>
                   <div className="grid gap-1.5">
@@ -189,6 +198,7 @@ export default function ManageEducation() {
                         );
                         setEducations(newEducation);
                       }}
+                      className="w-full"
                     />
                   </div>
                   <div className="grid gap-1.5">
@@ -202,10 +212,10 @@ export default function ManageEducation() {
                         setEducations(newEducation);
                       }}
                     >
-                      <SelectTrigger id={`grade-${edu.id}`}>
+                      <SelectTrigger id={`grade-${edu.id}`} className="w-full">
                         <SelectValue placeholder="Select Grade" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="w-full">
                         <SelectItem value="A +">A +</SelectItem>
                         <SelectItem value="A">A</SelectItem>
                         <SelectItem value="B">B</SelectItem>

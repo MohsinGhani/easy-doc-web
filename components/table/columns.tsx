@@ -10,12 +10,14 @@ import {
 import { Button } from "../ui/button";
 import {
   ArrowUpDown,
+  EllipsisVertical,
   EyeIcon,
   LucideCheck,
   Mail,
   MapPin,
   MessageCircle,
   PhoneCall,
+  ReceiptText,
   Video,
   X,
 } from "lucide-react";
@@ -23,6 +25,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectRequestDialog from "../RejectRequestDialog";
 import { format, isValid, isWithinInterval, setYear } from "date-fns";
 import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface requestsColumnsProps {
   handlePreview: (data: PendingRequest) => void;
@@ -45,6 +54,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -59,7 +69,18 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
     },
     {
       accessorKey: "method",
-      header: "Payment Method",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="px-1.5"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Payment Method
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => (
         <Image
           src={`/assets/icons/${row.getValue("method")}.svg`}
@@ -68,50 +89,41 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
           height={19}
         />
       ),
+      meta: { className: "hidden sm:block" },
     },
     {
-      accessorKey: "scheduledDate",
+      accessorKey: "paymentDate",
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Appointment Date & Time
+            Payment Date<span className="md:block hidden"> & Time</span>
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ getValue }) => {
-        const value = getValue() as {
-          from: Date | string;
-          to: Date | string;
-        };
+        const value = getValue() as Date | string;
+        const paymentDate = value instanceof Date ? value : new Date(value);
 
-        const fromDate =
-          value.from instanceof Date ? value.from : new Date(value.from);
-        const toDate = value.to instanceof Date ? value.to : new Date(value.to);
-
-        if (!isValid(fromDate) || !isValid(toDate)) {
+        if (!isValid(paymentDate)) {
           return "Invalid Date";
         }
 
-        return `${format(fromDate, "MMM dd, HH:mm")} - ${format(
-          toDate,
-          "MMM dd, HH:mm"
-        )}`;
+        return format(paymentDate, "d MMM, h:mm a");
       },
       filterFn: (row, columnId, filterValue: { start: Date; end: Date }) => {
-        const cellValue = row.getValue(columnId) as { from: Date; to: Date };
-        if (!cellValue || !filterValue) return true;
+        const cellValue = row.getValue(columnId) as Date | string;
+        const paymentDate =
+          cellValue instanceof Date ? cellValue : new Date(cellValue);
+
+        if (!isValid(paymentDate) || !filterValue) return true;
         const { start, end } = filterValue;
-        const cellDateFrom = setYear(new Date(cellValue.from), 2024);
-        const cellDateTo = setYear(new Date(cellValue.to), 2024);
-        return (
-          isWithinInterval(cellDateFrom, { start, end }) ||
-          isWithinInterval(cellDateTo, { start, end }) ||
-          (cellDateFrom <= start && cellDateTo >= end)
-        );
+
+        return isWithinInterval(paymentDate, { start, end });
       },
     },
     {
@@ -119,6 +131,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -126,6 +139,33 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
+      },
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  // TODO: add a preview fn
+                  // onClick={() => handlePreview(row.original)}
+                >
+                  <ReceiptText className="h-5 w-5 cursor-pointer" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>View Receipt</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
+      meta: {
+        className: "sticky -right-[1px] bg-white z-10 shadow shadow-lg px-2",
       },
     },
   ];
@@ -147,9 +187,11 @@ export const requestsColumns = ({
         return (
           <Button
             variant="ghost"
+            className="px-1.5"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Patient Id
+            <span className="hidden md:block">Patient Id</span>
+            <span className="block md:hidden">P-Id</span>
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -165,6 +207,7 @@ export const requestsColumns = ({
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -181,9 +224,10 @@ export const requestsColumns = ({
           </Avatar>
           <div>
             <div className="font-medium">{row.original.name}</div>
-            <div className="text-sm text-muted-foreground">
+            {/* <div className="text-sm text-muted-foreground">
               {row.getValue("email")}
-            </div>
+            </div> */}
+            <div className="text-sm text-muted-foreground">London , UK</div>
           </div>
         </div>
       ),
@@ -193,6 +237,7 @@ export const requestsColumns = ({
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -203,15 +248,17 @@ export const requestsColumns = ({
       },
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.getValue("age")} {row.original.gender}
+          {row.getValue("age")}, {row.original.gender}
         </div>
       ),
+      meta: { className: "hidden sm:block" },
     },
     {
       accessorKey: "scheduledDate",
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -254,6 +301,7 @@ export const requestsColumns = ({
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -262,16 +310,18 @@ export const requestsColumns = ({
           </Button>
         );
       },
+      meta: { className: "hidden sm:block" },
     },
     {
       accessorKey: "consultationType",
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Consultation Type
+            <span className="hidden md:block">Consultation </span>Type
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -279,39 +329,88 @@ export const requestsColumns = ({
     },
     {
       id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const request = row.original;
-
         return (
           <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => handlePreview(row.original)}
-            >
-              <EyeIcon className="h-5 w-5 cursor-pointer" />
-            </Button>
-            <RejectRequestDialog
-              name={row.original.name}
-              onReject={() => console.log("rejected", row.original.id)}
-              trigger={
-                <Button variant="outline" size="icon">
-                  <X className="h-5 w-5 cursor-pointer" />
-                </Button>
-              }
-            />
-            <Button
-              variant="default"
-              size="icon"
-              onClick={() => {
-                handleAcceptRequest(row.original);
-              }}
-            >
-              <LucideCheck className="h-5 w-5 cursor-pointer" />
-            </Button>
+            {/* Hidden on mobile, visible on larger screens */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handlePreview(row.original)}
+              >
+                <EyeIcon className="h-5 w-5 cursor-pointer" />
+              </Button>
+              <RejectRequestDialog
+                name={row.original.name}
+                onReject={() => console.log("rejected", row.original.id)}
+                trigger={
+                  <Button variant="outline" size="icon">
+                    <X className="h-5 w-5 cursor-pointer" />
+                  </Button>
+                }
+              />
+              <Button
+                variant="default"
+                size="icon"
+                onClick={() => {
+                  handleAcceptRequest(row.original);
+                }}
+              >
+                <LucideCheck className="h-5 w-5 cursor-pointer" />
+              </Button>
+            </div>
+
+            {/* Visible on mobile, hidden on larger screens */}
+            <div className="sm:hidden">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <EllipsisVertical className="h-5 w-5 cursor-pointer" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent side="left" className="flex flex-col items-start gap-2 w-40">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handlePreview(row.original)}
+                  >
+                    <EyeIcon className="h-5 w-5 mr-2" /> View
+                  </Button>
+                  <RejectRequestDialog
+                    name={row.original.name}
+                    onReject={() => console.log("rejected", row.original.id)}
+                    trigger={
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start"
+                      >
+                        <X className="h-5 w-5 mr-2" /> Cancel
+                      </Button>
+                    }
+                  />
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      handleAcceptRequest(row.original);
+                    }}
+                  >
+                    <LucideCheck className="h-5 w-5 mr-2" /> Approve
+                  </Button>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         );
+      },
+      meta: {
+        className: "sticky right-0 bg-white z-10 shadow-lg",
       },
     },
   ];
@@ -327,6 +426,7 @@ export const upcomingColumns = ({
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -360,6 +460,7 @@ export const upcomingColumns = ({
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -404,6 +505,7 @@ export const upcomingColumns = ({
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -430,6 +532,7 @@ export const upcomingColumns = ({
       header: ({ column }) => {
         return (
           <Button
+            className="px-1.5"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
@@ -446,29 +549,63 @@ export const upcomingColumns = ({
     },
     {
       id: "actions",
+      header: "Actions",
       cell: ({ row }) => {
-        const request = row.original;
-
         return (
           <div className="flex items-center gap-1.5">
-            <Button
-              variant="outline"
-              size="icon"
-              className="border-primary bg-primary/20 p-2"
-              onClick={() => handleMeetingJoin(row.original)}
-            >
-              <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="border-primary bg-primary/20 p-2"
-              onClick={() => handleChat(row.original)}
-            >
-              <Video className="h-5 w-5 cursor-pointer text-primary" />
-            </Button>
+            {/* Hidden on mobile, visible on larger screens */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              <Button
+                variant="outline"
+                size="icon"
+                className="border-primary bg-primary/20 p-2"
+                onClick={() => handleMeetingJoin(row.original)}
+              >
+                <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="border-primary bg-primary/20 p-2"
+                onClick={() => handleChat(row.original)}
+              >
+                <Video className="h-5 w-5 cursor-pointer text-primary" />
+              </Button>
+            </div>
+
+            {/* Visible on mobile, hidden on larger screens */}
+            <div className="sm:hidden">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <EllipsisVertical className="h-5 w-5 cursor-pointer" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="flex flex-col items-start gap-2 w-40">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handleMeetingJoin(row.original)}
+                  >
+                    <MessageCircle className="h-5 w-5 mr-2" /> Join Meeting
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handleChat(row.original)}
+                  >
+                    <Video className="h-5 w-5 mr-2" /> Start Chat
+                  </Button>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         );
+      },
+      meta: {
+        className: "sticky right-0 bg-white z-10",
       },
     },
   ];

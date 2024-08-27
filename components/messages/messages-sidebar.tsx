@@ -33,7 +33,7 @@ const MessagesSidebar = ({
 
   return (
     <>
-      <Card className={cn("w-[30%] lg:flex hidden", className)}>
+      <Card className={cn("w-full flex", className)}>
         <CardContent className="flex flex-col gap-6 w-full">
           <SearchInput
             value={searchValue}
@@ -41,13 +41,13 @@ const MessagesSidebar = ({
             searchKey="name"
           />
 
-          {filteredChats.map((chat) => {
+          {filteredChats.map((chat, i) => {
             const active = pathname.includes(chat.chatId);
 
             return (
               <>
                 {navigate ? (
-                  <Link key={chat.name} href={`/messages/${chat.chatId}`}>
+                  <Link key={i} href={`/messages/${chat.chatId}`}>
                     <div
                       className={cn("space-y-4 cursor-pointer", {
                         "bg-slate-50 rounded-xl px-3 py-1": active,
