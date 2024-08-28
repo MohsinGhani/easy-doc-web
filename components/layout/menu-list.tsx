@@ -3,7 +3,6 @@ import {
   HomeIcon,
   CopyCheck,
   ChartPie,
-  Users2,
   HandCoins,
   HandCoinsIcon,
   MessageCircleMore,
@@ -45,12 +44,6 @@ export function getMenuList(pathname: string) {
       active: pathname === "/available-timings",
       icon: ChartPie,
     },
-    // {
-    //   href: "/my-patients",
-    //   label: "My Patients",
-    //   active: pathname === "/my-patients",
-    //   icon: Users2,
-    // },
     {
       href: "/specialities-and-services",
       label: "Specialties & Services",
@@ -75,12 +68,6 @@ export function getMenuList(pathname: string) {
       active: pathname === "/payout-settings",
       icon: MessageCircleMoreIcon,
     },
-    // {
-    //   href: "/blogs",
-    //   label: "Blogs",
-    //   active: pathname === "/blogs",
-    //   icon: HomeIcon,
-    // },
     {
       href: "/faqs-and-support",
       label: "FAQ’s & Support",

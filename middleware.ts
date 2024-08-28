@@ -3,7 +3,11 @@ import type { NextRequest } from "next/server";
 import { decodeJWT } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import { userPoolId, identityPoolId, userPoolClientId } from "./constants";
-import { privateRoutes, publicRoutes } from "./Routes";
+import {
+  // patientRoutes,
+  privateRoutes,
+  publicRoutes,
+} from "./Routes";
 
 Amplify.configure({
   Auth: {
@@ -20,6 +24,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
     const { pathname } = req.nextUrl;
     const isPublicRoute = publicRoutes.includes(pathname);
     const isProtectedRoute = privateRoutes.includes(pathname);
+    // const isPatientRoute = patientRoutes.includes(pathname) || pathname === "/";
     const token = req.cookies.get("token")?.value || "";
 
     if (isProtectedRoute && !token) {
@@ -38,6 +43,12 @@ export async function middleware(req: NextRequest, res: NextResponse) {
         )
       );
     }
+
+    // if (isPatientRoute && role !== "patient") {
+    //   return NextResponse.redirect(
+    //     new URL(role === "doctor" ? "/dashboard" : "/admin", req.url)
+    //   );
+    // }
 
     return NextResponse.next();
   } catch (error: any) {

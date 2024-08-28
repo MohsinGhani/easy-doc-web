@@ -5,6 +5,13 @@ export const privateRoutes = [
   "/settings",
 ];
 
+// export const patientRoutes = [
+//   "/",
+//   "/notifications",
+//   "/profile",
+//   "/settings",
+// ];
+
 export const publicRoutes = [
   "/auth/sign-in",
   "/auth/sign-up",

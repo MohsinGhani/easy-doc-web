@@ -89,7 +89,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
           height={19}
         />
       ),
-      meta: { className: "hidden sm:block" },
+      meta: { className: "hidden sm:table-cell" },
     },
     {
       accessorKey: "paymentDate",
@@ -251,7 +251,7 @@ export const requestsColumns = ({
           {row.getValue("age")}, {row.original.gender}
         </div>
       ),
-      meta: { className: "hidden sm:block" },
+      meta: { className: "hidden sm:table-cell" },
     },
     {
       accessorKey: "scheduledDate",
@@ -310,7 +310,7 @@ export const requestsColumns = ({
           </Button>
         );
       },
-      meta: { className: "hidden sm:block" },
+      meta: { className: "hidden sm:table-cell" },
     },
     {
       accessorKey: "consultationType",
@@ -410,7 +410,7 @@ export const requestsColumns = ({
         );
       },
       meta: {
-        className: "sticky right-0 bg-white z-10 shadow-lg",
+        className: "sticky right-px bg-white z-10 shadow-lg",
       },
     },
   ];
