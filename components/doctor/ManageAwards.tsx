@@ -40,8 +40,8 @@ export default function ManageAwards() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle>Awards Details</CardTitle>
+        <div className="flex sm:flex-row flex-col gap-4 justify-between items-center">
+          <CardTitle className="text-2xl sm:text-md">Awards Details</CardTitle>
           <AddExperienceDialog />
         </div>
       </CardHeader>
@@ -55,7 +55,7 @@ export default function ManageAwards() {
                   <>
                     <DeleteDialog
                       trigger={
-                        <Trash2 className="h-4 w-4 shrink-0 text-destructive" />
+                        <Trash2 className="h-4 w-4 shrink-0 text-destructive ml-4" />
                       }
                       text="Your award will be deleted"
                       onReject={() => {
@@ -66,26 +66,13 @@ export default function ManageAwards() {
                   </>
                 }
               >
-                <div className="flex sm:flex-row flex-col items-start sm:items-center sm:gap-6 gap-3 w-full">
-                  <Image
-                    src={award.icon}
-                    alt="Hospital"
-                    className="w-12 h-12 sm:w-14 sm:h-14 rounded mr-2 object-cover object-center"
-                    width={56}
-                    height={56}
-                  />
-                  <Separator
-                    orientation="vertical"
-                    className="hidden sm:block h-14 "
-                  />
-                  <div className="flex flex-col items-start w-full">
-                    <h3 className="font-semibold text-center sm:text-left">
-                      {award.awardName} at {award.hospital}
-                    </h3>
-                    <p className="text-sm text-muted-foreground text-center sm:text-left">
-                      {award.startDate} - {award.endDate}
-                    </p>
-                  </div>
+                <div className="flex flex-col items-start w-full">
+                  <h3 className="font-semibold text-left">
+                    {award.awardName} at {award.hospital}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {award.startDate} - {award.endDate}
+                  </p>
                 </div>
               </AccordionTrigger>
 
