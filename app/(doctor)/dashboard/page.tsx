@@ -1,13 +1,16 @@
 import { StatCard } from "@/components/StatCard";
 import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import DoctorChart from "@/components/doctor/DoctorChart";
 import PatientsRequestList from "@/components/doctor/PatientsRequestList";
 import Image from "next/image";
 import PatientsReviewsList from "@/components/doctor/PatientsReviewsList";
 import MessagesSidebar from "@/components/messages/messages-sidebar";
 import UpcomingAppointmentCard from "@/components/doctor/UpcomingAppointmentCard";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import UpcomingAppointmentsList from "@/components/doctor/UpcomingAppointmentsList";
 
 const DoctorDashboardPage = () => {
   return (
@@ -24,7 +27,12 @@ const DoctorDashboardPage = () => {
                   You have got 3 new requests from patient{" "}
                 </p>
 
-                <Button size={"lg"}>Check request</Button>
+                <Link
+                  href={"/patients-requests"}
+                  className={cn(buttonVariants({ size: "lg" }))}
+                >
+                  Check request
+                </Link>
               </CardContent>
 
               <div className="hero-img w-full sm:w-[300px] ">
@@ -73,10 +81,12 @@ const DoctorDashboardPage = () => {
           <PatientsReviewsList viewAll={true} />
         </div>
 
-        <div className="lg:w-[30%] w-full gap-4">
+        <div className="lg:w-[30%] w-full space-y-6">
+          <UpcomingAppointmentCard />
+
           <Card>
             <CardContent>
-              <UpcomingAppointmentCard />
+              <UpcomingAppointmentsList headerType="secondary" />
             </CardContent>
           </Card>
 

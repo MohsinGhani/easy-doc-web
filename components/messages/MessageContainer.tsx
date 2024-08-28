@@ -37,7 +37,7 @@ const MessageContainer = ({
     <ScrollArea className="[&>div>div[style]]:!block relative w-full h-full">
       <div
         className={cn(
-          "flex items-center lg:gap-4 sm:gap-3 gap-1 lg:py-[33px] lg:px-[47px] sm:px5 sm:py-5 px-4 py-3 bg-white mt-16",
+          "flex items-center lg:gap-4 sm:gap-3 gap-1 lg:py-[33px] lg:px-[47px] sm:px5 sm:py-5 px-4 py-3 bg-white",
           className
         )}
       >

@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, UserCircle2, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
+import DeleteDialog from "../DeleteDialog";
 
 export default function ManageServices() {
   const [services, setServices] = useState([
@@ -55,8 +56,28 @@ export default function ManageServices() {
       <CardContent>
         <Accordion type="multiple" className="w-full">
           {services.map((category, index) => (
-            <AccordionItem value={`item-${index}`} key={index}>
-              <AccordionTrigger className="hover:no-underline">
+            <AccordionItem
+              value={`item-${index}`}
+              key={index}
+              className={"border-none"}
+            >
+              <AccordionTrigger
+                className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6"
+                DeleteIcon={
+                  <>
+                    <DeleteDialog
+                      trigger={
+                        <Trash2 className="h-4 w-4 shrink-0 text-destructive" />
+                      }
+                      text="Your service/speciality will be deleted"
+                      onReject={() => {
+                        // do nothing
+                        console.log("rejected");
+                      }}
+                    />
+                  </>
+                }
+              >
                 <div className="flex items-center gap-4">
                   {category.icon}
                   <span>{category.category}</span>
