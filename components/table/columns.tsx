@@ -165,7 +165,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
         );
       },
       meta: {
-        className: "sticky -right-[1px] bg-white z-10 shadow shadow-lg px-2",
+        className: "sticky -right-px bg-white z-10 shadow shadow-lg px-2",
       },
     },
   ];
@@ -410,7 +410,7 @@ export const requestsColumns = ({
         );
       },
       meta: {
-        className: "sticky right-px bg-white z-10 shadow-lg",
+        className: "sticky -right-px bg-white z-10 shadow-lg",
       },
     },
   ];
@@ -605,7 +605,7 @@ export const upcomingColumns = ({
         );
       },
       meta: {
-        className: "sticky right-0 bg-white z-10",
+        className: "sticky -right-px bg-white z-10",
       },
     },
   ];
