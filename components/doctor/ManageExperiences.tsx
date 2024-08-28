@@ -49,8 +49,10 @@ export default function ManageExperiences() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle>Practice Experience</CardTitle>
+        <div className="flex sm:flex-row flex-col gap-4 justify-between items-center">
+          <CardTitle className="text-2xl sm:text-md">
+            Practice Experience
+          </CardTitle>
           <AddExperienceDialog />
         </div>
       </CardHeader>
@@ -75,25 +77,11 @@ export default function ManageExperiences() {
                   </>
                 }
               >
-                <div className="flex sm:flex-row flex-col items-start sm:items-center sm:gap-6 gap-3 w-full">
-                  <Image
-                    src={exp.icon}
-                    alt="Hospital"
-                    className="w-12 h-12 sm:w-14 sm:h-14 rounded mr-2 object-cover object-center"
-                    width={56}
-                    height={56}
-                  />
-                  <Separator
-                    orientation="vertical"
-                    className="hidden sm:block h-14 "
-                  />
-
-                  <div className="flex flex-col items-start w-full">
-                    <h3 className="font-semibold">{exp.hospitalName}</h3>
-                    <p className="text-sm text-gray-500">
-                      {exp.startDate} - {exp.endDate}
-                    </p>
-                  </div>
+                <div className="flex flex-col items-start w-full">
+                  <h3 className="font-semibold">{exp.hospitalName}</h3>
+                  <p className="text-sm text-gray-500">
+                    {exp.startDate} - {exp.endDate}
+                  </p>
                 </div>
               </AccordionTrigger>
 
