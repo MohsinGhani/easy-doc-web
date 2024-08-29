@@ -101,10 +101,11 @@ export function Menu({ isOpen }: MenuProps) {
                             "flex items-center h-full w-full justify-start",
                             {
                               "justify-center": !isOpen,
+                              "text-primary": active,
                             }
                           )}
                         >
-                          <span className={cn(isOpen === false ? "" : "mr-4")}>
+                          <span className={cn(isOpen === false ? "" : "mr-3")}>
                             <Icon size={18} />
                           </span>
                           <p
@@ -154,11 +155,12 @@ export function Menu({ isOpen }: MenuProps) {
                                 "flex items-center h-full w-full justify-start",
                                 {
                                   "justify-center": !isOpen,
+                                  "text-primary": active,
                                 }
                               )}
                             >
                               <span
-                                className={cn(isOpen === false ? "" : "mr-4")}
+                                className={cn(isOpen === false ? "" : "mr-3")}
                               >
                                 <Icon size={18} />
                               </span>

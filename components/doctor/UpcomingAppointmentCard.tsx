@@ -4,11 +4,18 @@ import { Separator } from "../ui/separator";
 import { MapPin } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
+import { cn } from "@/lib/utils";
 
-const UpcomingAppointmentCard = () => {
+interface UpcomingAppointmentCardProps {
+  className?: string;
+}
+
+const UpcomingAppointmentCard = ({
+  className,
+}: UpcomingAppointmentCardProps) => {
   return (
     <Card>
-      <CardContent>
+      <CardContent className={cn("", className)}>
         <div className="w-full bg-[#f5f8ff] rounded-lg space-y-4 p-4">
           {/* name gender age location */}
           <div className="flex items-center gap-2">

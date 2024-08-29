@@ -165,7 +165,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
         );
       },
       meta: {
-        className: "sticky -right-px bg-white z-10 shadow shadow-lg px-2",
+        className: "sticky right-0 bg-white z-10 shadow shadow-lg px-2",
       },
     },
   ];
@@ -371,7 +371,10 @@ export const requestsColumns = ({
                     <EllipsisVertical className="h-5 w-5 cursor-pointer" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent side="left" className="flex flex-col items-start gap-2 w-40">
+                <PopoverContent
+                  side="left"
+                  className="flex flex-col items-start gap-2 w-40"
+                >
                   <Button
                     variant="outline"
                     size="sm"
@@ -410,7 +413,7 @@ export const requestsColumns = ({
         );
       },
       meta: {
-        className: "sticky -right-px bg-white z-10 shadow-lg",
+        className: "sticky right-0 bg-white z-10 shadow-lg",
       },
     },
   ];
@@ -555,22 +558,35 @@ export const upcomingColumns = ({
           <div className="flex items-center gap-1.5">
             {/* Hidden on mobile, visible on larger screens */}
             <div className="hidden sm:flex items-center gap-1.5">
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-primary bg-primary/20 p-2"
-                onClick={() => handleMeetingJoin(row.original)}
-              >
-                <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-primary bg-primary/20 p-2"
-                onClick={() => handleChat(row.original)}
-              >
-                <Video className="h-5 w-5 cursor-pointer text-primary" />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="border-primary bg-primary/20 p-2"
+                      onClick={() => handleMeetingJoin(row.original)}
+                    >
+                      <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Start Chat</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="border-primary bg-primary/20 p-2"
+                      onClick={() => handleChat(row.original)}
+                    >
+                      <Video className="h-5 w-5 cursor-pointer text-primary" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Join Meeting</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
             {/* Visible on mobile, hidden on larger screens */}
@@ -605,7 +621,7 @@ export const upcomingColumns = ({
         );
       },
       meta: {
-        className: "sticky -right-px bg-white z-10",
+        className: "sticky right-0 bg-white z-10",
       },
     },
   ];

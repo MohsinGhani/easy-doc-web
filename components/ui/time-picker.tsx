@@ -36,7 +36,9 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
   return (
     <div>
-      <Label>{label}</Label>
+      <Label className="" id={label}>
+        {label}
+      </Label>
       <div className="flex">
         <Select
           value={value.getHours().toString()}

@@ -82,7 +82,7 @@ const DoctorDashboardPage = () => {
         </div>
 
         <div className="lg:w-[30%] w-full space-y-6">
-          <UpcomingAppointmentCard />
+          <UpcomingAppointmentCard className="max-w-sm" />
 
           <Card>
             <CardContent>

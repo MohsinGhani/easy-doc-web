@@ -40,7 +40,7 @@ const UpcomingAppointmentsList = ({
         columns={columns}
         data={upcomingAppointments}
         isPrimaryHeader={isPrimaryHeader}
-        title="Patient's Requests"
+        title="Upcoming Appintments"
       />
     </>
   );

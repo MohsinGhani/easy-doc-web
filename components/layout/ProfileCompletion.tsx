@@ -6,8 +6,8 @@ const ProfileCompletionCard = () => {
   const progress = 60;
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-lg w-full">
-      <div className="flex items-start gap-2">
+    <div className="sm:p-4 p-2 bg-white rounded-lg shadow-lg w-full">
+      <div className="h-7 justify-start items-center gap-2 inline-flex">
         <Image
           src="/assets/icons/rocket-icon.svg"
           alt="Rocket Icon"
@@ -15,7 +15,7 @@ const ProfileCompletionCard = () => {
           height={20}
           className="w-5 h-5 object-contain"
         />
-        <h2 className="text-base font-medium leading-7">
+        <h2 className="sm:text-base text-sm font-medium leading-7">
           Complete your profile
         </h2>
       </div>
