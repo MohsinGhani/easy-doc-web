@@ -38,7 +38,8 @@ const MessagesSidebar = ({
           <SearchInput
             value={searchValue}
             setValue={setSearchValue}
-            searchKey="name"
+            searchKey="chats"
+            autoComplete="off"
           />
 
           {filteredChats.map((chat, i) => {
@@ -90,7 +91,9 @@ const MessagesSidebar = ({
                       </div>
                     </div>
 
-                    <Separator className="mt-6 w-[90%]" />
+                    {i !== filteredChats.length - 1 && (
+                      <Separator className="mt-3 w-[90%] mx-auto" />
+                    )}
                   </Link>
                 ) : (
                   <>
@@ -140,7 +143,9 @@ const MessagesSidebar = ({
                       </div>
                     </div>
 
-                    <Separator className="mt-6 w-[90%]" />
+                    {i !== filteredChats.length - 1 && (
+                      <Separator className="w-[90%] mx-auto" />
+                    )}
                   </>
                 )}
               </>

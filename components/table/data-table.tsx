@@ -99,6 +99,7 @@ export function DataTable<TData, TValue>({
             <div className="relative col-span-2">
               <Input
                 placeholder={`Search by ${searchKey}`}
+                id={searchKey}
                 value={
                   (table
                     .getColumn(`${searchKey}`)
@@ -109,6 +110,7 @@ export function DataTable<TData, TValue>({
                     .getColumn(`${searchKey}`)
                     ?.setFilterValue(event.target.value)
                 }
+                autoComplete="off"
               />
               <div className="absolute inset-y-0 right-0 flex items-center">
                 <span className="mr-2 text-gray-500">

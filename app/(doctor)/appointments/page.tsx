@@ -41,8 +41,9 @@ const AppointmentsPage = () => {
                       className="flex-1 capitalize p-1"
                       key={i}
                     >
+                      {value}
                       <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
-                        {value}
+                        {Math.floor(Math.random() * 100) + 1}
                       </span>
                     </TabsTrigger>
                   ))}
@@ -62,8 +63,9 @@ const AppointmentsPage = () => {
                               value={value}
                               className="flex-1 capitalize p-1"
                             >
+                              {value}
                               <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
-                                {value}
+                                {Math.floor(Math.random() * 100) + 1}
                               </span>
                             </TabsTrigger>
                           </DropdownMenuItem>

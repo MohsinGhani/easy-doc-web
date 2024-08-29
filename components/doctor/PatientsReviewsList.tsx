@@ -57,20 +57,22 @@ const PatientsReviewsList = ({
   return (
     <Card>
       {viewAll && (
-        <CardHeader className="">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-medium">
-              Patient&apos;s Reviews
-            </CardTitle>
-            <Link
-              className="text-sm font-medium text-primary"
-              href="/patients-reviews"
-            >
-              View All
-            </Link>
-          </div>
+        <>
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg font-medium">
+                Patient&apos;s Reviews
+              </CardTitle>
+              <Link
+                className="text-sm font-medium text-primary"
+                href="/patients-reviews"
+              >
+                View All
+              </Link>
+            </div>
+          </CardHeader>
           <Separator />
-        </CardHeader>
+        </>
       )}
       <CardContent className="space-y-4 p-6 w-full">
         {ratings.map((rating, i) => (
@@ -106,7 +108,7 @@ const PatientsReviewsList = ({
                 disabled={true}
               />
             </div>
-            <Separator />
+            {i !== ratings.length - 1 && <Separator />}
           </>
         ))}
       </CardContent>
