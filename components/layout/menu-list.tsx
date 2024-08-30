@@ -3,19 +3,18 @@ import {
   HomeIcon,
   CopyCheck,
   ChartPie,
-  HandCoins,
   HandCoinsIcon,
-  MessageCircleMore,
-  MessageCircleMoreIcon,
   Settings,
   LifeBuoy,
+  MessageCircleMore,
 } from "lucide-react";
+import { PatientReview, PayoutIcon, Receipt, ServiceIcon } from "../icons";
 
 type Menu = {
   href: string;
   label: string;
   active: boolean;
-  icon: LucideIcon;
+  icon: JSX.Element;
 };
 
 export function getMenuList(pathname: string) {
@@ -24,61 +23,61 @@ export function getMenuList(pathname: string) {
       href: "/dashboard",
       label: "Overview",
       active: pathname === "/dashboard",
-      icon: HomeIcon,
+      icon: <HomeIcon size={18} />,
     },
     {
       href: "/patients-requests",
       label: "Patient’s Requests",
       active: pathname === "/patients-requests",
-      icon: HomeIcon,
+      icon: <Receipt className="size-4 stroke-black stroke-2" />,
     },
     {
       href: "/appointments",
       label: "Appointment",
       active: pathname === "/appointments",
-      icon: CopyCheck,
+      icon: <CopyCheck size={18} />,
     },
     {
       href: "/available-timings",
       label: "Available Timings",
       active: pathname === "/available-timings",
-      icon: ChartPie,
+      icon: <ChartPie size={18} />,
     },
     {
       href: "/specialities-and-services",
       label: "Specialties & Services",
       active: pathname === "/specs-and-services",
-      icon: HandCoins,
+      icon: <ServiceIcon className="size-4 stroke-black stroke-2" />,
     },
     {
       href: "/patients-reviews",
       label: "Patient’s Reviews",
       active: pathname === "/patients-reviews",
-      icon: HandCoinsIcon,
+      icon: <PatientReview className="size-4 stroke-black stroke-2" />,
     },
     {
       href: "/messages",
       label: "Messages",
       active: pathname === "/messages",
-      icon: MessageCircleMore,
+      icon: <MessageCircleMore size={18} />,
     },
     {
       href: "/payout-settings",
       label: "Payout Settings",
       active: pathname === "/payout-settings",
-      icon: MessageCircleMoreIcon,
+      icon: <PayoutIcon className="size-4 stroke-black stroke-2" />,
     },
     {
       href: "/faqs-and-support",
       label: "FAQ’s & Support",
       active: pathname === "/faqs-and-support",
-      icon: LifeBuoy,
+      icon: <LifeBuoy size={18} />,
     },
     {
       href: "/settings",
       label: "Profile Settings",
       active: pathname === "/settings",
-      icon: Settings,
+      icon: <Settings size={18} />,
     },
   ];
 }

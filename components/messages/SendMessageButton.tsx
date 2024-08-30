@@ -60,7 +60,7 @@ const SendMessageButton = ({
 
         <div className="relative flex items-center flex-1">
           <div className="absolute left-3">
-            <Write className="h-4 w-4" />
+            <Write className="h-4 w-4 fill-white" />
           </div>
           <input
             type="text"

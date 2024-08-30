@@ -18,7 +18,7 @@ const SuccessPage = ({
   heading,
   linkText,
   linkHref,
-  open,
+  open = true,
   setOpen,
 }: SuccessPageProps) => {
   const handleClose = () => {

@@ -5,6 +5,7 @@ import {
 } from "@/components/auth";
 import EnterEmailForResetForm from "@/components/auth/EnterEmailForResetForm";
 import EnterNewPasswordForm from "@/components/auth/EnterNewPasswordForm";
+import SuccessPage from "@/components/SuccessPage";
 
 export function getSignupFormContent(step: number, destination?: string) {
   switch (step) {

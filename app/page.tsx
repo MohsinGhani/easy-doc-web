@@ -12,21 +12,22 @@ export default function Home() {
     <div>
       <Navbar />
       {isLoggedIn ? (
-        // <div className="flex flex-col items-center">
-        //   <h1 className="text-center text-3xl text-primary">
-        //     Welcome, {user?.email}
-        //   </h1>
-        //   <h6 className="text-center text-muted-foreground">
-        //     Your role is, {user?.role}
-        //     <br />
-        //     You are {user?.verified ? "" : "not"} verified
-        //   </h6>
-        // </div>
-        <PatientsLandingPage />
+        <>
+          <div className="flex flex-col items-center">
+            <h1 className="text-center text-3xl text-primary">
+              Welcome, {user?.email}
+            </h1>
+            <h6 className="text-center text-muted-foreground">
+              Your role is, {user?.role}
+              <br />
+              You are {user?.verified ? "" : "not"} verified
+            </h6>
+          </div>
+          <PatientFooter />
+        </>
       ) : (
         <LandingPage />
       )}
-      <PatientFooter />
     </div>
   );
 }

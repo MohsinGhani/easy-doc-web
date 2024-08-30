@@ -33,7 +33,6 @@ const SignUpForm = () => {
     confirmCode(values);
     if (!error && !loading) {
       setActiveStep(activeStep + 1);
-      setStatus("process");
     }
   };
 
@@ -42,7 +41,6 @@ const SignUpForm = () => {
 
     if (activeStep === 0) {
       keysToCheck = ["role"] as const;
-      debugger;
     } else if (activeStep === 1) {
       keysToCheck = [
         "given_name",
@@ -93,7 +91,7 @@ const SignUpForm = () => {
     }
   };
 
-  if (activeStep === 3) {
+  if (activeStep ===3){
     return (
       <SuccessPage heading="Account Created!" linkText="Okay" linkHref="/" />
     );

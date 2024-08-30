@@ -50,7 +50,7 @@ Easy Doc is licensed under the MIT license. See the [LICENSE](LICENSE) file for 
 
 ## How to Run
 
-1. Clone the repository: `git clone https://github.com/your-username/easy-doc.git`
+1. Clone the repository: `git clone https://github.com/MohsinGhani/easy-doc.git`
 2. Install dependencies: `npm install`
 3. Create a `.env.local` file and add your environment variables. For reference, you can check the `.env.example` file.
 4. Start the development server: `npm run dev`

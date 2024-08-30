@@ -4,7 +4,6 @@ import { authThunks } from "./authThunks";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 
-// Define a type for the slice state
 interface authState {
   user: {
     given_name: string;
@@ -15,14 +14,12 @@ interface authState {
     verified: boolean;
     avatar?: string;
     licence?: string;
-    
   };
   loading: boolean;
   error: string | null;
   isLoggedIn: boolean;
 }
 
-// Define the initial state using that type
 const initialState: authState = {
   user: {
     given_name: "",
@@ -91,9 +88,9 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.signup.rejected,
         (state, action: PayloadAction<any>) => {
+          state.error = action.payload;
           state.loading = false;
           toast.error(action.payload);
-          state.error = action.payload;
         }
       )
 
@@ -107,9 +104,9 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.confirmCode.rejected,
         (state, action: PayloadAction<any>) => {
+          state.error = action.payload;
           state.loading = false;
           toast.error(action.payload);
-          state.error = action.payload;
         }
       )
 
@@ -123,9 +120,9 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.resendConfirmationCode.rejected,
         (state, action: PayloadAction<any>) => {
+          state.error = action.payload;
           state.loading = false;
           toast.error(action.payload);
-          state.error = action.payload;
         }
       )
 
@@ -139,9 +136,9 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.signin.rejected,
         (state, action: PayloadAction<any>) => {
+          state.error = action.payload;
           state.loading = false;
           toast.error(action.payload);
-          state.error = action.payload;
         }
       )
 
@@ -155,8 +152,8 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.signout.rejected,
         (state, action: PayloadAction<any>) => {
-          state.loading = false;
           state.error = action.payload;
+          state.loading = false;
           toast.error(action.payload);
         }
       )
@@ -171,8 +168,8 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.requestPasswordReset.rejected,
         (state, action: PayloadAction<any>) => {
-          state.loading = false;
           state.error = action.payload;
+          state.loading = false;
           toast.error(action.payload);
         }
       )
@@ -188,8 +185,8 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.confirmPasswordReset.rejected,
         (state, action: PayloadAction<any>) => {
-          state.loading = false;
           state.error = action.payload;
+          state.loading = false;
           toast.error(action.payload);
         }
       );
