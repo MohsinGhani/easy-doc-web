@@ -123,7 +123,7 @@ export function DataTable<TData, TValue>({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild className="">
-                <Button variant={"outline"} className="w-full md:w-28px-4 py-2">
+                <Button variant={"outline"} className="w-full md:w-28 px-4 py-2">
                   <Filter className="w-4 h-4 mr-2" />
                   <span>Filter by</span>
                 </Button>
@@ -132,10 +132,10 @@ export function DataTable<TData, TValue>({
                 {table
                   .getAllColumns()
                   .filter((column) => column.getCanSort())
-                  .map((column) => {
+                  .map((column, i) => {
                     return (
                       <DropdownMenuItem
-                        key={column.id}
+                        key={i}
                         className="capitalize"
                         onClick={() =>
                           column.toggleSorting(column.getIsSorted() === "asc")
@@ -154,8 +154,8 @@ export function DataTable<TData, TValue>({
       {!isPrimaryHeader && <Separator />}
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+          {table.getHeaderGroups().map((headerGroup, i) => (
+            <TableRow key={i}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
@@ -176,11 +176,8 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
+            table.getRowModel().rows.map((row, i) => (
+              <TableRow key={i} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}

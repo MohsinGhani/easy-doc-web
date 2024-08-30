@@ -22,7 +22,7 @@ const PersonalDetailsForm = () => {
           control={control}
           name="given_name"
           label="First Name"
-          placeholder="ex: Aasil"
+          placeholder="Enter first name"
         />
 
         {/* family_name */}
@@ -31,7 +31,7 @@ const PersonalDetailsForm = () => {
           control={control}
           name="family_name"
           label="Last Name"
-          placeholder="ex: Ghoury"
+          placeholder="Enter last name"
         />
       </div>
 
@@ -51,9 +51,9 @@ const PersonalDetailsForm = () => {
         fieldType={FormFieldType.EMAIL}
         control={control}
         name="email"
-        label="Email Address"
-        placeholder="ex: abc@example.com"
-      />
+        label="Email Address*"
+        placeholder="Enter email address"
+        />
 
       {/* Password */}
       <CustomFormField
@@ -61,6 +61,7 @@ const PersonalDetailsForm = () => {
         control={control}
         name="password"
         label="Password"
+        placeholder="Enter password*"
       />
 
       {/* Confirm Password */}
@@ -68,7 +69,7 @@ const PersonalDetailsForm = () => {
         fieldType={FormFieldType.PASSWORD}
         control={control}
         name="confirmPassword"
-        label="Confirm Password"
+        label="Confirm Password*"
         placeholder="Confirm your password"
       />
     </>

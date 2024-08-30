@@ -1,7 +1,10 @@
+"use client";
+
 import React from "react";
 import DoctorsList from "./DoctorsList";
 import FiltersSidebar from "./FiltersSidebar";
 import Banner from "./Banner";
+import { PatientLayout } from "../layout/patient-layout";
 
 const BannerData = {
   title: "OUR SPECIALIST DOCTORS",
@@ -18,10 +21,12 @@ const PatientsLandingPage = () => {
     <>
       <Banner data={BannerData} />
 
-      <div className="mx-auto max-w-[1440px] grid grid-cols-1 lg:grid-cols-4 gap-6 lg:px-[100px] sm:px-6 px-4">
-        <FiltersSidebar />
-        <DoctorsList />
-      </div>
+      <PatientLayout>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <FiltersSidebar />
+          <DoctorsList />
+        </div>
+      </PatientLayout>
     </>
   );
 };

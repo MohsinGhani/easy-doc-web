@@ -1,13 +1,11 @@
-// Environment variables for the Cognito Identity Pool ID
 export const identityPoolId =
   process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || "";
 
-// Environment variables for the Cognito User Pool Client ID
 export const userPoolClientId =
   process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID || "";
 
-// Environment variables for the Cognito User Pool ID
 export const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || "";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 // Navbar Links
 export const navLinks = [
@@ -109,10 +107,16 @@ export const institutes = [
   { value: "oxford university", label: "Oxford University" },
   { value: "harvard university", label: "Harvard University" },
   { value: "stanford university", label: "Stanford University" },
-  { value: "university of california berkeley", label: "University of California Berkeley" },
+  {
+    value: "university of california berkeley",
+    label: "University of California Berkeley",
+  },
   { value: "university of cambridge", label: "University of Cambridge" },
   { value: "university college london", label: "University College London" },
-  { value: "university of washington seattle", label: "University of Washington Seattle" },
+  {
+    value: "university of washington seattle",
+    label: "University of Washington Seattle",
+  },
 ];
 
 // Degrees to be selected by the doctor
@@ -123,18 +127,18 @@ export const degrees = [
   { value: "bsc biomedical science", label: "BSc Biomedical Science" },
   {
     value: "b.sc. medical laboratory technology (bmlt)",
-    label: "B.Sc. Medical Laboratory Technology (BMLT)"
+    label: "B.Sc. Medical Laboratory Technology (BMLT)",
   },
   {
     value: "b.sc. nutrition and dietetics",
-    label: "B.Sc. Nutrition and Dietetics"
+    label: "B.Sc. Nutrition and Dietetics",
   },
   { value: "agricultural sciences", label: "Agricultural Sciences" },
   { value: "paramedical courses", label: "Paramedical Courses" },
   {
     value: "bachelor of physiotherapy",
-    label: "Bachelor of Physiotherapy"
-  }
+    label: "Bachelor of Physiotherapy",
+  },
 ];
 
 // Fields of studies to be selected by the doctor
@@ -143,15 +147,15 @@ export const fields = [
   { value: "dermatology", label: "Dermatology" },
   {
     value: "doctor of physical therapy (dpt)",
-    label: "Doctor of Physical Therapy (DPT)"
+    label: "Doctor of Physical Therapy (DPT)",
   },
   {
     value: "bachelor of dental surgery (bds)",
-    label: "Bachelor of Dental Surgery (BDS)"
+    label: "Bachelor of Dental Surgery (BDS)",
   },
   {
     value: "medical laboratory technology",
-    label: "Medical Laboratory Technology"
+    label: "Medical Laboratory Technology",
   },
   { value: "biotechnology", label: "Biotechnology" },
   { value: "nanotechnology", label: "Nanotechnology" },
@@ -159,14 +163,14 @@ export const fields = [
   { value: "psychology", label: "Psychology" },
   {
     value: "biomedical engineering",
-    label: "Biomedical Engineering"
+    label: "Biomedical Engineering",
   },
   { value: "nursing", label: "Nursing" },
   { value: "biogenetics", label: "Biogenetics" },
   {
     value: "bhms (bachelor of homeopathic medicine & surgery)",
-    label: "BHMS (Bachelor of Homeopathic Medicine & Surgery)"
+    label: "BHMS (Bachelor of Homeopathic Medicine & Surgery)",
   },
   { value: "intensive care", label: "Intensive Care" },
-  { value: "biochemistry", label: "Biochemistry" }
+  { value: "biochemistry", label: "Biochemistry" },
 ];

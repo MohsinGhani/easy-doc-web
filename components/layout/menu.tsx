@@ -81,7 +81,7 @@ export function Menu({ isOpen }: MenuProps) {
             "items-center": !isOpen,
           })}
         >
-          {upperMenuItems.map(({ href, label, icon: Icon, active }, index) => (
+          {upperMenuItems.map(({ href, label, icon, active }, index) => (
             <li key={index} className="w-full">
               <div className="w-full" key={index}>
                 <TooltipProvider disableHoverableContent>
@@ -106,7 +106,7 @@ export function Menu({ isOpen }: MenuProps) {
                           )}
                         >
                           <span className={cn(isOpen === false ? "" : "mr-3")}>
-                            <Icon size={18} />
+                            {icon}
                           </span>
                           <p
                             className={cn(
@@ -135,7 +135,7 @@ export function Menu({ isOpen }: MenuProps) {
         <div className="flex flex-col justify-end">
           <ul className="space-y-1 px-2">
             {lowerMenuItems.map(
-              ({ href, label, icon: Icon, active }, index) => (
+              ({ href, label, icon, active }, index) => (
                 <li key={index} className="w-full">
                   <div className="w-full" key={index}>
                     <TooltipProvider disableHoverableContent>
@@ -162,7 +162,7 @@ export function Menu({ isOpen }: MenuProps) {
                               <span
                                 className={cn(isOpen === false ? "" : "mr-3")}
                               >
-                                <Icon size={18} />
+                                {icon}
                               </span>
                               <p
                                 className={cn(
@@ -188,14 +188,18 @@ export function Menu({ isOpen }: MenuProps) {
             )}
 
             {/* Manually added Signout Button */}
-            <li className="w-full flex items-end pr-5">
+            <li
+              className={cn("w-full flex items-end justify-center", {
+                "justify-start": isOpen,
+              })}
+            >
               <TooltipProvider disableHoverableContent>
                 <Tooltip delayDuration={100}>
                   <TooltipTrigger asChild className="w-full">
                     <div className="flex flex-col">
-                      <Separator className="w-full my-6" />
-                      <div className="flex items-start gap-6">
-                        <div className="items-start hidden sm:flex">
+                      <Separator className="w-full mb-6" />
+                      <div className="flex items-start justify-center gap-6">
+                        <div className="items-start hidden sm:flex gap-1">
                           <Avatar
                             className={cn(
                               "w-8 h-8 mr-2",
@@ -227,9 +231,7 @@ export function Menu({ isOpen }: MenuProps) {
                             variant="ghost"
                             className="w-full justify-center flex-1"
                           >
-                            <span
-                              className={cn(isOpen === false ? "" : "mr-4")}
-                            >
+                            <span>
                               <LogOut size={18} />
                             </span>
                           </Button>

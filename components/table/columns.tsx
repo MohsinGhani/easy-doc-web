@@ -336,31 +336,48 @@ export const requestsColumns = ({
           <div className="flex items-center gap-1.5 text-muted-foreground">
             {/* Hidden on mobile, visible on larger screens */}
             <div className="hidden sm:flex items-center gap-1.5">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handlePreview(row.original)}
-              >
-                <EyeIcon className="h-5 w-5 cursor-pointer" />
-              </Button>
-              <RejectRequestDialog
-                name={row.original.name}
-                onReject={() => console.log("rejected", row.original.id)}
-                trigger={
-                  <Button variant="outline" size="icon">
-                    <X className="h-5 w-5 cursor-pointer" />
-                  </Button>
-                }
-              />
-              <Button
-                variant="default"
-                size="icon"
-                onClick={() => {
-                  handleAcceptRequest(row.original);
-                }}
-              >
-                <LucideCheck className="h-5 w-5 cursor-pointer" />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handlePreview(row.original)}
+                    >
+                      <EyeIcon className="h-5 w-5 cursor-pointer" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">View Request</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <RejectRequestDialog
+                      name={row.original.name}
+                      onReject={() => console.log("rejected", row.original.id)}
+                      trigger={
+                        <Button variant="outline" size="icon">
+                          <X className="h-5 w-5 cursor-pointer" />
+                        </Button>
+                      }
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Cancel Request</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="default"
+                      size="icon"
+                      onClick={() => handleAcceptRequest(row.original)}
+                    >
+                      <LucideCheck className="h-5 w-5 cursor-pointer" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Approve Request</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
             {/* Visible on mobile, hidden on larger screens */}
@@ -381,7 +398,7 @@ export const requestsColumns = ({
                     className="w-full justify-start"
                     onClick={() => handlePreview(row.original)}
                   >
-                    <EyeIcon className="h-5 w-5 mr-2" /> View
+                    <EyeIcon className="h-5 w-5 mr-2" /> View Request
                   </Button>
                   <RejectRequestDialog
                     name={row.original.name}
@@ -392,7 +409,7 @@ export const requestsColumns = ({
                         size="sm"
                         className="w-full justify-start"
                       >
-                        <X className="h-5 w-5 mr-2" /> Cancel
+                        <X className="h-5 w-5 mr-2" /> Cancel Request
                       </Button>
                     }
                   />
@@ -400,11 +417,9 @@ export const requestsColumns = ({
                     variant="default"
                     size="sm"
                     className="w-full justify-start"
-                    onClick={() => {
-                      handleAcceptRequest(row.original);
-                    }}
+                    onClick={() => handleAcceptRequest(row.original)}
                   >
-                    <LucideCheck className="h-5 w-5 mr-2" /> Approve
+                    <LucideCheck className="h-5 w-5 mr-2" /> Approve Request
                   </Button>
                 </PopoverContent>
               </Popover>

@@ -70,27 +70,27 @@ export const authThunks = {
           confirmationCode: values.confirmationCode,
         });
 
-        if (values.password) {
-          await signIn({
-            username: values.email,
-            password: values.password,
-          });
-
-          const { userId } = await getCurrentUser();
-          const payload = handleTokenStorage(userId);
-          dispatch(signinAction({ payload }));
-          toast.success("Sign in successful!, you'll be redirected shortly");
-          const role = payload["custom:role"];
-
-          router.push(
-            role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
-          );
-        } else {
-          toast.success("Email verification successful!, yaou can sign in now");
+        if (!values.password) {
+          toast.success("Email verification successful!, you can sign in now");
           router.push("/auth/sign-in");
+          return;
         }
+
+        await signIn({
+          username: values.email,
+          password: values.password,
+        });
+
+        const { userId } = await getCurrentUser();
+        const payload = handleTokenStorage(userId);
+        dispatch(signinAction({ payload }));
+        toast.success("Sign in successful!, you'll be redirected shortly");
+        const role = payload["custom:role"];
+
+        router.push(
+          role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
+        );
       } catch (error: any) {
-        toast.error(error.message);
         return rejectWithValue(error.message);
       }
     }
@@ -113,7 +113,6 @@ export const authThunks = {
           return rejectWithValue("Please verify your email first!");
         }
 
-        console.log("nextStep", nextStep);
 
         const { userId } = await getCurrentUser();
         const payload = handleTokenStorage(userId);

@@ -4,9 +4,21 @@ import { cn } from "@/lib/utils";
 import { Menu } from "@/components/layout/menu";
 import { SidebarToggle } from "@/components/layout/sidebar-toggle";
 import { useSidebarToggle } from "@/lib/features/sidebar/sidebarSlice";
+import React from "react";
 
 export function Sidebar() {
   const sidebar = useSidebarToggle();
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1280px)");
+    const listener = () => {
+      if (mediaQuery.matches) {
+        sidebar?.isOpen && sidebar?.setIsOpen?.();
+      }
+    };
+    mediaQuery.addEventListener("change", listener);
+    return () => mediaQuery.removeEventListener("change", listener);
+  }, [sidebar]);
 
   if (!sidebar) return null;
 
