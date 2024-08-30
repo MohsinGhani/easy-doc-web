@@ -86,11 +86,9 @@ const SignUpForm = () => {
       destinationRef.current = email;
     }
 
-    if (!error && !loading) {
-      setActiveStep(activeStep + 1);
-      setStatus("process");
-      return;
-    }
+    setActiveStep(activeStep + 1);
+    setStatus("process");
+    return;
   };
 
   if (activeStep === 3) {
