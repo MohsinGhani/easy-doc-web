@@ -76,11 +76,12 @@ const SignUpForm = () => {
         licence: role === "doctor" ? form.getValues().licence : "",
       };
 
-      signup(values).then((data: any) => {
-        if (data.error) {
-          return setStatus("error");
-        }
-      });
+      const res = await signup(values);
+
+      if (res.type === "auth/signup/rejected") {
+        setStatus("error");
+        return;
+      }
 
       destinationRef.current = email;
     }
@@ -88,10 +89,11 @@ const SignUpForm = () => {
     if (!error && !loading) {
       setActiveStep(activeStep + 1);
       setStatus("process");
+      return;
     }
   };
 
-  if (activeStep ===3){
+  if (activeStep === 3) {
     return (
       <SuccessPage heading="Account Created!" linkText="Okay" linkHref="/" />
     );
