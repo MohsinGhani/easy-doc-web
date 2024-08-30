@@ -67,8 +67,6 @@ const SignUpForm = () => {
       const { given_name, family_name, email, password, role } =
         form.getValues();
 
-      console.log(4);
-
       const values = {
         given_name,
         family_name,
@@ -77,8 +75,6 @@ const SignUpForm = () => {
         role,
         licence: role === "doctor" ? form.getValues().licence : "",
       };
-
-      console.log(5);
 
       signup(values).then((data: any) => {
         if (data.error) {
