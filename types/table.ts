@@ -1,28 +1,40 @@
 import { DateRange } from "react-day-picker";
 
 export type BaseAppointment = {
+  // Patient Specific Fields
   id: string;
-  avatarUrl: string;
-  patientId: string;
-  name: string;
-  email: string;
-  phone: string;
-  city: string;
-  state: string;
-  country: string;
-  scheduledDate: DateRange;
-  consultationType: string;
-  gender: string;
-  address: string;
-  birthDate: string;
+  patient_avatarUrl: string;
+  patient_city: string;
+  patient_state: string;
+  patient_country: string;
+  patient_name: string;
+  patient_gender: string;
+  patient_age: number;
+  patient_blood_group: string;
+  patient_phone: string;
+  patient_email: string;
+
+  // Appointment Specific Fields
   speciality: string;
-  age: number;
+  consultationType: string;
+  scheduledDate: DateRange;
+  allergies: string[];
+  current_medications: string[];
   attachments: Array<{
     id: string;
     url: string;
     name: string;
     mimeType: string;
   }>;
+  description: string;
+  status: "pending" | "completed" | "cancelled" | "upcoming";
+  paid: boolean;
+  payment: {
+    method: string;
+    id: string;
+    paymentDate: string;
+    amount: string;
+  };
 };
 
 export type Payment = {

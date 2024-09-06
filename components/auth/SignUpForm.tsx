@@ -76,11 +76,11 @@ const SignUpForm = () => {
         licence: role === "doctor" ? form.getValues().licence : "",
       };
 
-      signup(values).then((data: any) => {
-        if (data.error) {
-          return setStatus("error");
-        }
-      });
+      const data = signup(values);
+
+      if (data.type.includes("rejected")) {
+        return setStatus("error");
+      }
 
       destinationRef.current = email;
     }

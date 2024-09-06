@@ -1,0 +1,1290 @@
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10b7"
+  },
+  "year": 2022,
+  "month": 11,
+  "distance": 14837.84,
+  "duration": 36.99,
+  "durationRunway": 36.99,
+  "durationRunwayAccuracy": 19,
+  "activeDays": 12,
+  "flights": 20,
+  "airportMovements": [
+    {
+      "icaoCode": "LOWW",
+      "movements": 14
+    },
+    {
+      "icaoCode": "EDDS",
+      "movements": 7
+    },
+    {
+      "icaoCode": "LELN",
+      "movements": 6
+    },
+    {
+      "icaoCode": "LIRN",
+      "movements": 3
+    },
+    {
+      "icaoCode": "EDDB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LEIB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LEVC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "OMDW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "EBBR",
+      "movements": 2
+    }
+  ],
+  "registration": "D-BDDE"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10a3"
+  },
+  "year": 2019,
+  "month": 5,
+  "distance": 0,
+  "duration": 0,
+  "durationRunway": 0,
+  "durationRunwayAccuracy": 0,
+  "activeDays": 0,
+  "flights": 0,
+  "registration": "C-GVOA"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10a4"
+  },
+  "year": 2019,
+  "month": 4,
+  "distance": 0,
+  "duration": 0,
+  "durationRunway": 0,
+  "durationRunwayAccuracy": 0,
+  "activeDays": 0,
+  "flights": 0,
+  "registration": "C-GVOA"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10b4"
+  },
+  "year": 2023,
+  "month": 2,
+  "distance": 20105.62,
+  "duration": 48.19,
+  "durationRunway": 48.19,
+  "durationRunwayAccuracy": 18,
+  "activeDays": 12,
+  "flights": 19,
+  "airportMovements": [
+    {
+      "icaoCode": "LOWW",
+      "movements": 16
+    },
+    {
+      "icaoCode": "OMDW",
+      "movements": 6
+    },
+    {
+      "icaoCode": "LIPR",
+      "movements": 4
+    },
+    {
+      "icaoCode": "LIRN",
+      "movements": 4
+    },
+    {
+      "icaoCode": "LEVC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIML",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LBSF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIPZ",
+      "movements": 1
+    }
+  ],
+  "registration": "D-BDDE"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10d1"
+  },
+  "year": 2020,
+  "month": 9,
+  "distance": 11317.97,
+  "duration": 32.38,
+  "durationRunway": 32.38,
+  "durationRunwayAccuracy": 16,
+  "activeDays": 11,
+  "flights": 23,
+  "airportMovements": [
+    {
+      "icaoCode": "EGLF",
+      "movements": 9
+    },
+    {
+      "icaoCode": "LFMN",
+      "movements": 4
+    },
+    {
+      "icaoCode": "EVRA",
+      "movements": 4
+    },
+    {
+      "icaoCode": "EGLL",
+      "movements": 3
+    },
+    {
+      "icaoCode": "EDDS",
+      "movements": 3
+    },
+    {
+      "icaoCode": "LXGB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "EGJJ",
+      "movements": 2
+    },
+    {
+      "icaoCode": "EDDF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "UUWW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LEMG",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LOWW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LEIB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LSGG",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIMJ",
+      "movements": 1
+    },
+    {
+      "icaoCode": "LEGE",
+      "movements": 1
+    }
+  ],
+  "registration": "D-BDDE"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10bb"
+  },
+  "year": 2022,
+  "month": 7,
+  "distance": 15385.05,
+  "duration": 37.37,
+  "durationRunway": 37.37,
+  "durationRunwayAccuracy": 22,
+  "activeDays": 13,
+  "flights": 25,
+  "airportMovements": [
+    {
+      "icaoCode": "LEIB",
+      "movements": 17
+    },
+    {
+      "icaoCode": "LOWW",
+      "movements": 13
+    },
+    {
+      "icaoCode": "LIRN",
+      "movements": 6
+    },
+    {
+      "icaoCode": "LEVC",
+      "movements": 4
+    },
+    {
+      "icaoCode": "LIEO",
+      "movements": 3
+    },
+    {
+      "icaoCode": "LBSF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIML",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LRTR",
+      "movements": 2
+    }
+  ],
+  "registration": "D-BDDE"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10cd"
+  },
+  "year": 2021,
+  "month": 1,
+  "distance": 13268.2,
+  "duration": 30.53,
+  "durationRunway": 30.51,
+  "durationRunwayAccuracy": 14,
+  "activeDays": 10,
+  "flights": 14,
+  "airportMovements": [
+    {
+      "icaoCode": "OMDW",
+      "movements": 8
+    },
+    {
+      "icaoCode": "OMAD",
+      "movements": 4
+    },
+    {
+      "icaoCode": "VRMM",
+      "movements": 3
+    },
+    {
+      "icaoCode": "OBBI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "VOBL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIRA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "OKBK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "OERK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "CYYT",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KOPF",
+      "movements": 1
+    }
+  ],
+  "registration": "D-BDDE"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10d2"
+  },
+  "year": 2020,
+  "month": 8,
+  "distance": 22778.99,
+  "duration": 58.89,
+  "durationRunway": 58.89,
+  "durationRunwayAccuracy": 29,
+  "activeDays": 20,
+  "flights": 36,
+  "airportMovements": [
+    {
+      "icaoCode": "LCLK",
+      "movements": 6
+    },
+    {
+      "icaoCode": "LFMN",
+      "movements": 4
+    },
+    {
+      "icaoCode": "LEAL",
+      "movements": 4
+    },
+    {
+      "icaoCode": "LIEO",
+      "movements": 4
+    },
+    {
+      "icaoCode": "EDMO",
+      "movements": 4
+    },
+    {
+      "icaoCode": "LGAV",
+      "movements": 4
+    },
+    {
+      "icaoCode": "LFMD",
+      "movements": 3
+    },
+    {
+      "icaoCode": "UUWW",
+      "movements": 3
+    },
+    {
+      "icaoCode": "LEMG",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LGSR",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LSZB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIPZ",
+      "movements": 2
+    },
+    {
+      "icaoCode": "EDDL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LFKF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "EDDM",
+      "movements": 2
+    },
+    {
+      "icaoCode": "EBBR",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIML",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LIRN",
+      "movements": 2
+    },
+    {
+      "icaoCode": "OMDW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "OLBA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "LOWW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "UKKK",
+      "movements": 1
+    },
+    {
+      "icaoCode": "LGSO",
+      "movements": 1
+    },
+    {
+      "icaoCode": "LGMK",
+      "movements": 1
+    },
+    {
+      "icaoCode": "OEJN",
+      "movements": 1
+    },
+    {
+      "icaoCode": "OMAD",
+      "movements": 1
+    },
+    {
+      "icaoCode": "EDDS",
+      "movements": 1
+    }
+  ],
+  "registration": "D-BDDE"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10dc"
+  },
+  "year": 2019,
+  "month": 10,
+  "distance": 0,
+  "duration": 0,
+  "durationRunway": 0,
+  "durationRunwayAccuracy": 0,
+  "activeDays": 0,
+  "flights": 0,
+  "registration": "D-BDDE"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10e6"
+  },
+  "year": 2024,
+  "month": 2,
+  "distance": 41693.96,
+  "duration": 114.28,
+  "durationRunway": 114.28,
+  "durationRunwayAccuracy": 61,
+  "activeDays": 24,
+  "flights": 67,
+  "airportMovements": [
+    {
+      "icaoCode": "KTEB",
+      "movements": 12
+    },
+    {
+      "icaoCode": "KVNY",
+      "movements": 10
+    },
+    {
+      "icaoCode": "KHPN",
+      "movements": 6
+    },
+    {
+      "icaoCode": "KPBI",
+      "movements": 6
+    },
+    {
+      "icaoCode": "KMIA",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KAPF",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KOAK",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KIAD",
+      "movements": 4
+    },
+    {
+      "icaoCode": "MYNN",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KLAS",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KPDK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAPA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLWS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KTCL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPHL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "TGPY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPSP",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KFOK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KNUQ",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KEYW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSLC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMDW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCID",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPWK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KFLL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KFTY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLAX",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCLT",
+      "movements": 2
+    },
+    {
+      "icaoCode": "TAPA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KVRB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHOU",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSCK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCHS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KOAJ",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBUR",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHND",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBCT",
+      "movements": 2
+    },
+    {
+      "icaoCode": "TNCA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCLE",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBVU",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSBP",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLEX",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMRY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSDL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KTRM",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBTR",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KW91",
+      "movements": 1
+    },
+    {
+      "icaoCode": "KMTV",
+      "movements": 1
+    },
+    {
+      "icaoCode": "CYVR",
+      "movements": 1
+    },
+    {
+      "icaoCode": "KSRQ",
+      "movements": 1
+    }
+  ],
+  "registration": "N700QS"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10ee"
+  },
+  "year": 2023,
+  "month": 6,
+  "distance": 38062.88,
+  "duration": 98.57,
+  "durationRunway": 98.57,
+  "durationRunwayAccuracy": 49,
+  "activeDays": 23,
+  "flights": 63,
+  "airportMovements": [
+    {
+      "icaoCode": "KTEB",
+      "movements": 9
+    },
+    {
+      "icaoCode": "KBNA",
+      "movements": 6
+    },
+    {
+      "icaoCode": "KBFI",
+      "movements": 6
+    },
+    {
+      "icaoCode": "KPWK",
+      "movements": 5
+    },
+    {
+      "icaoCode": "KCMH",
+      "movements": 5
+    },
+    {
+      "icaoCode": "KHYA",
+      "movements": 5
+    },
+    {
+      "icaoCode": "KDAL",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KTYS",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KMIA",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KVNY",
+      "movements": 3
+    },
+    {
+      "icaoCode": "KVPZ",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KRDU",
+      "movements": 2
+    },
+    {
+      "icaoCode": "TXKF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSTL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMDW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCMA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLGB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCLL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KRST",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPDX",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHLN",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHOU",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMSP",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAPA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KJAC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KRNO",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMRY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KJFK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSNA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHWD",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KIAH",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPHL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSJC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPNE",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHOT",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPBI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMBT",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSFO",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KALB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPOU",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAGC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLNK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KFLL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBDL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KASE",
+      "movements": 2
+    },
+    {
+      "icaoCode": "CYYZ",
+      "movements": 1
+    },
+    {
+      "icaoCode": "KISM",
+      "movements": 1
+    },
+    {
+      "icaoCode": "KSDL",
+      "movements": 1
+    },
+    {
+      "icaoCode": "PHNL",
+      "movements": 1
+    },
+    {
+      "icaoCode": "KEWR",
+      "movements": 1
+    }
+  ],
+  "registration": "N700QS"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10ef"
+  },
+  "year": 2023,
+  "month": 5,
+  "distance": 40195.95,
+  "duration": 102.92,
+  "durationRunway": 102.92,
+  "durationRunwayAccuracy": 51,
+  "activeDays": 23,
+  "flights": 65,
+  "airportMovements": [
+    {
+      "icaoCode": "KTEB",
+      "movements": 10
+    },
+    {
+      "icaoCode": "KBOS",
+      "movements": 8
+    },
+    {
+      "icaoCode": "KMIA",
+      "movements": 6
+    },
+    {
+      "icaoCode": "KPTK",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KCLT",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KSAV",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KDAL",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KBFI",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KPDK",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KPIE",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KMDW",
+      "movements": 3
+    },
+    {
+      "icaoCode": "MYAF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KTIW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KOAK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KRYY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSUS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLAX",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSJC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMMU",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KOGS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KGSP",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHKY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCHS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBNA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSGR",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMCO",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KORF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "CYUL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KTIX",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHFD",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KILM",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAGS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KIAD",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMBT",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMRY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSFO",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KGAI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLWB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KHXD",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KJZI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBED",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KJPX",
+      "movements": 2
+    },
+    {
+      "icaoCode": "CYYZ",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KESN",
+      "movements": 2
+    },
+    {
+      "icaoCode": "TXKF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KDPA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAFW",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPBI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KISM",
+      "movements": 1
+    }
+  ],
+  "registration": "N700QS"
+},
+{
+  "_id": {
+    "$oid": "65fa0e6721c3583f510b10f1"
+  },
+  "year": 2023,
+  "month": 3,
+  "distance": 35097.32,
+  "duration": 91.1,
+  "durationRunway": 91.1,
+  "durationRunwayAccuracy": 38,
+  "activeDays": 17,
+  "flights": 49,
+  "airportMovements": [
+    {
+      "icaoCode": "KHPN",
+      "movements": 5
+    },
+    {
+      "icaoCode": "KSFO",
+      "movements": 4
+    },
+    {
+      "icaoCode": "KTEX",
+      "movements": 3
+    },
+    {
+      "icaoCode": "KEGE",
+      "movements": 3
+    },
+    {
+      "icaoCode": "KJAX",
+      "movements": 3
+    },
+    {
+      "icaoCode": "KBED",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSKX",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KFLL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPWK",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPHL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KTEB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "MBPV",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KBWI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCRP",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMAF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KOXR",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KASE",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAPA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KIAH",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KEUG",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSNA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSUS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSTP",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMKY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "MYEH",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPBI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAPF",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMKE",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KFTY",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KAGS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSJC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KPSP",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KDEN",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KCCR",
+      "movements": 2
+    },
+    {
+      "icaoCode": "MYNN",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSSI",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KLAS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KDAL",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KVRB",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KSBA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KMIA",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KFWS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KRAC",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KTYS",
+      "movements": 2
+    },
+    {
+      "icaoCode": "KRDU",
+      "movements": 1
+    },
+    {
+      "icaoCode": "KLIT",
+      "movements": 1
+    }
+  ],
+  "registration": "N700QS"
+}

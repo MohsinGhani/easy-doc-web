@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { AddTimeSlotDialog } from "@/components/AddTimeSlotDialog";
 import { useAppSelector } from "@/lib/hooks";
 import TimeSlot from "@/components/doctor/TimeSlot";
-import { useEffect, useState } from "react";
 
 import {
   DropdownMenu,
@@ -21,17 +20,6 @@ const AvailableTimingsPage = () => {
   const availableDays = useAppSelector(
     (state) => state.availability.availableDays
   );
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const handleResize = () => setIsMobile(mediaQuery.matches);
-
-    mediaQuery.addEventListener("change", handleResize);
-    handleResize();
-
-    return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
 
   return (
     <ContentLayout title="Available Timings">
@@ -43,40 +31,42 @@ const AvailableTimingsPage = () => {
 
           <Tabs defaultValue="monday" className="w-full">
             <h2 className="text-sm font-medium">Select Available Days</h2>
-            <TabsList className="mb-6 mt-2 w-full" defaultValue="monday">
-              {!isMobile ? (
-                <>
+            <TabsList
+              className="mb-6 mt-2 w-full hidden md:inline-flex"
+              defaultValue="monday"
+            >
+              {availableDays.map((value, i) => (
+                <TabsTrigger
+                  value={value.day}
+                  className="flex-1 capitalize p-1"
+                  key={i}
+                >
+                  {value.day}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            <TabsList
+              className="mb-6 mt-2 w-full md:hidden"
+              defaultValue="monday"
+            >
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center justify-between w-full px-2 py-2">
+                  Select a day <ChevronDownIcon />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="!w-full">
                   {availableDays.map((value, i) => (
-                    <TabsTrigger
-                      value={value.day}
-                      className="flex-1 capitalize p-1"
-                      key={i}
-                    >
-                      {value.day}
-                    </TabsTrigger>
+                    <DropdownMenuItem key={i} className="!w-full">
+                      <TabsTrigger
+                        value={value.day}
+                        className="flex-1 capitalize p-1"
+                      >
+                        {value.day}
+                      </TabsTrigger>
+                    </DropdownMenuItem>
                   ))}
-                </>
-              ) : (
-                <>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="flex items-center justify-between w-full px-2 py-2">
-                      Select a day <ChevronDownIcon />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="!w-full">
-                      {availableDays.map((value, i) => (
-                        <DropdownMenuItem key={i} className="!w-full">
-                          <TabsTrigger
-                            value={value.day}
-                            className="flex-1 capitalize p-1"
-                          >
-                            {value.day}
-                          </TabsTrigger>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </TabsList>
 
             <CardContent>

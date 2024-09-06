@@ -1,10 +1,3 @@
-export const privateRoutes = [
-  "/dashboard",
-  "/notifications",
-  "/profile",
-  "/settings",
-];
-
 export const doctorRoutes = [
   "/dashboard",
   "/specialities-and-services",
@@ -18,7 +11,7 @@ export const doctorRoutes = [
   "/available-timings",
 ];
 
-export const patientRoutes = ["/doctors-list"];
+export const patientRoutes = ["/doctors"];
 
 export const adminRoutes = ["/admin"];
 

@@ -1,3 +1,4 @@
+import DoctorProfile from "@/components/doctor-profile";
 import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
 import React from "react";
@@ -13,7 +14,7 @@ const BannerData = {
   description: "",
   location: [
     { name: "Home", path: "/" },
-    { name: "Doctors", path: "/doctors-list" },
+    { name: "Doctors", path: "/doctors" },
     { name: "Doctor Details", path: "#" },
   ],
 };
@@ -23,7 +24,9 @@ const DoctorDetailsPage = ({ params }: DoctorDetailsPageProps) => {
     <div className="w-full h-full">
       <Banner data={BannerData} />
 
-      <PatientLayout>DoctorDetailsPage {params.doctorId}</PatientLayout>
+      <PatientLayout>
+        <DoctorProfile doctorId={params.doctorId} />
+      </PatientLayout>
     </div>
   );
 };

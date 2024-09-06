@@ -3,7 +3,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { signin as signinAction, signout as signoutAction } from "./authSlice";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
 import {
   signIn,
   signUp,
@@ -12,7 +11,7 @@ import {
   resendSignUpCode,
   resetPassword,
   confirmResetPassword,
-  getCurrentUser,
+  fetchAuthSession,
 } from "aws-amplify/auth";
 import {
   ConfirmCodePayload,
@@ -22,7 +21,6 @@ import {
   SigninPayload,
   SignupPayload,
 } from "@/types/auth";
-import { handleTokenStorage } from "@/helpers/auth";
 
 export const authThunks = {
   signup: createAsyncThunk(
@@ -44,12 +42,14 @@ export const authThunks = {
               "custom:verified": role === "doctor" ? "false" : "true",
               "custom:licence": role === "doctor" ? licence : "",
             },
+            clientMetadata: {
+              role: role,
+              licence: role === "doctor" ? (licence as string) : "none",
+            },
           },
         });
 
         const { codeDeliveryDetails }: any = nextStep;
-
-        Cookies.set("auth", JSON.stringify({ email }));
 
         return codeDeliveryDetails;
       } catch (error: any) {
@@ -65,25 +65,67 @@ export const authThunks = {
       { rejectWithValue, dispatch }
     ) => {
       try {
-        await confirmSignUp({
+        const { nextStep } = await confirmSignUp({
           username: values.email,
           confirmationCode: values.confirmationCode,
         });
 
-        if (!values.password) {
-          toast.success("Email verification successful!, you can sign in now");
-          router.push("/auth/sign-in");
-          return;
+        switch (nextStep.signUpStep) {
+          case "DONE":
+            if (!values.password) {
+              toast.success(
+                "Email verification successful!, you can sign in now"
+              );
+              router.push("/auth/sign-in");
+              return;
+            }
+
+            const { isSignedIn, nextStep } = await signIn({
+              username: values.email,
+              password: values.password,
+            });
+
+            console.log("signin from confirmcode:", isSignedIn, nextStep);
+
+            break;
+
+          case "CONFIRM_SIGN_UP":
+            router.push("/auth/verify-email?email=" + values.email);
+            return rejectWithValue("Please verify your email first!");
+
+          case "COMPLETE_AUTO_SIGN_IN":
+            toast.success("Sign in successful!, you'll be redirected shortly");
+
+            const payload = (await fetchAuthSession()).tokens?.idToken?.payload;
+
+            if (!payload) {
+              return rejectWithValue("Sign-in failed. Please try again.");
+            }
+
+            dispatch(signinAction({ payload }));
+
+            const role = payload["custom:role"];
+            router.push(
+              role === "doctor"
+                ? `/dashboard`
+                : role === "admin"
+                ? `/admin`
+                : `/doctors`
+            );
+            break;
+
+          default:
+            break;
         }
 
-        await signIn({
-          username: values.email,
-          password: values.password,
-        });
+        const payload = (await fetchAuthSession()).tokens?.idToken?.payload;
 
-        const { userId } = await getCurrentUser();
-        const payload = handleTokenStorage(userId);
+        if (!payload) {
+          return rejectWithValue("Sign-in failed. Please try again.");
+        }
+
         dispatch(signinAction({ payload }));
+
         toast.success("Sign in successful!, you'll be redirected shortly");
         const role = payload["custom:role"];
 
@@ -113,9 +155,11 @@ export const authThunks = {
           return rejectWithValue("Please verify your email first!");
         }
 
+        const payload = (await fetchAuthSession()).tokens?.idToken?.payload;
 
-        const { userId } = await getCurrentUser();
-        const payload = handleTokenStorage(userId);
+        if (!payload) {
+          return rejectWithValue("Sign-in failed. Please try again.");
+        }
 
         dispatch(signinAction({ payload }));
 
@@ -125,6 +169,7 @@ export const authThunks = {
           role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
         );
       } catch (error: any) {
+        console.log("🚀 ~ error:", error);
         console.log(error.message);
         const errorType =
           error.__type || error.code || error.name || error.message || error;
@@ -148,7 +193,6 @@ export const authThunks = {
     async (router: any, { rejectWithValue, dispatch }) => {
       try {
         await signOut();
-        Cookies.remove("token");
 
         dispatch(signoutAction());
         toast.success("Logged out Successfully");
@@ -166,7 +210,10 @@ export const authThunks = {
       { rejectWithValue }
     ) => {
       try {
-        await resendSignUpCode({ username: values.email });
+        const nextStep = await resendSignUpCode({ username: values.email });
+
+        const { attributeName, deliveryMedium, destination } = nextStep;
+
         toast.success("Code sent successfully");
       } catch (error: any) {
         toast.error(error.message);

@@ -71,6 +71,8 @@ export const authSlice = createSlice({
         Object.assign(state, {
           user,
           isLoggedIn: true,
+          loading: false,
+          error: null,
         });
       }
     },
