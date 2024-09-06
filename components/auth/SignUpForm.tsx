@@ -87,6 +87,7 @@ const SignUpForm = () => {
 
     setActiveStep(activeStep + 1);
     setStatus("process");
+    return;
   };
 
   if (activeStep === 3) {
