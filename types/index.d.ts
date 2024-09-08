@@ -7,6 +7,8 @@ declare type weekDay =
   | "saturday"
   | "sunday";
 
+declare type Gender = "male" | "female" | "other";
+
 declare type AvailableDay = {
   day: weekDay;
   slots: AvailableSlot[];
@@ -15,29 +17,6 @@ declare type AvailableDay = {
 declare type AvailableSlot = {
   startTime: string;
   endTime: string;
-};
-
-declare type Doctor = {
-  userId: number;
-  given_name: string;
-  family_name: string;
-  display_name: string;
-  profile_image: string;
-  bio: string;
-  years_of_experience: string;
-  city: string;
-  country: string;
-  specialty: string;
-  location: string;
-  rating: number;
-  available: boolean;
-  verified: boolean;
-  fee: number;
-  experiences: Experience[];
-  awards: Award[];
-  education: Education[];
-  availableDays: AvailableDay[];
-  reviews: Review[];
 };
 
 declare interface Experience {
@@ -77,4 +56,59 @@ declare interface Review {
   date: string;
   rating: 1 | 2 | 3 | 4 | 5;
   comment: string;
+}
+
+declare type User = {
+  userId: string;
+  role: string;
+  email: string;
+  given_name: string;
+  family_name: string;
+  display_name: string;
+  phone_number: string;
+  picture: string;
+  designation: string;
+  bio: string;
+  years_of_experience: string;
+  city: string;
+  country: string;
+  dob: string;
+  gender: Gender;
+  specialty: string;
+  location: string;
+  rating: number;
+  available: boolean;
+  verified: boolean;
+  fee: number;
+  languages: string[];
+  experiences: Experience[];
+  awards: Award[];
+  education: Education[];
+  availableDays: AvailableDay[];
+  reviews: Review[];
+};
+
+declare type Doctor = {
+  userId: string;
+  role: string;
+  email: string;
+  given_name: string;
+  family_name: string;
+  display_name: string;
+  picture: string;
+  bio: string;
+  years_of_experience: string;
+  city: string;
+  country: string;
+  specialty: string;
+  location: string;
+  rating: number;
+  available: boolean;
+  verified: boolean;
+  fee: number;
+  experiences: Experience[];
+  awards: Award[];
+  education: Education[];
+  availableDays: AvailableDay[];
+  reviews: Review[];
 };

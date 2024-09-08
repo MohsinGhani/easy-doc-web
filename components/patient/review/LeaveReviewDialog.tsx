@@ -14,17 +14,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { StarIcon } from "lucide-react"; // Using lucide-react icons for the stars
+import { StarIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import ThankYouDialog from "./ThankYouDialog";
-import apiClient from "@/helpers/apiClient";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
+import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 
 const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
   const [rating, setRating] = useState(0);
-  const [isReviewSubmitted, setIsReviewSubmitted] = useState(false); // State for submission
-  const { userId, given_name, family_name } = useAppSelector(
+  const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
+  const dispatch = useAppDispatch();
+  const { userId, given_name, family_name, picture } = useAppSelector(
     (state) => state.auth.user
   );
   const [comment, setComment] = useState("");
@@ -37,21 +38,23 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
 
   const handleSubmitReview = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const reviewData = {
+      name: `${first_name} ${last_name}`,
+      patientId: userId,
+      doctorId,
+      rating,
+      comment,
+      picture: `https://randomuser.me/api/portraits/men/${Math.floor(
+        Math.random() * 100
+      )}`,
+    };
+
     try {
-      await apiClient.post("/doctor/review", {
-        name: `${first_name} ${last_name}`,
-        patientId: userId,
-        doctorId,
-        rating,
-        comment,
-        profile_image: `https://randomuser.me/api/portraits/men/${Math.floor(
-          Math.random() * 100
-        )}`,
-      });
+      await dispatch(doctorThunks.submitDoctorReview({ reviewData }));
       setIsReviewSubmitted(true);
     } catch (error) {
-      console.log("🚀 ~ handleSubmitReview ~ error:", error);
-      toast.error("Error Submittong Review");
+      toast.error("Error Submitting Review");
     } finally {
       setComment("");
       setRating(1);

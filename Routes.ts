@@ -20,4 +20,5 @@ export const publicRoutes = [
   "/auth/sign-up",
   "/auth/forgot-password",
   "/auth/confirm-password-reset",
+  "/auth/verify-email",
 ];

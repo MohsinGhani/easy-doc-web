@@ -9,11 +9,15 @@ export default function AvailableTimings({
   availableDays: AvailableDay[];
 }) {
   // State to keep track of the selected day
-  const [activeDay, setActiveDay] = useState(availableDays[0].day);
+  const [activeDay, setActiveDay] = useState(availableDays[0]?.day);
 
   // Find the active day's slots based on selected day
   const activeSlots =
     availableDays.find((day) => day.day === activeDay)?.slots || [];
+
+  if (!activeSlots || activeSlots.length === 0) {
+    return <div>No available slots found for the selected day.</div>;
+  }
 
   return (
     <div className="bg-background rounded-lg p-6">
@@ -42,7 +46,7 @@ export default function AvailableTimings({
             Available Slots for {activeDay}
           </h2>
           <Separator className="my-4" />
-
+          {/* TODO: Fix lg, sm, md grid cols */}
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {activeSlots.length > 0 ? (
               activeSlots.map((slot, index) => (

@@ -5,16 +5,7 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 
 interface authState {
-  user: {
-    given_name: string;
-    family_name: string;
-    email: string;
-    role: string;
-    userId: string;
-    verified: boolean;
-    avatar?: string;
-    licence?: string;
-  };
+  user: User;
   loading: boolean;
   error: string | null;
   isLoggedIn: boolean;
@@ -22,13 +13,28 @@ interface authState {
 
 const initialState: authState = {
   user: {
+    userId: "",
     given_name: "",
     family_name: "",
-    avatar: "",
+    display_name: "",
+    picture: "",
     email: "",
     role: "",
-    userId: "",
+    bio: "",
+    city: "",
+    country: "",
+    location: "",
+    specialty: "",
+    years_of_experience: "",
     verified: false,
+    available: false,
+    fee: 0,
+    awards: [],
+    availableDays: [],
+    education: [],
+    experiences: [],
+    rating: 2.0,
+    reviews: [],
   },
   loading: false,
   error: null,
@@ -51,7 +57,7 @@ export const authSlice = createSlice({
         userId: payload.sub,
       };
 
-      Cookies.set("auth", JSON.stringify(user));
+      Cookies.set("userId", user.userId);
 
       Object.assign(state, {
         user,
@@ -62,19 +68,6 @@ export const authSlice = createSlice({
       Object.assign(state, initialState);
 
       Cookies.remove("auth");
-    },
-    initializeAuthState: (state) => {
-      const auth = Cookies.get("auth");
-      if (auth) {
-        const user = JSON.parse(auth);
-
-        Object.assign(state, {
-          user,
-          isLoggedIn: true,
-          loading: false,
-          error: null,
-        });
-      }
     },
   },
   extraReducers: (builder) => {
@@ -191,10 +184,30 @@ export const authSlice = createSlice({
           state.loading = false;
           toast.error(action.payload);
         }
+      )
+
+      .addCase(authThunks.initializeAuth.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        authThunks.initializeAuth.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.user = action.payload;
+          state.isLoggedIn = true;
+          state.loading = false;
+        }
+      )
+      .addCase(
+        authThunks.initializeAuth.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
       );
   },
 });
 
-export const { signin, signout, initializeAuthState } = authSlice.actions;
+export const { signin, signout } = authSlice.actions;
 
 export default authSlice.reducer;

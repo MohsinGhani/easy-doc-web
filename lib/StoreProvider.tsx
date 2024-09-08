@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Provider } from "react-redux";
 import { makeStore, AppStore } from "../lib/store";
-import { initializeAuthState } from "@/lib/features/auth/authSlice";
 import { cognitoUserPoolsTokenProvider } from "aws-amplify/auth/cognito";
 import { CookieStorage } from "aws-amplify/utils";
 import { Amplify } from "aws-amplify";
 import { userPoolId, identityPoolId, userPoolClientId } from "@/constants";
+import { authThunks } from "./features/auth/authThunks";
 
 Amplify.configure({
   Auth: {
@@ -35,13 +35,12 @@ export default function StoreProvider({
   const storeRef = useRef<AppStore>();
 
   if (!storeRef.current) {
-    // Create the store instance the first time this renders
     if (!isClient) {
       return null;
     }
 
     storeRef.current = makeStore();
-    storeRef.current.dispatch(initializeAuthState());
+    storeRef.current.dispatch(authThunks.initializeAuth());
   }
 
   return <Provider store={storeRef.current}>{children}</Provider>;

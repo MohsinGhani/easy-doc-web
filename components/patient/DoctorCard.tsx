@@ -14,7 +14,7 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
     <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0">
       <div className="relative">
         <Image
-          src={doctor.profile_image}
+          src={doctor.picture}
           alt={doctor.display_name}
           width={300}
           height={300}

@@ -23,13 +23,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Image from "next/image";
 import AddExperienceDialog from "./AddExperienceDialog";
 import { Trash2 } from "lucide-react";
 import DeleteDialog from "../DeleteDialog";
 import { degrees, fields, institutes } from "@/constants";
 import { SelectWithSearch } from "../SelectWithSearch";
-import { Separator } from "../ui/separator";
 
 export default function ManageEducation() {
   const [educations, setEducations] = useState([

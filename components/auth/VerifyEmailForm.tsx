@@ -14,17 +14,20 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useDelayedButton } from "@/hooks/useDelayedButton";
 import { useAppSelector } from "@/lib/hooks";
+import { useSearchParams } from "next/navigation";
 
 const VerifyEmailForm = () => {
   const { loading } = useAppSelector((state) => state.auth);
   const { resendConfirmationCode, confirmCode } = useAuth();
-  const { searchParams } = new URL(window.location.href);
+  const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
   const isEnabled = useDelayedButton(60000);
 
   useEffect(() => {
-    resendConfirmationCode({ email });
-  }, []);
+    if (email) {
+      resendConfirmationCode({ email });
+    }
+  }, [email]);
 
   const form = useForm<ConfirmCode>({
     resolver: zodResolver(ConfirmCodeSchema),

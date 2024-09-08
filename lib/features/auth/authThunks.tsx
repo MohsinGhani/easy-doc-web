@@ -1,5 +1,3 @@
-"use client";
-
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { signin as signinAction, signout as signoutAction } from "./authSlice";
 import { toast } from "sonner";
@@ -21,6 +19,8 @@ import {
   SigninPayload,
   SignupPayload,
 } from "@/types/auth";
+import Cookies from "js-cookie";
+import apiClient from "@/helpers/apiClient";
 
 export const authThunks = {
   signup: createAsyncThunk(
@@ -38,13 +38,12 @@ export const authThunks = {
               given_name,
               family_name,
               email,
+              picture: `https://randomuser.me/api/portraits/men/${Math.floor(
+                Math.random() * 100
+              )}`,
               "custom:role": role,
               "custom:verified": role === "doctor" ? "false" : "true",
               "custom:licence": role === "doctor" ? licence : "",
-            },
-            clientMetadata: {
-              role: role,
-              licence: role === "doctor" ? (licence as string) : "none",
             },
           },
         });
@@ -169,7 +168,6 @@ export const authThunks = {
           role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
         );
       } catch (error: any) {
-        console.log("🚀 ~ error:", error);
         console.log(error.message);
         const errorType =
           error.__type || error.code || error.name || error.message || error;
@@ -258,6 +256,26 @@ export const authThunks = {
       } catch (error: any) {
         toast.error(error.message || "Failed to reset password.");
         return rejectWithValue(error.message || "Something went wrong");
+      }
+    }
+  ),
+
+  initializeAuth: createAsyncThunk(
+    "auth/fetchUserDetails",
+    async (_, { rejectWithValue }) => {
+      try {
+        const userId = Cookies.get("userId");
+
+        if (!userId) {
+          throw new Error("No user ID found");
+        }
+
+        const response = await apiClient.get(`/auth/${userId}`);
+        console.log("🚀 ~ response:", response);
+        return response.data.data;
+      } catch (error) {
+        console.log("🚀 ~ error:", error);
+        return rejectWithValue("Failed to fetch user details");
       }
     }
   ),

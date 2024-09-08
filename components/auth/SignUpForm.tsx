@@ -76,7 +76,7 @@ const SignUpForm = () => {
         licence: role === "doctor" ? form.getValues().licence : "",
       };
 
-      const data = signup(values);
+      const data = await signup(values);
 
       if (data.type.includes("rejected")) {
         return setStatus("error");

@@ -13,11 +13,12 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { useEffect, useState } from "react";
-import apiClient from "@/helpers/apiClient";
+import { useEffect } from "react";
 import TimelineComponent from "./timelines/TimelineComponent";
 import AvailableTimings from "./patient/AvailableTimings";
 import PatientReviews from "./patient/review/PatientReviews";
+import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 const tabs = [
   { value: "experience", label: "Experience" },
@@ -32,19 +33,19 @@ interface DoctorProfileProps {
 }
 
 const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
-  const [doctor, setDoctor] = useState<Doctor | null>(null);
-  console.log("🚀 ~ doctor:", doctor);
+  const dispatch = useAppDispatch();
+  const { loading, fetchedDoctor: doctor } = useAppSelector(
+    (state) => state.doctor
+  );
 
   useEffect(() => {
-    const fetchDoctor = async () => {
-      const response = await apiClient.get(`/doctor/${doctorId}`);
-      setDoctor(response.data.data);
-    };
+    if (doctorId && typeof doctorId === "string") {
+      dispatch(doctorThunks.fetchDoctorById(doctorId));
+    }
+  }, [dispatch, doctorId]);
 
-    fetchDoctor();
-  }, [doctorId]);
-
-  if (!doctor) return null;
+  if (loading) return <div>Loading doctor details...</div>;
+  if (!doctor) return <div>Doctor not found.</div>;
 
   return (
     <div className="flex flex-col space-y-8">
@@ -69,8 +70,8 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
           <div className="flex gap-6">
             <div className="hidden lg:block relative max-w-96 w-full max-h-[600px]">
               <Image
-                src={doctor.profile_image}
-                alt={doctor.display_name}
+                src={doctor?.picture}
+                alt={doctor?.display_name}
                 width={300}
                 height={300}
                 className="w-full h-full object-cover rounded-lg"
@@ -88,8 +89,8 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
               <div className="w-full flex flex-col items-center justify-center lg:hidden">
                 <Avatar className="w-24 h-24 md:w-32 md:h-32 rounded-full mb-4 md:mb-0 md:mr-6">
                   <AvatarImage
-                    src={doctor.profile_image}
-                    alt={doctor.display_name}
+                    src={doctor?.picture}
+                    alt={doctor?.display_name}
                   />
                   <AvatarFallback>DJ</AvatarFallback>
                 </Avatar>
@@ -99,7 +100,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                 Available
               </Badge> */}
 
-                <h2 className="text-2xl font-bold">{doctor.display_name}</h2>
+                <h2 className="text-2xl font-bold">{doctor?.display_name}</h2>
               </div>
 
               <Badge variant={"success"} className="lg:inline-flex hidden">
@@ -108,13 +109,13 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
               </Badge>
 
               <div className="lg:block hidden">
-                <h2 className="text-2xl font-bold">{doctor.display_name}</h2>
+                <h2 className="text-2xl font-bold">{doctor?.display_name}</h2>
                 <p className="text-primary">Dentist</p>
               </div>
 
               <div className="flex items-center gap-2 text-sm sm:text-base text-zinc-600 font-normal leading-snug">
                 <p className="">
-                  {doctor.years_of_experience} years experience
+                  {doctor?.years_of_experience} years experience
                 </p>
                 <Separator
                   orientation="vertical"
@@ -122,7 +123,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                 />
                 <div className="flex gap-1 items-center">
                   <MapPin className="w-4 h-4" />
-                  <p className="">{doctor.city + " " + doctor.country}</p>
+                  <p className="">{doctor?.city + " " + doctor?.country}</p>
                 </div>
               </div>
 
@@ -135,7 +136,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
               </div>
               <div className="mb-4">
                 <h3 className="font-semibold mb-2">Bio</h3>
-                <p className="text-sm text-muted-foreground">{doctor.bio}</p>
+                <p className="text-sm text-muted-foreground">{doctor?.bio}</p>
               </div>
 
               <Separator />
@@ -160,7 +161,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                     <div className="flex items-center">
                       <Award className="w-5 h-5 mr-1 text-green-400" />
                       <p className="lg:text-base text-sm font-bold sm:font-semibold">
-                        {doctor.awards.length}+
+                        {doctor?.awards?.length}+
                       </p>
                     </div>
                   </div>
@@ -223,7 +224,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                 {tab.value === "experience" && (
                   <TimelineComponent
                     heading="Practical Experiences:"
-                    elements={doctor.experiences}
+                    elements={doctor?.experiences ?? []}
                     dateKey="time_period"
                     descriptionKey="description"
                     locationKey={["city", "country"]}
@@ -239,7 +240,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                     locationKey={["city", "country"]}
                     separators={{ locationKey: ", ", subTitleKeys: " - " }}
                     descriptionKey="description"
-                    elements={doctor.education}
+                    elements={doctor?.education ?? []}
                     heading="Educational Details:"
                     dateKey="time_period"
                   />
@@ -247,7 +248,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                 {tab.value === "awards" && (
                   <TimelineComponent
                     heading="Practical Experiences:"
-                    elements={doctor.awards}
+                    elements={doctor?.awards ?? []}
                     dateKey="year"
                     descriptionKey="description"
                     locationKey="city"
@@ -257,11 +258,13 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                   />
                 )}
                 {tab.value === "available-slots" && (
-                  <AvailableTimings availableDays={doctor.availableDays} />
+                  <AvailableTimings
+                    availableDays={doctor?.availableDays ?? []}
+                  />
                 )}
                 {tab.value === "reviews" && (
                   <PatientReviews
-                    reviews={doctor.reviews}
+                    reviews={doctor?.reviews ?? []}
                     doctorId={doctorId}
                   />
                 )}

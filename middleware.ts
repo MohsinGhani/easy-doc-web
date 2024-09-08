@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { decodeJWT, fetchAuthSession } from "aws-amplify/auth";
+import { decodeJWT } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import { userPoolId, identityPoolId, userPoolClientId } from "./constants";
 import {
@@ -45,7 +45,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
     const { "custom:role": role } = decodeJWT(token as string).payload;
 
-    if (isPublicRoute && role || role && pathname === "/") {
+    if ((isPublicRoute && role) || (role && pathname === "/")) {
       return NextResponse.redirect(
         new URL(
           role === "doctor"

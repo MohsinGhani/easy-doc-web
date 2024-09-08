@@ -22,16 +22,18 @@ interface SelectWithSearchProps {
   placeholder?: string;
   className?: string;
   onSelect: (value: string) => void;
+  defaultValue?: string;
 }
 
 export function SelectWithSearch({
   items,
   placeholder = "Select an item...",
-  onSelect,
   className,
+  onSelect,
+  defaultValue = "",
 }: SelectWithSearchProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState(defaultValue);
   const [customValue, setCustomValue] = React.useState("");
 
   const handleSelect = (currentValue: string) => {
@@ -50,54 +52,56 @@ export function SelectWithSearch({
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn("w-[200px] justify-between", className)}
-        >
-          {value
-            ? items.find((item) => item.value === value)?.label
-            : placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput
-            placeholder={`Search ${placeholder.toLowerCase()}`}
-            onValueChange={setCustomValue}
-          />
-          <CommandList>
-            <CommandEmpty>No item found.</CommandEmpty>
-            <CommandGroup>
-              {items.map((item) => (
-                <CommandItem
-                  key={item.value}
-                  value={item.value}
-                  onSelect={handleSelect}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === item.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {item.label}
-                </CommandItem>
-              ))}
-              {customValue && (
-                <CommandItem onSelect={handleAddCustom}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add &quot;{customValue}&quot;
-                </CommandItem>
-              )}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <div className="">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn("w-[200px] justify-between", className)}
+          >
+            {value
+              ? items.find((item) => item.value === value)?.label
+              : placeholder}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[200px] p-0">
+          <Command>
+            <CommandInput
+              placeholder={`Search ${placeholder.toLowerCase()}`}
+              onValueChange={setCustomValue}
+            />
+            <CommandList>
+              <CommandEmpty>No item found.</CommandEmpty>
+              <CommandGroup>
+                {items.map((item) => (
+                  <CommandItem
+                    key={item.value}
+                    value={item.value}
+                    onSelect={handleSelect}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === item.value ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {item.label}
+                  </CommandItem>
+                ))}
+                {customValue && (
+                  <CommandItem onSelect={handleAddCustom}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add &quot;{customValue}&quot;
+                  </CommandItem>
+                )}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }

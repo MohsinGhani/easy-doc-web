@@ -1,25 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DoctorCard from "./DoctorCard";
-import apiClient from "@/helpers/apiClient";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 
 export default function DoctorsList() {
-  const [doctors, setDoctors] = useState([]);
+  const dispatch = useAppDispatch();
+  const { allDoctors: doctors, loading } = useAppSelector(
+    (state) => state.doctor
+  );
 
   useEffect(() => {
-    const getAllDoctors = async () => {
-      try {
-        const { data } = await apiClient.get("/doctors/all");
-        setDoctors(data.data || []);
-        console.log(data);
-      } catch (error) {
-        console.log("🚀 ~ getAllDoctors ~ error:", error);
-      }
-    };
+    if (doctors.length === 0) {
+      dispatch(doctorThunks.fetchAllDoctors());
+    }
+  }, [dispatch]);
 
-    getAllDoctors();
-  }, []);
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="w-full lg:col-span-3">
