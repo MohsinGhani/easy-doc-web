@@ -7,7 +7,7 @@ declare type weekDay =
   | "saturday"
   | "sunday";
 
-declare type Gender = "male" | "female" | "other";
+declare type Gender = "male" | "female" | "other" | "N/D";
 
 declare type AvailableDay = {
   day: weekDay;
@@ -22,13 +22,15 @@ declare type AvailableSlot = {
 declare interface Experience {
   title: string;
   description: string;
-  employment_type: string;
+  employment_type: "fulltime" | "parttime" | "contract";
   hospital_name: string;
   city: string;
   country: string;
   currently_working: boolean;
-  time_period: string;
-  [key: string]: string | undefined;
+  time_period: {
+    from: string;
+    to: string;
+  };
 }
 
 declare interface Award {
@@ -78,7 +80,7 @@ declare type User = {
   location: string;
   rating: number;
   available: boolean;
-  verified: boolean;
+  verified: number;
   fee: number;
   languages: string[];
   experiences: Experience[];
@@ -104,7 +106,7 @@ declare type Doctor = {
   location: string;
   rating: number;
   available: boolean;
-  verified: boolean;
+  verified: number;
   fee: number;
   experiences: Experience[];
   awards: Award[];

@@ -17,6 +17,11 @@ import {
   InputOTPSlot,
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
+import { SelectWithSearch } from "@/components/SelectWithSearch";
+import MultipleSelector from "@/components/ui/multi-select";
+import { Checkbox } from "../ui/checkbox";
+import { Textarea } from "../ui/textarea";
+import { DateTimePicker } from "../ui/datetime-picker";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -28,6 +33,11 @@ export enum FormFieldType {
   PHONE_INPUT = "phoneInput",
   ROLE_SELECT = "role",
   COMBOBOX = "combobox",
+  SELECT = "select",
+  SELECT_WITH_SEARCH = "select_with_search",
+  MULTI_SELECT_WITH_SEARCH = "multi_select_with_search",
+  TEXTAREA = "textarea",
+  DATE_PICKER = "date-picker",
 }
 
 interface CustomProps {
@@ -42,6 +52,7 @@ interface CustomProps {
   showTimeSelect?: boolean;
   children?: React.ReactNode;
   renderSkeleton?: (field: any) => React.ReactNode;
+  items?: { value: string; label: string }[];
   fieldType: FormFieldType;
 }
 
@@ -108,6 +119,25 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
         </FormControl>
       );
 
+    case FormFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              id={props.name}
+            />
+            <label
+              htmlFor={props.name}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {props.label}
+            </label>
+          </div>
+        </FormControl>
+      );
+
     case FormFieldType.ROLE_SELECT:
       return (
         <FormControl>
@@ -154,6 +184,61 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               </FormLabel>
             </FormItem>
           </RadioGroup>
+        </FormControl>
+      );
+
+    case FormFieldType.SELECT_WITH_SEARCH:
+      return (
+        <FormControl>
+          <SelectWithSearch
+            items={props.items || []}
+            defaultValue={field.value}
+            onChange={field.onChange}
+            className="w-full"
+            {...props}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.MULTI_SELECT_WITH_SEARCH:
+      return (
+        <>
+          <FormControl>
+            <MultipleSelector
+              selectFirstItem={false}
+              defaultOptions={props.items}
+              hidePlaceholderWhenSelected
+              creatable
+              maxSelected={5}
+              emptyIndicator={
+                <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                  no results found.
+                </p>
+              }
+              {...props}
+              {...field}
+              className="w-full"
+            />
+          </FormControl>
+        </>
+      );
+
+    case FormFieldType.TEXTAREA:
+      return (
+        <FormControl>
+          <Textarea
+            placeholder={props.placeholder}
+            {...field}
+            className="w-full"
+            rows={5}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.DATE_PICKER:
+      return (
+        <FormControl className="w-full">
+          <DateTimePicker value={field.value} onChange={field.onChange} />
         </FormControl>
       );
 

@@ -29,70 +29,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
 import { SelectWithSearch } from "../SelectWithSearch";
 import { MultiSelectWithSearch } from "../MultiSelectWithSearch";
-import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { Loader } from "../Loader";
-
-const languages = [
-  {
-    label: "English",
-    value: "english",
-  },
-  {
-    label: "Spanish",
-    value: "spanish",
-  },
-  {
-    label: "French",
-    value: "french",
-  },
-  {
-    label: "German",
-    value: "german",
-  },
-];
-
-const COUNTRIES = [
-  {
-    label: "Pakistan",
-    value: "pakistan",
-  },
-  {
-    label: "Afghanistan",
-    value: "afghanistan",
-  },
-  {
-    label: "Albania",
-    value: "albania",
-  },
-  {
-    label: "Algeria",
-    value: "algeria",
-  },
-  {
-    label: "Andorra",
-    value: "andorra",
-  },
-];
-
-const CITIES = [
-  {
-    label: "Lahore",
-    value: "lahore",
-  },
-  {
-    label: "Karachi",
-    value: "karachi",
-  },
-  {
-    label: "Islamabad",
-    value: "islamabad",
-  },
-];
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { CITIES, COUNTRIES, LANGUAGES } from "@/constants";
 
 const ManageProfile = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -107,7 +50,6 @@ const ManageProfile = () => {
   );
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
   const { register, handleSubmit, setValue, getValues } = useForm<User>({
     defaultValues: {
@@ -154,33 +96,33 @@ const ManageProfile = () => {
   };
 
   const onSubmit = async (data: User) => {
-    try {
-      if (selectedImage) {
-        if (!base64Image) {
-          toast.error("Image not ready for upload.");
-          return;
-        }
-
-        updateExpression.picture = {
-          image: (base64Image as string).split(",")[1],
-          fileName: selectedImage.name,
-          mimeType: selectedImage.type,
-        };
-
-        console.log("🚀 ~ onSubmit ~ updateExpression:", updateExpression);
+    if (selectedImage) {
+      if (!base64Image) {
+        toast.error("Image not ready for upload.");
+        return;
       }
-      await dispatch(
-        doctorThunks.updateDoctorProfile({
-          doctorId: user?.userId || "",
-          updateData: updateExpression,
-        })
-      );
-      toast.success("Profile updated successfully!");
-      // router.push("/dashboard");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile.");
+
+      updateExpression.picture = {
+        image: (base64Image as string).split(",")[1],
+        fileName: selectedImage.name,
+        mimeType: selectedImage.type,
+      };
     }
+
+    const res = await dispatch(
+      authThunks.updateProfile({
+        userId: user?.userId || "",
+        updateData: updateExpression,
+      })
+    );
+
+    if (res.type.includes("rejected")) {
+      return;
+    }
+
+    setSelectedImage(null);
+    setBase64Image("");
+    setImagePreviewUrl("");
   };
 
   useEffect(() => {
@@ -193,7 +135,7 @@ const ManageProfile = () => {
       setValue("gender", user.gender || "");
       setValue("designation", user.designation || "");
       setValue("email", user.email || "");
-      setValue("phone_number", user.email || "");
+      setValue("phone_number", user.phone_number || "");
       setValue("country", user.country || "");
       setValue("city", user.city || "");
       setValue("languages", user.languages || "");
@@ -214,7 +156,7 @@ const ManageProfile = () => {
         <CardContent className="p-4 sm:p-6">
           <div className="flex sm:flex-row flex-col items-center sm:items-start sm:space-x-4 space-y-4 sm:space-y-0 w-full text-center sm:text-left">
             <div
-              className="w-28 h-28 border-2 bg-neutral-50 rounded-2xl border-dashed border-neutral-400 sm:flex items-center justify-center hidden"
+              className="min-w-28 w-full max-w-28 h-28 border-2 bg-neutral-50 rounded-2xl border-dashed border-neutral-400 sm:flex items-center justify-center hidden"
               onClick={handleImageUploadClick}
             >
               {imagePreviewUrl ? (
@@ -222,19 +164,20 @@ const ManageProfile = () => {
                   src={imagePreviewUrl}
                   width={100}
                   height={100}
-                  alt="Profile Preview"
-                  className="rounded-full"
+                  alt="Profile Picture"
+                  className="w-full h-full object-contain rounded-2xl"
                 />
               ) : (
                 <Image
-                  src={getValues("picture")}
-                  width={36}
-                  height={36}
-                  alt="image"
-                  className="w-full h-full object-contain"
+                  src={user.picture || ""}
+                  width={100}
+                  height={100}
+                  alt="Profile Picture 1"
+                  className="w-full h-full object-contain rounded-2xl"
                 />
               )}
             </div>
+
             <div className="flex flex-col items-center sm:items-start justify-between gap-5 w-full">
               <div className="space-y-1.5">
                 <CardTitle>Upload Profile Picture</CardTitle>
@@ -330,6 +273,7 @@ const ManageProfile = () => {
                 <Label htmlFor="gender">Gender</Label>
                 <Select
                   onValueChange={(value) => handleChange("gender", value)}
+                  defaultValue={user.gender}
                 >
                   <SelectTrigger id="gender">
                     <SelectValue placeholder="Select" />
@@ -378,7 +322,7 @@ const ManageProfile = () => {
                 <Label htmlFor="country">Country</Label>
                 <SelectWithSearch
                   onSelect={(value) => handleChange("country", value)}
-                  defaultValue={getValues("country")}
+                  defaultValue={user.country}
                   placeholder="Search country"
                   items={COUNTRIES}
                   {...register("country")}
@@ -389,7 +333,7 @@ const ManageProfile = () => {
                 <Label htmlFor="city">City</Label>
                 <SelectWithSearch
                   onSelect={(value) => handleChange("city", value)}
-                  defaultValue={getValues("city")}
+                  defaultValue={user.city}
                   placeholder="Search city"
                   items={CITIES}
                   {...register("city")}
@@ -402,7 +346,8 @@ const ManageProfile = () => {
                   <MultiSelectWithSearch
                     onSelect={(values) => handleChange("languages", values)}
                     placeholder="Select Languages"
-                    items={languages}
+                    items={LANGUAGES}
+                    defaultValues={user.languages}
                   />
                 </div>
               </div>
@@ -421,7 +366,9 @@ const ManageProfile = () => {
 
             <CardFooter className="flex justify-end space-x-2">
               <Button variant="ghost">Cancel</Button>
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" disabled={loading}>
+                Save Changes
+              </Button>
             </CardFooter>
           </form>
         </CardContent>

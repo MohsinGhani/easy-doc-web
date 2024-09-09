@@ -1,6 +1,7 @@
+"use client";
+
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,7 @@ interface SelectWithSearchProps {
   items: { value: string; label: string }[];
   placeholder?: string;
   className?: string;
-  onSelect: (value: string) => void;
+  onChange: (value: string) => void;
   defaultValue?: string;
 }
 
@@ -29,30 +30,36 @@ export function SelectWithSearch({
   items,
   placeholder = "Select an item...",
   className,
-  onSelect,
+  onChange,
   defaultValue = "",
 }: SelectWithSearchProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(defaultValue);
   const [customValue, setCustomValue] = React.useState("");
+  const [value, setValue] = React.useState(defaultValue);
 
-  const handleSelect = (currentValue: string) => {
-    const newValue = currentValue === value ? "" : currentValue;
-    setValue(newValue);
+  // Filter items based on the search input
+  const filteredItems = items.filter((item) =>
+    item.label.toLowerCase().includes(customValue.toLowerCase())
+  );
+
+  const handleSelect = (selectedValue: string | null) => {
+    const newValue = selectedValue === value ? "" : selectedValue;
+    setValue(newValue!);
     setOpen(false);
-    onSelect(newValue);
+    onChange(newValue!);
   };
 
   const handleAddCustom = () => {
     const newItem = { value: customValue.toLowerCase(), label: customValue };
-    items.push(newItem); // Add the custom item to the list
+    items.push(newItem); // Add new item to list
     setValue(newItem.value);
     setOpen(false);
-    onSelect(newItem.value);
+    onChange(newItem.value);
+    setCustomValue("");
   };
 
   return (
-    <div className="">
+    <div>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -74,30 +81,34 @@ export function SelectWithSearch({
               onValueChange={setCustomValue}
             />
             <CommandList>
-              <CommandEmpty>No item found.</CommandEmpty>
-              <CommandGroup>
-                {items.map((item) => (
-                  <CommandItem
-                    key={item.value}
-                    value={item.value}
-                    onSelect={handleSelect}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === item.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {item.label}
-                  </CommandItem>
-                ))}
-                {customValue && (
-                  <CommandItem onSelect={handleAddCustom}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add &quot;{customValue}&quot;
-                  </CommandItem>
-                )}
-              </CommandGroup>
+              {/* Add new custom value option */}
+              {customValue && (
+                <CommandItem onSelect={handleAddCustom}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add &quot;{customValue}&quot;
+                </CommandItem>
+              )}
+
+              {filteredItems.length === 0 ? (
+                <CommandEmpty>No item found.</CommandEmpty>
+              ) : (
+                <CommandGroup>
+                  {filteredItems.map((item) => (
+                    <CommandItem
+                      key={item.value}
+                      onSelect={() => handleSelect(item.value)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === item.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {item.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
             </CommandList>
           </Command>
         </PopoverContent>

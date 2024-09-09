@@ -174,3 +174,62 @@ export const fields = [
   { value: "intensive care", label: "Intensive Care" },
   { value: "biochemistry", label: "Biochemistry" },
 ];
+
+
+
+export const COUNTRIES = [
+  {
+    label: "Pakistan",
+    value: "pakistan",
+  },
+  {
+    label: "Afghanistan",
+    value: "afghanistan",
+  },
+  {
+    label: "Albania",
+    value: "albania",
+  },
+  {
+    label: "Algeria",
+    value: "algeria",
+  },
+  {
+    label: "Andorra",
+    value: "andorra",
+  },
+];
+
+export const CITIES = [
+  {
+    label: "Lahore",
+    value: "lahore",
+  },
+  {
+    label: "Karachi",
+    value: "karachi",
+  },
+  {
+    label: "Islamabad",
+    value: "islamabad",
+  },
+];
+
+export const LANGUAGES = [
+  {
+    label: "English",
+    value: "english",
+  },
+  {
+    label: "Spanish",
+    value: "spanish",
+  },
+  {
+    label: "French",
+    value: "french",
+  },
+  {
+    label: "German",
+    value: "german",
+  },
+];

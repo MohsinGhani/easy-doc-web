@@ -132,7 +132,7 @@ export const authThunks = {
           role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
         );
       } catch (error: any) {
-        return rejectWithValue(error.message);
+        return rejectWithValue(error.message || "Something went wrong");
       }
     }
   ),
@@ -271,11 +271,35 @@ export const authThunks = {
         }
 
         const response = await apiClient.get(`/auth/${userId}`);
-        console.log("🚀 ~ response:", response);
         return response.data.data;
       } catch (error) {
         console.log("🚀 ~ error:", error);
         return rejectWithValue("Failed to fetch user details");
+      }
+    }
+  ),
+
+  updateProfile: createAsyncThunk<
+    Partial<User>,
+    { userId: string; updateData: Record<string, any> },
+    { rejectValue: string }
+  >(
+    "auth/updateProfile",
+    async ({ userId, updateData }, { rejectWithValue }) => {
+      debugger;
+      try {
+        const response = await apiClient.put(`/auth/update`, {
+          userId,
+          updateData,
+        });
+
+        return response.data.data;
+      } catch (error: any) {
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to update profile";
+        return rejectWithValue(errorMessage);
       }
     }
   ),

@@ -79,7 +79,8 @@ const SignUpForm = () => {
       const data = await signup(values);
 
       if (data.type.includes("rejected")) {
-        return setStatus("error");
+        setStatus("error");
+        return;
       }
 
       destinationRef.current = email;

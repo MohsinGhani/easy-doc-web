@@ -26,7 +26,7 @@ const initialState: authState = {
     location: "",
     specialty: "",
     years_of_experience: "",
-    verified: false,
+    verified: 0,
     available: false,
     fee: 0,
     awards: [],
@@ -35,6 +35,11 @@ const initialState: authState = {
     experiences: [],
     rating: 2.0,
     reviews: [],
+    designation: "",
+    dob: "",
+    gender: "N/D",
+    languages: [],
+    phone_number: "",
   },
   loading: false,
   error: null,
@@ -53,7 +58,7 @@ export const authSlice = createSlice({
         family_name: payload.family_name,
         email: payload.email,
         role: payload["custom:role"],
-        verified: payload["custom:role"] === "doctor" ? false : true,
+        verified: payload["custom:role"] === "doctor" ? 0 : 1,
         userId: payload.sub,
       };
 
@@ -67,7 +72,7 @@ export const authSlice = createSlice({
     signout: (state) => {
       Object.assign(state, initialState);
 
-      Cookies.remove("auth");
+      Cookies.remove("userId");
     },
   },
   extraReducers: (builder) => {
@@ -203,6 +208,33 @@ export const authSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
+        }
+      )
+
+      .addCase(authThunks.updateProfile.pending, (state) => {
+        // debugger;
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        authThunks.updateProfile.fulfilled,
+        (state, action: PayloadAction<Partial<Doctor>>) => {
+          if (state.user) {
+            state.user = {
+              ...state.user,
+              ...action.payload,
+            };
+          }
+          state.loading = false;
+          toast.success("Profile updated successfully!");
+        }
+      )
+      .addCase(
+        authThunks.updateProfile.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+          toast.error(action.payload || "Failed to update profile");
         }
       );
   },

@@ -1,5 +1,7 @@
 "use client";
 
+import { useForm, Controller, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
@@ -10,106 +12,159 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { CardContent } from "../ui/card";
+import { experienceSchema } from "@/models/validationSchemas";
+import { CITIES, COUNTRIES } from "@/constants";
+import { useEffect } from "react";
+import { CustomFormField } from "../auth";
+import { FormFieldType } from "../auth/CustomFormField";
+import { Form } from "../ui/form";
 
 const AddExperienceDialog = () => {
+  const form = useForm({
+    resolver: zodResolver(experienceSchema),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = form;
+
+  const currentlyWorking = useWatch({
+    control,
+    name: "currently_working",
+    defaultValue: false,
+  });
+
+  const onSubmit = (data: any) => {
+    if (currentlyWorking) {
+      setValue("time_period.to", new Date());
+    }
+    console.log("🚀 ~ onSubmit ~ data:", data);
+  };
+
+  useEffect(() => {
+    if (currentlyWorking) {
+      setValue("time_period.to", new Date());
+    }
+  }, [currentlyWorking, setValue]);
+
   return (
     <Dialog>
       <DialogTrigger className={cn("", buttonVariants({ variant: "default" }))}>
         Add New Experience
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] border max-w-3xl lg:w-full w-[300px] rounded-xl overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add New Experience</DialogTitle>
-          <DialogDescription>Enter details below</DialogDescription>
-          <CardContent className="px-0 text-start">
-            <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor={`title`}>Title</Label>
-                <Input />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`hospital`}>Hospital Name</Label>
-                <Input />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`employment`}>Employment</Label>
-                <Select>
-                  <SelectTrigger id={`employment`}>
-                    <SelectValue placeholder="Select employment type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fulltime">Fulltime</SelectItem>
-                    <SelectItem value="parttime">Part-time</SelectItem>
-                    <SelectItem value="contract">Contract</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
 
-            <div className="mt-4 space-y-2 my-6">
-              <Label htmlFor={`description`}>Description</Label>
-              <Textarea id={`description`} rows={7} />
-            </div>
+      <DialogContent className="max-h-[90vh] border max-w-3xl md:w-full sm:w-[500px] w-[300px] rounded-xl overflow-y-auto">
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DialogHeader>
+              <DialogTitle>Add New Experience</DialogTitle>
+              <DialogDescription>Enter details below</DialogDescription>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor={`start-date`}>Start Date</Label>
-                <Input id={`start-date`} type="date" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`end-date`}>End Date</Label>
-                <Input id={`end-date`} type="date" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`city`}>City</Label>
-                <Select>
-                  <SelectTrigger id={`city`}>
-                    <SelectValue placeholder="Select city" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="karachi">Karachi</SelectItem>
-                    <SelectItem value="lahore">Lahore</SelectItem>
-                    <SelectItem value="islamabad">Islamabad</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="mt-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id={`current`} />
-                  <Label
-                    htmlFor={`current`}
-                    className="text-sm font-medium leading-none"
-                  >
-                    I currently work here
-                  </Label>
+              <CardContent className="px-0 text-start space-y-4 w-full">
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {/* title */}
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={control}
+                    name="title"
+                    label="Title"
+                    placeholder="Enter Job Title"
+                  />
+
+                  {/* hospital_name */}
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={control}
+                    name="hospital_name"
+                    label="Hospital Name"
+                    placeholder="Enter Hospital Name"
+                  />
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </DialogHeader>
-        <DialogFooter>
-          <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
-            Cancel
-          </DialogClose>
-          <DialogClose className={cn(buttonVariants({ variant: "default" }))}>
-            Add Experience
-          </DialogClose>
-        </DialogFooter>
+
+                {/* description */}
+                <CustomFormField
+                  fieldType={FormFieldType.TEXTAREA}
+                  control={control}
+                  name="description"
+                  label="Description"
+                  placeholder="Tell us about your experience"
+                />
+
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {/* time_period.from */}
+                  <CustomFormField
+                    fieldType={FormFieldType.DATE_PICKER}
+                    control={control}
+                    name="time_period.from"
+                    label="From"
+                  />
+
+                  {/* time_period.to */}
+                  <CustomFormField
+                    fieldType={FormFieldType.DATE_PICKER}
+                    control={control}
+                    name="time_period.to"
+                    label="To"
+                  />
+                </div>
+
+                <div className="grid lg:grid-cols-3 sm:grid-cols-2  gap-6">
+                  {/* city */}
+                  <CustomFormField
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={CITIES}
+                    name="city"
+                    label="City"
+                  />
+
+                  {/* country */}
+                  <CustomFormField
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={COUNTRIES}
+                    name="country"
+                    label="Country"
+                  />
+
+                  {/* employement_type */}
+                  <CustomFormField
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    name="employement_type"
+                    label="Employment Type"
+                    placeholder="Select"
+                  />
+                </div>
+
+                {/* currently_working */}
+                <CustomFormField
+                  fieldType={FormFieldType.CHECKBOX}
+                  control={control}
+                  name="currently_working"
+                  label="I currently work here"
+                />
+              </CardContent>
+            </DialogHeader>
+
+            <DialogFooter>
+              <DialogClose
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                Cancel
+              </DialogClose>
+              <Button type="submit">Add Experience</Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

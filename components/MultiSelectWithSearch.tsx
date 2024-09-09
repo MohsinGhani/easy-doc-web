@@ -22,6 +22,7 @@ interface MultiSelectWithSearchProps {
   placeholder?: string;
   className?: string;
   onSelect: (selectedItems: string[]) => void; // Returns all selected items
+  defaultValues?: string[];
 }
 
 export function MultiSelectWithSearch({
@@ -29,9 +30,10 @@ export function MultiSelectWithSearch({
   placeholder = "Select items...",
   onSelect,
   className,
+  defaultValues = [],
 }: MultiSelectWithSearchProps) {
   const [open, setOpen] = React.useState(false);
-  const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValues);
   const [customValue, setCustomValue] = React.useState("");
 
   // Handle selecting and unselecting items

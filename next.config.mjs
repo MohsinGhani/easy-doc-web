@@ -32,6 +32,11 @@ const nextConfig = {
         hostname: "randomuser.me",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "easy-doc-profile-images-dev.s3.amazonaws.com",
+        port: "",
+      },
     ],
   },
   webpack(config) {

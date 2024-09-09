@@ -16,19 +16,6 @@ const initialState: doctorSlice = {
   error: null,
 };
 
-const handleDoctorUpdate = (
-  state: doctorSlice,
-  action: PayloadAction<Partial<Doctor>>
-) => {
-  if (state.fetchedDoctor) {
-    state.fetchedDoctor = {
-      ...state.fetchedDoctor,
-      ...action.payload,
-    };
-    toast.success("Doctor data updated successfully!");
-  }
-};
-
 export const doctorSlice = createSlice({
   name: "doctor",
   initialState,
@@ -59,10 +46,9 @@ export const doctorSlice = createSlice({
           state.error = action.payload;
           toast.error(action.payload || "Failed to fetch doctors");
         }
-      );
+      )
 
-    // Fetch doctor by ID
-    builder
+      // Fetch doctor by ID
       .addCase(doctorThunks.fetchDoctorById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -82,10 +68,9 @@ export const doctorSlice = createSlice({
           state.error = action.payload;
           toast.error(action.payload || "Failed to fetch doctor details");
         }
-      );
+      )
 
-    // Submit doctor review
-    builder
+      // Submit doctor review
       .addCase(doctorThunks.submitDoctorReview.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -111,11 +96,11 @@ export const doctorSlice = createSlice({
           state.error = action.payload;
           toast.error(action.payload || "Failed to submit review");
         }
-      );
+      )
 
-    // Update doctor profile
-    builder
+      // Update doctor profile
       .addCase(doctorThunks.updateDoctorProfile.pending, (state) => {
+        debugger;
         state.loading = true;
         state.error = null;
       })
