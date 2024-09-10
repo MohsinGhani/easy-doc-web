@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
@@ -13,8 +13,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { CardContent } from "../ui/card";
 import { experienceSchema } from "@/models/validationSchemas";
@@ -27,33 +25,24 @@ import { Form } from "../ui/form";
 const AddExperienceDialog = () => {
   const form = useForm({
     resolver: zodResolver(experienceSchema),
+    defaultValues: { currently_working: false },
   });
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = form;
+  const { control, handleSubmit, setValue, watch } = form;
 
-  const currentlyWorking = useWatch({
-    control,
-    name: "currently_working",
-    defaultValue: false,
-  });
-
-  const onSubmit = (data: any) => {
-    if (currentlyWorking) {
-      setValue("time_period.to", new Date());
-    }
-    console.log("🚀 ~ onSubmit ~ data:", data);
-  };
+  const currentlyWorking = watch("currently_working");
 
   useEffect(() => {
     if (currentlyWorking) {
-      setValue("time_period.to", new Date());
+      setValue("end_date", "Present");
+    } else {
+      setValue("end_date", null);
     }
-  }, [currentlyWorking, setValue]);
+  }, [setValue, currentlyWorking]);
+
+  const onSubmit = (data) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
+  };
 
   return (
     <Dialog>
@@ -99,24 +88,36 @@ const AddExperienceDialog = () => {
                 />
 
                 <div className="grid sm:grid-cols-2 gap-6">
-                  {/* time_period.from */}
+                  {/* start_date */}
                   <CustomFormField
                     fieldType={FormFieldType.DATE_PICKER}
                     control={control}
-                    name="time_period.from"
-                    label="From"
+                    name="start_date"
+                    label="Start Date"
                   />
 
-                  {/* time_period.to */}
-                  <CustomFormField
-                    fieldType={FormFieldType.DATE_PICKER}
-                    control={control}
-                    name="time_period.to"
-                    label="To"
-                  />
+                  {/* end_date */}
+                  {!currentlyWorking ? (
+                    <CustomFormField
+                      fieldType={FormFieldType.DATE_PICKER}
+                      control={control}
+                      name="end_date"
+                      label="To"
+                      placeholder={"Select end date"}
+                    />
+                  ) : (
+                    <CustomFormField
+                      fieldType={FormFieldType.INPUT}
+                      control={control}
+                      name="end_date"
+                      label="To"
+                      disabled
+                      placeholder={"Present"}
+                    />
+                  )}
                 </div>
 
-                <div className="grid lg:grid-cols-3 sm:grid-cols-2  gap-6">
+                <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
                   {/* city */}
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
@@ -135,11 +136,11 @@ const AddExperienceDialog = () => {
                     label="Country"
                   />
 
-                  {/* employement_type */}
+                  {/* employment_type */}
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    name="employement_type"
+                    name="employment_type"
                     label="Employment Type"
                     placeholder="Select"
                   />

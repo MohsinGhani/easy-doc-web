@@ -21,7 +21,7 @@ import { SelectWithSearch } from "@/components/SelectWithSearch";
 import MultipleSelector from "@/components/ui/multi-select";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
-import { DateTimePicker } from "../ui/datetime-picker";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -61,7 +61,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.INPUT:
       return (
         <FormControl>
-          <Input placeholder={props.placeholder} {...field} />
+          <Input placeholder={props.placeholder} {...field} {...props} />
         </FormControl>
       );
 
@@ -237,8 +237,12 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
 
     case FormFieldType.DATE_PICKER:
       return (
-        <FormControl className="w-full">
-          <DateTimePicker value={field.value} onChange={field.onChange} />
+        <FormControl>
+          <DateTimePicker
+            {...field}
+            granularity={"day"}
+            displayFormat={{ hour24: "yyyy/MM/dd" }}
+          />
         </FormControl>
       );
 
