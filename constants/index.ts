@@ -215,6 +215,21 @@ export const CITIES = [
   },
 ];
 
+export const EMPLOYEMENT_TYPES = [
+  {
+    label: "Full Time",
+    value: "fulltime",
+  },
+  {
+    label: "Part Time",
+    value: "parttime",
+  },
+  {
+    label: "Contract",
+    value: "contract",
+  },
+];
+
 export const LANGUAGES = [
   {
     label: "English",

@@ -19,18 +19,18 @@ declare type AvailableSlot = {
   endTime: string;
 };
 
+declare type EMPLOYEMENT_TYPE = "fulltime" | "parttime" | "contract";
+
 declare interface Experience {
   title: string;
-  description: string;
-  employment_type: "fulltime" | "parttime" | "contract";
+  description?: string;
+  employment_type: EMPLOYEMENT_TYPE;
   hospital_name: string;
   city: string;
   country: string;
   currently_working: boolean;
-  time_period: {
-    from: string;
-    to: string;
-  };
+  start_date: string;
+  end_date: string;
 }
 
 declare interface Award {

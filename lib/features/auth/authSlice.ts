@@ -218,7 +218,8 @@ export const authSlice = createSlice({
       })
       .addCase(
         authThunks.updateProfile.fulfilled,
-        (state, action: PayloadAction<Partial<Doctor>>) => {
+        (state, action: PayloadAction<Partial<User>>) => {
+          console.log("🚀 ~ action.payload:", action.payload);
           if (state.user) {
             state.user = {
               ...state.user,

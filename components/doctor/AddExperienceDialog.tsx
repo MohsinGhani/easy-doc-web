@@ -16,16 +16,32 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CardContent } from "../ui/card";
 import { experienceSchema } from "@/models/validationSchemas";
-import { CITIES, COUNTRIES } from "@/constants";
+import { CITIES, COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
 import { useEffect } from "react";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
 import { Form } from "../ui/form";
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { format } from "date-fns";
 
 const AddExperienceDialog = () => {
-  const form = useForm({
+  const { user, loading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  const form = useForm<Experience>({
     resolver: zodResolver(experienceSchema),
-    defaultValues: { currently_working: false },
+    defaultValues: {
+      currently_working: false,
+      end_date: format(new Date(), "yyyy-MM-dd"),
+      city: CITIES[0].value,
+      country: COUNTRIES[0].value,
+      employment_type: EMPLOYEMENT_TYPES[0].value as EMPLOYEMENT_TYPE,
+      start_date: format(new Date(), "yyyy-MM-dd"),
+      title: "",
+      hospital_name: "",
+      description: "",
+    },
   });
 
   const { control, handleSubmit, setValue, watch } = form;
@@ -36,12 +52,18 @@ const AddExperienceDialog = () => {
     if (currentlyWorking) {
       setValue("end_date", "Present");
     } else {
-      setValue("end_date", null);
+      setValue("end_date", format(new Date(), "yyyy-MM-dd"));
     }
   }, [setValue, currentlyWorking]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data: Experience) => {
     console.log("🚀 ~ onSubmit ~ data:", data);
+    await dispatch(
+      authThunks.updateProfile({
+        userId: user?.userId || "",
+        updateData: { experiences: [data] },
+      })
+    );
   };
 
   return (
@@ -140,6 +162,7 @@ const AddExperienceDialog = () => {
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
+                    items={EMPLOYEMENT_TYPES}
                     name="employment_type"
                     label="Employment Type"
                     placeholder="Select"
@@ -162,7 +185,9 @@ const AddExperienceDialog = () => {
               >
                 Cancel
               </DialogClose>
-              <Button type="submit">Add Experience</Button>
+              <Button type="submit" disabled={loading}>
+                Add Experience
+              </Button>
             </DialogFooter>
           </form>
         </Form>

@@ -91,8 +91,9 @@ const ManageProfile = () => {
   const handleChange = (name: string, value: any) => {
     setUpdateExpression((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: Array.isArray(value) ? { value, replace: true } : value,
     }));
+
   };
 
   const onSubmit = async (data: User) => {
@@ -321,7 +322,7 @@ const ManageProfile = () => {
               <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
                 <SelectWithSearch
-                  onSelect={(value) => handleChange("country", value)}
+                  onChange={(value) => handleChange("country", value)}
                   defaultValue={user.country}
                   placeholder="Search country"
                   items={COUNTRIES}
@@ -332,7 +333,7 @@ const ManageProfile = () => {
               <div className="space-y-2">
                 <Label htmlFor="city">City</Label>
                 <SelectWithSearch
-                  onSelect={(value) => handleChange("city", value)}
+                  onChange={(value) => handleChange("city", value)}
                   defaultValue={user.city}
                   placeholder="Search city"
                   items={CITIES}

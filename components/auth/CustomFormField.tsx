@@ -22,6 +22,8 @@ import MultipleSelector from "@/components/ui/multi-select";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
+import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
+import { format } from "date-fns";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -37,6 +39,7 @@ export enum FormFieldType {
   SELECT_WITH_SEARCH = "select_with_search",
   MULTI_SELECT_WITH_SEARCH = "multi_select_with_search",
   TEXTAREA = "textarea",
+  AUTO_RESIZE_TEXTAREA = "textarea",
   DATE_PICKER = "date-picker",
 }
 
@@ -61,7 +64,12 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.INPUT:
       return (
         <FormControl>
-          <Input placeholder={props.placeholder} {...field} {...props} />
+          <Input
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            name={props.name}
+            {...field}
+          />
         </FormControl>
       );
 
@@ -89,21 +97,38 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.EMAIL:
       return (
         <FormControl>
-          <Input placeholder={props.placeholder} {...field} type="email" />
+          <Input
+            name={props.name}
+            placeholder={props.placeholder}
+            type="email"
+            disabled={props.disabled}
+            {...field}
+          />
         </FormControl>
       );
 
     case FormFieldType.PASSWORD:
       return (
         <FormControl>
-          <PasswordInput placeholder={props.placeholder} {...field} />
+          <PasswordInput
+            name={props.name}
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            {...field}
+          />
         </FormControl>
       );
 
     case FormFieldType.PHONE_INPUT:
       return (
         <FormControl>
-          <Input type={"tel"} placeholder={props.placeholder} {...field} />
+          <Input
+            name={props.name}
+            type={"tel"}
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            {...field}
+          />
         </FormControl>
       );
 
@@ -111,10 +136,12 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Input
+            name={props.name}
             placeholder={props.placeholder}
             type="number"
-            {...field}
             id="myNumberInput"
+            disabled={props.disabled}
+            {...field}
           />
         </FormControl>
       );
@@ -124,9 +151,11 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
         <FormControl>
           <div className="flex items-center space-x-2">
             <Checkbox
+              name={props.name}
               checked={field.value}
               onCheckedChange={field.onChange}
               id={props.name}
+              disabled={props.disabled}
             />
             <label
               htmlFor={props.name}
@@ -192,10 +221,9 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
         <FormControl>
           <SelectWithSearch
             items={props.items || []}
-            defaultValue={field.value}
+            defaultValue={field.value || []}
             onChange={field.onChange}
             className="w-full"
-            {...props}
           />
         </FormControl>
       );
@@ -205,8 +233,10 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
         <>
           <FormControl>
             <MultipleSelector
+              name={props.name}
+              {...field}
               selectFirstItem={false}
-              defaultOptions={props.items}
+              defaultOptions={props.items || []}
               hidePlaceholderWhenSelected
               creatable
               maxSelected={5}
@@ -215,9 +245,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
                   no results found.
                 </p>
               }
-              {...props}
-              {...field}
-              className="w-full"
+              disabled={props.disabled}
             />
           </FormControl>
         </>
@@ -227,10 +255,25 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Textarea
+            name={props.name}
             placeholder={props.placeholder}
-            {...field}
             className="w-full"
             rows={5}
+            disabled={props.disabled}
+            {...field}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.AUTO_RESIZE_TEXTAREA:
+      return (
+        <FormControl>
+          <AutosizeTextarea
+            name={props.name}
+            placeholder={props.placeholder}
+            rows={5}
+            disabled={props.disabled}
+            {...field}
           />
         </FormControl>
       );
@@ -239,9 +282,18 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <DateTimePicker
-            {...field}
+            name={props.name}
+            value={
+              field.value === "Present"
+                ? new Date()
+                : new Date(field.value) ?? new Date()
+            }
+            onChange={(value) =>
+              field.onChange(format(value as Date, "yyyy/MM/dd"))
+            }
             granularity={"day"}
             displayFormat={{ hour24: "yyyy/MM/dd" }}
+            disabled={props.disabled}
           />
         </FormControl>
       );
