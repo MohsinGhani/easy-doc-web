@@ -1,6 +1,13 @@
 import { StarIcon } from "lucide-react";
 
-const ReviewItem = ({ name, date, rating, comment }) => {
+interface RatingItemProps {
+  name: string;
+  date: string;
+  rating: number;
+  comment: string;
+}
+
+const ReviewItem = ({ name, date, rating, comment }: RatingItemProps) => {
   return (
     <div className="border-t py-4">
       <div className="flex items-center justify-between text-sm mb-2">

@@ -175,8 +175,6 @@ export const fields = [
   { value: "biochemistry", label: "Biochemistry" },
 ];
 
-
-
 export const COUNTRIES = [
   {
     label: "Pakistan",
@@ -247,4 +245,13 @@ export const LANGUAGES = [
     label: "German",
     value: "german",
   },
+];
+
+export const GRADES = [
+  { label: "A +", value: "a +" },
+  { label: "A", value: "a" },
+  { label: "B", value: "b" },
+  { label: "C", value: "c" },
+  { label: "D", value: "d" },
+  { label: "NO GRADE", value: "no grade" },
 ];

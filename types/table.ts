@@ -3,6 +3,7 @@ import { DateRange } from "react-day-picker";
 export type BaseAppointment = {
   // Patient Specific Fields
   id: string;
+  patientId: string;
   patient_avatarUrl: string;
   patient_city: string;
   patient_state: string;

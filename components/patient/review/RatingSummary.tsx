@@ -1,6 +1,14 @@
 import { StarIcon } from "lucide-react";
 
-const RatingSummary = ({ overallRating, ratingsBreakdown }) => {
+interface RatingSummaryProps {
+  overallRating: number;
+  ratingsBreakdown: { [rating: number]: number }; // Example: { 5: 100, 4: 20, 3: 50, 2: 10, 1: 0 }
+}
+
+const RatingSummary = ({
+  overallRating,
+  ratingsBreakdown,
+}: RatingSummaryProps) => {
   return (
     <div className="flex items-center justify-between">
       {/* Overall Rating */}
@@ -12,16 +20,16 @@ const RatingSummary = ({ overallRating, ratingsBreakdown }) => {
       {/* Rating Breakdown */}
       <div className="w-full ml-6">
         {Object.keys(ratingsBreakdown).map((rating) => (
-          <div key={rating} className="flex items-center mb-1">
+          <div key={Number(rating)} className="flex items-center mb-1">
             <span className="text-sm mr-2">{rating}</span>
             <div className="w-full h-3 bg-gray-300 rounded-full overflow-hidden">
               <div
                 className="bg-yellow-500 h-full"
-                style={{ width: `${ratingsBreakdown[rating]}%` }}
+                style={{ width: `${ratingsBreakdown[Number(rating)]}%` }}
               ></div>
             </div>
             <span className="ml-2 text-sm">
-              {ratingsBreakdown[rating].toFixed(1)}%
+              {ratingsBreakdown[Number(rating)].toFixed(1)}%
             </span>
           </div>
         ))}

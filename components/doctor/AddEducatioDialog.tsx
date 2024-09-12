@@ -16,10 +16,10 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CardContent } from "../ui/card";
 import {
-  experienceSchema,
-  experienceSchemaType,
+  educationSchema,
+  educationSchemaType,
 } from "@/models/validationSchemas";
-import { CITIES, COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
+import { degrees, fields, GRADES, institutes } from "@/constants";
 import { useEffect } from "react";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
@@ -28,77 +28,91 @@ import { authThunks } from "@/lib/features/auth/authThunks";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { format } from "date-fns";
 
-const AddExperienceDialog = () => {
+const AddEducationDialog = () => {
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const form = useForm<experienceSchemaType>({
-    resolver: zodResolver(experienceSchema),
+  const form = useForm<educationSchemaType>({
+    resolver: zodResolver(educationSchema),
     defaultValues: {
-      currently_working: false,
-      end_date: format(new Date(), "yyyy-MM-dd"),
-      city: CITIES[0].value,
-      country: COUNTRIES[0].value,
-      employment_type: EMPLOYEMENT_TYPES[0].value as EMPLOYEMENT_TYPE,
-      start_date: format(new Date(), "yyyy-MM-dd"),
-      title: "",
-      hospital_name: "",
+      degree_name: degrees[0].value,
+      field: fields[0].value,
       description: "",
+      institute: institutes[0].value,
+      start_date: format(new Date(), "yyyy-MM-dd"),
+      end_date: format(new Date(), "yyyy-MM-dd"),
+      currently_studying: false,
+      grade: GRADES[0].value,
     },
   });
 
-  const { control, handleSubmit, setValue, watch } = form;
-
-  const currentlyWorking = watch("currently_working");
-
-  useEffect(() => {
-    if (currentlyWorking) {
-      setValue("end_date", "Present");
-    } else {
-      setValue("end_date", format(new Date(), "yyyy-MM-dd"));
-    }
-  }, [setValue, currentlyWorking]);
-
-  const onSubmit = async (data: experienceSchemaType) => {
+  const onSubmit = async (data: educationSchemaType) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
     await dispatch(
       authThunks.updateProfile({
         userId: user?.userId || "",
-        updateData: { experiences: { value: [data], replace: false } },
+        updateData: { education: { value: [data], replace: false } },
       })
     );
   };
 
+  const { control, handleSubmit, setValue, watch } = form;
+
+  const currentlyStudying = watch("currently_studying");
+
+  useEffect(() => {
+    if (currentlyStudying) {
+      setValue("end_date", "Present");
+      setValue("grade", "NO GRADE");
+    } else {
+      setValue("end_date", format(new Date(), "yyyy-MM-dd"));
+      setValue("grade", GRADES[0].value);
+    }
+  }, [setValue, currentlyStudying]);
+
   return (
     <Dialog>
       <DialogTrigger className={cn("", buttonVariants({ variant: "default" }))}>
-        Add New Experience
+        Add New Education
       </DialogTrigger>
 
       <DialogContent className="max-h-[90vh] border max-w-3xl md:w-full sm:w-[500px] w-[300px] rounded-xl overflow-y-auto">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Add New Experience</DialogTitle>
+              <DialogTitle>Add New Education</DialogTitle>
               <DialogDescription>Enter details below</DialogDescription>
 
               <CardContent className="px-0 text-start space-y-4 w-full">
-                <div className="grid sm:grid-cols-2 gap-6">
-                  {/* title */}
+                <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
+                  {/* institute */}
                   <CustomFormField
-                    fieldType={FormFieldType.INPUT}
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    name="title"
-                    label="Title"
-                    placeholder="Enter Job Title"
+                    items={institutes}
+                    name={`institute`}
+                    label="Institute"
+                    placeholder={"Select institute..."}
                   />
 
-                  {/* hospital_name */}
+                  {/* degree_name */}
                   <CustomFormField
-                    fieldType={FormFieldType.INPUT}
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    name="hospital_name"
-                    label="Hospital Name"
-                    placeholder="Enter Hospital Name"
+                    items={degrees}
+                    name={`degree_name`}
+                    label="Select degree..."
+                    placeholder="Degree"
+                  />
+
+                  {/* field */}
+                  <CustomFormField
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={fields}
+                    name={`field`}
+                    label="Field of study"
+                    placeholder="Select Field..."
                   />
                 </div>
 
@@ -111,7 +125,7 @@ const AddExperienceDialog = () => {
                   placeholder="Tell us about your experience"
                 />
 
-                <div className="grid sm:grid-cols-2 gap-6">
+                <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
                   {/* start_date */}
                   <CustomFormField
                     fieldType={FormFieldType.DATE_PICKER}
@@ -121,7 +135,7 @@ const AddExperienceDialog = () => {
                   />
 
                   {/* end_date */}
-                  {!currentlyWorking ? (
+                  {!currentlyStudying ? (
                     <CustomFormField
                       fieldType={FormFieldType.DATE_PICKER}
                       control={control}
@@ -139,44 +153,35 @@ const AddExperienceDialog = () => {
                       placeholder={"Present"}
                     />
                   )}
+
+                  {/* grade */}
+                  {!currentlyStudying ? (
+                    <CustomFormField
+                      fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                      control={control}
+                      items={GRADES}
+                      name={`grade`}
+                      label="Grade"
+                      placeholder="Select grade..."
+                    />
+                  ) : (
+                    <CustomFormField
+                      fieldType={FormFieldType.INPUT}
+                      control={control}
+                      name={`grade`}
+                      label="To"
+                      disabled
+                      placeholder="NO GRADE"
+                    />
+                  )}
                 </div>
 
-                <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
-                  {/* city */}
-                  <CustomFormField
-                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                    control={control}
-                    items={CITIES}
-                    name="city"
-                    label="City"
-                  />
-
-                  {/* country */}
-                  <CustomFormField
-                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                    control={control}
-                    items={COUNTRIES}
-                    name="country"
-                    label="Country"
-                  />
-
-                  {/* employment_type */}
-                  <CustomFormField
-                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                    control={control}
-                    items={EMPLOYEMENT_TYPES}
-                    name="employment_type"
-                    label="Employment Type"
-                    placeholder="Select"
-                  />
-                </div>
-
-                {/* currently_working */}
+                {/* currently_studying */}
                 <CustomFormField
                   fieldType={FormFieldType.CHECKBOX}
                   control={control}
-                  name="currently_working"
-                  label="I currently work here"
+                  name="currently_studying"
+                  label="I am currently studying"
                 />
               </CardContent>
             </DialogHeader>
@@ -188,7 +193,7 @@ const AddExperienceDialog = () => {
                 Cancel
               </DialogClose>
               <Button type="submit" disabled={loading}>
-                Add Experience
+                Add Education
               </Button>
             </DialogFooter>
           </form>
@@ -198,4 +203,4 @@ const AddExperienceDialog = () => {
   );
 };
 
-export default AddExperienceDialog;
+export default AddEducationDialog;

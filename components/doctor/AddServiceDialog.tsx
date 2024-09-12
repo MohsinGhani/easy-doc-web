@@ -36,7 +36,7 @@ const AddServiceDialog = () => {
                 <SelectWithSearch
                   items={[]}
                   placeholder="Select Speciality"
-                  onSelect={() => {
+                  onChange={() => {
                     console.log("selected Speciality");
                   }}
                   className="w-full"
@@ -47,7 +47,7 @@ const AddServiceDialog = () => {
                 <SelectWithSearch
                   items={[]}
                   placeholder="Select Service"
-                  onSelect={() => {
+                  onChange={() => {
                     console.log("selected Service");
                   }}
                   className="w-full"

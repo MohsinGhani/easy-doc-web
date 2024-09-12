@@ -1,7 +1,11 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,26 +14,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { experienceSchema } from "@/models/validationSchemas";
-import { authThunks } from "@/lib/features/auth/authThunks";
-import AddExperienceDialog from "./AddExperienceDialog";
-import { Loader } from "../Loader";
 import { CITIES, COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
-import { Form } from "../ui/form";
-import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { useEffect } from "react";
+  experienceSchema,
+  experienceSchemaType,
+} from "@/models/validationSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { z } from "zod";
-import { isEqual } from "lodash";
 import { Trash2 } from "lucide-react";
+import { useEffect } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
 import DeleteDialog from "../DeleteDialog";
+import { Loader } from "../Loader";
+import { Form } from "../ui/form";
+import AddExperienceDialog from "./AddExperienceDialog";
 
 export default function ManageExperiences() {
   const { user, loading } = useAppSelector((state) => state.auth);
@@ -39,7 +41,7 @@ export default function ManageExperiences() {
     experiences: z.array(experienceSchema),
   });
 
-  const form = useForm({
+  const form = useForm<{ experiences: experienceSchemaType[] }>({
     resolver: zodResolver(schema),
     defaultValues: {
       experiences: user?.experiences || [],
@@ -50,7 +52,7 @@ export default function ManageExperiences() {
     control,
     handleSubmit,
     watch,
-    formState: { errors, isDirty },
+    formState: { isDirty },
   } = form;
 
   const { fields, replace } = useFieldArray({
@@ -73,27 +75,18 @@ export default function ManageExperiences() {
     }
   }, [user?.experiences, replace]);
 
-  const onSubmit = async (data: { experiences: Experience[] }) => {
-    const updatedExperiences = data.experiences.filter((experience, index) => {
-      const originalExperience = user?.experiences?.[index];
-      return !isEqual(experience, originalExperience);
-    });
-
-    if (updatedExperiences.length > 0) {
-      await dispatch(
-        authThunks.updateProfile({
-          userId: user?.userId || "",
-          updateData: {
-            experiences: {
-              value: updatedExperiences,
-              replace: true,
-            },
+  const onSubmit = async (data: { experiences: experienceSchemaType[] }) => {
+    await dispatch(
+      authThunks.updateProfile({
+        userId: user?.userId || "",
+        updateData: {
+          experiences: {
+            value: data.experiences,
+            replace: true,
           },
-        })
-      );
-    } else {
-      console.log("No changes detected");
-    }
+        },
+      })
+    );
   };
 
   if (loading) return <Loader />;
@@ -127,7 +120,7 @@ export default function ManageExperiences() {
                       className="mb-6 "
                     >
                       <AccordionTrigger
-                        className="hover:no-underline p-4 rounded-xl border bg-card text-card-foreground shadow"
+                        className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6"
                         DeleteIcon={
                           <>
                             <DeleteDialog
@@ -135,9 +128,20 @@ export default function ManageExperiences() {
                                 <Trash2 className="h-4 w-4 shrink-0 text-destructive" />
                               }
                               text="Your education will be deleted"
-                              onReject={() => {
-                                // do nothing
-                                console.log("rejected");
+                              onReject={async () => {
+                                await dispatch(
+                                  authThunks.updateProfile({
+                                    userId: user?.userId || "",
+                                    updateData: {
+                                      experiences: {
+                                        value: user?.experiences?.filter(
+                                          (_, i) => i !== index
+                                        ),
+                                        replace: true,
+                                      },
+                                    },
+                                  })
+                                );
                               }}
                             />
                           </>
@@ -145,21 +149,23 @@ export default function ManageExperiences() {
                       >
                         <div className="flex flex-col items-start w-full">
                           <h3 className="font-semibold">
-                            {field.hospital_name || "Hospital"}
+                            {field.hospital_name}
                           </h3>
                           <p className="text-sm text-muted-foreground">
                             {field.title}
                           </p>
                           <p className="text-sm text-gray-500">
                             {format(field.start_date, "yyyy")} -{" "}
-                            {field.end_date}
+                            {field.end_date === "Present"
+                              ? field.end_date
+                              : format(field.end_date, "yyyy")}
                           </p>
                         </div>
                       </AccordionTrigger>
 
                       <AccordionContent>
                         {/* Fields for the experience */}
-                        <div className="space-y-4 p-6 rounded-xl bg-secondary/10">
+                        <div className="space-y-4 p-6 rounded-xl bg-secondary/25">
                           <div className="grid sm:grid-cols-2 gap-6">
                             {/* title */}
                             <CustomFormField

@@ -67,14 +67,20 @@ export function SelectWithSearch({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className={cn("w-[200px] justify-between", className)}
+            className={cn(
+              "w-[200px] justify-between max-w-full text-left truncate",
+              className
+            )}
           >
-            {value
-              ? items.find((item) => item.value === value)?.label
-              : placeholder}
+            <span className="max-w-[90%] truncate">
+              {value
+                ? items.find((item) => item.value === value)?.label
+                : placeholder}
+            </span>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
+
         <PopoverContent className="w-[200px] p-0">
           <Command>
             <CommandInput

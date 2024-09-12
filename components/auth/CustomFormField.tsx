@@ -24,6 +24,8 @@ import { Textarea } from "../ui/textarea";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { format } from "date-fns";
+import { DayPicker } from "react-day-picker";
+import YearPicker from "../ui/year-picker";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -41,6 +43,7 @@ export enum FormFieldType {
   TEXTAREA = "textarea",
   AUTO_RESIZE_TEXTAREA = "textarea",
   DATE_PICKER = "date-picker",
+  YEAR_PICKER = "year-picker",
 }
 
 interface CustomProps {
@@ -282,7 +285,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <DateTimePicker
-            name={props.name}
             value={
               field.value === "Present"
                 ? new Date()
@@ -293,6 +295,19 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             }
             granularity={"day"}
             displayFormat={{ hour24: "yyyy/MM/dd" }}
+            disabled={props.disabled}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.YEAR_PICKER:
+      return (
+        <FormControl>
+          <YearPicker
+            value={field.value}
+            onChange={field.onChange}
+            fromYear={new Date().getFullYear() - 70}
+            toYear={new Date().getFullYear()}
             disabled={props.disabled}
           />
         </FormControl>

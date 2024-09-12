@@ -219,11 +219,13 @@ export const requestsColumns = ({
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={row.original.avatarUrl} alt="Avatar" />
-            <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={row.original.patient_avatarUrl} alt="Avatar" />
+            <AvatarFallback>
+              {row.original.patient_name.charAt(0)}
+            </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{row.original.name}</div>
+            <div className="font-medium">{row.original.patient_name}</div>
             {/* <div className="text-sm text-muted-foreground">
               {row.getValue("email")}
             </div> */}
@@ -248,7 +250,7 @@ export const requestsColumns = ({
       },
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.getValue("age")}, {row.original.gender}
+          {row.getValue("age")}, {row.original.patient_gender}
         </div>
       ),
       meta: { className: "hidden sm:table-cell" },
@@ -353,7 +355,7 @@ export const requestsColumns = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <RejectRequestDialog
-                      name={row.original.name}
+                      name={row.original.patient_name}
                       onReject={() => console.log("rejected", row.original.id)}
                       trigger={
                         <Button variant="outline" size="icon">
@@ -401,7 +403,7 @@ export const requestsColumns = ({
                     <EyeIcon className="h-5 w-5 mr-2" /> View Request
                   </Button>
                   <RejectRequestDialog
-                    name={row.original.name}
+                    name={row.original.patient_name}
                     onReject={() => console.log("rejected", row.original.id)}
                     trigger={
                       <Button
@@ -457,14 +459,18 @@ export const upcomingColumns = ({
         return (
           <div className="flex items-start gap-2">
             <Avatar>
-              <AvatarImage src={row.original.avatarUrl} alt="Avatar" />
-              <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
+              <AvatarImage src={row.original.patient_avatarUrl} alt="Avatar" />
+              <AvatarFallback>
+                {row.original.patient_name.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="text-xs font-normal text-muted-foreground">
                 # PA-{row.getValue("id")}
               </div>
-              <div className="text-base font-semibold">{row.original.name}</div>
+              <div className="text-base font-semibold">
+                {row.original.patient_name}
+              </div>
               <div className="text-sm text-muted-foreground flex items-center">
                 <MapPin className="mr-1 h-4 w-4" /> Florida , USA
               </div>
@@ -540,7 +546,7 @@ export const upcomingColumns = ({
           </div>
           <div className="text-sm font-normal flex gap-1 items-center">
             <PhoneCall className="w-5 h-5" />
-            {row.original.phone}
+            {row.original.patient_phone}
           </div>
         </div>
       ),
@@ -645,15 +651,15 @@ export const upcomingColumns = ({
 export function createAppointment(id: string, index: number): BaseAppointment {
   return {
     id,
-    avatarUrl: `https://i.pravatar.cc/150?img=${index}`,
+    patient_avatarUrl: `https://i.pravatar.cc/150?img=${index}`,
     patientId: `PID-${id}`,
-    name: `Patient ${id}`,
-    email: `patient${id}@example.com`,
-    phone: `+123456789${id}`,
-    city: `City ${id}`,
-    state: `State ${id}`,
-    country: `Country ${id}`,
-    scheduledDate: {
+    patient_name: `Patient ${id}`,
+    patient_email: `patient${id}@example.com`,
+    patient_phone: `+123456789${id}`,
+    patient_city: `City ${id}`,
+    patient_state: `State ${id}`,
+    patient_country: `Country ${id}`,
+    patient_scheduledDate: {
       from: new Date(Date.now() + Math.random() * (24 * 60 * 60 * 1000)),
       to: new Date(
         Date.now() + Math.random() * (24 * 60 * 60 * 1000) + 30 * 60 * 1000

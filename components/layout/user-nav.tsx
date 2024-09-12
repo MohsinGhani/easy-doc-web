@@ -38,8 +38,10 @@ export function UserNav() {
                 className="relative h-8 w-8 rounded-full"
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user?.avatar} alt="Avatar" />
-                  <AvatarFallback className="bg-transparent">JD</AvatarFallback>
+                  <AvatarImage src={user?.picture} alt="Avatar" />
+                  <AvatarFallback className="bg-transparent">
+                    {user.given_name.charAt(0) + user.family_name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

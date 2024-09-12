@@ -31,13 +31,13 @@ declare interface Experience {
   currently_working: boolean;
   start_date: string;
   end_date: string;
+  [key: string]: string | undefined;
 }
 
 declare interface Award {
   award_name: string;
   description: string;
   institute: string;
-  location: string;
   year: string;
   [key: string]: string | undefined;
 }
@@ -47,9 +47,10 @@ declare interface Education {
   field: string;
   description: string;
   institute: string;
-  time_period: string;
-  city: string;
-  country: string;
+  start_date: string;
+  end_date: string;
+  currently_studying: boolean;
+  grade: string;
   [key: string]: string | undefined;
 }
 

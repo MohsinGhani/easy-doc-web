@@ -51,7 +51,7 @@ const ManageProfile = () => {
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const { register, handleSubmit, setValue, getValues } = useForm<User>({
+  const { register, handleSubmit, setValue } = useForm<User>({
     defaultValues: {
       given_name: "",
       family_name: "",
@@ -237,12 +237,19 @@ const ManageProfile = () => {
               {/* display_name */}
               <div className="space-y-2">
                 <Label htmlFor="display_name">Display name</Label>
-                <Input
-                  id="display_name"
-                  placeholder="Enter your display name"
-                  {...register("display_name")}
-                  onChange={(e) => handleChange("display_name", e.target.value)}
-                />
+                <div className="flex items-center border border-input rounded-md lg:px-6 sm:px-4 px-3  py-[6px]">
+                  <span className="mr-2">Dr.</span>
+                  <input
+                    id="display_name"
+                    type="text"
+                    placeholder="Enter your display name"
+                    className="flex-grow bg-transparent outline-none text-sm"
+                    {...register("display_name")}
+                    onChange={(e) =>
+                      handleChange("display_name", e.target.value)
+                    }
+                  />
+                </div>
               </div>
               {/* dob */}
               <div className="space-y-2">
