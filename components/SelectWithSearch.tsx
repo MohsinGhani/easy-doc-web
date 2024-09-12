@@ -27,7 +27,7 @@ interface SelectWithSearchProps {
 }
 
 export function SelectWithSearch({
-  items,
+  items: initialItems,
   placeholder = "Select an item...",
   className,
   onChange,
@@ -36,6 +36,7 @@ export function SelectWithSearch({
   const [open, setOpen] = React.useState(false);
   const [customValue, setCustomValue] = React.useState("");
   const [value, setValue] = React.useState(defaultValue);
+  const [items, setItems] = React.useState(initialItems);
 
   // Filter items based on the search input
   const filteredItems = items.filter((item) =>
@@ -51,7 +52,7 @@ export function SelectWithSearch({
 
   const handleAddCustom = () => {
     const newItem = { value: customValue.toLowerCase(), label: customValue };
-    items.push(newItem); // Add new item to list
+    setItems((prevItems) => [...prevItems, newItem]); // Add new item to list state
     setValue(newItem.value);
     setOpen(false);
     onChange(newItem.value);
@@ -79,18 +80,20 @@ export function SelectWithSearch({
             <CommandInput
               placeholder={`Search ${placeholder.toLowerCase()}`}
               onValueChange={setCustomValue}
+              value={customValue}
             />
             <CommandList>
               {/* Add new custom value option */}
-              {customValue && (
-                <CommandItem onSelect={handleAddCustom}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add &quot;{customValue}&quot;
-                </CommandItem>
-              )}
+              {customValue &&
+                !items.some((item) => item.label === customValue) && (
+                  <CommandItem onSelect={handleAddCustom}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add &quot;{customValue}&quot;
+                  </CommandItem>
+                )}
 
               {filteredItems.length === 0 ? (
-                <CommandEmpty>No item found.</CommandEmpty>
+                <CommandEmpty>No items found.</CommandEmpty>
               ) : (
                 <CommandGroup>
                   {filteredItems.map((item) => (

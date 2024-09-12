@@ -28,6 +28,8 @@ import { useEffect } from "react";
 import { format } from "date-fns";
 import { z } from "zod";
 import { isEqual } from "lodash";
+import { Trash2 } from "lucide-react";
+import DeleteDialog from "../DeleteDialog";
 
 export default function ManageExperiences() {
   const { user, loading } = useAppSelector((state) => state.auth);
@@ -72,14 +74,10 @@ export default function ManageExperiences() {
   }, [user?.experiences, replace]);
 
   const onSubmit = async (data: { experiences: Experience[] }) => {
-    console.log("Form data on submit:", data);
-
     const updatedExperiences = data.experiences.filter((experience, index) => {
       const originalExperience = user?.experiences?.[index];
       return !isEqual(experience, originalExperience);
     });
-
-    console.log("Updated experiences:", updatedExperiences);
 
     if (updatedExperiences.length > 0) {
       await dispatch(
@@ -123,17 +121,38 @@ export default function ManageExperiences() {
                   );
 
                   return (
-                    <AccordionItem value={`item-${index}`} key={field.id}>
-                      <AccordionTrigger className="hover:no-underline p-4 rounded-xl border bg-card text-card-foreground shadow mb-6">
+                    <AccordionItem
+                      value={`item-${index}`}
+                      key={field.id}
+                      className="mb-6 "
+                    >
+                      <AccordionTrigger
+                        className="hover:no-underline p-4 rounded-xl border bg-card text-card-foreground shadow"
+                        DeleteIcon={
+                          <>
+                            <DeleteDialog
+                              trigger={
+                                <Trash2 className="h-4 w-4 shrink-0 text-destructive" />
+                              }
+                              text="Your education will be deleted"
+                              onReject={() => {
+                                // do nothing
+                                console.log("rejected");
+                              }}
+                            />
+                          </>
+                        }
+                      >
                         <div className="flex flex-col items-start w-full">
                           <h3 className="font-semibold">
                             {field.hospital_name || "Hospital"}
                           </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {field.title}
+                          </p>
                           <p className="text-sm text-gray-500">
-                            {field.start_date} -{" "}
-                            {field.currently_working
-                              ? "Present"
-                              : field.end_date}
+                            {format(field.start_date, "yyyy")} -{" "}
+                            {field.end_date}
                           </p>
                         </div>
                       </AccordionTrigger>

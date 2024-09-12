@@ -93,7 +93,6 @@ const ManageProfile = () => {
       ...prev,
       [name]: Array.isArray(value) ? { value, replace: true } : value,
     }));
-
   };
 
   const onSubmit = async (data: User) => {
@@ -326,9 +325,9 @@ const ManageProfile = () => {
                   defaultValue={user.country}
                   placeholder="Search country"
                   items={COUNTRIES}
-                  {...register("country")}
                 />
               </div>
+
               {/* city */}
               <div className="space-y-2">
                 <Label htmlFor="city">City</Label>
@@ -337,9 +336,9 @@ const ManageProfile = () => {
                   defaultValue={user.city}
                   placeholder="Search city"
                   items={CITIES}
-                  {...register("city")}
                 />
               </div>
+
               {/* languages */}
               <div className="space-y-2">
                 <Label htmlFor="languages">Known Languages</Label>
