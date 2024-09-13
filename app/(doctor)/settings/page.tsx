@@ -24,7 +24,10 @@ export default function DoctorProfilePage() {
           <h3 className="text-2xl font-semibold">Profile Settings</h3>
           <div className="flex items-center space-x-2">
             <span className="text-base font-semibold">Available</span>
-            <Switch id="available" />
+            <Switch
+              id="available"
+              onCheckedChange={(val) => console.log(val)}
+            />
           </div>
         </div>
 

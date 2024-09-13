@@ -1,19 +1,10 @@
 import { DateRange } from "react-day-picker";
 
 export type BaseAppointment = {
-  // Patient Specific Fields
-  id: string;
   patientId: string;
-  patient_avatarUrl: string;
-  patient_city: string;
-  patient_state: string;
-  patient_country: string;
-  patient_name: string;
-  patient_gender: string;
-  patient_age: number;
-  patient_blood_group: string;
-  patient_phone: string;
-  patient_email: string;
+  doctorId: string;
+  patient: User;
+  doctor: User;
 
   // Appointment Specific Fields
   speciality: string;
@@ -30,25 +21,12 @@ export type BaseAppointment = {
   description: string;
   status: "pending" | "completed" | "cancelled" | "upcoming";
   paid: boolean;
-  payment: {
-    method: string;
-    id: string;
-    paymentDate: string;
-    amount: string;
-  };
+  payment: Payment;
 };
 
 export type Payment = {
   method: string;
-  id: string;
+  paymentId: string;
   paymentDate: string;
-  amount: string;
+  amount: number;
 };
-
-export type UpcomingAppointment = BaseAppointment;
-
-export type PendingRequest = BaseAppointment;
-
-export type CancelledAppointment = BaseAppointment;
-
-export type CompletedAppointment = BaseAppointment;
