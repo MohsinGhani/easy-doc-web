@@ -13,12 +13,6 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import {
   Select,
   SelectTrigger,
   SelectValue,
@@ -26,7 +20,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -35,16 +28,21 @@ import { SelectWithSearch } from "../SelectWithSearch";
 import { MultiSelectWithSearch } from "../MultiSelectWithSearch";
 import { Loader } from "../Loader";
 import { authThunks } from "@/lib/features/auth/authThunks";
-import { CITIES, COUNTRIES, LANGUAGES } from "@/constants";
+import { COUNTRIES, LANGUAGES, STATES } from "@/constants";
+import { DateTimePicker } from "../ui/datetime-picker";
+import { format } from "date-fns";
+import { PhoneInput } from "../ui/phone-input";
+import { countryCodeToName, countryNameToCode } from "@/lib/utils";
 
 const ManageProfile = () => {
+  const [country, setCountry] = useState("");
+  const [filteredStates, setFilteredStates] = useState<StateProps[]>([]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [base64Image, setBase64Image] = useState<string | ArrayBuffer | null>(
     null
   );
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const [updateExpression, setUpdateExpression] = useState<Record<string, any>>(
     {}
   );
@@ -66,6 +64,17 @@ const ManageProfile = () => {
       bio: "",
     },
   });
+
+  useEffect(() => {
+    if (country) {
+      const newFilteredStates = STATES.filter(
+        (state) => state.country_code === country
+      );
+      setFilteredStates(newFilteredStates);
+    } else {
+      setFilteredStates([]);
+    }
+  }, [country]);
 
   const handleImageUploadClick = () => {
     fileInputRef.current?.click();
@@ -224,6 +233,7 @@ const ManageProfile = () => {
                   onChange={(e) => handleChange("given_name", e.target.value)}
                 />
               </div>
+
               {/* family_name */}
               <div className="space-y-2">
                 <Label htmlFor="family_name">Last name</Label>
@@ -234,6 +244,7 @@ const ManageProfile = () => {
                   onChange={(e) => handleChange("family_name", e.target.value)}
                 />
               </div>
+
               {/* display_name */}
               <div className="space-y-2">
                 <Label htmlFor="display_name">Display name</Label>
@@ -251,30 +262,22 @@ const ManageProfile = () => {
                   />
                 </div>
               </div>
+
               {/* dob */}
               <div className="space-y-2">
                 <Label htmlFor="dob">Date of Birth</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="pl-3 text-left font-normal text-muted-foreground w-full"
-                    >
-                      Pick a date
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      onSelect={(date) => {
-                        setValue("dob", date?.toISOString() || "");
-                        handleChange("dob", date?.toISOString());
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
+
+                <DateTimePicker
+                  granularity="day"
+                  onChange={(value) =>
+                    handleChange("dob", format(value as Date, "yyyy/MM/dd"))
+                  }
+                  placeholder="Pick a date"
+                  disabled={loading}
+                  displayFormat={{ hour24: "yyyy/MM/dd" }}
+                />
               </div>
+
               {/* gender */}
               <div className="space-y-2">
                 <Label htmlFor="gender">Gender</Label>
@@ -292,6 +295,7 @@ const ManageProfile = () => {
                   </SelectContent>
                 </Select>
               </div>
+
               {/* designation */}
               <div className="space-y-2">
                 <Label htmlFor="designation">Designation</Label>
@@ -302,6 +306,7 @@ const ManageProfile = () => {
                   onChange={(e) => handleChange("designation", e.target.value)}
                 />
               </div>
+
               {/* email */}
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
@@ -314,35 +319,55 @@ const ManageProfile = () => {
                   disabled
                 />
               </div>
+
               {/* phone_number */}
               <div className="space-y-2">
                 <Label htmlFor="phone_number">Contact no</Label>
-                <Input
+                <PhoneInput
                   id="phone_number"
                   placeholder="Enter your phone no"
                   {...register("phone_number")}
-                  onChange={(e) => handleChange("phone_number", e.target.value)}
+                  onChange={(value) => handleChange("phone_number", value)}
+                  defaultCountry="PK"
                 />
               </div>
+
               {/* country */}
               <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
                 <SelectWithSearch
-                  onChange={(value) => handleChange("country", value)}
+                  onChange={(value) => {
+                    handleChange("country", value);
+                    setCountry(value);
+                  }}
                   defaultValue={user.country}
                   placeholder="Search country"
-                  items={COUNTRIES}
+                  items={COUNTRIES.map((country) => ({
+                    value: country.iso2,
+                    label: `${country.emoji} ${country.name}`,
+                  }))}
                 />
               </div>
 
-              {/* city */}
+              {/* state */}
               <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">State</Label>
                 <SelectWithSearch
-                  onChange={(value) => handleChange("city", value)}
-                  defaultValue={user.city}
-                  placeholder="Search city"
-                  items={CITIES}
+                  onChange={(value) => handleChange("state", value)}
+                  // defaultValue={user.city}
+                  placeholder="Search state"
+                  items={filteredStates.map((state: StateProps) => ({
+                    value: state.state_code,
+                    label: state.name,
+                  }))}
+                  // items={filteredStates.map((state) => {
+                  //   console.log("🚀 ~ items={STATES.filter ~ state:", state);
+
+                  //   return {
+                  //     value: state.country_code,
+                  //     label: state.name,
+                  //   };
+                  // })}
                 />
               </div>
 
@@ -358,6 +383,7 @@ const ManageProfile = () => {
                   />
                 </div>
               </div>
+
               {/* bio */}
               <div className="col-span-1 sm:col-span-2 space-y-2">
                 <Label htmlFor="bio">Bio</Label>

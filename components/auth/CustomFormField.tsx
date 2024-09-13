@@ -24,8 +24,14 @@ import { Textarea } from "../ui/textarea";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 import { format } from "date-fns";
-import { DayPicker } from "react-day-picker";
 import YearPicker from "../ui/year-picker";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -228,6 +234,24 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             onChange={field.onChange}
             className="w-full"
           />
+        </FormControl>
+      );
+
+    case FormFieldType.SELECT:
+      return (
+        <FormControl>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={props.placeholder ?? "Select"} />
+            </SelectTrigger>
+            <SelectContent>
+              {props?.items?.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </FormControl>
       );
 

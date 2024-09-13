@@ -68,7 +68,7 @@ export function SelectWithSearch({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-[200px] justify-between max-w-full text-left truncate",
+              "w-full justify-between max-w-full text-left truncate",
               className
             )}
           >
@@ -81,7 +81,7 @@ export function SelectWithSearch({
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent className="w-[320px] p-0">
           <Command>
             <CommandInput
               placeholder={`Search ${placeholder.toLowerCase()}`}

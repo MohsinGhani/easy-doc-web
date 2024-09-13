@@ -1,3 +1,6 @@
+import countries from "@/data/countries.json";
+import states from "@/data/states.json";
+
 export const identityPoolId =
   process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || "";
 
@@ -175,43 +178,8 @@ export const fields = [
   { value: "biochemistry", label: "Biochemistry" },
 ];
 
-export const COUNTRIES = [
-  {
-    label: "Pakistan",
-    value: "pakistan",
-  },
-  {
-    label: "Afghanistan",
-    value: "afghanistan",
-  },
-  {
-    label: "Albania",
-    value: "albania",
-  },
-  {
-    label: "Algeria",
-    value: "algeria",
-  },
-  {
-    label: "Andorra",
-    value: "andorra",
-  },
-];
-
-export const CITIES = [
-  {
-    label: "Lahore",
-    value: "lahore",
-  },
-  {
-    label: "Karachi",
-    value: "karachi",
-  },
-  {
-    label: "Islamabad",
-    value: "islamabad",
-  },
-];
+export const COUNTRIES = countries as CountryProps[];
+export const STATES = states as StateProps[];
 
 export const EMPLOYEMENT_TYPES = [
   {
