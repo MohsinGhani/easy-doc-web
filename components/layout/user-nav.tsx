@@ -23,6 +23,7 @@ import {
 import { useAppSelector } from "@/lib/hooks";
 import { useAuth } from "@/hooks/useAuth";
 import { Switch } from "../ui/switch";
+import AvailabilitySwitch from "../doctor/AvailabilitySwitch";
 
 export function UserNav() {
   const { user } = useAppSelector((state) => state.auth);
@@ -55,7 +56,7 @@ export function UserNav() {
           <p className="text-sm font-semibold">My account</p>
           <div className="flex items-center space-x-2">
             <span className="text-sm font-semibold">Available</span>
-            <Switch id="available" />
+            <AvailabilitySwitch />
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

@@ -548,7 +548,7 @@ export const upcomingColumns = ({
           </div>
           <div className="text-sm font-normal flex gap-1 items-center">
             <PhoneCall className="w-5 h-5" />
-            {row.original.patient_phone}
+            {row.original.patient.phone_number}
           </div>
         </div>
       ),
