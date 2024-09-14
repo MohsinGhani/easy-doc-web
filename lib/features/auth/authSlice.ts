@@ -199,7 +199,10 @@ export const authSlice = createSlice({
         authThunks.initializeAuth.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.user = action.payload;
-          state.isLoggedIn = true;
+          !Cookies.get("auth") &&
+            Cookies.set("auth", JSON.stringify(action.payload), {
+              expires: 1 / 24,
+            });
           state.loading = false;
         }
       )
@@ -219,7 +222,6 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.updateProfile.fulfilled,
         (state, action: PayloadAction<Partial<User>>) => {
-          console.log("🚀 ~ action.payload:", action.payload);
           if (state.user) {
             state.user = {
               ...state.user,

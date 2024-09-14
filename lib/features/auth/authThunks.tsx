@@ -265,15 +265,20 @@ export const authThunks = {
     async (_, { rejectWithValue }) => {
       try {
         const userId = Cookies.get("userId");
+        const auth = Cookies.get("auth");
 
-        if (!userId) {
-          throw new Error("No user ID found");
+        if (!userId && !auth) {
+          return rejectWithValue("No user ID or auth found");
         }
 
-        const response = await apiClient.get(`/auth/${userId}`);
-        return response.data.data;
+        if (auth) {
+          const parsedAuth = JSON.parse(auth) as User;
+          return parsedAuth;
+        } else if (userId) {
+          const response = await apiClient.get(`/auth/${userId}`);
+          return response.data.data;
+        }
       } catch (error) {
-        console.log("🚀 ~ error:", error);
         return rejectWithValue("Failed to fetch user details");
       }
     }

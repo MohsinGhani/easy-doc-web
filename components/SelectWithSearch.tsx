@@ -38,6 +38,14 @@ export function SelectWithSearch({
   const [value, setValue] = React.useState(defaultValue);
   const [items, setItems] = React.useState(initialItems);
 
+  React.useEffect(() => {
+    setItems(initialItems);
+  }, [initialItems]);
+
+  React.useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
   // Filter items based on the search input
   const filteredItems = items.filter((item) =>
     item.label.toLowerCase().includes(customValue.toLowerCase())
@@ -68,7 +76,7 @@ export function SelectWithSearch({
             role="combobox"
             aria-expanded={open}
             className={cn(
-              "w-[200px] justify-between max-w-full text-left truncate",
+              "w-full justify-between max-w-full text-left truncate",
               className
             )}
           >
@@ -81,7 +89,7 @@ export function SelectWithSearch({
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent className="w-full p-0">
           <Command>
             <CommandInput
               placeholder={`Search ${placeholder.toLowerCase()}`}

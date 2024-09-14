@@ -1,3 +1,6 @@
+import languages from "@/public/data/languages.json";
+import countries from "@/public/data/countries.json";
+
 export const identityPoolId =
   process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || "";
 
@@ -175,28 +178,7 @@ export const fields = [
   { value: "biochemistry", label: "Biochemistry" },
 ];
 
-export const COUNTRIES = [
-  {
-    label: "Pakistan",
-    value: "pakistan",
-  },
-  {
-    label: "Afghanistan",
-    value: "afghanistan",
-  },
-  {
-    label: "Albania",
-    value: "albania",
-  },
-  {
-    label: "Algeria",
-    value: "algeria",
-  },
-  {
-    label: "Andorra",
-    value: "andorra",
-  },
-];
+export const COUNTRIES = countries;
 
 export const CITIES = [
   {
@@ -228,24 +210,7 @@ export const EMPLOYEMENT_TYPES = [
   },
 ];
 
-export const LANGUAGES = [
-  {
-    label: "English",
-    value: "english",
-  },
-  {
-    label: "Spanish",
-    value: "spanish",
-  },
-  {
-    label: "French",
-    value: "french",
-  },
-  {
-    label: "German",
-    value: "german",
-  },
-];
+export const LANGUAGES = languages;
 
 export const GRADES = [
   { label: "A +", value: "a +" },

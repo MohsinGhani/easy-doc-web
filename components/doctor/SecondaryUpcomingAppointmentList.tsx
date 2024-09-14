@@ -6,7 +6,7 @@ import Calendar from "./Calendar";
 import AppointmentCard from "./AppointmentCard";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
-import dummyAppointments from "@/data/dummyAppointments";
+import dummyAppointments from "@/public/data/dummyAppointments";
 import { Appointment } from "@/types/appointment";
 import { format, parseISO } from "date-fns";
 

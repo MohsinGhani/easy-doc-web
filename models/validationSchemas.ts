@@ -148,7 +148,7 @@ const educationSchema = z
   )
   .refine(
     (data) => {
-      if (data.currently_studying && data.grade) {
+      if (data.currently_studying && data.grade && data.grade !== "NO GRADE") {
         return false;
       }
       return true;
@@ -169,42 +169,42 @@ const reviewSchema = z.object({
 
 // Define User Schema
 const userSchema = z.object({
-  userId: z.string().min(1, "User ID is required"),
-  role: z.string().min(1, "Role is required"),
-  email: z.string().email("Invalid email address"),
-  given_name: z.string().min(1, "Given name is required"),
-  family_name: z.string().min(1, "Family name is required"),
-  display_name: z.string().min(1, "Display name is required"),
-  phone_number: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
-  picture: z.string().url("Invalid URL"),
-  designation: z.string().min(1, "Designation is required"),
+  userId: z.string().min(1, "User ID is required").optional(),
+  role: z.string().min(1, "Role is required").optional(),
+  email: z.string().email("Invalid email address").optional(),
+  given_name: z.string().min(1, "Given name is required").optional(),
+  family_name: z.string().min(1, "Family name is required").optional(),
+  display_name: z.string().min(1, "Display name is required").optional(),
+  phone_number: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number").optional(),
+  picture: z.string().url("Invalid URL").optional(),
+  designation: z.string().min(1, "Designation is required").optional(),
   bio: z
     .string()
     .max(500, "Bio cannot be longer than 500 characters")
-    .optional(),
+    .optional().optional(),
   years_of_experience: z
     .string()
     .refine((val) => !isNaN(parseInt(val)) && parseInt(val) >= 0, {
       message: "Years of experience must be a non-negative number",
-    }),
-  city: z.string().min(1, "City is required"),
-  country: z.string().min(1, "Country is required"),
+    }).optional(),
+  city: z.string().min(1, "City is required").optional(),
+  country: z.string().min(1, "Country is required").optional(),
   dob: z.string().refine((val) => new Date(val) <= new Date(), {
     message: "Date of birth cannot be in the future",
-  }),
-  gender: genderEnum,
-  specialty: z.string().min(1, "Specialty is required"),
-  location: z.string().min(1, "Location is required"),
-  rating: z.number().min(0).max(5, "Rating must be between 0 and 5"),
-  available: z.boolean(),
-  verified: z.number().min(0, "Verified must be a non-negative number"),
-  fee: z.number().min(0, "Fee must be a non-negative number"),
-  languages: z.array(z.string().min(1, "Languages are required")),
-  experiences: z.array(experienceSchema),
-  awards: z.array(awardSchema),
-  education: z.array(educationSchema),
-  availableDays: z.array(availableDaySchema),
-  reviews: z.array(reviewSchema),
+  }).optional(),
+  gender: genderEnum.optional(),
+  specialty: z.string().min(1, "Specialty is required").optional(),
+  location: z.string().min(1, "Location is required").optional(),
+  rating: z.number().min(0).max(5, "Rating must be between 0 and 5").optional(),
+  available: z.boolean().optional(),
+  verified: z.number().min(0, "Verified must be a non-negative number").optional(),
+  fee: z.number().min(0, "Fee must be a non-negative number").optional(),
+  languages: z.array(z.string().min(1, "Languages are required")).optional(),
+  experiences: z.array(experienceSchema).optional(),
+  awards: z.array(awardSchema).optional(),
+  education: z.array(educationSchema).optional(),
+  availableDays: z.array(availableDaySchema).optional(),
+  reviews: z.array(reviewSchema).optional(),
 });
 
 export type experienceSchemaType = z.infer<typeof experienceSchema>;

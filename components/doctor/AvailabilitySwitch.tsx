@@ -1,50 +1,60 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Switch } from "@/components/ui/switch";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { authThunks } from "@/lib/features/auth/authThunks";
 
 export default function AvailabilitySwitch() {
-  const [switchState, setSwitchState] = useState(false);
-  const [debouncedValue, setDebouncedValue] = useState(switchState);
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
+  const [switchState, setSwitchState] = useState<boolean>(user.available);
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(switchState);
+    if (user) {
+      setSwitchState(user.available);
+    }
+  }, [user]);
+
+  const handleSwitchChange = (checked: boolean) => {
+    setSwitchState(checked);
+    setHasInteracted(true);
+  };
+
+  useEffect(() => {
+    if (!hasInteracted) {
+      return;
+    }
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      if (user?.userId) {
+        console.log("API call with switchState:", switchState);
+        dispatch(
+          authThunks.updateProfile({
+            userId: user.userId,
+            updateData: { available: switchState },
+          })
+        );
+      }
     }, 500);
 
     return () => {
-      clearTimeout(handler);
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
     };
-  }, [switchState]);
-
-  const updateAvailability = useCallback(() => {
-    if (user?.userId) {
-      console.log("API call with debounced value:", debouncedValue);
-
-      dispatch(
-        authThunks.updateProfile({
-          userId: user?.userId || "",
-          updateData: { available: debouncedValue },
-        })
-      );
-    }
-  }, [debouncedValue, user?.userId, dispatch]);
-
-  // Effect to trigger API call when the debounced value changes
-  useEffect(() => {
-    // Avoid making the API call on the first render
-    if (debouncedValue === switchState) {
-      updateAvailability();
-    }
-  }, [debouncedValue, updateAvailability]);
+  }, [switchState, user?.userId, dispatch, hasInteracted]);
 
   return (
     <Switch
       id="available"
       checked={switchState}
-      onCheckedChange={setSwitchState}
+      onCheckedChange={handleSwitchChange}
       disabled={loading}
     />
   );

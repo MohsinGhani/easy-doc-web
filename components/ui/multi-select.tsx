@@ -222,7 +222,7 @@ const MultipleSelector = React.forwardRef<
       ref,
       () => ({
         selectedValue: [...selected],
-        input: inputRef.current as HTMLInputElement,
+        input: inputRef?.current as HTMLInputElement,
         focus: () => inputRef?.current?.focus(),
       }),
       [selected]
@@ -232,11 +232,11 @@ const MultipleSelector = React.forwardRef<
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node) &&
-        inputRef.current &&
+        inputRef?.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
         setOpen(false);
-        inputRef.current.blur();
+        inputRef?.current.blur();
       }
     };
 
@@ -251,7 +251,7 @@ const MultipleSelector = React.forwardRef<
 
     const handleKeyDown = React.useCallback(
       (e: React.KeyboardEvent<HTMLDivElement>) => {
-        const input = inputRef.current;
+        const input = inputRef?.current;
         if (input) {
           if (e.key === "Delete" || e.key === "Backspace") {
             if (input.value === "" && selected.length > 0) {
@@ -472,7 +472,7 @@ const MultipleSelector = React.forwardRef<
                 <Badge
                   key={option.value}
                   className={cn(
-                    "data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground",
+                    "data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground capitalize",
                     "data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground",
                     badgeClassName
                   )}
@@ -607,7 +607,7 @@ const MultipleSelector = React.forwardRef<
                                 onChange?.(newOptions);
                               }}
                               className={cn(
-                                "cursor-pointer",
+                                "cursor-pointer capitalize",
                                 option.disable &&
                                   "cursor-default text-muted-foreground"
                               )}

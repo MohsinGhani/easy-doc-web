@@ -115,3 +115,17 @@ declare type Doctor = {
   availableDays: AvailableDay[];
   reviews: Review[];
 };
+
+declare interface City {
+  id: string;
+  name: string;
+  admin1: string;
+  lat: string;
+  lon: string;
+  pop: string;
+}
+
+declare interface Language {
+  label: string;
+  value: string;
+}

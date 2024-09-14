@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,33 +11,37 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
-import { SelectWithSearch } from "../SelectWithSearch";
-import { MultiSelectWithSearch } from "../MultiSelectWithSearch";
 import { Loader } from "../Loader";
 import { authThunks } from "@/lib/features/auth/authThunks";
-import { CITIES, COUNTRIES, LANGUAGES } from "@/constants";
+import { COUNTRIES, LANGUAGES } from "@/constants";
+import { getCitiesByCountry } from "@/lib/server-only";
+import { userSchema, userSchemaType } from "@/models/validationSchemas";
+import { Form } from "../ui/form";
+import { CustomFormField } from "../auth";
+import { FormFieldType } from "../auth/CustomFormField";
 
 const ManageProfile = () => {
+  const { user, loading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  const form = useForm<userSchemaType>({
+    resolver: zodResolver(userSchema),
+  });
+
+  const {
+    handleSubmit,
+    setValue,
+    getValues,
+    control,
+    formState: { dirtyFields, errors },
+  } = form;
+  console.log("🚀 ~ ManageProfile ~ errors:", errors);
+
+  const [cities, setCities] = useState<City[]>([]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [base64Image, setBase64Image] = useState<string | ArrayBuffer | null>(
     null
@@ -45,27 +49,7 @@ const ManageProfile = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [updateExpression, setUpdateExpression] = useState<Record<string, any>>(
-    {}
-  );
-  const { user, loading } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
-
-  const { register, handleSubmit, setValue } = useForm<User>({
-    defaultValues: {
-      given_name: "",
-      family_name: "",
-      display_name: "",
-      dob: "",
-      designation: "",
-      email: "",
-      phone_number: "",
-      country: "",
-      city: "",
-      languages: [],
-      bio: "",
-    },
-  });
+  const country = getValues("country");
 
   const handleImageUploadClick = () => {
     fileInputRef.current?.click();
@@ -77,7 +61,7 @@ const ManageProfile = () => {
       setSelectedImage(file);
       setImagePreviewUrl(URL.createObjectURL(file));
 
-      // Convert the file to
+      // Convert the file to base64
       const reader = new FileReader();
       reader.onloadend = () => {
         setBase64Image(reader.result);
@@ -88,14 +72,16 @@ const ManageProfile = () => {
     }
   };
 
-  const handleChange = (name: string, value: any) => {
-    setUpdateExpression((prev) => ({
-      ...prev,
-      [name]: Array.isArray(value) ? { value, replace: true } : value,
-    }));
-  };
+  const onSubmit = async (data: userSchemaType) => {
+    const updateExpression: Record<string, any> = {};
 
-  const onSubmit = async (data: User) => {
+    Object.keys(dirtyFields).forEach((field) => {
+      const value = data[field as keyof userSchemaType];
+      updateExpression[field] = Array.isArray(value)
+        ? { value, replace: true }
+        : value;
+    });
+
     if (selectedImage) {
       if (!base64Image) {
         toast.error("Image not ready for upload.");
@@ -108,6 +94,13 @@ const ManageProfile = () => {
         mimeType: selectedImage.type,
       };
     }
+
+    const parsedData = userSchema.safeParse(updateExpression);
+    console.log("🚀 ~ onSubmit ~ parsedData:", parsedData)
+    // if (!parsedData.success) {
+    //   toast.error("Please fix the validation errors.");
+    //   return;
+    // }
 
     const res = await dispatch(
       authThunks.updateProfile({
@@ -127,36 +120,36 @@ const ManageProfile = () => {
 
   useEffect(() => {
     if (user) {
-      setValue("picture", user.picture || "");
-      setValue("given_name", user.given_name || "");
-      setValue("family_name", user.family_name || "");
-      setValue("display_name", user.display_name || "");
-      setValue("dob", user.dob || "");
-      setValue("gender", user.gender || "");
-      setValue("designation", user.designation || "");
-      setValue("email", user.email || "");
-      setValue("phone_number", user.phone_number || "");
-      setValue("country", user.country || "");
-      setValue("city", user.city || "");
-      setValue("languages", user.languages || "");
-      setValue("bio", user.bio || "");
+      form.reset(user);
     }
-  }, [user, setValue]);
+  }, [user, form]);
+
+  useEffect(() => {
+    if (country) {
+      getCitiesByCountry(country).then((cities: City[]) => {
+        setCities(cities);
+        setValue("city", user?.city || cities[0]?.name || "");
+      });
+    } else {
+      setValue("city", user?.city || "");
+    }
+  }, [setValue, country, user]);
 
   if (loading) return <Loader />;
+  if (!user) return null;
 
   return (
     <>
       <Card>
         <CardHeader>
           <CardTitle>Profile Picture</CardTitle>
-          <CardDescription>This will be shared to our platform</CardDescription>
+          <CardDescription>This will be shared on our platform</CardDescription>
         </CardHeader>
 
         <CardContent className="p-4 sm:p-6">
           <div className="flex sm:flex-row flex-col items-center sm:items-start sm:space-x-4 space-y-4 sm:space-y-0 w-full text-center sm:text-left">
             <div
-              className="min-w-28 w-full max-w-28 h-28 border-2 bg-neutral-50 rounded-2xl border-dashed border-neutral-400 sm:flex items-center justify-center hidden"
+              className="min-w-28 w-full max-w-28 h-28 border-2 bg-neutral-50 rounded-2xl border-dashed border-neutral-400 sm:flex items-center justify-center"
               onClick={handleImageUploadClick}
             >
               {imagePreviewUrl ? (
@@ -169,10 +162,10 @@ const ManageProfile = () => {
                 />
               ) : (
                 <Image
-                  src={user.picture || ""}
+                  src={user?.picture || ""}
                   width={100}
                   height={100}
-                  alt="Profile Picture 1"
+                  alt="Profile Picture"
                   className="w-full h-full object-contain rounded-2xl"
                 />
               )}
@@ -208,176 +201,143 @@ const ManageProfile = () => {
       <Card className="mt-6">
         <CardHeader>
           <CardTitle>Personal Details</CardTitle>
-          <CardDescription>This will be shared to our platform</CardDescription>
+          <CardDescription>This will be shared on our platform</CardDescription>
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* given_name */}
-              <div className="space-y-2">
-                <Label htmlFor="given_name">First name</Label>
-                <Input
-                  id="given_name"
-                  placeholder="Enter your first name"
-                  {...register("given_name")}
-                  onChange={(e) => handleChange("given_name", e.target.value)}
+          <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* given_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="given_name"
+                  label="First Name"
+                  placeholder="Enter first name"
                 />
-              </div>
-              {/* family_name */}
-              <div className="space-y-2">
-                <Label htmlFor="family_name">Last name</Label>
-                <Input
-                  id="family_name"
-                  placeholder="Enter your last name"
-                  {...register("family_name")}
-                  onChange={(e) => handleChange("family_name", e.target.value)}
+
+                {/* family_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="family_name"
+                  label="Last Name"
+                  placeholder="Enter last name"
                 />
-              </div>
-              {/* display_name */}
-              <div className="space-y-2">
-                <Label htmlFor="display_name">Display name</Label>
-                <div className="flex items-center border border-input rounded-md lg:px-6 sm:px-4 px-3  py-[6px]">
-                  <span className="mr-2">Dr.</span>
-                  <input
-                    id="display_name"
-                    type="text"
-                    placeholder="Enter your display name"
-                    className="flex-grow bg-transparent outline-none text-sm"
-                    {...register("display_name")}
-                    onChange={(e) =>
-                      handleChange("display_name", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-              {/* dob */}
-              <div className="space-y-2">
-                <Label htmlFor="dob">Date of Birth</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="pl-3 text-left font-normal text-muted-foreground w-full"
-                    >
-                      Pick a date
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      onSelect={(date) => {
-                        setValue("dob", date?.toISOString() || "");
-                        handleChange("dob", date?.toISOString());
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              {/* gender */}
-              <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
-                <Select
-                  onValueChange={(value) => handleChange("gender", value)}
-                  defaultValue={user.gender}
-                >
-                  <SelectTrigger id="gender">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {/* designation */}
-              <div className="space-y-2">
-                <Label htmlFor="designation">Designation</Label>
-                <Input
-                  id="designation"
+
+                {/* display_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="family_name"
+                  label="Display Name"
+                  placeholder="Enter your display name"
+                />
+
+                {/* dob */}
+                <CustomFormField
+                  fieldType={FormFieldType.DATE_PICKER}
+                  control={control}
+                  name={`dob`}
+                  label="Date of Birth"
+                />
+
+                {/* gender */}
+                <CustomFormField
+                  fieldType={FormFieldType.GENDER_SELECT}
+                  control={control}
+                  name={`gender`}
+                  label="Gender"
+                />
+
+                {/* designation */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="designation"
+                  label="Designation"
                   placeholder="Enter your designation"
-                  {...register("designation")}
-                  onChange={(e) => handleChange("designation", e.target.value)}
                 />
-              </div>
-              {/* email */}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  placeholder="Enter your email"
-                  type="email"
-                  {...register("email")}
-                  onChange={(e) => handleChange("email", e.target.value)}
+
+                {/* email */}
+                <CustomFormField
+                  fieldType={FormFieldType.EMAIL}
+                  control={control}
+                  name="email"
+                  label="Email Address"
+                  placeholder="Enter email address"
                   disabled
                 />
-              </div>
-              {/* phone_number */}
-              <div className="space-y-2">
-                <Label htmlFor="phone_number">Contact no</Label>
-                <Input
-                  id="phone_number"
-                  placeholder="Enter your phone no"
-                  {...register("phone_number")}
-                  onChange={(e) => handleChange("phone_number", e.target.value)}
+
+                {/* phone_number */}
+                <CustomFormField
+                  fieldType={FormFieldType.PHONE_INPUT}
+                  control={control}
+                  name="phone_number"
+                  label="Contact no"
+                  placeholder="Enter a phone number"
                 />
-              </div>
-              {/* country */}
-              <div className="space-y-2">
-                <Label htmlFor="country">Country</Label>
-                <SelectWithSearch
-                  onChange={(value) => handleChange("country", value)}
-                  defaultValue={user.country}
-                  placeholder="Search country"
-                  items={COUNTRIES}
+
+                {/* country */}
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                  control={control}
+                  items={COUNTRIES.map((c) => ({
+                    label: `${c.flag} ${c.name}`,
+                    value: c.code,
+                  }))}
+                  name={`country`}
+                  label="Country"
+                  placeholder={"Select country..."}
+                />
+
+                {/* city */}
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                  control={control}
+                  items={cities.map((c) => ({
+                    label: `${c.name} - ${c.admin1}`,
+                    value: c.id,
+                  }))}
+                  name={`city`}
+                  label="City"
+                  placeholder={"Select city..."}
+                />
+
+                {/* languages */}
+                <CustomFormField
+                  fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
+                  control={control}
+                  items={LANGUAGES.map((item) => ({
+                    label: item.name,
+                    value: item.name,
+                  }))}
+                  name={`languages`}
+                  label="Known Languages"
+                  placeholder={"Select languages..."}
+                />
+
+                {/* bio */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="bio"
+                  label="Bio"
+                  placeholder="Enter your bio"
                 />
               </div>
 
-              {/* city */}
-              <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
-                <SelectWithSearch
-                  onChange={(value) => handleChange("city", value)}
-                  defaultValue={user.city}
-                  placeholder="Search city"
-                  items={CITIES}
-                />
-              </div>
-
-              {/* languages */}
-              <div className="space-y-2">
-                <Label htmlFor="languages">Known Languages</Label>
-                <div className="">
-                  <MultiSelectWithSearch
-                    onSelect={(values) => handleChange("languages", values)}
-                    placeholder="Select Languages"
-                    items={LANGUAGES}
-                    defaultValues={user.languages}
-                  />
-                </div>
-              </div>
-              {/* bio */}
-              <div className="col-span-1 sm:col-span-2 space-y-2">
-                <Label htmlFor="bio">Bio</Label>
-                <Textarea
-                  id="bio"
-                  placeholder="Enter Bio"
-                  className="min-h-[100px]"
-                  {...register("bio")}
-                  onChange={(e) => handleChange("bio", e.target.value)}
-                />
-              </div>
-            </div>
-
-            <CardFooter className="flex justify-end space-x-2">
-              <Button variant="ghost">Cancel</Button>
-              <Button type="submit" disabled={loading}>
-                Save Changes
-              </Button>
-            </CardFooter>
-          </form>
+              <CardFooter className="flex justify-end space-x-2">
+                <Button variant="ghost" type="reset">
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={loading}>
+                  Save Changes
+                </Button>
+              </CardFooter>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </>
