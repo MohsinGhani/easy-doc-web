@@ -4,6 +4,7 @@ import sidebarReducer from "./features/sidebar/sidebarSlice";
 import availabilityReducer from "./features/doctor/availabilitySlice";
 import patientReducer from "./features/patient/patientSlice";
 import doctorReducer from "./features/doctor/doctorSlice";
+import dropdownReducer from "./features/common/dropdownSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -13,6 +14,7 @@ export const makeStore = () => {
       availability: availabilityReducer,
       patient: patientReducer,
       doctor: doctorReducer,
+      dropdown: dropdownReducer,
     },
   });
 };

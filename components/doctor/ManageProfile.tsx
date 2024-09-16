@@ -51,6 +51,17 @@ const ManageProfile = () => {
 
   const country = getValues("country");
 
+  useEffect(() => {
+    if (country) {
+      const newFilteredStates = STATES.filter(
+        (state) => state.country_code === country
+      );
+      setFilteredStates(newFilteredStates);
+    } else {
+      setFilteredStates([]);
+    }
+  }, [country]);
+
   const handleImageUploadClick = () => {
     fileInputRef.current?.click();
   };

@@ -242,6 +242,24 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
         </FormControl>
       );
 
+    case FormFieldType.SELECT:
+      return (
+        <FormControl>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={props.placeholder ?? "Select"} />
+            </SelectTrigger>
+            <SelectContent>
+              {props?.items?.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+      );
+
     case FormFieldType.MULTI_SELECT_WITH_SEARCH:
       return (
         <>
