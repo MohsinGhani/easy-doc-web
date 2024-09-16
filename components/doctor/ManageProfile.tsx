@@ -96,7 +96,7 @@ const ManageProfile = () => {
     }
 
     const parsedData = userSchema.safeParse(updateExpression);
-    console.log("🚀 ~ onSubmit ~ parsedData:", parsedData)
+    console.log("🚀 ~ onSubmit ~ parsedData:", parsedData);
     // if (!parsedData.success) {
     //   toast.error("Please fix the validation errors.");
     //   return;
