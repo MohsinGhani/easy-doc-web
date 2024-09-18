@@ -262,12 +262,17 @@ export const authThunks = {
 
   initializeAuth: createAsyncThunk(
     "auth/fetchUserDetails",
-    async (_, { rejectWithValue }) => {
+    async (_, { rejectWithValue, dispatch }) => {
       try {
         const userId = Cookies.get("userId");
         const auth = Cookies.get("auth");
 
         if (!userId && !auth) {
+          console.log("No user ID or auth found");
+
+          await signOut();
+          dispatch(signoutAction());
+
           return rejectWithValue("No user ID or auth found");
         }
 
@@ -279,6 +284,9 @@ export const authThunks = {
           return response.data.data;
         }
       } catch (error) {
+        await signOut();
+        dispatch(signoutAction());
+
         return rejectWithValue("Failed to fetch user details");
       }
     }

@@ -103,7 +103,6 @@ export function DatePickerWithRange<TData>({
       <PopoverContent className="w-auto p-0">
         <div className="p-4 space-y-4">
           <Calendar
-            initialFocus
             mode="range"
             defaultMonth={new Date()}
             selected={dateRange}

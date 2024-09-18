@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/authSlice";
 import sidebarReducer from "./features/sidebar/sidebarSlice";
-import availabilityReducer from "./features/doctor/availabilitySlice";
 import patientReducer from "./features/patient/patientSlice";
 import doctorReducer from "./features/doctor/doctorSlice";
 import dropdownReducer from "./features/common/dropdownSlice";
@@ -11,7 +10,6 @@ export const makeStore = () => {
     reducer: {
       auth: authReducer,
       sidebar: sidebarReducer,
-      availability: availabilityReducer,
       patient: patientReducer,
       doctor: doctorReducer,
       dropdown: dropdownReducer,

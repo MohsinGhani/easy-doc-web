@@ -52,8 +52,8 @@ export default function AvailableTimings({
               activeSlots.map((slot, index) => (
                 <TimeSlot
                   key={index}
-                  startTime={slot.startTime}
-                  endTime={slot.endTime}
+                  startTime={slot.start_time}
+                  endTime={slot.end_time}
                 />
               ))
             ) : (

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { decodeJWT } from "aws-amplify/auth";
+import { decodeJWT, signOut } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import { userPoolId, identityPoolId, userPoolClientId } from "./constants";
 import {

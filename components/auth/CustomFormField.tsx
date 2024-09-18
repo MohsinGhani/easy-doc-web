@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Control } from "react-hook-form";
+import { Control, ControllerRenderProps } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -53,6 +53,7 @@ export enum FormFieldType {
   DATE_PICKER = "date-picker",
   YEAR_PICKER = "year-picker",
   GENDER_SELECT = "gender_select",
+  SKELETON = "skeleton",
 }
 
 interface CustomProps {
@@ -66,14 +67,22 @@ interface CustomProps {
   dateFormat?: string;
   showTimeSelect?: boolean;
   children?: React.ReactNode;
-  renderSkeleton?: (field: any) => React.ReactNode;
+  renderSkeleton?: (
+    field: ControllerRenderProps<any, string>
+  ) => React.ReactNode;
   items?: { value: string; label: string }[];
   fieldType: FormFieldType;
   defaultValue?: string;
 }
 
-const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
-  console.log("🚀 ~ RenderInput ~ field:", field.value);
+const RenderInput = ({
+  field,
+  props,
+}: {
+  field: ControllerRenderProps<any, string>;
+  props: CustomProps;
+}) => {
+  // console.log("🚀 ~ RenderInput ~ field:", field.value);
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
@@ -81,7 +90,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <Input
             placeholder={props.placeholder}
             disabled={props.disabled}
-            name={props.name}
             {...field}
           />
         </FormControl>
@@ -112,7 +120,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Input
-            name={props.name}
             placeholder={props.placeholder}
             type="email"
             disabled={props.disabled}
@@ -125,7 +132,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <PasswordInput
-            name={props.name}
             placeholder={props.placeholder}
             disabled={props.disabled}
             {...field}
@@ -137,7 +143,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <PhoneInput
-            name={props.name}
             placeholder={props.placeholder}
             disabled={props.disabled}
             defaultCountry={props.defaultValue as CountryCode}
@@ -150,7 +155,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Input
-            name={props.name}
             placeholder={props.placeholder}
             type="number"
             id="myNumberInput"
@@ -265,7 +269,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
         <>
           <FormControl>
             <MultipleSelector
-              name={props.name}
               {...field}
               onChange={(options) => {
                 console.log("🚀 ~ RenderInput ~ options:", options);
@@ -320,7 +323,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Textarea
-            name={props.name}
             placeholder={props.placeholder}
             className="w-full"
             rows={5}
@@ -334,7 +336,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <AutosizeTextarea
-            name={props.name}
             placeholder={props.placeholder}
             rows={5}
             disabled={props.disabled}
@@ -397,6 +398,9 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           </Select>
         </FormControl>
       );
+
+    case FormFieldType.SKELETON:
+      return props.renderSkeleton ? props.renderSkeleton(field) : null;
 
     default:
       return null;

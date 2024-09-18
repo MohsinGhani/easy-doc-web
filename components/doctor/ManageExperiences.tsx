@@ -28,8 +28,8 @@ import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
-import DeleteDialog from "../DeleteDialog";
-import { Loader } from "../Loader";
+import DeleteDialog from "../common/DeleteDialog";
+import { Loader } from "../common/Loader";
 import { Form } from "../ui/form";
 import AddExperienceDialog from "./AddExperienceDialog";
 
