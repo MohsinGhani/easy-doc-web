@@ -232,10 +232,7 @@ const ManageExperiences = () => {
                             <CustomFormField
                               fieldType={FormFieldType.SELECT_WITH_SEARCH}
                               control={control}
-                              items={COUNTRIES.map((c) => ({
-                                label: `${c.flag} ${c.name}`,
-                                value: c.code,
-                              }))}
+                              items={COUNTRIES}
                               name={`experiences.${index}.country`}
                               label="Country"
                               enableCreation={false}

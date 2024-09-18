@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Dermatology",
+    "icon": "🧴",
+    "description": "Expert dermatology care focusing on skin conditions like acne, rashes, eczema, and skin cancer. Maintain your skin health with our specialized consultations."
+  },
+  {
+    "name": "Cardiology",
+    "icon": "❤️",
+    "description": "Advanced cardiology services for heart health including heart checkups, blood pressure management, and cholesterol monitoring for a healthier life."
+  },
+  {
+    "name": "Dentistry",
+    "icon": "🦷",
+    "description": "Comprehensive dental care including routine cleanings, cosmetic dentistry, and oral health consultations. Ensure your smile stays bright and healthy."
+  },
+  {
+    "name": "Pediatrics",
+    "icon": "👶",
+    "description": "Pediatric services to support the growth and development of children. From routine checkups to immunizations, our specialists are here for your child’s health."
+  },
+  {
+    "name": "Psychiatry",
+    "icon": "🧠",
+    "description": "Mental health care for individuals dealing with anxiety, depression, and other mental health challenges. Speak to an expert and take control of your mental wellbeing."
+  },
+  {
+    "name": "Orthopedics",
+    "icon": "🦴",
+    "description": "Orthopedic care for bone, joint, and muscle issues. Whether it's a sports injury or chronic pain, our experts help you get back to optimal health."
+  },
+  {
+    "name": "Gynecology",
+    "icon": "👩‍⚕️",
+    "description": "Gynecology services to support women’s health, including routine examinations, fertility consultations, and reproductive health care."
+  }
+]

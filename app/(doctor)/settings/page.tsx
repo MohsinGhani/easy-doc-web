@@ -6,14 +6,14 @@ import ManageExperiences from "@/components/doctor/ManageExperiences";
 import ManageEducation from "@/components/doctor/ManageEducation";
 import ManageProfile from "@/components/doctor/ManageProfile";
 import ManageAwards from "@/components/doctor/ManageAwards";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDownIcon } from "lucide-react";
 import AvailabilitySwitch from "@/components/doctor/AvailabilitySwitch";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export default function DoctorProfilePage() {
   return (
@@ -28,46 +28,39 @@ export default function DoctorProfilePage() {
         </div>
 
         <Tabs defaultValue="basic-details">
-          <TabsList
-            className="mb-6 mt-2 w-full hidden md:inline-flex"
-            defaultValue="basic-details"
-          >
-            {["basic-details", "experience", "education", "awards"].map(
-              (value, i) => (
-                <TabsTrigger
-                  value={value}
-                  className="flex-1 capitalize p-1"
-                  key={i}
-                >
-                  {value}
-                </TabsTrigger>
-              )
-            )}
-          </TabsList>
-
-          <TabsList
-            className="mb-6 mt-2 w-full md:hidden"
-            defaultValue="basic-details"
-          >
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-between w-full px-2 py-2">
-                Select <ChevronDownIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="!w-full">
+          <TabsList className="md:hidden w-full mb-6 mt-2">
+            <Carousel className="w-full max-w-[80%]">
+              <CarouselContent className="w-full">
                 {["basic-details", "experience", "education", "awards"].map(
                   (value, i) => (
-                    <DropdownMenuItem key={i} className="!w-full">
+                    <CarouselItem key={i} className="basis-1/4 min-w-[130px]">
                       <TabsTrigger
                         value={value}
-                        className="flex-1 capitalize p-1"
+                        className="w-full capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                       >
                         {value.split("-").join(" ")}
                       </TabsTrigger>
-                    </DropdownMenuItem>
+                    </CarouselItem>
                   )
                 )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </TabsList>
+
+          <TabsList className="hidden md:flex w-full justify-between bg-background mb-6 mt-2">
+            {["basic-details", "experience", "education", "awards"].map(
+              (value, i) => (
+                <TabsTrigger
+                  key={i}
+                  value={value}
+                  className="flex-1 capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  {value.split("-").join(" ")}
+                </TabsTrigger>
+              )
+            )}
           </TabsList>
 
           <TabsContent value="basic-details">

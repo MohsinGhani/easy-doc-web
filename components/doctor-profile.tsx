@@ -12,6 +12,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useEffect } from "react";
 import TimelineComponent from "./timelines/TimelineComponent";
@@ -188,7 +190,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
         <Tabs defaultValue="experience" className="w-full">
           <CardContent>
             <TabsList className="md:hidden w-full">
-              <Carousel className="w-full">
+              <Carousel className="w-full max-w-[80%]">
                 <CarouselContent className="w-full">
                   {tabs.map((tab) => (
                     <CarouselItem
@@ -204,6 +206,8 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
               </Carousel>
             </TabsList>
 

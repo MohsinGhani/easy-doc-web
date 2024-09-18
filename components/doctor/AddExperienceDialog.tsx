@@ -13,14 +13,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getCitiesByCountry } from "@/lib/utils";
 import { CardContent } from "../ui/card";
 import {
   experienceSchema,
   experienceSchemaType,
 } from "@/models/validationSchemas";
-import { CITIES, COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
-import { useEffect, useState } from "react";
+import { COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
+import { useEffect } from "react";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
 import { Form } from "../ui/form";
@@ -31,7 +31,6 @@ import { format } from "date-fns";
 const AddExperienceDialog = () => {
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const [cities, setCities] = useState<City[]>([]);
 
   const form = useForm<experienceSchemaType>({
     resolver: zodResolver(experienceSchema),
@@ -136,10 +135,7 @@ const AddExperienceDialog = () => {
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    items={COUNTRIES.map((c) => ({
-                      label: `${c.flag} ${c.name}`,
-                      value: c.code,
-                    }))}
+                    items={COUNTRIES}
                     name="country"
                     label="Country"
                   />
@@ -148,7 +144,7 @@ const AddExperienceDialog = () => {
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    items={cities.map((c) => ({
+                    items={getCitiesByCountry(watch("country")).map((c) => ({
                       label: `${c.name} - ${c.admin1}`,
                       value: c.id,
                     }))}

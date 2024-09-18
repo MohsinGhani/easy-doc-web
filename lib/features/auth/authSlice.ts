@@ -40,6 +40,7 @@ const initialState: authState = {
     gender: "N/D",
     languages: [],
     phone_number: "",
+    services: [],
   },
   loading: false,
   error: null,

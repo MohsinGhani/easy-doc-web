@@ -180,10 +180,6 @@ const userSchema = z.object({
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
     .optional(),
-  phone_number: z
-    .string()
-    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
-    .optional(),
   picture: z.string().url("Invalid URL").optional(),
   designation: z.string().min(1, "Designation is required").optional(),
   bio: z
@@ -219,6 +215,21 @@ const userSchema = z.object({
   available_days: z.array(availableDaySchema).optional(),
 });
 
+// Define User's services Schema
+const serviceSchema = z.object({
+  speciality: z.string().min(1, "Speciality name is required"),
+  service: z.string().min(1, "Service name is required"),
+  fee: z.string().refine(
+    (val) => {
+      return parseFloat(val) > 0;
+    },
+    {
+      message: "Fee must be greater than 0",
+    }
+  ),
+  description: z.string(),
+});
+
 export type experienceSchemaType = z.infer<typeof experienceSchema>;
 export type awardSchemaType = z.infer<typeof awardSchema>;
 export type educationSchemaType = z.infer<typeof educationSchema>;
@@ -234,16 +245,9 @@ export type weekDayEnum =
   | "Thursday"
   | "Friday"
   | "Saturday";
-export type weekDayEnum =
-  | "Sunday"
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday";
 export type availableSlotSchemaType = z.infer<typeof availableSlotSchema>;
 export type userSchemaType = z.infer<typeof userSchema>;
+export type serviceSchemaType = z.infer<typeof serviceSchema>;
 
 export {
   userSchema,
@@ -256,4 +260,5 @@ export {
   reviewSchema,
   availableDaySchema,
   employmentTypeEnum,
+  serviceSchema,
 };

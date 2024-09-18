@@ -685,6 +685,7 @@ export function createAppointment(id: string, index: number): BaseAppointment {
       userId: `UID-${id}`,
       verified: 0,
       years_of_experience: "0",
+      services: [],
     },
     patient: {
       picture: `https://i.pravatar.cc/150?img=${index}`,
@@ -717,6 +718,7 @@ export function createAppointment(id: string, index: number): BaseAppointment {
       userId: `UID-${id}`,
       verified: 0,
       years_of_experience: "0",
+      services: [],
     },
     scheduledDate: {
       from: new Date(Date.now() + Math.random() * (24 * 60 * 60 * 1000)),
@@ -745,7 +747,7 @@ export function createAppointment(id: string, index: number): BaseAppointment {
     description: "",
     paid: false,
     payment: {
-      amount: 0,
+      amount: "$100",
       method: "cash",
       paymentId: `PAY-${id}`,
       paymentDate: format(new Date(), "yyyy-MM-dd"),

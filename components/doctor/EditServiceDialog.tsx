@@ -22,9 +22,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { serviceSchema, serviceSchemaType } from "@/models/validationSchemas";
 import { Form } from "../ui/form";
 import { authThunks } from "@/lib/features/auth/authThunks";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const AddServiceDialog = () => {
+interface SpecialityUpdateDialogProps {
+  service?: serviceSchemaType;
+  specialityName?: string;
+  trigger: React.ReactNode;
+  serviceIndex: number;
+}
+
+const EditServiceDialog = ({
+  service,
+  specialityName,
+  trigger,
+  serviceIndex,
+}: SpecialityUpdateDialogProps) => {
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -32,20 +44,45 @@ const AddServiceDialog = () => {
   const form = useForm<serviceSchemaType>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {
-      speciality: "",
-      service: "",
-      fee: "0.00",
-      description: "",
+      speciality: service?.speciality || specialityName || "",
+      service: service?.service || "",
+      fee: service?.fee || "0.00",
+      description: service?.description || "",
     },
   });
 
-  const { control, handleSubmit, watch } = form;
+  const { control, handleSubmit, watch, setValue } = form;
+
+  useEffect(() => {
+    if (service) {
+      // Prepopulate the form if editing a service
+      setValue("speciality", service.speciality);
+      setValue("service", service.service);
+      setValue("fee", service.fee);
+      setValue("description", service.description);
+    }
+  }, [service, setValue]);
 
   const onSubmit = async (data: serviceSchemaType) => {
+    const updatedServices = [...(user?.services || [])];
+
+    if (data) {
+      updatedServices[serviceIndex] = data;
+    }
+
+    if (!service) {
+      updatedServices.push(data);
+    }
+
     const res = await dispatch(
       authThunks.updateProfile({
         userId: user?.userId || "",
-        updateData: { services: { value: [data], replace: false } },
+        updateData: {
+          services: {
+            value: updatedServices,
+            replace: true,
+          },
+        },
       })
     );
 
@@ -56,52 +93,54 @@ const AddServiceDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className={cn("", buttonVariants({ variant: "default" }))}>
-        Add New Service
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
 
       <DialogContent className="max-h-[90vh] max-w-[90%] border lg:max-w-3xl lg:w-full rounded-xl overflow-y-auto">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Add New Service</DialogTitle>
+              <DialogTitle>
+                {service ? "Edit Service" : "Add New Service"}
+              </DialogTitle>
               <DialogDescription>
-                Enter the service details below
+                {service
+                  ? "Update the service details below"
+                  : "Enter the new service details below"}
               </DialogDescription>
               <CardContent className="px-0 text-start space-y-2">
                 {/* Responsive grid for Speciality, Service, and Price */}
-                <div className="grid md:gap-6 gap-2 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
+                <div className="grid md:gap-6 gap-2 md:grid-cols-2 grid-cols-1">
                   <CustomFormField
-                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                  control={control}
-                  items={SPECIALITIES.map((s) => ({
-                    label: `${s.icon} ${s.name}`,
-                    value: s.name,
-                  }))}
-                  name="speciality"
-                  label="Speciality"
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={SPECIALITIES.map((s) => ({
+                      label: `${s.icon} ${s.name}`,
+                      value: s.name,
+                    }))}
+                    name="speciality"
+                    label="Speciality"
+                    disabled={!!service} // Disable speciality selection if editing
                   />
 
                   <CustomFormField
-                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                  control={control}
-                  items={getServiceBySpeciality(watch("speciality"))
-                    .filter(s => !user.services.some(us => us.service === s.name))
-                    .map((s) => ({
-                    label: s.name,
-                    value: s.name,
-                    }))
-                  }
-                  name="service"
-                  label="Service"
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={getServiceBySpeciality(watch("speciality")).map(
+                      (s) => ({
+                        label: s.name,
+                        value: s.name,
+                      })
+                    )}
+                    name="service"
+                    label="Service"
                   />
 
                   <CustomFormField
-                  fieldType={FormFieldType.NUMBER}
-                  control={control}
-                  name="fee"
-                  placeholder="0.00"
-                  label="Fee"
+                    fieldType={FormFieldType.NUMBER}
+                    control={control}
+                    name="fee"
+                    placeholder="0.00"
+                    label="Fee"
                   />
                 </div>
 
@@ -124,7 +163,7 @@ const AddServiceDialog = () => {
                 className={cn(buttonVariants({ variant: "default" }))}
                 disabled={loading}
               >
-                Add Service
+                {service ? "Update Service" : "Add Service"}
               </Button>
             </DialogFooter>
           </form>
@@ -134,4 +173,4 @@ const AddServiceDialog = () => {
   );
 };
 
-export default AddServiceDialog;
+export default EditServiceDialog;

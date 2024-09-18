@@ -28,5 +28,5 @@ export type Payment = {
   method: string;
   paymentId: string;
   paymentDate: string;
-  amount: number;
+  amount: string;
 };

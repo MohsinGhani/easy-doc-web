@@ -1,20 +1,26 @@
 import { type ClassValue, clsx } from "clsx";
-import {
-  addMinutes,
-  differenceInMinutes,
-  format,
-  isAfter,
-  isBefore,
-  parse,
-} from "date-fns";
+import { addMinutes, differenceInMinutes, format, parse } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import cities from "@/public/data/groupedCities.json";
+import services from "@/public/data/services.json";
 
 interface Cities {
   [key: string]: City[];
 }
 
+interface JSONService {
+  name: string;
+  description: string;
+  price: number;
+  duration: number;
+}
+
+interface Services {
+  [key: string]: JSONService[];
+}
+
 const typedCities: Cities = cities as Cities;
+const typedServices: Services = services as Services;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -94,4 +100,8 @@ export const getOverlappingSlots = (
 
 export const getCitiesByCountry = (countryCode: string): City[] => {
   return typedCities[countryCode] || [];
+};
+
+export const getServiceBySpeciality = (speciality: string): JSONService[] => {
+  return typedServices[speciality] || [];
 };

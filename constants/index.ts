@@ -1,5 +1,6 @@
 import languages from "@/public/data/languages.json";
 import countries from "@/public/data/countries.json";
+import specialities from "@/public/data/specialities.json";
 
 export const identityPoolId =
   process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || "";
@@ -178,7 +179,10 @@ export const fields = [
   { value: "biochemistry", label: "Biochemistry" },
 ];
 
-export const COUNTRIES = countries;
+export const COUNTRIES = countries.map((c) => ({
+  label: `${c.flag} ${c.name}`,
+  value: c.code,
+}));
 
 export const CITIES = [
   {
@@ -235,3 +239,5 @@ export const GENDERS = [
     value: "other",
   },
 ];
+
+export const SPECIALITIES = specialities;

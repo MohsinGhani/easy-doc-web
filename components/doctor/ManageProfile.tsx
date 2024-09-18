@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
-import { Loader } from "../common/Loader";  
+import { Loader } from "../common/Loader";
 import { authThunks } from "@/lib/features/auth/authThunks";
 import { COUNTRIES, GENDERS, LANGUAGES } from "@/constants";
 import { getCitiesByCountry } from "@/lib/utils";
@@ -199,15 +199,15 @@ const ManageProfile = () => {
 
                 {/* display_name */}
                 <CustomFormField
-                  fieldType={FormFieldType.INPUT}
+                  fieldType={FormFieldType.SKELETON}
                   control={control}
                   name="display_name"
                   label="Display Name"
-                  renderInput={(props) => (
+                  renderSkeleton={(field) => (
                     <div className="flex h-10 items-center border border-input rounded-md px-3 py-[15px]">
                       <span className="mr-2">Dr.</span>
                       <input
-                        {...props}
+                        {...field}
                         id="display_name"
                         type="text"
                         className="flex-grow bg-transparent outline-none text-sm"
@@ -266,10 +266,7 @@ const ManageProfile = () => {
                 <CustomFormField
                   fieldType={FormFieldType.SELECT_WITH_SEARCH}
                   control={control}
-                  items={COUNTRIES.map((c) => ({
-                    label: `${c.flag} ${c.name}`,
-                    value: c.code,
-                  }))}
+                  items={COUNTRIES}
                   name={`country`}
                   label="Country"
                   placeholder={"Select country..."}

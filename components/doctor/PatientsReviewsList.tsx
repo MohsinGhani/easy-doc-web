@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CommentRatings } from "@/components/ui/rating";
 import { Separator } from "@/components/ui/separator";
 import { useAppSelector } from "@/lib/hooks";
+import { Loader } from "../common/Loader";
 
 interface PatientsReviewsListProps {
   viewAll?: boolean;
@@ -17,7 +18,6 @@ const PatientsReviewsList = ({ viewAll = false }: PatientsReviewsListProps) => {
     user: { reviews },
     loading,
   } = useAppSelector((state) => state.auth);
-  console.log("🚀 ~ PatientsReviewsList ~ reviews?:", reviews);
 
   return (
     <Card>
@@ -42,9 +42,7 @@ const PatientsReviewsList = ({ viewAll = false }: PatientsReviewsListProps) => {
 
       <CardContent className="space-y-4 p-6 w-full">
         {loading ? (
-          <div className="h-64 flex items-center justify-center">
-            <span>Loading...</span>
-          </div>
+          <Loader />
         ) : reviews?.length > 0 ? (
           reviews?.map((review, i) => (
             <React.Fragment key={i}>
@@ -63,9 +61,11 @@ const PatientsReviewsList = ({ viewAll = false }: PatientsReviewsListProps) => {
                     <h2 className="font-medium sm:text-lg text-base leading-none">
                       {review.name}
                     </h2>
-                    <p className="text-muted-foreground text-sm">
-                      {review.city}, {review.country}
-                    </p>
+                    {review.city && review.country && (
+                      <p className="text-muted-foreground text-sm">
+                        {review.city}, {review.country}
+                      </p>
+                    )}
                     <p className="sm:text-sm text-xs sm:font-medium font-normal">
                       {review.comment}
                     </p>

@@ -64,6 +64,19 @@ declare interface Review {
   country: string;
 }
 
+declare interface Service {
+  service: string;
+  speciality: string;
+  description: string;
+  fee: string;
+}
+
+declare interface Speciality {
+  name: string;
+  icon: string;
+  description: string;
+}
+
 declare type User = {
   userId: string;
   role: string;
@@ -92,6 +105,7 @@ declare type User = {
   education: Education[];
   availableDays: AvailableDay[];
   reviews: Review[];
+  services: Service[];
 };
 
 declare type Doctor = {
@@ -122,7 +136,7 @@ declare type Doctor = {
 declare interface City {
   id: string;
   name: string;
-  admin1: string;
+  admin1: string | null;
   lat: string;
   lon: string;
   pop: string;

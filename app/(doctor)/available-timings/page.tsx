@@ -4,14 +4,14 @@ import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDownIcon } from "lucide-react";
 import TabListContent from "@/components/doctor/TabListContent";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const weekdays = [
   "monday",
@@ -32,41 +32,38 @@ const AvailableTimingsPage = () => {
           <Separator className="my-6" />
           <Tabs defaultValue="monday" className="w-full">
             <h2 className="text-sm font-medium">Select Available Days</h2>
-            <TabsList
-              className="mb-6 mt-2 w-full hidden md:inline-flex"
-              defaultValue="monday"
-            >
+            <TabsList className="md:hidden w-full mb-6 mt-2">
+              <Carousel className="w-full max-w-[80%]">
+                <CarouselContent className="w-full">
+                  {weekdays.map((day, i) => (
+                    <CarouselItem
+                      key={i}
+                      className="basis-1/4 min-w-[130px] max-w-[130px]"
+                    >
+                      <TabsTrigger
+                        value={day}
+                        className="w-full capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                      >
+                        {day}
+                      </TabsTrigger>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </TabsList>
+
+            <TabsList className="hidden md:flex w-full justify-between bg-background mb-6 mt-2">
               {weekdays.map((day, i) => (
                 <TabsTrigger
-                  value={day}
-                  className="flex-1 capitalize p-1"
                   key={i}
+                  value={day}
+                  className="flex-1 capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   {day}
                 </TabsTrigger>
               ))}
-            </TabsList>
-            <TabsList
-              className="mb-6 mt-2 w-full md:hidden"
-              defaultValue="monday"
-            >
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center justify-between w-full px-2 py-2">
-                  Select a day <ChevronDownIcon />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="!w-full">
-                  {weekdays.map((day, i) => (
-                    <DropdownMenuItem key={i} className="!w-full">
-                      <TabsTrigger
-                        value={day}
-                        className="flex-1 capitalize p-1"
-                      >
-                        {day}
-                      </TabsTrigger>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
             </TabsList>
 
             <CardContent>

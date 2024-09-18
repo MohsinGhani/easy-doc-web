@@ -17,7 +17,7 @@ import { useMemo } from "react";
 const paymentsData: Payment[] = [
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -26,7 +26,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -35,7 +35,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -44,7 +44,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -53,7 +53,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -62,7 +62,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -71,7 +71,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -80,7 +80,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -89,7 +89,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -98,7 +98,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -107,7 +107,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -116,7 +116,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -125,7 +125,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -134,7 +134,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -143,7 +143,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -152,7 +152,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -161,7 +161,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -170,7 +170,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -179,7 +179,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
@@ -188,7 +188,7 @@ const paymentsData: Payment[] = [
   },
   {
     method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
+    paymentId: `${Math.floor(Math.random() * 10000) + 1}`,
     paymentDate: format(
       new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
       "d MMM, h:mm a"
