@@ -25,9 +25,8 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
   const [rating, setRating] = useState(0);
   const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
   const dispatch = useAppDispatch();
-  const { userId, given_name, family_name, picture } = useAppSelector(
-    (state) => state.auth.user
-  );
+  const { userId, given_name, family_name, picture, city, country } =
+    useAppSelector((state) => state.auth.user);
   const [comment, setComment] = useState("");
   const [first_name, setFirst_name] = useState(given_name);
   const [last_name, setLast_name] = useState(family_name);
@@ -45,9 +44,13 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
       doctorId,
       rating,
       comment,
-      picture: `https://randomuser.me/api/portraits/men/${Math.floor(
-        Math.random() * 100
-      )}`,
+      picture:
+        picture ||
+        `https://randomuser.me/api/portraits/men/${Math.floor(
+          Math.random() * 100
+        )}`,
+      city: city || "Unknown",
+      country: country || "Unknown",
     };
 
     try {

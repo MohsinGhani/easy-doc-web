@@ -59,6 +59,9 @@ declare interface Review {
   date: string;
   rating: 1 | 2 | 3 | 4 | 5;
   comment: string;
+  picture: string;
+  city: string;
+  country: string;
 }
 
 declare type User = {
