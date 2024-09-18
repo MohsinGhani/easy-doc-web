@@ -268,3 +268,4 @@ export default function PaymentsPage() {
     </ContentLayout>
   );
 }
+ 
