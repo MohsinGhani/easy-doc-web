@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Control } from "react-hook-form";
+import { Control, ControllerRenderProps } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -18,7 +18,6 @@ import {
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
 import { SelectWithSearch } from "@/components/SelectWithSearch";
-import MultipleSelector, { Option } from "@/components/ui/multi-select";
 import { Checkbox } from "../ui/checkbox";
 import { Textarea } from "../ui/textarea";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
@@ -53,6 +52,7 @@ export enum FormFieldType {
   AUTO_RESIZE_TEXTAREA = "textarea",
   DATE_PICKER = "date-picker",
   YEAR_PICKER = "year-picker",
+  SKELETON = "skeleton",
 }
 
 interface CustomProps {
@@ -67,32 +67,31 @@ interface CustomProps {
   showTimeSelect?: boolean;
   enableCreation?: boolean;
   children?: React.ReactNode;
-  renderSkeleton?: (field: any) => React.ReactNode;
+  renderSkeleton?: (
+    field: ControllerRenderProps<any, string>
+  ) => React.ReactNode;
   items?: { value: string; label: string }[];
   fieldType: FormFieldType;
   defaultValue?: string;
-  renderInput?: (field: {
-    value: any;
-    onChange: (value: any) => void;
-  }) => React.ReactNode;
 }
 
-const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
-  console.log("🚀 ~ RenderInput ~ field:", field.value);
+const RenderInput = ({
+  field,
+  props,
+}: {
+  field: ControllerRenderProps<any, string>;
+  props: CustomProps;
+}) => {
+  // console.log("🚀 ~ RenderInput ~ field:", field.value);
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
         <FormControl>
-          {props.renderInput ? (
-            props.renderInput(field)
-          ) : (
-            <Input
-              placeholder={props.placeholder}
-              disabled={props.disabled}
-              name={props.name}
-              {...field}
-            />
-          )}
+          <Input
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            {...field}
+          />
         </FormControl>
       );
 
@@ -121,7 +120,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Input
-            name={props.name}
             placeholder={props.placeholder}
             type="email"
             disabled={props.disabled}
@@ -134,7 +132,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <PasswordInput
-            name={props.name}
             placeholder={props.placeholder}
             disabled={props.disabled}
             {...field}
@@ -146,7 +143,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <PhoneInput
-            name={props.name}
             placeholder={props.placeholder}
             disabled={props.disabled}
             defaultCountry={props.defaultValue as CountryCode}
@@ -159,7 +155,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Input
-            name={props.name}
             placeholder={props.placeholder}
             type="number"
             id="myNumberInput"
@@ -290,7 +285,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Textarea
-            name={props.name}
             placeholder={props.placeholder}
             className="w-full"
             rows={5}
@@ -304,7 +298,6 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <AutosizeTextarea
-            name={props.name}
             placeholder={props.placeholder}
             rows={5}
             disabled={props.disabled}
@@ -346,6 +339,9 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           />
         </FormControl>
       );
+
+    case FormFieldType.SKELETON:
+      return props.renderSkeleton ? props.renderSkeleton(field) : null;
 
     default:
       return null;

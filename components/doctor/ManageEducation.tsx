@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/accordion";
 import AddEducationDialog from "./AddEducatioDialog";
 import { Trash2 } from "lucide-react";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialog from "../common/DeleteDialog";
 import {
   degrees,
   fields as FIELDS_OF_STUDIES,
@@ -34,7 +34,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { authThunks } from "@/lib/features/auth/authThunks";
-import { Loader } from "../Loader";
+import { Loader } from "../common/Loader";
 import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -10,11 +10,9 @@ import {
   experienceSchemaType,
 } from "@/models/validationSchemas";
 import { getCitiesByCountry } from "@/lib/utils";
-import { Loader } from "../Loader";
 import { Form } from "../ui/form";
 import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
 import AddExperienceDialog from "./AddExperienceDialog";
-import DeleteDialog from "../DeleteDialog";
 import {
   Card,
   CardContent,
@@ -31,6 +29,8 @@ import {
 import { Trash2 } from "lucide-react";
 import { COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
 import { Button } from "../ui/button";
+import { Loader } from "../common/Loader";
+import DeleteDialog from "../common/DeleteDialog";
 
 const ManageExperiences = () => {
   const { user, loading } = useAppSelector((state) => state.auth);

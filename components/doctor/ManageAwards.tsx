@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/accordion";
 import AddAwardDialog from "./AddAwardDialog";
 import { Trash2 } from "lucide-react";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialog from "../common/DeleteDialog";
 import { authThunks } from "@/lib/features/auth/authThunks";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { awardSchema, awardSchemaType } from "@/models/validationSchemas";
@@ -29,7 +29,7 @@ import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
 import { institutes } from "@/constants";
-import { Loader } from "../Loader";
+import { Loader } from "../common/Loader";
 
 export default function ManageAwards() {
   const { user, loading } = useAppSelector((state) => state.auth);

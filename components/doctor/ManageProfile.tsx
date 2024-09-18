@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
-import { Loader } from "../Loader";
+import { Loader } from "../common/Loader";  
 import { authThunks } from "@/lib/features/auth/authThunks";
 import { COUNTRIES, GENDERS, LANGUAGES } from "@/constants";
 import { getCitiesByCountry } from "@/lib/utils";

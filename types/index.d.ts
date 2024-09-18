@@ -1,3 +1,5 @@
+declare type Gender = "male" | "female" | "other" | "N/D";
+
 declare type weekDay =
   | "monday"
   | "tuesday"
@@ -7,16 +9,14 @@ declare type weekDay =
   | "saturday"
   | "sunday";
 
-declare type Gender = "male" | "female" | "other" | "N/D";
-
 declare type AvailableDay = {
   day: weekDay;
   slots: AvailableSlot[];
 };
 
 declare type AvailableSlot = {
-  startTime: string;
-  endTime: string;
+  start_time: string;
+  end_time: string;
 };
 
 declare type EMPLOYEMENT_TYPE = "full_time" | "part_time" | "contract";
@@ -59,6 +59,9 @@ declare interface Review {
   date: string;
   rating: 1 | 2 | 3 | 4 | 5;
   comment: string;
+  picture: string;
+  city: string;
+  country: string;
 }
 
 declare type User = {

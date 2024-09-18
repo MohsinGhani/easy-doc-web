@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, UserCircle2, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialog from "../common/DeleteDialog";
 
 export default function ManageServices() {
   const [services, setServices] = useState([

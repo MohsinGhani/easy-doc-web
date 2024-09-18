@@ -2,12 +2,8 @@
 
 import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { AddTimeSlotDialog } from "@/components/AddTimeSlotDialog";
-import { useAppSelector } from "@/lib/hooks";
-import TimeSlot from "@/components/doctor/TimeSlot";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,37 +11,41 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDownIcon } from "lucide-react";
+import TabListContent from "@/components/doctor/TabListContent";
+
+const weekdays = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
 
 const AvailableTimingsPage = () => {
-  const availableDays = useAppSelector(
-    (state) => state.availability.availableDays
-  );
-
   return (
     <ContentLayout title="Available Timings">
       <Card>
         <CardContent className="sm:p-6 p-4">
           <h2 className="text-xl font-medium mb-5">Select Available Slots </h2>
-
           <Separator className="my-6" />
-
           <Tabs defaultValue="monday" className="w-full">
             <h2 className="text-sm font-medium">Select Available Days</h2>
             <TabsList
               className="mb-6 mt-2 w-full hidden md:inline-flex"
               defaultValue="monday"
             >
-              {availableDays.map((value, i) => (
+              {weekdays.map((day, i) => (
                 <TabsTrigger
-                  value={value.day}
+                  value={day}
                   className="flex-1 capitalize p-1"
                   key={i}
                 >
-                  {value.day}
+                  {day}
                 </TabsTrigger>
               ))}
             </TabsList>
-
             <TabsList
               className="mb-6 mt-2 w-full md:hidden"
               defaultValue="monday"
@@ -55,13 +55,13 @@ const AvailableTimingsPage = () => {
                   Select a day <ChevronDownIcon />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="!w-full">
-                  {availableDays.map((value, i) => (
+                  {weekdays.map((day, i) => (
                     <DropdownMenuItem key={i} className="!w-full">
                       <TabsTrigger
-                        value={value.day}
+                        value={day}
                         className="flex-1 capitalize p-1"
                       >
-                        {value.day}
+                        {day}
                       </TabsTrigger>
                     </DropdownMenuItem>
                   ))}
@@ -70,27 +70,8 @@ const AvailableTimingsPage = () => {
             </TabsList>
 
             <CardContent>
-              {availableDays.map((value, i) => (
-                <TabsContent value={value.day} key={i}>
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-medium capitalize">
-                      {value.day}
-                    </h3>
-
-                    <AddTimeSlotDialog day={value.day} />
-                  </div>
-                  <Separator className="my-6" />
-
-                  <div className="flex items-center gap-2">
-                    {value.slots.map(({ startTime, endTime }, i) => (
-                      <TimeSlot
-                        startTime={startTime}
-                        endTime={endTime}
-                        key={i}
-                      />
-                    ))}
-                  </div>
-                </TabsContent>
+              {weekdays.map((day, dayIndex) => (
+                <TabListContent day={day} dayIndex={dayIndex} key={dayIndex} />
               ))}
             </CardContent>
           </Tabs>

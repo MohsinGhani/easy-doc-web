@@ -1,3 +1,4 @@
+import { parseTime } from "@/lib/utils";
 import { z } from "zod";
 
 // Define weekDay Enum
@@ -20,24 +21,26 @@ const employmentTypeEnum = z.enum(["full_time", "part_time", "contract"]);
 // Define AvailableSlot Schema
 const availableSlotSchema = z
   .object({
-    startTime: z
+    start_time: z
       .string()
-      .refine((time) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(time), {
+      .refine((time) => /^([01]?\d|2[0-3]):([0-5]\d)$/.test(time), {
         message: "Invalid start time format (expected HH:mm)",
       }),
-    endTime: z
+    end_time: z
       .string()
-      .refine((time) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(time), {
+      .refine((time) => /^([01]?\d|2[0-3]):([0-5]\d)$/.test(time), {
         message: "Invalid end time format (expected HH:mm)",
       }),
   })
   .refine(
-    (data) =>
-      new Date(`1970-01-01T${data.startTime}:00`) <
-      new Date(`1970-01-01T${data.endTime}:00`),
+    (data) => {
+      const start = parseTime(data.start_time);
+      const end = parseTime(data.end_time);
+      return start < end;
+    },
     {
       message: "Start time must be before end time",
-      path: ["startTime"],
+      path: ["start_time"],
     }
   );
 
@@ -177,6 +180,10 @@ const userSchema = z.object({
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
     .optional(),
+  phone_number: z
+    .string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
+    .optional(),
   picture: z.string().url("Invalid URL").optional(),
   designation: z.string().min(1, "Designation is required").optional(),
   bio: z
@@ -219,6 +226,14 @@ export type reviewSchemaType = z.infer<typeof reviewSchema>;
 export type availableDaySchemaType = z.infer<typeof availableDaySchema>;
 export type employmentTypeEnum = "Full-time" | "Part-time" | "Contract";
 export type genderEnum = "Male" | "Female" | "Other";
+export type weekDayEnum =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday";
 export type weekDayEnum =
   | "Sunday"
   | "Monday"
