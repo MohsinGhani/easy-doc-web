@@ -19,7 +19,7 @@ declare type AvailableSlot = {
   endTime: string;
 };
 
-declare type EMPLOYEMENT_TYPE = "fulltime" | "parttime" | "contract";
+declare type EMPLOYEMENT_TYPE = "full_time" | "part_time" | "contract";
 
 declare interface Experience {
   title: string;

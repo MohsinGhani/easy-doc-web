@@ -215,7 +215,6 @@ export const authSlice = createSlice({
       )
 
       .addCase(authThunks.updateProfile.pending, (state) => {
-        // debugger;
         state.loading = true;
         state.error = null;
       })
@@ -227,6 +226,18 @@ export const authSlice = createSlice({
               ...state.user,
               ...action.payload,
             };
+          }
+          if (Cookies.get("auth")) {
+            Cookies.set(
+              "auth",
+              JSON.stringify({
+                ...state.user,
+                ...action.payload,
+              }),
+              {
+                expires: 1 / 24,
+              }
+            );
           }
           state.loading = false;
           toast.success("Profile updated successfully!");

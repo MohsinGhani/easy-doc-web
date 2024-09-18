@@ -198,11 +198,11 @@ export const CITIES = [
 export const EMPLOYEMENT_TYPES = [
   {
     label: "Full Time",
-    value: "fulltime",
+    value: "full_time",
   },
   {
     label: "Part Time",
-    value: "parttime",
+    value: "part_time",
   },
   {
     label: "Contract",
@@ -219,4 +219,19 @@ export const GRADES = [
   { label: "C", value: "c" },
   { label: "D", value: "d" },
   { label: "NO GRADE", value: "no grade" },
+];
+
+export const GENDERS = [
+  {
+    label: "Male",
+    value: "male",
+  },
+  {
+    label: "Female",
+    value: "female",
+  },
+  {
+    label: "Other",
+    value: "other",
+  },
 ];

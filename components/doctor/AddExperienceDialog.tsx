@@ -20,7 +20,7 @@ import {
   experienceSchemaType,
 } from "@/models/validationSchemas";
 import { CITIES, COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
 import { Form } from "../ui/form";
@@ -31,20 +31,10 @@ import { format } from "date-fns";
 const AddExperienceDialog = () => {
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const [cities, setCities] = useState<City[]>([]);
 
   const form = useForm<experienceSchemaType>({
     resolver: zodResolver(experienceSchema),
-    defaultValues: {
-      currently_working: false,
-      end_date: format(new Date(), "yyyy-MM-dd"),
-      city: CITIES[0].value,
-      country: COUNTRIES[0].value,
-      employment_type: EMPLOYEMENT_TYPES[0].value as EMPLOYEMENT_TYPE,
-      start_date: format(new Date(), "yyyy-MM-dd"),
-      title: "",
-      hospital_name: "",
-      description: "",
-    },
   });
 
   const { control, handleSubmit, setValue, watch } = form;
@@ -142,22 +132,28 @@ const AddExperienceDialog = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
-                  {/* city */}
-                  <CustomFormField
-                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                    control={control}
-                    items={CITIES}
-                    name="city"
-                    label="City"
-                  />
-
                   {/* country */}
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    items={COUNTRIES}
+                    items={COUNTRIES.map((c) => ({
+                      label: `${c.flag} ${c.name}`,
+                      value: c.code,
+                    }))}
                     name="country"
                     label="Country"
+                  />
+
+                  {/* city */}
+                  <CustomFormField
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={cities.map((c) => ({
+                      label: `${c.name} - ${c.admin1}`,
+                      value: c.id,
+                    }))}
+                    name="city"
+                    label="City"
                   />
 
                   {/* employment_type */}

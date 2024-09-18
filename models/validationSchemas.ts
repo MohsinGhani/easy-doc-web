@@ -15,7 +15,7 @@ const weekDayEnum = z.enum([
 const genderEnum = z.enum(["male", "female", "other", "N/D"]);
 
 // Define EMPLOYMENT_TYPE Enum
-const employmentTypeEnum = z.enum(["fulltime", "parttime", "contract"]);
+const employmentTypeEnum = z.enum(["full_time", "part_time", "contract"]);
 
 // Define AvailableSlot Schema
 const availableSlotSchema = z
@@ -169,42 +169,47 @@ const reviewSchema = z.object({
 
 // Define User Schema
 const userSchema = z.object({
-  userId: z.string().min(1, "User ID is required").optional(),
-  role: z.string().min(1, "Role is required").optional(),
   email: z.string().email("Invalid email address").optional(),
   given_name: z.string().min(1, "Given name is required").optional(),
   family_name: z.string().min(1, "Family name is required").optional(),
   display_name: z.string().min(1, "Display name is required").optional(),
-  phone_number: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number").optional(),
+  phone_number: z
+    .string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
+    .optional(),
   picture: z.string().url("Invalid URL").optional(),
   designation: z.string().min(1, "Designation is required").optional(),
   bio: z
     .string()
     .max(500, "Bio cannot be longer than 500 characters")
-    .optional().optional(),
-  years_of_experience: z
-    .string()
-    .refine((val) => !isNaN(parseInt(val)) && parseInt(val) >= 0, {
-      message: "Years of experience must be a non-negative number",
-    }).optional(),
+    .optional()
+    .optional(),
   city: z.string().min(1, "City is required").optional(),
   country: z.string().min(1, "Country is required").optional(),
-  dob: z.string().refine((val) => new Date(val) <= new Date(), {
-    message: "Date of birth cannot be in the future",
-  }).optional(),
+  dob: z
+    .string()
+    .refine((val) => new Date(val) <= new Date(), {
+      message: "Date of birth cannot be in the future",
+    })
+    .refine((val) => new Date(val) >= new Date("1900-01-01"), {
+      message: "Date of birth cannot be before 1900",
+    })
+    .refine(
+      (val) => new Date().getFullYear() - new Date(val).getFullYear() >= 18,
+      {
+        message: "User must be at least 18 years old",
+      }
+    )
+    .optional(),
   gender: genderEnum.optional(),
   specialty: z.string().min(1, "Specialty is required").optional(),
-  location: z.string().min(1, "Location is required").optional(),
-  rating: z.number().min(0).max(5, "Rating must be between 0 and 5").optional(),
   available: z.boolean().optional(),
-  verified: z.number().min(0, "Verified must be a non-negative number").optional(),
-  fee: z.number().min(0, "Fee must be a non-negative number").optional(),
   languages: z.array(z.string().min(1, "Languages are required")).optional(),
   experiences: z.array(experienceSchema).optional(),
   awards: z.array(awardSchema).optional(),
   education: z.array(educationSchema).optional(),
-  availableDays: z.array(availableDaySchema).optional(),
   reviews: z.array(reviewSchema).optional(),
+  available_days: z.array(availableDaySchema).optional(),
 });
 
 export type experienceSchemaType = z.infer<typeof experienceSchema>;
@@ -214,10 +219,16 @@ export type reviewSchemaType = z.infer<typeof reviewSchema>;
 export type availableDaySchemaType = z.infer<typeof availableDaySchema>;
 export type employmentTypeEnum = "Full-time" | "Part-time" | "Contract";
 export type genderEnum = "Male" | "Female" | "Other";
-export type weekDayEnum = "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday";
+export type weekDayEnum =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday";
 export type availableSlotSchemaType = z.infer<typeof availableSlotSchema>;
 export type userSchemaType = z.infer<typeof userSchema>;
-
 
 export {
   userSchema,

@@ -24,19 +24,22 @@ interface SelectWithSearchProps {
   className?: string;
   onChange: (value: string) => void;
   defaultValue?: string;
+  enableCreation?: boolean;
 }
 
 export function SelectWithSearch({
-  items: initialItems,
+  items: initialItems = [],
   placeholder = "Select an item...",
   className,
   onChange,
   defaultValue = "",
+  enableCreation = true,
 }: SelectWithSearchProps) {
   const [open, setOpen] = React.useState(false);
   const [customValue, setCustomValue] = React.useState("");
   const [value, setValue] = React.useState(defaultValue);
   const [items, setItems] = React.useState(initialItems);
+  const [filteredItems, setFilteredItems] = React.useState(initialItems);
 
   React.useEffect(() => {
     setItems(initialItems);
@@ -46,10 +49,13 @@ export function SelectWithSearch({
     setValue(defaultValue);
   }, [defaultValue]);
 
-  // Filter items based on the search input
-  const filteredItems = items.filter((item) =>
-    item.label.toLowerCase().includes(customValue.toLowerCase())
-  );
+  React.useEffect(() => {
+    setFilteredItems(
+      items.filter((item) =>
+        item.label.toLowerCase().includes(customValue.toLowerCase())
+      )
+    );
+  }, [customValue, items]);
 
   const handleSelect = (selectedValue: string | null) => {
     const newValue = selectedValue === value ? "" : selectedValue;
@@ -97,8 +103,9 @@ export function SelectWithSearch({
               value={customValue}
             />
             <CommandList>
-              {/* Add new custom value option */}
-              {customValue &&
+              {/* Add new custom value option if enableCreation is true */}
+              {enableCreation &&
+                customValue &&
                 !items.some((item) => item.label === customValue) && (
                   <CommandItem onSelect={handleAddCustom}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -114,6 +121,7 @@ export function SelectWithSearch({
                     <CommandItem
                       key={item.value}
                       onSelect={() => handleSelect(item.value)}
+                      value={item.label}
                     >
                       <Check
                         className={cn(

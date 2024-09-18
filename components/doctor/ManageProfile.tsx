@@ -17,8 +17,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
 import { Loader } from "../Loader";
 import { authThunks } from "@/lib/features/auth/authThunks";
-import { COUNTRIES, LANGUAGES } from "@/constants";
-import { getCitiesByCountry } from "@/lib/server-only";
+import { COUNTRIES, GENDERS, LANGUAGES } from "@/constants";
+import { getCitiesByCountry } from "@/lib/utils";
 import { userSchema, userSchemaType } from "@/models/validationSchemas";
 import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
@@ -31,41 +31,22 @@ const ManageProfile = () => {
   const form = useForm<userSchemaType>({
     resolver: zodResolver(userSchema),
   });
-   
   const {
     handleSubmit,
-    setValue,  
     getValues,
     control,
-    formState: { dirtyFields, errors },
+    formState: { dirtyFields, isDirty },
   } = form;
-  console.log("🚀 ~ ManageProfile ~ errors:", errors);
-
-  const [cities, setCities] = useState<City[]>([]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [base64Image, setBase64Image] = useState<string | ArrayBuffer | null>(
     null
   );
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const country = getValues("country");
-
-  useEffect(() => {
-    if (country) {
-      const newFilteredStates = STATES.filter(
-        (state) => state.country_code === country
-      );
-      setFilteredStates(newFilteredStates);
-    } else {
-      setFilteredStates([]);
-    }
-  }, [country]);
-
   const handleImageUploadClick = () => {
     fileInputRef.current?.click();
   };
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.size <= 4 * 1024 * 1024) {
@@ -82,7 +63,6 @@ const ManageProfile = () => {
       toast.error("Image must be less than 4MB.");
     }
   };
-
   const onSubmit = async (data: userSchemaType) => {
     const updateExpression: Record<string, any> = {};
 
@@ -106,13 +86,6 @@ const ManageProfile = () => {
       };
     }
 
-    const parsedData = userSchema.safeParse(updateExpression);
-    console.log("🚀 ~ onSubmit ~ parsedData:", parsedData);
-    // if (!parsedData.success) {
-    //   toast.error("Please fix the validation errors.");
-    //   return;
-    // }
-
     const res = await dispatch(
       authThunks.updateProfile({
         userId: user?.userId || "",
@@ -128,23 +101,11 @@ const ManageProfile = () => {
     setBase64Image("");
     setImagePreviewUrl("");
   };
-
   useEffect(() => {
     if (user) {
       form.reset(user);
     }
   }, [user, form]);
-
-  useEffect(() => {
-    if (country) {
-      getCitiesByCountry(country).then((cities: City[]) => {
-        setCities(cities);
-        setValue("city", user?.city || cities[0]?.name || "");
-      });
-    } else {
-      setValue("city", user?.city || "");
-    }
-  }, [setValue, country, user]);
 
   if (loading) return <Loader />;
   if (!user) return null;
@@ -214,7 +175,6 @@ const ManageProfile = () => {
           <CardTitle>Personal Details</CardTitle>
           <CardDescription>This will be shared on our platform</CardDescription>
         </CardHeader>
-
         <CardContent>
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -241,9 +201,20 @@ const ManageProfile = () => {
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
                   control={control}
-                  name="family_name"
+                  name="display_name"
                   label="Display Name"
-                  placeholder="Enter your display name"
+                  renderInput={(props) => (
+                    <div className="flex h-10 items-center border border-input rounded-md px-3 py-[15px]">
+                      <span className="mr-2">Dr.</span>
+                      <input
+                        {...props}
+                        id="display_name"
+                        type="text"
+                        className="flex-grow bg-transparent outline-none text-sm"
+                        placeholder="Enter your display name"
+                      />
+                    </div>
+                  )}
                 />
 
                 {/* dob */}
@@ -256,8 +227,9 @@ const ManageProfile = () => {
 
                 {/* gender */}
                 <CustomFormField
-                  fieldType={FormFieldType.GENDER_SELECT}
+                  fieldType={FormFieldType.SELECT}
                   control={control}
+                  items={GENDERS}
                   name={`gender`}
                   label="Gender"
                 />
@@ -301,19 +273,21 @@ const ManageProfile = () => {
                   name={`country`}
                   label="Country"
                   placeholder={"Select country..."}
+                  enableCreation={false}
                 />
 
                 {/* city */}
                 <CustomFormField
                   fieldType={FormFieldType.SELECT_WITH_SEARCH}
                   control={control}
-                  items={cities.map((c) => ({
+                  items={getCitiesByCountry(country as string).map((c) => ({
                     label: `${c.name} - ${c.admin1}`,
                     value: c.id,
                   }))}
                   name={`city`}
                   label="City"
                   placeholder={"Select city..."}
+                  enableCreation={false}
                 />
 
                 {/* languages */}
@@ -322,7 +296,7 @@ const ManageProfile = () => {
                   control={control}
                   items={LANGUAGES.map((item) => ({
                     label: item.name,
-                    value: item.name,
+                    value: item.name.toLocaleLowerCase(),
                   }))}
                   name={`languages`}
                   label="Known Languages"
@@ -331,7 +305,7 @@ const ManageProfile = () => {
 
                 {/* bio */}
                 <CustomFormField
-                  fieldType={FormFieldType.INPUT}
+                  fieldType={FormFieldType.AUTO_RESIZE_TEXTAREA}
                   control={control}
                   name="bio"
                   label="Bio"
@@ -343,7 +317,7 @@ const ManageProfile = () => {
                 <Button variant="ghost" type="reset">
                   Cancel
                 </Button>
-                <Button type="submit" disabled={loading}>
+                <Button type="submit" disabled={loading || !isDirty}>
                   Save Changes
                 </Button>
               </CardFooter>
