@@ -13,7 +13,7 @@ interface JSONService {
   description: string;
   price: number;
   duration: number;
-}
+} 
 
 interface Services {
   [key: string]: JSONService[];
