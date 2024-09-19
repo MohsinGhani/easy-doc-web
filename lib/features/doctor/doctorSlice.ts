@@ -52,7 +52,6 @@ export const doctorSlice = createSlice({
       .addCase(doctorThunks.fetchDoctorById.pending, (state) => {
         state.loading = true;
         state.error = null;
-        toast("Fetching doctor details...");
       })
       .addCase(
         doctorThunks.fetchDoctorById.fulfilled,

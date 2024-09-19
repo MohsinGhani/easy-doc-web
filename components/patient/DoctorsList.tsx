@@ -15,7 +15,7 @@ export default function DoctorsList() {
     if (doctors.length === 0) {
       dispatch(doctorThunks.fetchAllDoctors());
     }
-  }, [dispatch]);
+  }, []);
 
   if (loading) return <div>Loading...</div>;
 

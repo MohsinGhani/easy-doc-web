@@ -200,6 +200,7 @@ export const authSlice = createSlice({
         authThunks.initializeAuth.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.user = action.payload;
+          state.isLoggedIn = true;
           !Cookies.get("auth") &&
             Cookies.set("auth", JSON.stringify(action.payload), {
               expires: 1 / 24,
