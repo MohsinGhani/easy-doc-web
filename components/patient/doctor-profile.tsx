@@ -24,7 +24,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Loader } from "../common/Loader";
 import { cn, getCityNameById, getCountryNameByCode } from "@/lib/utils";
 import EmptyState from "../common/EmptyState";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const tabs = [
@@ -44,7 +43,6 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
   const { loading, fetchedDoctor: doctor } = useAppSelector(
     (state) => state.doctor
   );
-  const router = useRouter();
 
   useEffect(() => {
     if (doctorId && typeof doctorId === "string") {

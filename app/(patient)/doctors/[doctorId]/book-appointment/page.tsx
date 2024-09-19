@@ -9,7 +9,7 @@ interface BookAppointmentPageProps {
 }
 
 const BannerData = {
-  title: "Doctor Details",
+  title: "Book Appointment",
   description: "",
   location: [
     { name: "Home", path: "/" },

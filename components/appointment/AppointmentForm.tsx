@@ -20,6 +20,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { ALLERGIES, BLOOD_GROUPS, GENDERS, MEDICATIONS } from "@/constants";
 import { getServiceBySpeciality } from "@/lib/utils";
+import { UploadCloud } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface AppointmentFormProps {
   doctorId: string;
@@ -66,145 +68,158 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
   );
 
   return (
-    <>
-      <Accordion type="multiple">
+    <div className="gap-16 grid lg:grid-cols-4">
+      <Accordion type="multiple" className="col-span-3">
         <AccordionItem value="patient-details">
           <AccordionTrigger className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6">
             Patient Details
           </AccordionTrigger>
           <AccordionContent>
-            <div className="flex flex-col-reverse gap-16 md:flex-row">
-              <div className="grid lg:grid-cols-3 gap-8">
-                <Form {...form}>
-                  <form onSubmit={handleSubmit(onSubmit)} className="grid">
-                    <div className="grid col-span-2 lg:grid-cols-2 gap-8">
-                      {/* consulting_for */}
-                      <CustomFormField
-                        name="consulting_for"
-                        label="Consulting For"
-                        fieldType={FormFieldType.SELECT}
-                        items={[
-                          { label: "Self", value: "self" },
-                          { label: "Other", value: "other" },
-                        ]}
-                        control={control}
-                      />
+            <Form {...form}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid lg:grid-cols-2 gap-8">
+                  {/* consulting_for */}
+                  <CustomFormField
+                    name="consulting_for"
+                    label="Consulting For"
+                    fieldType={FormFieldType.SELECT}
+                    items={[
+                      { label: "Self", value: "self" },
+                      { label: "Other", value: "other" },
+                    ]}
+                    control={control}
+                  />
 
-                      {/* patient_name */}
-                      <CustomFormField
-                        name="patient_name"
-                        label="Patient full name"
-                        fieldType={FormFieldType.INPUT}
-                        control={control}
-                      />
+                  {/* patient_name */}
+                  <CustomFormField
+                    name="patient_name"
+                    label="Patient full name"
+                    fieldType={FormFieldType.INPUT}
+                    control={control}
+                  />
 
-                      {/* gender */}
-                      <CustomFormField
-                        name="gender"
-                        label="Gender"
-                        placeholder="Select"
-                        fieldType={FormFieldType.SELECT}
-                        items={GENDERS}
-                        control={control}
-                      />
+                  {/* gender */}
+                  <CustomFormField
+                    name="gender"
+                    label="Gender"
+                    placeholder="Select"
+                    fieldType={FormFieldType.SELECT}
+                    items={GENDERS}
+                    control={control}
+                  />
 
-                      {/* dob */}
-                      <CustomFormField
-                        name="dob"
-                        label="Date of Birth"
-                        fieldType={FormFieldType.DATE_PICKER}
-                        control={control}
-                      />
+                  {/* dob */}
+                  <CustomFormField
+                    name="dob"
+                    label="Date of Birth"
+                    fieldType={FormFieldType.DATE_PICKER}
+                    control={control}
+                  />
 
-                      {/* blood_group */}
-                      <CustomFormField
-                        name="blood_group"
-                        label="Blood Group"
-                        fieldType={FormFieldType.SELECT}
-                        items={BLOOD_GROUPS}
-                        control={control}
-                      />
+                  {/* blood_group */}
+                  <CustomFormField
+                    name="blood_group"
+                    label="Blood Group"
+                    fieldType={FormFieldType.SELECT}
+                    items={BLOOD_GROUPS}
+                    control={control}
+                  />
 
-                      {/* speciality */}
-                      <CustomFormField
-                        name="speciality"
-                        label="Speciality"
-                        fieldType={FormFieldType.SELECT}
-                        items={Array.from(uniqueSpecialities).map(
-                          (speciality) => ({
-                            label: speciality,
-                            value: speciality.toLowerCase(),
-                          })
-                        )}
-                        control={control}
-                      />
+                  {/* speciality */}
+                  <CustomFormField
+                    name="speciality"
+                    label="Speciality"
+                    fieldType={FormFieldType.SELECT}
+                    items={Array.from(uniqueSpecialities).map((speciality) => ({
+                      label: speciality,
+                      value: speciality.toLowerCase(),
+                    }))}
+                    control={control}
+                  />
 
-                      {/* consultation_type */}
-                      <CustomFormField
-                        name="consultation_type"
-                        label="Consultation Type"
-                        fieldType={FormFieldType.SELECT}
-                        items={fetchedDoctor?.services
-                          ?.filter(
-                            (s) =>
-                              s?.speciality.toLowerCase() ===
-                              watch("speciality")
-                          )
-                          .map((s) => ({
-                            label: s?.service,
-                            value: s?.service,
-                          }))}
-                        control={control}
-                      />
+                  {/* consultation_type */}
+                  <CustomFormField
+                    name="consultation_type"
+                    label="Consultation Type"
+                    fieldType={FormFieldType.SELECT}
+                    items={fetchedDoctor?.services
+                      ?.filter(
+                        (s) =>
+                          s?.speciality.toLowerCase() === watch("speciality")
+                      )
+                      .map((s) => ({
+                        label: s?.service,
+                        value: s?.service,
+                      }))}
+                    control={control}
+                  />
 
-                      {/* phone_number */}
-                      <CustomFormField
-                        name="phone_number"
-                        label="Contact no:"
-                        fieldType={FormFieldType.PHONE_INPUT}
-                        control={control}
-                      />
+                  {/* phone_number */}
+                  <CustomFormField
+                    name="phone_number"
+                    label="Contact no:"
+                    fieldType={FormFieldType.PHONE_INPUT}
+                    control={control}
+                  />
 
-                      {/* email */}
-                      <CustomFormField
-                        name="email"
-                        label="Email"
-                        fieldType={FormFieldType.EMAIL}
-                        control={control}
-                      />
+                  {/* email */}
+                  <CustomFormField
+                    name="email"
+                    label="Email"
+                    fieldType={FormFieldType.EMAIL}
+                    control={control}
+                  />
 
-                      {/* allergies */}
-                      <CustomFormField
-                        name="allergies"
-                        label="Allergies"
-                        fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
-                        items={ALLERGIES}
-                        control={control}
-                      />
+                  {/* allergies */}
+                  <CustomFormField
+                    name="allergies"
+                    label="Allergies"
+                    fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
+                    items={ALLERGIES}
+                    control={control}
+                  />
 
-                      {/* current_medication */}
-                      <CustomFormField
-                        name="current_medication"
-                        label="Current medications:"
-                        fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
-                        items={MEDICATIONS}
-                        control={control}
-                      />
+                  {/* current_medication */}
+                  <CustomFormField
+                    name="current_medication"
+                    label="Current medications:"
+                    fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
+                    items={MEDICATIONS}
+                    control={control}
+                  />
+                </div>
+
+                {/* description */}
+                <CustomFormField
+                  name="description"
+                  label="Description"
+                  fieldType={FormFieldType.TEXTAREA}
+                  control={control}
+                />
+
+                <div className="flex items-center gap-6 p-8 border rounded-xl border-dashed">
+                  {/* Icon */}
+                  <UploadCloud size={24} />
+
+                  <div className="flex items-center justify-between w-full">
+                    <div className="space-y-2">
+                      <p className="text-[#1e1e1e] text-[13px] font-normal">
+                        Select a file or drag and drop here
+                      </p>
+
+                      <p className="text-black/40 text-xs font-normal">
+                        JPG, PNG or PDF, file size no more than 10MB
+                      </p>
                     </div>
 
-                    {/* description */}
-                    <CustomFormField
-                      name="description"
-                      label="Description"
-                      fieldType={FormFieldType.TEXTAREA}
-                      control={control}
-                    />
-                  </form>
-                </Form>
-              </div>
-            </div>
+                    <Button variant={"outline"}>Select file</Button>
+                  </div>
+                </div>
+              </form>
+            </Form>
           </AccordionContent>
         </AccordionItem>
+
         <AccordionItem value="date-and-time">
           <AccordionTrigger className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6">
             Appointment Date & Time
@@ -212,7 +227,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
           <AccordionContent>asd</AccordionContent>
         </AccordionItem>
       </Accordion>
-    </>
+
+      <div className="">asd</div>
+    </div>
   );
 };
 
