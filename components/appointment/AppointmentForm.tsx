@@ -199,7 +199,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
                 <div className="flex items-center gap-6 p-8 border rounded-xl border-dashed">
                   {/* Icon */}
-                  <UploadCloud size={24} />
+                  <UploadCloud size={48} color="#00000066" className="text-muted-foreground stroke-1" />
 
                   <div className="flex items-center justify-between w-full">
                     <div className="space-y-2">
