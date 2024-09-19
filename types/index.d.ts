@@ -62,6 +62,7 @@ declare interface Review {
   picture: string;
   city: string;
   country: string;
+  patientId: string
 }
 
 declare interface Service {

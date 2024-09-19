@@ -3,8 +3,8 @@ import { toast } from "sonner";
 import { doctorThunks } from "./doctorThunks";
 
 interface doctorSlice {
-  allDoctors: Doctor[];
-  fetchedDoctor: Doctor | null;
+  allDoctors: User[];
+  fetchedDoctor: User | null;
   loading: boolean;
   error: string | null | undefined;
 }
@@ -30,11 +30,10 @@ export const doctorSlice = createSlice({
       .addCase(doctorThunks.fetchAllDoctors.pending, (state) => {
         state.loading = true;
         state.error = null;
-        toast("Fetching all doctors...");
       })
       .addCase(
         doctorThunks.fetchAllDoctors.fulfilled,
-        (state, action: PayloadAction<Doctor[]>) => {
+        (state, action: PayloadAction<User[]>) => {
           state.allDoctors = action.payload;
           state.loading = false;
         }
@@ -55,7 +54,7 @@ export const doctorSlice = createSlice({
       })
       .addCase(
         doctorThunks.fetchDoctorById.fulfilled,
-        (state, action: PayloadAction<Doctor>) => {
+        (state, action: PayloadAction<User>) => {
           state.fetchedDoctor = action.payload;
           state.loading = false;
         }
@@ -73,11 +72,10 @@ export const doctorSlice = createSlice({
       .addCase(doctorThunks.submitDoctorReview.pending, (state) => {
         state.loading = true;
         state.error = null;
-        toast("Submitting review...");
       })
       .addCase(
         doctorThunks.submitDoctorReview.fulfilled,
-        (state, action: PayloadAction<Partial<Doctor>>) => {
+        (state, action: PayloadAction<Partial<User>>) => {
           if (state.fetchedDoctor) {
             state.fetchedDoctor = {
               ...state.fetchedDoctor,
@@ -105,7 +103,7 @@ export const doctorSlice = createSlice({
       })
       .addCase(
         doctorThunks.updateDoctorProfile.fulfilled,
-        (state, action: PayloadAction<Partial<Doctor>>) => {
+        (state, action: PayloadAction<Partial<User>>) => {
           if (state.fetchedDoctor) {
             state.fetchedDoctor = {
               ...state.fetchedDoctor,

@@ -3,12 +3,12 @@ import { RootState } from "@/lib/store";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Fetch all doctors
-const fetchAllDoctors = createAsyncThunk<Doctor[]>(
+const fetchAllDoctors = createAsyncThunk<User[]>(
   "doctor/fetchAllDoctors",
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiClient.get("/doctors/all");
-      return response.data.data as Doctor[];
+      return response.data.data as User[];
     } catch (error: any) {
       // Extract error message from response or fallback to default
       const errorMessage =
@@ -19,7 +19,7 @@ const fetchAllDoctors = createAsyncThunk<Doctor[]>(
 );
 
 // Fetch doctor by ID (check if the doctor already exists in the store)
-const fetchDoctorById = createAsyncThunk<Doctor, string>(
+const fetchDoctorById = createAsyncThunk<User, string>(
   "doctor/fetchDoctorById",
   async (doctorId, { getState, rejectWithValue }) => {
     try {
@@ -32,7 +32,7 @@ const fetchDoctorById = createAsyncThunk<Doctor, string>(
       }
 
       const response = await apiClient.get(`/doctor/${doctorId}`);
-      return response.data.data as Doctor;
+      return response.data.data as User;
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || error.message || "Network error";
@@ -43,7 +43,7 @@ const fetchDoctorById = createAsyncThunk<Doctor, string>(
 
 // Submit a review for a doctor
 export const submitDoctorReview = createAsyncThunk<
-  Partial<Doctor>,
+  Partial<User>,
   { reviewData: any }
 >("doctor/submitDoctorReview", async ({ reviewData }, { rejectWithValue }) => {
   try {
@@ -60,7 +60,7 @@ export const submitDoctorReview = createAsyncThunk<
 
 // Update doctor's profile
 export const updateDoctorProfile = createAsyncThunk<
-  Partial<Doctor>,
+  Partial<User>,
   { doctorId: string; updateData: Record<string, any> },
   { rejectValue: string }
 >(

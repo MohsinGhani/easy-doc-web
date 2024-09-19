@@ -37,8 +37,8 @@ export function SelectWithSearch({
 }: SelectWithSearchProps) {
   const [open, setOpen] = React.useState(false);
   const [customValue, setCustomValue] = React.useState("");
-  const [value, setValue] = React.useState(defaultValue);
-  const [items, setItems] = React.useState(initialItems);
+  const [value, setValue] = React.useState(defaultValue || "");
+  const [items, setItems] = React.useState(initialItems || []);
   const [filteredItems, setFilteredItems] = React.useState(initialItems);
 
   React.useEffect(() => {
@@ -51,8 +51,8 @@ export function SelectWithSearch({
 
   React.useEffect(() => {
     setFilteredItems(
-      items.filter((item) =>
-        item.label.toLowerCase().includes(customValue.toLowerCase())
+      items?.filter((item) =>
+        item?.label?.toLowerCase()?.includes(customValue?.toLowerCase())
       )
     );
   }, [customValue, items]);
@@ -65,11 +65,11 @@ export function SelectWithSearch({
   };
 
   const handleAddCustom = () => {
-    const newItem = { value: customValue.toLowerCase(), label: customValue };
+    const newItem = { value: customValue?.toLowerCase(), label: customValue };
     setItems((prevItems) => [...prevItems, newItem]); // Add new item to list state
-    setValue(newItem.value);
+    setValue(newItem?.value);
     setOpen(false);
-    onChange(newItem.value);
+    onChange(newItem?.value);
     setCustomValue("");
   };
 
@@ -88,7 +88,7 @@ export function SelectWithSearch({
           >
             <span className="max-w-[90%] truncate">
               {value
-                ? items.find((item) => item.value === value)?.label
+                ? items.find((item) => item?.value === value)?.label
                 : placeholder}
             </span>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -98,7 +98,7 @@ export function SelectWithSearch({
         <PopoverContent className="w-full p-0">
           <Command>
             <CommandInput
-              placeholder={`Search ${placeholder.toLowerCase()}`}
+              placeholder={`Search ${placeholder?.toLowerCase()}`}
               onValueChange={setCustomValue}
               value={customValue}
             />
@@ -106,7 +106,7 @@ export function SelectWithSearch({
               {/* Add new custom value option if enableCreation is true */}
               {enableCreation &&
                 customValue &&
-                !items.some((item) => item.label === customValue) && (
+                !items.some((item) => item?.label === customValue) && (
                   <CommandItem onSelect={handleAddCustom}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add &quot;{customValue}&quot;
@@ -119,17 +119,17 @@ export function SelectWithSearch({
                 <CommandGroup>
                   {filteredItems.map((item) => (
                     <CommandItem
-                      key={item.value}
-                      onSelect={() => handleSelect(item.value)}
-                      value={item.label}
+                      key={item?.value}
+                      onSelect={() => handleSelect(item?.value)}
+                      value={item?.label}
                     >
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          value === item.value ? "opacity-100" : "opacity-0"
+                          value === item?.value ? "opacity-100" : "opacity-0"
                         )}
                       />
-                      {item.label}
+                      {item?.label}
                     </CommandItem>
                   ))}
                 </CommandGroup>

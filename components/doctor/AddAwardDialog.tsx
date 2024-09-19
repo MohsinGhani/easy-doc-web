@@ -81,6 +81,7 @@ const AddAwardDialog = () => {
                     name={`institute`}
                     label="Institute"
                     placeholder={"Select institute..."}
+                    // enableCreation={false}
                   />
 
                   {/* year */}

@@ -119,7 +119,6 @@ const ManageExperiences = () => {
                     `experiences.${index}.currently_working`
                   );
                   const country = watch(`experiences.${index}.country`);
-                  console.log("country", country);
 
                   return (
                     <AccordionItem

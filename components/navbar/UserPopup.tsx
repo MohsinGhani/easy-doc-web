@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { authThunks } from "@/lib/features/auth/authThunks";
 import Link from "next/link";
 import { useState } from "react";
@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 export function UserPopup() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { loading, user } = useAppSelector((state) => state.auth);
 
   const dispatch = useAppDispatch();
 
@@ -38,6 +39,10 @@ export function UserPopup() {
     },
   ];
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
@@ -48,6 +53,7 @@ export function UserPopup() {
         >
           <Image
             src={
+              user.picture ||
               "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=36&q=80"
             }
             width={36}

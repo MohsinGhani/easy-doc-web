@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,33 +10,37 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { StarIcon } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import ThankYouDialog from "./ThankYouDialog";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { toast } from "sonner";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { reviewSchema, reviewSchemaType } from "@/models/validationSchemas";
+import { Form, FormControl } from "@/components/ui/form";
+import { CustomFormField } from "@/components/auth";
+import { FormFieldType } from "@/components/auth/CustomFormField";
 
 const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
-  const [rating, setRating] = useState(0);
   const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
   const dispatch = useAppDispatch();
   const { userId, given_name, family_name, picture, city, country } =
     useAppSelector((state) => state.auth.user);
-  const [comment, setComment] = useState("");
-  const [first_name, setFirst_name] = useState(given_name);
-  const [last_name, setLast_name] = useState(family_name);
 
-  const handleRatingClick = (value: number) => {
-    setRating(value);
-  };
+  const form = useForm<reviewSchemaType>({
+    resolver: zodResolver(reviewSchema),
+    defaultValues: {
+      first_name: given_name,
+      last_name: family_name,
+      rating: 3,
+      comment: "",
+    },
+  });
 
-  const handleSubmitReview = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: reviewSchemaType) => {
+    const { first_name, last_name, rating, comment } = data;
 
     const reviewData = {
       name: `${first_name} ${last_name}`,
@@ -46,23 +50,22 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
       comment,
       picture:
         picture ||
-        `https://randomuser.me/api/portraits/men/${Math.floor(
+        `https://avatar.iran.liara.run/public/${Math.floor(
           Math.random() * 100
         )}`,
-      city: city || "Unknown",
-      country: country || "Unknown",
+      city: city || "",
+      country: country || "",
     };
 
-    try {
-      await dispatch(doctorThunks.submitDoctorReview({ reviewData }));
+    const res = await dispatch(doctorThunks.submitDoctorReview({ reviewData }));
+
+    if (res.type === "fulfilled") {
       setIsReviewSubmitted(true);
-    } catch (error) {
-      toast.error("Error Submitting Review");
-    } finally {
-      setComment("");
-      setRating(1);
     }
   };
+
+  const { control, handleSubmit } = form;
+  console.log("isReviewSubmitted", isReviewSubmitted);
 
   return (
     <>
@@ -71,81 +74,86 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
         <DialogTrigger className={cn(buttonVariants({ variant: "outline" }))}>
           Leave a Review
         </DialogTrigger>
+
         <DialogContent className="max-h-[90vh] border max-w-3xl lg:w-full rounded-xl overflow-y-auto">
-          <form onSubmit={handleSubmitReview}>
-            <DialogHeader>
-              <DialogTitle>Leave a Review For Dr. John</DialogTitle>
-            </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <DialogHeader>
+                <DialogTitle>Leave a Review For Dr. John</DialogTitle>
+              </DialogHeader>
 
-            {/* Review form content */}
-            <div className="p-6">
-              <Label className="text-center block mb-4">
-                How would you rate Dr. John?
-              </Label>
+              {/* Review form content */}
+              <div className="p-6">
+                {/* rating */}
+                <CustomFormField
+                  fieldType={FormFieldType.SKELETON}
+                  control={control}
+                  name="rating"
+                  renderSkeleton={(field) => (
+                    <FormControl>
+                      <div className="flex justify-center mb-6">
+                        {[1, 2, 3, 4, 5].map((value) => (
+                          <StarIcon
+                            key={value}
+                            onClick={() => {
+                              field.onChange(value);
+                            }}
+                            className={`w-10 h-10 cursor-pointer ${
+                              value <= field.value
+                                ? "text-yellow-500"
+                                : "text-gray-400"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </FormControl>
+                  )}
+                />
 
-              {/* Star Rating System */}
-              <div className="flex justify-center mb-6">
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <StarIcon
-                    key={value}
-                    onClick={() => handleRatingClick(value)}
-                    className={`w-10 h-10 cursor-pointer ${
-                      value <= rating ? "text-yellow-500" : "text-gray-400"
-                    }`}
-                  />
-                ))}
-              </div>
-
-              {/* Review textarea */}
-              <div className="space-y-2 mb-6">
-                <Label htmlFor="review">Write a review</Label>
-                <Textarea
-                  id="review"
+                {/* comment */}
+                <CustomFormField
+                  fieldType={FormFieldType.TEXTAREA}
+                  control={control}
+                  name="comment"
+                  label="Write a review"
                   placeholder="Write a review..."
-                  rows={4}
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
                 />
-              </div>
 
-              {/* First name input */}
-              <div className="space-y-2 mb-4">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input
-                  id="firstName"
+                {/* first_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="first_name"
+                  label="First Name"
                   placeholder="Enter your first name"
-                  value={first_name}
-                  onChange={(e) => setFirst_name(e.target.value)}
                 />
-              </div>
 
-              {/* Last name input */}
-              <div className="space-y-2 mb-4">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
+                {/* last_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="last_name"
+                  label="Last Name"
                   placeholder="Enter your last name"
-                  value={last_name}
-                  onChange={(e) => setLast_name(e.target.value)}
                 />
               </div>
-            </div>
 
-            {/* Footer buttons */}
-            <DialogFooter>
-              <DialogClose
-                className={cn(buttonVariants({ variant: "outline" }))}
-              >
-                Cancel
-              </DialogClose>
-              <DialogClose
-                className={cn(buttonVariants({ variant: "default" }))}
-                type="submit"
-              >
-                Submit Review
-              </DialogClose>
-            </DialogFooter>
-          </form>
+              {/* Footer buttons */}
+              <DialogFooter>
+                <DialogClose
+                  className={cn(buttonVariants({ variant: "outline" }))}
+                >
+                  Cancel
+                </DialogClose>
+                <Button
+                  className={cn(buttonVariants({ variant: "default" }))}
+                  type="submit"
+                >
+                  Submit Review
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 

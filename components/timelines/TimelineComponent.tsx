@@ -1,6 +1,11 @@
 import { VerticalTimeline } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import TimelineElement from "./TimelineElement";
+import {
+  capitalizeWords,
+  getCityNameById,
+  getCountryNameByCode,
+} from "@/lib/utils";
 
 // Generic interface for TimelineComponent
 interface TimelineComponentProps<T> {
@@ -66,12 +71,32 @@ const getKeyValue = <T extends { [key: string]: any }>(
   separator: string
 ): string => {
   if (Array.isArray(key)) {
-    return key
-      .map((k) => elem[k])
-      .filter(Boolean)
-      .join(separator);
+    return capitalizeWords(
+      key
+        .map((k) => {
+          const value = elem[k];
+          // Check if the key is either 'city' or 'country' and handle accordingly
+          if (k === "city" && typeof value === "string") {
+            return getCityNameById(value) || value; // Return city name or fallback to ID
+          } else if (k === "country" && typeof value === "string") {
+            return getCountryNameByCode(value) || value; // Return country name or fallback to code
+          }
+          return value;
+        })
+        .filter(Boolean)
+        .join(separator)
+    );
   }
-  return elem[key] || "";
+
+  // Single key case
+  const value = elem[key];
+  if (key === "city" && typeof value === "string") {
+    return capitalizeWords(getCityNameById(value) || value); // Return city name or fallback to ID
+  } else if (key === "country" && typeof value === "string") {
+    return capitalizeWords(getCountryNameByCode(value) || value); // Return country name or fallback to code
+  }
+
+  return capitalizeWords(value || "");
 };
 
 export default TimelineComponent;

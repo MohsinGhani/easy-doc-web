@@ -206,7 +206,11 @@ export function Menu({ isOpen }: MenuProps) {
                                 : "opacity-100"
                             )}
                           >
-                            <AvatarImage src={picture} alt="Avatar" />
+                            <AvatarImage
+                              src={picture}
+                              alt="Avatar"
+                              className="object-cover rounded-full object-top"
+                            />
                             <AvatarFallback className="bg-transparent">
                               JD
                             </AvatarFallback>

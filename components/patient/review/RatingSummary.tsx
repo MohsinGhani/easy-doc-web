@@ -26,7 +26,7 @@ const RatingSummary = ({
               <div
                 className="bg-yellow-500 h-full"
                 style={{ width: `${ratingsBreakdown[Number(rating)]}%` }}
-              ></div>
+              />
             </div>
             <span className="ml-2 text-sm">
               {ratingsBreakdown[Number(rating)].toFixed(1)}%

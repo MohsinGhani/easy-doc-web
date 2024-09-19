@@ -167,7 +167,7 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
             );
           }}
           trigger={
-            <Button variant="destructive">
+            <Button variant="destructive" disabled={user?.availableDays[dayIndex]?.slots?.length === 0}>
               <Trash2 className="h-4 w-4 shrink-0" />{" "}
               <span>Delete all slots</span>
             </Button>

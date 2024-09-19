@@ -21,7 +21,7 @@ const TimelineElement: React.FC<TimelineElementProps> = ({ element }) => {
         borderRadius: "8px",
         padding: "20px",
       }}
-      date={element.date || "No Date Provided"}
+      date={element.date}
       iconStyle={{
         background: "#4d77ff",
         boxShadow: "none",
@@ -29,17 +29,13 @@ const TimelineElement: React.FC<TimelineElementProps> = ({ element }) => {
       icon={<Dot className="stroke-[15px] text-white" />}
     >
       <h3 className="vertical-timeline-element-title text-lg font-bold">
-        {element.title || "No Title Available"}
+        {element.title}
       </h3>
       <h4 className="vertical-timeline-element-subtitle text-md font-semibold text-gray-500">
-        {element.subtitle || "No Subtitle"}
+        {element.subtitle}
       </h4>
-      <p className="text-sm text-gray-600">
-        {element.location || "No Location Provided"}
-      </p>
-      <p className="text-sm">
-        {element.description || "No Description Available"}
-      </p>
+      <p className="text-sm text-gray-600">{element.location}</p>
+      <p className="text-sm">{element.description}</p>
     </VerticalTimelineElement>
   );
 };

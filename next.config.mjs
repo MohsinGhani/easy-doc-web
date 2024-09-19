@@ -29,7 +29,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "randomuser.me",
+        hostname: "avatar.iran.liara.run",
         port: "",
       },
       {

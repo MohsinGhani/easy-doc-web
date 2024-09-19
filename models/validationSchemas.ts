@@ -164,8 +164,8 @@ const educationSchema = z
 
 // Define Review Schema
 const reviewSchema = z.object({
-  name: z.string().min(1, "Reviewer name is required"),
-  date: z.string(),
+  first_name: z.string().min(1, "Reviewer first name is required"),
+  last_name: z.string().min(1, "Reviewer last name is required"),
   rating: z.number().min(1).max(5),
   comment: z.string().optional(),
 });

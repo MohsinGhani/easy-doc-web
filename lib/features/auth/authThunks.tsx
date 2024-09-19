@@ -38,7 +38,7 @@ export const authThunks = {
               given_name,
               family_name,
               email,
-              picture: `https://randomuser.me/api/portraits/men/${Math.floor(
+              picture: `https://avatar.iran.liara.run/public/${Math.floor(
                 Math.random() * 100
               )}`,
               "custom:role": role,

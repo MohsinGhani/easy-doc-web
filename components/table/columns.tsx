@@ -213,7 +213,11 @@ export const requestsColumns = ({
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={row.original.patient.picture} alt="Avatar" />
+            <AvatarImage
+              src={row.original.patient.picture}
+              alt="Avatar"
+              className="object-cover rounded-full object-top"
+            />
             <AvatarFallback>
               {row.original.patient.given_name.charAt(0)}
             </AvatarFallback>
@@ -461,7 +465,11 @@ export const upcomingColumns = ({
         return (
           <div className="flex items-start gap-2">
             <Avatar>
-              <AvatarImage src={row.original.patient.picture} alt="Avatar" />
+              <AvatarImage
+                src={row.original.patient.picture}
+                alt="Avatar"
+                className="object-cover rounded-full object-top"
+              />
               <AvatarFallback>
                 {row.original.patient.given_name.charAt(0)}
               </AvatarFallback>

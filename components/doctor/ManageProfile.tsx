@@ -291,10 +291,7 @@ const ManageProfile = () => {
                 <CustomFormField
                   fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
                   control={control}
-                  items={LANGUAGES.map((item) => ({
-                    label: item.name,
-                    value: item.name.toLocaleLowerCase(),
-                  }))}
+                  items={LANGUAGES}
                   name={`languages`}
                   label="Known Languages"
                   placeholder={"Select languages..."}

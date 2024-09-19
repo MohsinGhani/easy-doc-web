@@ -21,6 +21,9 @@ import AvailableTimings from "./patient/AvailableTimings";
 import PatientReviews from "./patient/review/PatientReviews";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { Loader } from "./common/Loader";
+import { getCityNameById, getCountryNameByCode } from "@/lib/utils";
+import EmptyState from "./common/EmptyState";
 
 const tabs = [
   { value: "experience", label: "Experience" },
@@ -46,8 +49,8 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
     }
   }, [dispatch, doctorId]);
 
-  if (loading) return <div>Loading doctor details...</div>;
-  if (!doctor) return <div>Doctor not found.</div>;
+  if (loading) return <Loader />;
+  if (!doctor) return <EmptyState />;
 
   return (
     <div className="flex flex-col space-y-8">
@@ -70,14 +73,17 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
 
         <CardContent className="p-6">
           <div className="flex gap-6">
-            <div className="hidden lg:block relative max-w-96 w-full max-h-[600px]">
-              <Image
-                src={doctor?.picture}
-                alt={doctor?.display_name}
-                width={300}
-                height={300}
-                className="w-full h-full object-cover rounded-lg"
-              />
+            {/* Image Section */}
+            <div className="hidden lg:block relative w-72 h-auto flex-shrink-0">
+              <div className="h-full flex">
+                <Image
+                  src={doctor?.picture}
+                  alt={doctor?.display_name}
+                  width={300}
+                  height={300}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
               <div className="absolute top-2 left-2 bg-yellow-400 text-white px-2 py-1 rounded-md text-sm font-semibold flex items-center">
                 <Star className="w-4 h-4 mr-1 fill-current" />
                 4/5
@@ -87,53 +93,60 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
               </button>
             </div>
 
+            {/* Content Section */}
             <div className="flex-1 space-y-4">
               <div className="w-full flex flex-col items-center justify-center lg:hidden">
-                <Avatar className="w-24 h-24 md:w-32 md:h-32 rounded-full mb-4 md:mb-0 md:mr-6">
+                <Avatar className="w-24 h-24 md:w-32 md:h-32 mb-4 md:mb-0 md:mr-6">
                   <AvatarImage
                     src={doctor?.picture}
                     alt={doctor?.display_name}
+                    className="w-full h-full object-cover rounded-full object-top" // Ensure proper fit and aspect ratio
                   />
-                  <AvatarFallback>DJ</AvatarFallback>
+                  <AvatarFallback>
+                    {doctor.given_name.charAt(0) + doctor.family_name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
-
-                {/* <Badge variant={"success"}>
-                <span className="mr-1 text-lg leading-none font-bold">•</span>
-                Available
-              </Badge> */}
-
                 <h2 className="text-2xl font-bold">{doctor?.display_name}</h2>
+                <p className="text-primary">{doctor.designation}</p>
               </div>
 
-              <Badge variant={"success"} className="lg:inline-flex hidden">
+              <Badge
+                variant={!doctor?.available ? "secondary" : "success"}
+                className="lg:inline-flex hidden"
+              >
                 <span className="mr-1 text-lg leading-none font-bold">•</span>
-                Available
+                {!doctor.available ? "Unavailable" : "Available"}
               </Badge>
 
               <div className="lg:block hidden">
                 <h2 className="text-2xl font-bold">{doctor?.display_name}</h2>
-                <p className="text-primary">Dentist</p>
+                <p className="text-primary">{doctor.designation}</p>
               </div>
 
               <div className="flex items-center gap-2 text-sm sm:text-base text-zinc-600 font-normal leading-snug">
-                <p className="">
-                  {doctor?.years_of_experience} years experience
-                </p>
+                <p>{doctor?.years_of_experience || 0} years experience</p>
                 <Separator
                   orientation="vertical"
                   className="h-4 w-px bg-[#e2e8f0]"
                 />
                 <div className="flex gap-1 items-center">
                   <MapPin className="w-4 h-4" />
-                  <p className="">{doctor?.city + " " + doctor?.country}</p>
+                  <p>
+                    {getCityNameById(doctor?.city) +
+                      " " +
+                      getCountryNameByCode(doctor?.country)}
+                  </p>
                 </div>
               </div>
 
               <div className="mb-4">
                 <h3 className="font-semibold mb-2">Known Languages</h3>
                 <div className="flex space-x-2">
-                  <Badge>Urdu</Badge>
-                  <Badge>English</Badge>
+                  {doctor?.languages?.map((lang) => (
+                    <Badge key={lang} className="capitalize">
+                      {lang}
+                    </Badge>
+                  ))}
                 </div>
               </div>
               <div className="mb-4">
@@ -143,8 +156,8 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
 
               <Separator />
 
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <div className="flex items-center mb-4 sm:mb-0">
+              <div className="flex md:items-center justify-between gap-2 lg:flex-wrap md:flex-row flex-col">
+                <div className="flex items-center sm:justify-center justify-between sm:w-fit w-full  gap-6 mb-4 md:mb-0">
                   <div className="mr-4">
                     <p className="text-sm text-muted-foreground">
                       Satisfied Patients
@@ -169,7 +182,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center lg:gap-6 gap-3 w-full lg:w-auto flex-wrap">
+                <div className="flex items-center lg:gap-6 gap-3 w-auto flex-wrap">
                   <p className="flex items-center gap-2 tracking-tight font-bold sm:font-semibold lg:text-2xl sm:text-lg text-sm">
                     Fee : $240{" "}
                     <span className="text-base font-normal text-zinc-600">
@@ -227,13 +240,13 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
               <TabsContent key={tab.value} value={tab.value}>
                 {tab.value === "experience" && (
                   <TimelineComponent
-                    heading="Practical Experiences:"
+                    heading="Practical Experiences"
                     elements={doctor?.experiences ?? []}
-                    dateKey="time_period"
+                    dateKey={["start_date", "end_date"]}
                     descriptionKey="description"
                     locationKey={["city", "country"]}
                     titleKey="title"
-                    subTitleKeys={["hospital_name", "employment_type"]} //TODO: add the employment_type insted of employment
+                    subTitleKeys={["hospital_name", "employment_type"]}
                     separators={{ locationKey: ", ", subTitleKeys: " - " }}
                   />
                 )}
@@ -246,7 +259,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                     descriptionKey="description"
                     elements={doctor?.education ?? []}
                     heading="Educational Details:"
-                    dateKey="time_period"
+                    dateKey={["start_date", "end_date"]}
                   />
                 )}
                 {tab.value === "awards" && (

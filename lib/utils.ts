@@ -3,6 +3,7 @@ import { addMinutes, differenceInMinutes, format, parse } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import cities from "@/public/data/groupedCities.json";
 import services from "@/public/data/services.json";
+import { COUNTRIES } from "@/constants";
 
 interface Cities {
   [key: string]: City[];
@@ -104,4 +105,25 @@ export const getCitiesByCountry = (countryCode: string): City[] => {
 
 export const getServiceBySpeciality = (speciality: string): JSONService[] => {
   return typedServices[speciality] || [];
+};
+
+export const capitalizeWords = (string: string) => {
+  return string
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
+export const getCountryNameByCode = (code: string) => {
+  return COUNTRIES.find((country) => country.value === code)?.label || "";
+}
+
+
+export const getCityNameById = (cityId: string) => {
+  return Object.values(typedCities).flat().find((city) => city.id === cityId)?.name || "";
+}
+
+export const formatTimeForReviews = (date: Date | string) => {
+  const parsedDate = typeof date === "string" ? parse(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx", new Date()) : date;
+  return format(parsedDate, "MMMM d, yyyy 'at' h:mm aa");
 };

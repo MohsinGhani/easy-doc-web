@@ -44,6 +44,7 @@ const RequestReviewSheet = ({
                   alt="Avatar"
                   width={50}
                   height={50}
+                  className="object-cover rounded-full object-top"
                 />
                 <AvatarFallback>MJ</AvatarFallback>
               </Avatar>

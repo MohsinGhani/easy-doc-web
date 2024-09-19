@@ -34,6 +34,9 @@ const AddExperienceDialog = () => {
 
   const form = useForm<experienceSchemaType>({
     resolver: zodResolver(experienceSchema),
+    defaultValues: {
+      currently_working : false,
+    }
   });
 
   const { control, handleSubmit, setValue, watch } = form;
@@ -138,6 +141,7 @@ const AddExperienceDialog = () => {
                     items={COUNTRIES}
                     name="country"
                     label="Country"
+                    enableCreation={false}
                   />
 
                   {/* city */}
@@ -150,16 +154,18 @@ const AddExperienceDialog = () => {
                     }))}
                     name="city"
                     label="City"
+                    enableCreation={false}
                   />
 
                   {/* employment_type */}
                   <CustomFormField
-                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    fieldType={FormFieldType.SELECT}
                     control={control}
                     items={EMPLOYEMENT_TYPES}
                     name="employment_type"
                     label="Employment Type"
                     placeholder="Select"
+                    enableCreation={false}
                   />
                 </div>
 

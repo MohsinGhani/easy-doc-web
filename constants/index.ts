@@ -214,7 +214,10 @@ export const EMPLOYEMENT_TYPES = [
   },
 ];
 
-export const LANGUAGES = languages;
+export const LANGUAGES = languages.map(lang => ({
+  label: lang.name,
+  value: lang.name.toLowerCase(),
+}))
 
 export const GRADES = [
   { label: "A +", value: "a +" },
