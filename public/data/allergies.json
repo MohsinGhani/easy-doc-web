@@ -1,0 +1,70 @@
+[
+  {
+    "label": "Pollen Allergy",
+    "value": "pollen allergy"
+  },
+  {
+    "label": "Dust Mite Allergy",
+    "value": "dust mite allergy"
+  },
+  {
+    "label": "Pet Allergy",
+    "value": "pet allergy"
+  },
+  {
+    "label": "Mold Allergy",
+    "value": "mold allergy"
+  },
+  {
+    "label": "Peanut Allergy",
+    "value": "peanut allergy"
+  },
+  {
+    "label": "Tree Nut Allergy",
+    "value": "tree nut allergy"
+  },
+  {
+    "label": "Shellfish Allergy",
+    "value": "shellfish allergy"
+  },
+  {
+    "label": "Fish Allergy",
+    "value": "fish allergy"
+  },
+  {
+    "label": "Milk Allergy",
+    "value": "milk allergy"
+  },
+  {
+    "label": "Egg Allergy",
+    "value": "egg allergy"
+  },
+  {
+    "label": "Wheat Allergy",
+    "value": "wheat allergy"
+  },
+  {
+    "label": "Soy Allergy",
+    "value": "soy allergy"
+  },
+  {
+    "label": "Insect Sting Allergy",
+    "value": "insect sting allergy"
+  },
+  {
+    "label": "Latex Allergy",
+    "value": "latex allergy"
+  },
+  {
+    "label": "Medication Allergy",
+    "value": "medication allergy"
+  },
+  {
+    "label": "Fragrance Allergy",
+    "value": "fragrance allergy"
+  },
+  {
+    "label": "Chemical Allergy",
+    "value": "chemical allergy"
+  }
+]

@@ -1,9 +1,8 @@
-import DoctorProfile from "@/components/patient/doctor-profile";
+import AppointmentForm from "@/components/appointment/AppointmentForm";
 import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
-import React from "react";
 
-interface DoctorDetailsPageProps {
+interface BookAppointmentPageProps {
   params: {
     doctorId: string;
   };
@@ -15,20 +14,24 @@ const BannerData = {
   location: [
     { name: "Home", path: "/" },
     { name: "Doctors", path: "/doctors" },
-    { name: "Doctor Details", path: "#" },
+    { name: "Book Appointment", path: "#" },
   ],
 };
 
-const DoctorDetailsPage = ({ params }: DoctorDetailsPageProps) => {
+const BookAppointmentPage: React.FC<BookAppointmentPageProps> = ({
+  params,
+}) => {
+  const { doctorId } = params;
+
   return (
     <div className="w-full h-full">
       <Banner data={BannerData} />
 
       <PatientLayout>
-        <DoctorProfile doctorId={params.doctorId} />
+        <AppointmentForm doctorId={doctorId} />
       </PatientLayout>
     </div>
   );
 };
 
-export default DoctorDetailsPage;
+export default BookAppointmentPage;

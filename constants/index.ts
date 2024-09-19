@@ -1,6 +1,8 @@
 import languages from "@/public/data/languages.json";
 import countries from "@/public/data/countries.json";
 import specialities from "@/public/data/specialities.json";
+import allergies from "@/public/data/allergies.json";
+import medications from "@/public/data/medications.json";
 
 export const identityPoolId =
   process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || "";
@@ -214,10 +216,10 @@ export const EMPLOYEMENT_TYPES = [
   },
 ];
 
-export const LANGUAGES = languages.map(lang => ({
+export const LANGUAGES = languages.map((lang) => ({
   label: lang.name,
   value: lang.name.toLowerCase(),
-}))
+}));
 
 export const GRADES = [
   { label: "A +", value: "a +" },
@@ -244,3 +246,41 @@ export const GENDERS = [
 ];
 
 export const SPECIALITIES = specialities;
+
+export const BLOOD_GROUPS = [
+  {
+    label: "A+",
+    value: "A positive",
+  },
+  {
+    label: "A-",
+    value: "A negative",
+  },
+  {
+    label: "B+",
+    value: "B positive",
+  },
+  {
+    label: "B-",
+    value: "B negative",
+  },
+  {
+    label: "AB+",
+    value: "AB positive",
+  },
+  {
+    label: "AB-",
+    value: "AB negative",
+  },
+  {
+    label: "O+",
+    value: "O positive",
+  },
+  {
+    label: "O-",
+    value: "O negative",
+  },
+];
+
+export const ALLERGIES = allergies;
+export const MEDICATIONS = medications;

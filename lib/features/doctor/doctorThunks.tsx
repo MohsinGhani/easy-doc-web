@@ -31,7 +31,7 @@ const fetchDoctorById = createAsyncThunk<User, string>(
         return existingDoctor;
       }
 
-      const response = await apiClient.get(`/doctor/${doctorId}`);
+      const response = await apiClient.get(`/doctors/${doctorId}`);
       return response.data.data as User;
     } catch (error: any) {
       const errorMessage =

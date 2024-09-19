@@ -72,36 +72,42 @@ const AddServiceDialog = () => {
                 {/* Responsive grid for Speciality, Service, and Price */}
                 <div className="grid md:gap-6 gap-2 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
                   <CustomFormField
-                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                  control={control}
-                  items={SPECIALITIES.map((s) => ({
-                    label: `${s.icon} ${s.name}`,
-                    value: s.name,
-                  }))}
-                  name="speciality"
-                  label="Speciality"
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={SPECIALITIES.map((s) => ({
+                      label: `${s.icon} ${s.name}`,
+                      value: s.name,
+                    }))}
+                    name="speciality"
+                    label="Speciality"
                   />
 
                   <CustomFormField
-                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
-                  control={control}
-                  items={getServiceBySpeciality(watch("speciality"))
-                    .filter(s => !user.services.some(us => us.service === s.name))
-                    .map((s) => ({
-                    label: s.name,
-                    value: s.name,
-                    }))
-                  }
-                  name="service"
-                  label="Service"
+                    fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                    control={control}
+                    items={getServiceBySpeciality(watch("speciality"))
+                      .filter((s) => {
+                        if (user?.services?.length > 0) {
+                          return !user.services.some(
+                            (us) => us?.service === s?.name
+                          );
+                        }
+                        return true;
+                      })
+                      .map((s) => ({
+                        label: s?.name,
+                        value: s?.name,
+                      }))}
+                    name="service"
+                    label="Service"
                   />
 
                   <CustomFormField
-                  fieldType={FormFieldType.NUMBER}
-                  control={control}
-                  name="fee"
-                  placeholder="0.00"
-                  label="Fee"
+                    fieldType={FormFieldType.NUMBER}
+                    control={control}
+                    name="fee"
+                    placeholder="0.00"
+                    label="Fee"
                   />
                 </div>
 

@@ -2,12 +2,12 @@
 
 import { Star, Share2, Heart, MapPin, Award, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Separator } from "./ui/separator";
+import { Separator } from "../ui/separator";
 import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Carousel,
   CarouselContent,
@@ -16,14 +16,16 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useEffect } from "react";
-import TimelineComponent from "./timelines/TimelineComponent";
-import AvailableTimings from "./patient/AvailableTimings";
-import PatientReviews from "./patient/review/PatientReviews";
+import TimelineComponent from "../timelines/TimelineComponent";
+import AvailableTimings from "./AvailableTimings";
+import PatientReviews from "./review/PatientReviews";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Loader } from "./common/Loader";
-import { getCityNameById, getCountryNameByCode } from "@/lib/utils";
-import EmptyState from "./common/EmptyState";
+import { Loader } from "../common/Loader";
+import { cn, getCityNameById, getCountryNameByCode } from "@/lib/utils";
+import EmptyState from "../common/EmptyState";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const tabs = [
   { value: "experience", label: "Experience" },
@@ -42,6 +44,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
   const { loading, fetchedDoctor: doctor } = useAppSelector(
     (state) => state.doctor
   );
+  const router = useRouter();
 
   useEffect(() => {
     if (doctorId && typeof doctorId === "string") {
@@ -189,9 +192,15 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                       per session
                     </span>
                   </p>
-                  <Button className="w-full sm:w-auto" size={"xl"}>
-                    Book an appointment
-                  </Button>
+                  <Link
+                    href={`/doctors/${doctorId}/book-appointment`}
+                    className={cn(
+                      "w-full sm:w-auto",
+                      buttonVariants({ size: "xl", variant: "default" })
+                    )}
+                  >
+                    Book as appointment
+                  </Link>
                 </div>
               </div>
             </div>

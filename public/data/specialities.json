@@ -33,5 +33,45 @@
     "name": "Gynecology",
     "icon": "👩‍⚕️",
     "description": "Gynecology services to support women’s health, including routine examinations, fertility consultations, and reproductive health care."
+  },
+  {
+    "name": "Endocrinology",
+    "icon": "🩺",
+    "description": "Specialized care for hormonal and metabolic disorders, including diabetes management and thyroid health. We provide personalized treatment plans for better wellbeing."
+  },
+  {
+    "name": "Oncology",
+    "icon": "🎗️",
+    "description": "Comprehensive cancer care and treatment options, including chemotherapy, radiation therapy, and support services. Your health is our priority throughout the journey."
+  },
+  {
+    "name": "Gastroenterology",
+    "icon": "🍽️",
+    "description": "Expert diagnosis and treatment for digestive system disorders, including IBS, GERD, and liver diseases. Find relief and support for your gastrointestinal health."
+  },
+  {
+    "name": "Ophthalmology",
+    "icon": "👁️",
+    "description": "Eye care services including vision exams, eye disease management, and surgical procedures. Protect your vision with our specialized care."
+  },
+  {
+    "name": "Neurology",
+    "icon": "🧠",
+    "description": "Comprehensive care for neurological disorders including migraines, epilepsy, and neurodegenerative diseases. Get expert diagnosis and management for your condition."
+  },
+  {
+    "name": "Urology",
+    "icon": "🚻",
+    "description": "Specialized care for urinary tract and male reproductive system disorders. Our urology services address issues with kidney stones, prostate health, and more."
+  },
+  {
+    "name": "Physical Therapy",
+    "icon": "🏋️‍♂️",
+    "description": "Rehabilitation services to improve mobility and recover from injuries. Our physical therapists create personalized plans to help you regain strength and function."
+  },
+  {
+    "name": "Rheumatology",
+    "icon": "💊",
+    "description": "Specialized care for autoimmune and inflammatory conditions such as arthritis. We provide diagnosis and treatment to manage chronic pain and improve quality of life."
   }
 ]

@@ -12,7 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { SPECIALITIES } from "@/constants";
 import DeleteDialog from "../common/DeleteDialog";
@@ -27,12 +27,6 @@ declare interface Service {
   speciality: string;
   description: string;
   fee: string;
-}
-
-declare interface Speciality {
-  name: string;
-  icon: string;
-  description: string;
 }
 
 export default function ManageServices() {

@@ -3,7 +3,6 @@
 import LandingPage from "@/components/home/LandingPage";
 import { Navbar } from "@/components/navbar/Navbar";
 import PatientFooter from "@/components/patient/Footer";
-import PatientsLandingPage from "@/components/patient/PatientsLandingPage";
 import { useAppSelector } from "@/lib/hooks";
 
 export default function Home() {
