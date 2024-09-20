@@ -1,9 +1,16 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
+import { useAppSelector } from "@/lib/hooks";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const ProfileCompletionCard = () => {
-  const progress = 60;
+  const profile_completion = useAppSelector(
+    (state) => state.auth.user.profile_completion
+  );
 
   return (
     <div className="sm:p-4 p-2 bg-white rounded-lg shadow-lg w-full">
@@ -22,14 +29,17 @@ const ProfileCompletionCard = () => {
       <div className="relative pt-1 mt-2">
         <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-lg bg-secondary">
           <div
-            style={{ width: `${progress}%` }}
+            style={{ width: `${profile_completion}%` }}
             className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-purple-500 to-blue-500"
-          ></div>
+          />
         </div>
       </div>
-      <Button className="w-full mt-4">
+      <Link
+        href={"/settings"}
+        className={cn("w-full mt-4", buttonVariants({ variant: "default" }))}
+      >
         Complete Profile
-      </Button>
+      </Link>
     </div>
   );
 };

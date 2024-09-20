@@ -13,10 +13,10 @@ const weekDayEnum = z.enum([
 ]);
 
 // Define Gender Enum
-const genderEnum = z.enum(["male", "female", "other", "N/D"]);
+const genderEnum = z.enum(["Male", "Female", "Other", "N/D"]);
 
 // Define EMPLOYMENT_TYPE Enum
-const employmentTypeEnum = z.enum(["full_time", "part_time", "contract"]);
+const employmentTypeEnum = z.enum(["Full Time", "Part Time", "Contract"]);
 
 // Define AvailableSlot Schema
 const availableSlotSchema = z

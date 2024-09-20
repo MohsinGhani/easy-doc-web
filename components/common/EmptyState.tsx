@@ -52,13 +52,14 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
       {subtitle && <p className="text-gray-600 mt-2">{subtitle}</p>}
       <div className="flex space-x-4 mt-4">
-        <Button onClick={handleGoBackClick} className="px-4 py-2">
+        <Button
+          onClick={handleGoBackClick}
+          className="px-4 py-2"
+          variant={"secondary"}
+        >
           {buttonText}
         </Button>
-        <Button
-          onClick={handleRefreshClick}
-          className="px-4 py-2 bg-green-500 text-white"
-        >
+        <Button onClick={handleRefreshClick} className="px-4 py-2 text-white">
           Refresh Page
         </Button>
       </div>

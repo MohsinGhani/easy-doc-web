@@ -14,12 +14,14 @@ declare type AvailableDay = {
   slots: AvailableSlot[];
 };
 
+declare type PROFILE_STATUS = "COMPLETED" | "INCOMPLETE";
+
 declare type AvailableSlot = {
   start_time: string;
   end_time: string;
 };
 
-declare type EMPLOYEMENT_TYPE = "full_time" | "part_time" | "contract";
+declare type EMPLOYEMENT_TYPE = "Full Time" | "Part Time" | "Contract";
 
 declare interface Experience {
   title: string;
@@ -109,9 +111,12 @@ declare type User = {
   availableDays: AvailableDay[];
   reviews: Review[];
   services: Service[];
+  profile_status: PROFILE_STATUS;
+  profile_completion: number;
 };
 
 declare type Doctor = {
+  profile_status: PROFILE_STATUS;
   userId: string;
   role: string;
   email: string;

@@ -284,6 +284,7 @@ export const authThunks = {
           return response.data.data;
         }
       } catch (error) {
+        console.log("🚀 ~ error:", error)
         await signOut();
         dispatch(signoutAction());
 
@@ -298,13 +299,31 @@ export const authThunks = {
     { rejectValue: string }
   >(
     "auth/updateProfile",
-    async ({ userId, updateData }, { rejectWithValue }) => {
+    async ({ userId, updateData }, { getState, rejectWithValue }) => {
       debugger;
       try {
-        const response = await apiClient.put(`/auth/update`, {
-          userId,
+        const state = getState() as { auth: { user?: { role?: string } } };
+        const role = state.auth.user?.role;
+
+        type params = {
+          updateData: Record<string, any>;
+          userId: string;
+          doctorId?: string;
+        };
+
+        const params: params = {
           updateData,
-        });
+          userId,
+        };
+
+        if (role === "doctor") {
+          params.doctorId = userId;
+        }
+
+        const response = await apiClient.put(
+          `/${role === "doctor" ? "doctor" : "auth"}/update`,
+          params
+        );
 
         return response.data.data;
       } catch (error: any) {
