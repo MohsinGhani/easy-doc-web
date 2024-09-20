@@ -21,16 +21,8 @@ const fetchAllDoctors = createAsyncThunk<User[]>(
 // Fetch doctor by ID (check if the doctor already exists in the store)
 const fetchDoctorById = createAsyncThunk<User, string>(
   "doctor/fetchDoctorById",
-  async (doctorId, { getState, rejectWithValue }) => {
+  async (doctorId, { rejectWithValue }) => {
     try {
-      const state = getState() as RootState;
-      const existingDoctor = state.doctor.allDoctors.find(
-        (doc) => doc.userId === doctorId
-      );
-      if (existingDoctor) {
-        return existingDoctor;
-      }
-
       const response = await apiClient.get(`/doctors/${doctorId}`);
       return response.data.data as User;
     } catch (error: any) {
@@ -42,12 +34,15 @@ const fetchDoctorById = createAsyncThunk<User, string>(
 );
 
 // Submit a review for a doctor
-export const submitDoctorReview = createAsyncThunk<
+const submitDoctorReview = createAsyncThunk<
   Partial<User>,
-  { reviewData: any }
+  { reviewData: Review }
 >("doctor/submitDoctorReview", async ({ reviewData }, { rejectWithValue }) => {
   try {
-    const response = await apiClient.post(`/doctor/review`, reviewData);
+    const response = await apiClient.post(
+      `/doctors/${reviewData.doctorId}/reviews`,
+      reviewData
+    );
     return response.data.data;
   } catch (error: any) {
     const errorMessage =
@@ -58,8 +53,25 @@ export const submitDoctorReview = createAsyncThunk<
   }
 });
 
+// Submit a review for a doctor
+const getDoctorReviews = createAsyncThunk<Partial<User>, { doctorId: string }>(
+  "doctor/getDoctorReviews",
+  async ({ doctorId }, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`/doctors/${doctorId}/reviews`);
+      return response.data.data;
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error submitting review";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 // Update doctor's profile
-export const updateDoctorProfile = createAsyncThunk<
+const updateDoctorProfile = createAsyncThunk<
   Partial<User>,
   { doctorId: string; updateData: Record<string, any> },
   { rejectValue: string }
@@ -89,4 +101,5 @@ export const doctorThunks = {
   fetchDoctorById,
   submitDoctorReview,
   updateDoctorProfile,
+  getDoctorReviews,
 };

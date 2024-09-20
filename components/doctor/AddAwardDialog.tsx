@@ -16,7 +16,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CardContent } from "../ui/card";
 import { awardSchema, awardSchemaType } from "@/models/validationSchemas";
-import { institutes } from "@/constants";
+import { INSTITUTES } from "@/constants";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
 import { Form } from "../ui/form";
@@ -31,7 +31,7 @@ const AddAwardDialog = () => {
   const form = useForm<awardSchemaType>({
     resolver: zodResolver(awardSchema),
     defaultValues: {
-      institute: institutes[0].value,
+      institute: INSTITUTES[0].value,
       description: "",
       award_name: "",
       year: format(new Date(), "yyyy"),
@@ -77,7 +77,7 @@ const AddAwardDialog = () => {
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    items={institutes}
+                    items={INSTITUTES}
                     name={`institute`}
                     label="Institute"
                     placeholder={"Select institute..."}

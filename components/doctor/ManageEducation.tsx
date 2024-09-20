@@ -19,10 +19,10 @@ import AddEducationDialog from "./AddEducatioDialog";
 import { Trash2 } from "lucide-react";
 import DeleteDialog from "../common/DeleteDialog";
 import {
-  degrees,
-  fields as FIELDS_OF_STUDIES,
+  DEGREES,
+  FIELDS as FIELDS_OF_STUDIES,
   GRADES,
-  institutes,
+  INSTITUTES,
 } from "@/constants";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
@@ -171,7 +171,7 @@ export default function ManageEducation() {
                             <CustomFormField
                               fieldType={FormFieldType.SELECT_WITH_SEARCH}
                               control={control}
-                              items={institutes}
+                              items={INSTITUTES}
                               name={`education.${index}.institute`}
                               label="Institute"
                               placeholder={"Select institute..."}
@@ -181,7 +181,7 @@ export default function ManageEducation() {
                             <CustomFormField
                               fieldType={FormFieldType.SELECT_WITH_SEARCH}
                               control={control}
-                              items={degrees}
+                              items={DEGREES}
                               name={`education.${index}.degree_name`}
                               label="Select institute..."
                               placeholder="Degree"

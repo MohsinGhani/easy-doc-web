@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 const EnterOtpForm = ({ destination = "" }: { destination?: string }) => {
   const { control } = useFormContext();
   const email = control?._fields?.email?._f?.value;
+  console.log("🚀 ~ EnterOtpForm ~ email:", email);
 
   const { resendConfirmationCode } = useAuth();
 

@@ -3,16 +3,16 @@ import { StarIcon } from "lucide-react";
 
 interface RatingItemProps {
   name: string;
-  date: string;
+  createdAt: string;
   rating: number;
   comment: string;
 }
 
-const ReviewItem = ({ name, date, rating, comment }: RatingItemProps) => {
+const ReviewItem = ({ name, createdAt, rating, comment }: RatingItemProps) => {
   return (
     <div className="border-t py-4">
       <div className="flex items-center justify-between text-sm mb-2">
-        <span>{formatTimeForReviews(date)}</span>
+        <span>{formatTimeForReviews(createdAt)}</span>
       </div>
       <div className="flex items-center mb-2">
         <div className="flex items-center">

@@ -56,13 +56,15 @@ declare interface Education {
 
 declare interface Review {
   name: string;
-  date: string;
+  createdAt: string;
   rating: 1 | 2 | 3 | 4 | 5;
   comment: string;
   picture: string;
   city: string;
   country: string;
-  patientId: string
+  patientId: string;
+  doctorId: string;
+  reviewId: string;
 }
 
 declare interface Service {

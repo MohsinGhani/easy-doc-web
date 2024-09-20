@@ -18,7 +18,7 @@ const PatientReviews: React.FC<PatientReviewsProps> = ({
   const userId = useAppSelector((state) => state.auth.user?.userId);
 
   if (loading) return <Loader />;
-  
+
   // Calculate the overall rating dynamically from reviews
   const totalRating =
     reviews.reduce((acc, review) => acc + review.rating, 0) || 0;
@@ -70,7 +70,7 @@ const PatientReviews: React.FC<PatientReviewsProps> = ({
             <ReviewItem
               key={index}
               name={review.name}
-              date={review.date}
+              createdAt={review.createdAt}
               rating={review.rating}
               comment={review.comment}
             />

@@ -19,7 +19,7 @@ import {
   educationSchema,
   educationSchemaType,
 } from "@/models/validationSchemas";
-import { degrees, fields, GRADES, institutes } from "@/constants";
+import { DEGREES, FIELDS, GRADES, INSTITUTES } from "@/constants";
 import { useEffect } from "react";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
@@ -35,10 +35,10 @@ const AddEducationDialog = () => {
   const form = useForm<educationSchemaType>({
     resolver: zodResolver(educationSchema),
     defaultValues: {
-      degree_name: degrees[0].value,
-      field: fields[0].value,
+      degree_name: DEGREES[0].value,
+      field: FIELDS[0].value,
       description: "",
-      institute: institutes[0].value,
+      institute: INSTITUTES[0].value,
       start_date: format(new Date(), "yyyy-MM-dd"),
       end_date: format(new Date(), "yyyy-MM-dd"),
       currently_studying: false,
@@ -89,7 +89,7 @@ const AddEducationDialog = () => {
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    items={institutes}
+                    items={INSTITUTES}
                     name={`institute`}
                     label="Institute"
                     placeholder={"Select institute..."}
@@ -99,7 +99,7 @@ const AddEducationDialog = () => {
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    items={degrees}
+                    items={DEGREES}
                     name={`degree_name`}
                     label="Select degree..."
                     placeholder="Degree"
@@ -109,7 +109,7 @@ const AddEducationDialog = () => {
                   <CustomFormField
                     fieldType={FormFieldType.SELECT_WITH_SEARCH}
                     control={control}
-                    items={fields}
+                    items={FIELDS}
                     name={`field`}
                     label="Field of study"
                     placeholder="Select Field..."

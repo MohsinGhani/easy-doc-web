@@ -28,7 +28,7 @@ import { z } from "zod";
 import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
-import { institutes } from "@/constants";
+import { INSTITUTES } from "@/constants";
 import { Loader } from "../common/Loader";
 
 export default function ManageAwards() {
@@ -155,7 +155,7 @@ export default function ManageAwards() {
                           <CustomFormField
                             fieldType={FormFieldType.SELECT_WITH_SEARCH}
                             control={control}
-                            items={institutes}
+                            items={INSTITUTES}
                             name={`awards.${index}.institute`}
                             label="Institute"
                             placeholder={"Select institute..."}
