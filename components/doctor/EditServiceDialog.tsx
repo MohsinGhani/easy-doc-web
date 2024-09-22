@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { cn, getServiceBySpeciality } from "@/lib/utils";
+import { calculateAverageFee, cn, getServiceBySpeciality } from "@/lib/utils";
 import { CardContent } from "../ui/card";
 import { SPECIALITIES } from "@/constants";
 import { CustomFormField } from "../auth";
@@ -74,6 +74,8 @@ const EditServiceDialog = ({
       updatedServices.push(data);
     }
 
+    const average_fee = calculateAverageFee(updatedServices);
+
     const res = await dispatch(
       authThunks.updateProfile({
         userId: user?.userId || "",
@@ -82,6 +84,7 @@ const EditServiceDialog = ({
             value: updatedServices,
             replace: true,
           },
+          average_fee,
         },
       })
     );

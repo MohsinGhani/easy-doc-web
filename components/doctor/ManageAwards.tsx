@@ -71,7 +71,7 @@ export default function ManageAwards() {
   const onSubmit = async (data: { awards: awardSchemaType[] }) => {
     await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: {
           awards: {
             value: data.awards,
@@ -113,7 +113,7 @@ export default function ManageAwards() {
                             onReject={async () => {
                               await dispatch(
                                 authThunks.updateProfile({
-                                  userId: user?.userId || "",
+                                  userId: user?.userId,
                                   updateData: {
                                     awards: {
                                       value: user?.awards?.filter(

@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import {
   appointmentCreationSchema,
@@ -19,20 +25,76 @@ import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { ALLERGIES, BLOOD_GROUPS, GENDERS, MEDICATIONS } from "@/constants";
-import { getServiceBySpeciality } from "@/lib/utils";
+import { functionsApiClient } from "@/lib/utils";
 import { UploadCloud } from "lucide-react";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { Loader } from "../common/Loader";
 
 interface AppointmentFormProps {
   doctorId: string;
 }
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
+  const dispatch = useAppDispatch();
+  const filesInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [filePreviewUrls, setFilePreviewUrls] = useState<string[]>([]);
+  console.log("🚀 ~ selectedFiles:", selectedFiles);
+  console.log("🚀 ~ filePreviewUrls:", filePreviewUrls);
+
   const { user, loading } = useAppSelector((state) => state.auth);
   const { fetchedDoctor, loading: doctorLoader } = useAppSelector(
     (state) => state.doctor
   );
-  const dispatch = useAppDispatch();
+
+  const handleFilesInputClick = useCallback(() => {
+    filesInputRef.current?.click();
+  }, []);
+
+  const handleFilesChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+
+      if (!files || files.length === 0) return;
+
+      const filesArray = Array.from(files);
+
+      for (const file of filesArray) {
+        if (file.size > 10 * 1024 * 1024) {
+          return toast.error("File must be less than 10MB.");
+        }
+
+        setSelectedFiles((prev) => [...prev, file]);
+
+        const { data } = await functionsApiClient.post(
+          "/generate-presigned-url",
+          {
+            fileName: file.name,
+            fileType: file.type,
+          }
+        );
+
+        const { uploadURL } = data;
+
+        await functionsApiClient.put(uploadURL, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        toast.success("File uploaded successfully.");
+
+        if (file.type.startsWith("image/")) {
+          setFilePreviewUrls((prev) => [...prev, URL.createObjectURL(file)]);
+        } else {
+          setFilePreviewUrls((prev) => [...prev, ""]);
+        }
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (doctorId && typeof doctorId === "string") {
@@ -56,16 +118,18 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     },
   });
 
-  const onSubmit = async (data: AppointmentCreationType) => {};
+  const onSubmit = async (data: AppointmentCreationType) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
+  };
 
   const { control, handleSubmit, watch } = form;
 
-  const speciality = watch("speciality");
-  console.log("🚀 ~ speciality:", speciality);
-
-  const uniqueSpecialities = new Set(
-    fetchedDoctor?.services.map((service) => service.speciality)
+  const uniqueSpecialities = useMemo(
+    () => new Set(fetchedDoctor?.services.map((service) => service.speciality)),
+    [fetchedDoctor?.services]
   );
+
+  if (doctorLoader || loading) return <Loader />;
 
   return (
     <div className="gap-16 grid lg:grid-cols-4">
@@ -197,9 +261,16 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                   control={control}
                 />
 
-                <div className="flex items-center gap-6 p-8 border rounded-xl border-dashed">
+                <div
+                  className="flex items-center gap-6 p-8 border rounded-xl border-dashed cursor-pointer"
+                  onClick={handleFilesInputClick}
+                >
                   {/* Icon */}
-                  <UploadCloud size={48} color="#00000066" className="text-muted-foreground stroke-1" />
+                  <UploadCloud
+                    size={48}
+                    color="#00000066"
+                    className="text-muted-foreground stroke-1"
+                  />
 
                   <div className="flex items-center justify-between w-full">
                     <div className="space-y-2">
@@ -214,6 +285,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
                     <Button variant={"outline"}>Select file</Button>
                   </div>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={filesInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFilesChange}
+                  />
                 </div>
               </form>
             </Form>

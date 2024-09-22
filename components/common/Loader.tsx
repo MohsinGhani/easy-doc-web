@@ -1,6 +1,14 @@
-export const Loader = () => {
+import { cn } from "@/lib/utils";
+
+export const Loader = ({ className }: { className?: string }) => {
   return (
-    <div role="status" className="w-full h-full flex items-center justify-center">
+    <div
+      role="status"
+      className={cn(
+        "w-full h-full flex items-center justify-center",
+        className
+      )}
+    >
       <svg
         aria-hidden="true"
         className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-primary"

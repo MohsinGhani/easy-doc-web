@@ -84,7 +84,7 @@ export default function ManageEducation() {
   const onSubmit = async (data: { education: educationSchemaType[] }) => {
     await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: {
           education: {
             value: data.education,
@@ -137,7 +137,7 @@ export default function ManageEducation() {
                               onReject={async () => {
                                 await dispatch(
                                   authThunks.updateProfile({
-                                    userId: user?.userId || "",
+                                    userId: user?.userId,
                                     updateData: {
                                       education: {
                                         value: user?.education?.filter(

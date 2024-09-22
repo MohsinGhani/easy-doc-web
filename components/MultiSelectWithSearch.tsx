@@ -185,7 +185,7 @@ export function MultiSelectWithSearch({
           {selectedValues.map((value) => {
             const label = items.find((item) => item.value === value)?.label;
             return (
-              <Badge key={value} className="flex items-center gap-2">
+              <Badge key={value} className="flex items-center gap-2 capitalize flex-wrap">
                 {label}
                 <button className="ml-1" onClick={() => handleRemove(value)}>
                   <X className="h-4 w-4" />

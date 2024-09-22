@@ -24,9 +24,7 @@ const TimeSlot = ({
   const handleReject = useCallback(async () => {
     let updatedData = _.cloneDeep(availableDays);
 
-    if (dayIndex === -1 || slotIndex === -1) {
-      return;
-    }
+    if (dayIndex === -1 || slotIndex === -1) return;
 
     if (updatedData[dayIndex].slots.length === 1) {
       updatedData[dayIndex].slots = [];

@@ -29,7 +29,7 @@ const TimelineComponent = <T extends { [key: string]: any }>({
   dateKey,
   separators = {},
 }: TimelineComponentProps<T>) => {
-  if (!elements || !elements.length) return <div>No elements found.</div>;
+  if (!elements || !elements.length) return <div className="min-h-96">No elements found.</div>;
 
   return (
     <div className="p-8">

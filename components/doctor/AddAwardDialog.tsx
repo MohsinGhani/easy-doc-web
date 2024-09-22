@@ -41,7 +41,7 @@ const AddAwardDialog = () => {
   const onSubmit = async (data: awardSchemaType) => {
     await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: { awards: { value: [data], replace: false } },
       })
     );
@@ -63,7 +63,7 @@ const AddAwardDialog = () => {
               <DialogDescription>Enter details below</DialogDescription>
 
               <CardContent className="p-0 space-y-6 w-full">
-                <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
+                <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6 text-left">
                   {/* award_name */}
                   <CustomFormField
                     fieldType={FormFieldType.INPUT}
@@ -103,18 +103,18 @@ const AddAwardDialog = () => {
                   placeholder="Tell us about your experience"
                 />
               </CardContent>
-            </DialogHeader>
 
-            <DialogFooter>
-              <DialogClose
-                className={cn(buttonVariants({ variant: "outline" }))}
-              >
-                Cancel
-              </DialogClose>
-              <Button type="submit" disabled={loading}>
-                Add Award
-              </Button>
-            </DialogFooter>
+              <DialogFooter>
+                <DialogClose
+                  className={cn(buttonVariants({ variant: "outline" }))}
+                >
+                  Cancel
+                </DialogClose>
+                <Button type="submit" disabled={loading}>
+                  Add Award
+                </Button>
+              </DialogFooter>
+            </DialogHeader>
           </form>
         </Form>
       </DialogContent>

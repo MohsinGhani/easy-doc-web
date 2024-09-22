@@ -24,16 +24,15 @@ const initialState: authState = {
     city: "",
     country: "",
     location: "",
-    specialty: "",
     years_of_experience: "",
     verified: 0,
     available: false,
-    fee: 0,
+    average_fee: 0,
     awards: [],
     availableDays: [],
     education: [],
     experiences: [],
-    rating: 2.0,
+    overallRating: 0,
     reviews: [],
     designation: "",
     dob: "",
@@ -41,6 +40,12 @@ const initialState: authState = {
     languages: [],
     phone_number: "",
     services: [],
+    profile_completion: 0,
+    profile_status: "INCOMPLETE",
+    ratingsBreakdownPercentages: [],
+    createdAt: "",
+    licence: "",
+    updatedAt: "",
   },
   loading: false,
   error: null,
@@ -54,7 +59,7 @@ export const authSlice = createSlice({
     signin: (state, action: PayloadAction<any>) => {
       const { payload } = action.payload;
 
-      const user = {
+      const user: Partial<User> = {
         given_name: payload.given_name,
         family_name: payload.family_name,
         email: payload.email,
@@ -63,12 +68,10 @@ export const authSlice = createSlice({
         userId: payload.sub,
       };
 
-      Cookies.set("userId", user.userId);
+      Cookies.set("userId", user.userId || "");
 
-      Object.assign(state, {
-        user,
-        isLoggedIn: true,
-      });
+      state.isLoggedIn = true;
+      state.user = { ...state.user, ...user } as User;
     },
     signout: (state) => {
       Object.assign(state, initialState);
@@ -213,6 +216,7 @@ export const authSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
+          toast.error(action.payload);
         }
       )
 

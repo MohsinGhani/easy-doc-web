@@ -33,7 +33,6 @@ export default function AvailabilitySwitch() {
 
     debounceTimer.current = setTimeout(() => {
       if (user?.userId) {
-        console.log("API call with switchState:", switchState);
         dispatch(
           authThunks.updateProfile({
             userId: user.userId,

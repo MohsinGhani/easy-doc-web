@@ -1,4 +1,4 @@
-import apiClient from "@/helpers/apiClient";
+import { functionsApiClient } from "@/lib/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Fetch all doctors
@@ -6,14 +6,16 @@ const fetchAllDoctors = createAsyncThunk<User[]>(
   "doctor/fetchAllDoctors",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get(
+      const response = await functionsApiClient.get(
         "/doctors/all?profile_status=COMPLETED"
       );
       return response.data.data as User[];
     } catch (error: any) {
       // Extract error message from response or fallback to default
       const errorMessage =
-        error.response?.data?.message || error.message || "Network error";
+        error.response?.data?.message ||
+        error.message ||
+        "Error getting doctors, Pease try again!";
       return rejectWithValue(errorMessage);
     }
   }
@@ -24,13 +26,13 @@ const fetchDoctorById = createAsyncThunk<User, string>(
   "doctor/fetchDoctorById",
   async (doctorId, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get(
+      const response = await functionsApiClient.get(
         `/doctors/${doctorId}?profile_status=COMPLETED`
       );
       return response.data.data as User;
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || error.message || "Network error";
+        error.response?.data?.message || error.message || "Error getting doctor, Pease try again!";
       return rejectWithValue(errorMessage);
     }
   }
@@ -47,7 +49,7 @@ const submitDoctorReview = createAsyncThunk<
       const state = getState() as { doctor: { fetchedDoctor: User } };
       const fetchedDoctor = state.doctor.fetchedDoctor;
 
-      const response = await apiClient.post(
+      const response = await functionsApiClient.post(
         `/doctor/${reviewData.doctorId}/reviews`,
         reviewData
       );
@@ -60,24 +62,26 @@ const submitDoctorReview = createAsyncThunk<
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "Error submitting review";
+        "Error submitting review, Please try again!";
       return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Submit a review for a doctor
+// get all reviews of a doctor
 const getDoctorReviews = createAsyncThunk<Partial<User>, { doctorId: string }>(
   "doctor/getDoctorReviews",
   async ({ doctorId }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get(`/doctor/${doctorId}/reviews`);
+      const response = await functionsApiClient.get(
+        `/doctor/${doctorId}/reviews`
+      );
       return response.data.data;
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "Error submitting review";
+        "Error getting reviews, Please try again!";
       return rejectWithValue(errorMessage);
     }
   }
@@ -92,7 +96,7 @@ const updateDoctorProfile = createAsyncThunk<
   "doctor/updateDoctorProfile",
   async ({ doctorId, updateData }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.put(`/doctor/update`, {
+      const response = await functionsApiClient.put(`/doctor/update`, {
         doctorId,
         updateData,
       });
@@ -102,7 +106,7 @@ const updateDoctorProfile = createAsyncThunk<
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "Failed to update profile";
+        "Failed to update profile, Please try again!";
       return rejectWithValue(errorMessage);
     }
   }

@@ -187,6 +187,14 @@ const userSchema = z.object({
     .max(500, "Bio cannot be longer than 500 characters")
     .optional()
     .optional(),
+  years_of_experience: z.string().refine(
+    (val) => {
+      return parseFloat(val) >= 0 || parseFloat(val) <= 50;
+    },
+    {
+      message: "Years of experience must be greater than or equal to 0",
+    }
+  ),
   city: z.string().min(1, "City is required").optional(),
   country: z.string().min(1, "Country is required").optional(),
   dob: z
@@ -205,7 +213,6 @@ const userSchema = z.object({
     )
     .optional(),
   gender: genderEnum.optional(),
-  specialty: z.string().min(1, "Specialty is required").optional(),
   available: z.boolean().optional(),
   languages: z.array(z.string().min(1, "Languages are required")).optional(),
   experiences: z.array(experienceSchema).optional(),

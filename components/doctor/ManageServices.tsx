@@ -45,9 +45,7 @@ export default function ManageServices() {
     ),
   })).filter((speciality) => speciality?.services?.length > 0);
 
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader />;
 
   return (
     <Card className="w-full">
@@ -73,7 +71,7 @@ export default function ManageServices() {
                     onReject={async () => {
                       await dispatch(
                         authThunks.updateProfile({
-                          userId: userId || "",
+                          userId: userId,
                           updateData: {
                             services: {
                               value: [
@@ -135,7 +133,7 @@ export default function ManageServices() {
 
                             await dispatch(
                               authThunks.updateProfile({
-                                userId: userId || "",
+                                userId: userId,
                                 updateData: {
                                   services: {
                                     value: updatedData,

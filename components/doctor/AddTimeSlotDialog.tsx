@@ -26,7 +26,6 @@ import {
   calculateTimeSlots,
   formatTimeForUI,
   getOverlappingSlots,
-  isOverlapping,
   parseTime,
 } from "@/lib/utils";
 import { toast } from "sonner";
@@ -91,9 +90,7 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
   const minutes = timeDiffInMinutes % 60;
 
   const onSubmit = async (data: availableSlotSchemaType) => {
-    if (dayIndex === -1) {
-      return;
-    }
+    if (dayIndex === -1) return;
 
     let updatedData = _.cloneDeep(user?.availableDays);
 
@@ -122,7 +119,7 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
     // Dispatch the updated and sorted data
     await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: {
           availableDays: {
             value: updatedData,
@@ -156,7 +153,7 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
 
             await dispatch(
               authThunks.updateProfile({
-                userId: user?.userId || "",
+                userId: user?.userId,
                 updateData: {
                   availableDays: {
                     value: updatedData,
@@ -167,7 +164,10 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
             );
           }}
           trigger={
-            <Button variant="destructive" disabled={user?.availableDays[dayIndex]?.slots?.length === 0}>
+            <Button
+              variant="destructive"
+              disabled={user?.availableDays[dayIndex]?.slots?.length === 0}
+            >
               <Trash2 className="h-4 w-4 shrink-0" />{" "}
               <span>Delete all slots</span>
             </Button>

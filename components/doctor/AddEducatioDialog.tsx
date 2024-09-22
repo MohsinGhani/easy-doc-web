@@ -47,10 +47,9 @@ const AddEducationDialog = () => {
   });
 
   const onSubmit = async (data: educationSchemaType) => {
-    console.log("🚀 ~ onSubmit ~ data:", data);
     await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: { education: { value: [data], replace: false } },
       })
     );

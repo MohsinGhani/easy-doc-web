@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { cn, getServiceBySpeciality } from "@/lib/utils";
+import { calculateAverageFee, cn, getServiceBySpeciality } from "@/lib/utils";
 import { CardContent } from "../ui/card";
 import { SPECIALITIES } from "@/constants";
 import { CustomFormField } from "../auth";
@@ -42,10 +42,21 @@ const AddServiceDialog = () => {
   const { control, handleSubmit, watch } = form;
 
   const onSubmit = async (data: serviceSchemaType) => {
+    let average_fee = 0;
+
+    if (user.services && user.services.length > 0) {
+      average_fee = calculateAverageFee([...user.services, data]);
+    } else {
+      average_fee = calculateAverageFee([data]);
+    }
+
     const res = await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
-        updateData: { services: { value: [data], replace: false } },
+        userId: user?.userId,
+        updateData: {
+          services: { value: [data], replace: false },
+          average_fee,
+        },
       })
     );
 

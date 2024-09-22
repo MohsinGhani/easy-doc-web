@@ -11,7 +11,6 @@ export const userPoolClientId =
   process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID || "";
 
 export const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || "";
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 // Navbar Links
 export const NAV_LINKS = [
@@ -211,6 +210,11 @@ export const ALLERGIES = allergies.map((elem) => ({
 }));
 
 export const MEDICATIONS = medications.map((elem) => ({
+  label: elem,
+  value: elem,
+}));
+
+export const CONSULTATION_TYPES = ["Self", "Other"].map((elem) => ({
   label: elem,
   value: elem,
 }));

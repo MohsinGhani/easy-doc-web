@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { Loader } from "../common/Loader";
 import { authThunks } from "@/lib/features/auth/authThunks";
 import { COUNTRIES, GENDERS, LANGUAGES } from "@/constants";
-import { getCitiesByCountry } from "@/lib/utils";
+import { getCitiesByCountry, getCityNameById } from "@/lib/utils";
 import { userSchema, userSchemaType } from "@/models/validationSchemas";
 import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
@@ -31,6 +31,7 @@ const ManageProfile = () => {
   const form = useForm<userSchemaType>({
     resolver: zodResolver(userSchema),
   });
+
   const {
     handleSubmit,
     getValues,
@@ -86,9 +87,19 @@ const ManageProfile = () => {
       };
     }
 
+    if (updateExpression.city && updateExpression.country) {
+      const cityName = getCityNameById(updateExpression.city);
+
+      if (cityName) {
+        updateExpression.location = `${cityName.split(" ")[0]}, ${
+          updateExpression.country
+        }`;
+      }
+    }
+
     const res = await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: updateExpression,
       })
     );
@@ -103,7 +114,7 @@ const ManageProfile = () => {
   };
   useEffect(() => {
     if (user) {
-      form.reset(user);
+      form.reset(user as unknown as userSchemaType);
     }
   }, [user, form]);
 
@@ -134,7 +145,7 @@ const ManageProfile = () => {
                 />
               ) : (
                 <Image
-                  src={user?.picture || ""}
+                  src={user?.picture}
                   width={100}
                   height={100}
                   alt="Profile Picture"
@@ -295,17 +306,27 @@ const ManageProfile = () => {
                   name={`languages`}
                   label="Known Languages"
                   placeholder={"Select languages..."}
+                  enableCreation={false}
                 />
 
-                {/* bio */}
+                {/* years_of_experience */}
                 <CustomFormField
-                  fieldType={FormFieldType.AUTO_RESIZE_TEXTAREA}
+                  fieldType={FormFieldType.NUMBER}
                   control={control}
-                  name="bio"
-                  label="Bio"
-                  placeholder="Enter your bio"
+                  name={`years_of_experience`}
+                  label="Years of Experience"
+                  placeholder={"ex: 2"}
                 />
               </div>
+
+              {/* bio */}
+              <CustomFormField
+                fieldType={FormFieldType.AUTO_RESIZE_TEXTAREA}
+                control={control}
+                name="bio"
+                label="Bio"
+                placeholder="Enter your bio"
+              />
 
               <CardFooter className="flex justify-end space-x-2">
                 <Button variant="ghost" type="reset">

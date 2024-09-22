@@ -87,7 +87,7 @@ const ManageExperiences = () => {
   const onSubmit = async (data: { experiences: experienceSchemaType[] }) => {
     await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: {
           experiences: {
             value: data.experiences,
@@ -137,7 +137,7 @@ const ManageExperiences = () => {
                             onReject={async () => {
                               await dispatch(
                                 authThunks.updateProfile({
-                                  userId: user?.userId || "",
+                                  userId: user?.userId,
                                   updateData: {
                                     experiences: {
                                       value: user?.experiences?.filter(

@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface DoctorCardProps {
-  doctor: Doctor;
+  doctor: User;
 }
 
 const DoctorCard = ({ doctor }: DoctorCardProps) => {
@@ -22,7 +22,7 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
         />
         <div className="absolute top-2 left-2 bg-yellow-400 text-white px-2 py-1 rounded-md text-sm font-semibold flex items-center">
           <Star className="w-4 h-4 mr-1 fill-current" />
-          {doctor.rating || Math.floor(Math.random() * 5)}/5
+          {doctor.overallRating}/5
         </div>
         <button className="absolute top-2 right-2 text-white hover:text-red-500 transition-colors">
           <Heart className="w-6 h-6" />
@@ -40,7 +40,7 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
                 alt="crown icon"
               />
             </h2>
-            <p className="text-sm text-gray-600">{doctor.specialty}</p>
+            <p className="text-sm text-gray-600">{doctor.designation}</p>
           </div>
           {doctor.verified && (
             <div className="px-2 py-1 bg-green-50 rounded">
@@ -51,7 +51,9 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
             </div>
           )}
         </div>
-        <p className="text-sm text-gray-600 mb-1">{doctor.years_of_experience}</p>
+        <p className="text-sm text-gray-600 mb-1">
+            {doctor.years_of_experience.toString().padStart(2, '0')} years experience
+        </p>
         <p className="text-sm text-gray-600 mb-4">{doctor.location}</p>
         <div className="flex justify-between items-center">
           <Link
@@ -61,7 +63,7 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
             View details
           </Link>
           <span className="text-gray-900 font-semibold">
-            Fee: ${doctor.fee}
+            Fee: ${doctor.average_fee.toFixed(0)}
           </span>
         </div>
       </div>

@@ -20,7 +20,7 @@ import {
   SignupPayload,
 } from "@/types/auth";
 import Cookies from "js-cookie";
-import apiClient from "@/helpers/apiClient";
+import { functionsApiClient } from "@/lib/utils";
 
 export const authThunks = {
   signup: createAsyncThunk(
@@ -83,8 +83,6 @@ export const authThunks = {
               username: values.email,
               password: values.password,
             });
-
-            console.log("signin from confirmcode:", isSignedIn, nextStep);
 
             break;
 
@@ -161,6 +159,7 @@ export const authThunks = {
         }
 
         dispatch(signinAction({ payload }));
+        await dispatch(authThunks.initializeAuth());
 
         const role = payload["custom:role"];
         toast.success("Sign in successful!");
@@ -168,7 +167,6 @@ export const authThunks = {
           role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
         );
       } catch (error: any) {
-        console.log(error.message);
         const errorType =
           error.__type || error.code || error.name || error.message || error;
 
@@ -196,7 +194,7 @@ export const authThunks = {
         toast.success("Logged out Successfully");
         router.push("/auth/sign-in");
       } catch (error: any) {
-        return rejectWithValue(error.message);
+        return rejectWithValue(error.message || "Error signing out, Please try again!");
       }
     }
   ),
@@ -214,8 +212,7 @@ export const authThunks = {
 
         toast.success("Code sent successfully");
       } catch (error: any) {
-        toast.error(error.message);
-        return rejectWithValue(error.message);
+        return rejectWithValue(error.message || "Error Sending Confirmation code, Pease try again!");
       }
     }
   ),
@@ -231,8 +228,7 @@ export const authThunks = {
         resetPassword({ username: email });
         toast.success("Code sent successfully");
       } catch (error: any) {
-        toast.error(error.message || "Failed to request password reset.");
-        return rejectWithValue(error.message || "Something went wrong");
+        return rejectWithValue(error.message || "Error in sending code, Pease try again!");
       }
     }
   ),
@@ -254,8 +250,7 @@ export const authThunks = {
         toast.success("Password reset successful!");
         router.push("/auth/sign-in");
       } catch (error: any) {
-        toast.error(error.message || "Failed to reset password.");
-        return rejectWithValue(error.message || "Something went wrong");
+        return rejectWithValue(error.message || "Error changing password, Pease try again!");
       }
     }
   ),
@@ -267,8 +262,9 @@ export const authThunks = {
         const userId = Cookies.get("userId");
         const auth = Cookies.get("auth");
 
+        // TODO: instead of using userId, get the userId from cognito Cookie
         if (!userId && !auth) {
-          console.log("No user ID or auth found");
+          // console.log("No user ID or auth found");
 
           await signOut();
           dispatch(signoutAction());
@@ -280,15 +276,14 @@ export const authThunks = {
           const parsedAuth = JSON.parse(auth) as User;
           return parsedAuth;
         } else if (userId) {
-          const response = await apiClient.get(`/auth/${userId}`);
+          const response = await functionsApiClient.get(`/auth/${userId}`);
           return response.data.data;
         }
       } catch (error) {
-        console.log("🚀 ~ error:", error)
         await signOut();
         dispatch(signoutAction());
 
-        return rejectWithValue("Failed to fetch user details");
+        return rejectWithValue("Error in confirming your identity, Pease signin again!");
       }
     }
   ),
@@ -320,7 +315,7 @@ export const authThunks = {
           params.doctorId = userId;
         }
 
-        const response = await apiClient.put(
+        const response = await functionsApiClient.put(
           `/${role === "doctor" ? "doctor" : "auth"}/update`,
           params
         );
@@ -330,7 +325,7 @@ export const authThunks = {
         const errorMessage =
           error.response?.data?.message ||
           error.message ||
-          "Failed to update profile";
+          "Failed to update profile, Please try again!";
         return rejectWithValue(errorMessage);
       }
     }

@@ -87,7 +87,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
               </div>
               <div className="absolute top-2 left-2 bg-yellow-400 text-white px-2 py-1 rounded-md text-sm font-semibold flex items-center">
                 <Star className="w-4 h-4 mr-1 fill-current" />
-                4/5
+                {doctor.overallRating}/5
               </div>
               <button className="absolute top-2 right-2 text-white hover:text-red-500 transition-colors">
                 <Heart className="w-6 h-6" />
@@ -125,7 +125,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
               </div>
 
               <div className="flex items-center gap-2 text-sm sm:text-base text-zinc-600 font-normal leading-snug">
-                <p>{doctor?.years_of_experience || 0} years experience</p>
+                <p>{doctor?.years_of_experience} years experience</p>
                 <Separator
                   orientation="vertical"
                   className="h-4 w-px bg-[#e2e8f0]"
@@ -290,6 +290,10 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                   <PatientReviews
                     reviews={doctor?.reviews ?? []}
                     doctorId={doctorId}
+                    overallRating={doctor.overallRating}
+                    ratingsBreakdownPercentages={
+                      doctor.ratingsBreakdownPercentages
+                    }
                   />
                 )}
               </TabsContent>

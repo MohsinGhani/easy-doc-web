@@ -42,12 +42,12 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
   const onSubmit = async (data: reviewSchemaType) => {
     const { first_name, last_name, rating, comment } = data;
 
-    const reviewData = {
+    const reviewData: Review = {
       name: `${first_name} ${last_name}`,
       patientId: userId,
       doctorId,
-      rating,
-      comment,
+      rating: rating as RatingNumber,
+      comment: comment || "",
       picture:
         picture ||
         `https://avatar.iran.liara.run/public/${Math.floor(
@@ -55,6 +55,8 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
         )}`,
       city: city || "",
       country: country || "",
+      createdAt: "",
+      reviewId: "",
     };
 
     const res = await dispatch(doctorThunks.submitDoctorReview({ reviewData }));

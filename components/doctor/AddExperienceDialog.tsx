@@ -54,7 +54,7 @@ const AddExperienceDialog = () => {
   const onSubmit = async (data: experienceSchemaType) => {
     await dispatch(
       authThunks.updateProfile({
-        userId: user?.userId || "",
+        userId: user?.userId,
         updateData: { experiences: { value: [data], replace: false } },
       })
     );

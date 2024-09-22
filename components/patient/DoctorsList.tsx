@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import DoctorCard from "./DoctorCard";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
+import { Loader } from "../common/Loader";
 
 export default function DoctorsList() {
   const dispatch = useAppDispatch();
@@ -15,9 +16,9 @@ export default function DoctorsList() {
     if (doctors.length === 0) {
       dispatch(doctorThunks.fetchAllDoctors());
     }
-  }, []);
+  }, [dispatch, doctors.length]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
 
   return (
     <div className="w-full lg:col-span-3">

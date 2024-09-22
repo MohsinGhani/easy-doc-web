@@ -27,7 +27,8 @@ const TabListContent = ({ day, dayIndex }: TabListContentProps) => {
       {loading ? (
         <Loader />
       ) : availableDays[dayIndex]?.slots?.length > 0 ? (
-        <div className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-2">
+        // TODO: Make this grid to perform well
+        <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-2">
           {availableDays[dayIndex]?.slots?.map(
             ({ start_time, end_time }, slotIndex) => (
               <TimeSlot

@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge";
 import cities from "@/public/data/groupedCities.json";
 import services from "@/public/data/services.json";
 import { COUNTRIES } from "@/constants";
+import createApiClient from "@/helpers/createApiClient";
+import { ApiServiceName, getServiceUrl } from "@/helpers/getServiceUrl";
 
 interface Cities {
   [key: string]: City[];
@@ -18,6 +20,11 @@ interface JSONService {
 
 interface Services {
   [key: string]: JSONService[];
+}
+
+interface RatingsData {
+  overallRating: number;
+  ratingsBreakdownPercentages: { [key: number]: number };
 }
 
 const typedCities: Cities = cities as Cities;
@@ -116,14 +123,74 @@ export const capitalizeWords = (string: string) => {
 
 export const getCountryNameByCode = (code: string) => {
   return COUNTRIES.find((country) => country.value === code)?.label || "";
-}
-
+};
 
 export const getCityNameById = (cityId: string) => {
-  return Object.values(typedCities).flat().find((city) => city.id === cityId)?.name || "";
-}
+  return (
+    Object.values(typedCities)
+      .flat()
+      .find((city) => city.id === cityId)?.name || ""
+  );
+};
 
 export const formatTimeForReviews = (date: Date | string) => {
-  const parsedDate = typeof date === "string" ? parse(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx", new Date()) : date;
+  const parsedDate =
+    typeof date === "string"
+      ? parse(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx", new Date())
+      : date;
   return format(parsedDate, "MMMM d, yyyy 'at' h:mm aa");
 };
+
+export const calculateRatingsData = (reviews: Review[]): RatingsData => {
+  // Calculate the overall rating dynamically from reviews
+  const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+  const totalReviews = reviews.length;
+  const overallRating =
+    totalReviews > 0 ? parseFloat((totalRating / totalReviews).toFixed(1)) : 0;
+
+  // Calculate the ratings breakdown based on the reviews
+  const ratingsBreakdown = reviews.reduce(
+    (acc: { [key: number]: number }, review) => {
+      acc[review.rating] += 1; // Increment the count for the corresponding rating
+      return acc;
+    },
+    { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } // Initial value with all counts set to 0
+  );
+
+  // Convert counts to percentages if there are any reviews
+  const ratingsBreakdownPercentages = totalReviews
+    ? Object.keys(ratingsBreakdown).reduce(
+        (acc: { [key: number]: number }, rating) => {
+          acc[Number(rating)] =
+            (ratingsBreakdown[Number(rating)] / totalReviews) * 100;
+          return acc;
+        },
+        { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+      )
+    : { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+  return {
+    overallRating,
+    ratingsBreakdownPercentages,
+  };
+};
+
+export const calculateAverageFee = (services: Service[]): number => {
+  if (services.length === 0) return 0;
+
+  const totalFee = services.reduce((sum, service) => {
+    const fee = parseFloat(service.fee.replace(/[^0-9.]/g, ""));
+    return sum + (isNaN(fee) ? 0 : fee);
+  }, 0);
+
+  const averageFee = totalFee / services.length;
+  return averageFee;
+};
+
+export const functionsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.FUNCTIONS) || ""
+);
+
+export const appointmentsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.APPOINTMENTS) || ""
+);

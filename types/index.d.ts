@@ -56,10 +56,12 @@ declare interface Education {
   [key: string]: string | undefined;
 }
 
+declare type RatingNumber = 1 | 2 | 3 | 4 | 5;
+
 declare interface Review {
   name: string;
   createdAt: string;
-  rating: 1 | 2 | 3 | 4 | 5;
+  rating: RatingNumber;
   comment: string;
   picture: string;
   city: string;
@@ -98,12 +100,12 @@ declare type User = {
   country: string;
   dob: string;
   gender: Gender;
-  specialty: string;
   location: string;
-  rating: number;
+  overallRating: number;
+  ratingsBreakdownPercentages: { [key: number]: number };
   available: boolean;
   verified: number;
-  fee: number;
+  average_fee: number;
   languages: string[];
   experiences: Experience[];
   awards: Award[];
@@ -113,32 +115,9 @@ declare type User = {
   services: Service[];
   profile_status: PROFILE_STATUS;
   profile_completion: number;
-};
-
-declare type Doctor = {
-  profile_status: PROFILE_STATUS;
-  userId: string;
-  role: string;
-  email: string;
-  given_name: string;
-  family_name: string;
-  display_name: string;
-  picture: string;
-  bio: string;
-  years_of_experience: string;
-  city: string;
-  country: string;
-  specialty: string;
-  location: string;
-  rating: number;
-  available: boolean;
-  verified: number;
-  fee: number;
-  experiences: Experience[];
-  awards: Award[];
-  education: Education[];
-  availableDays: AvailableDay[];
-  reviews: Review[];
+  createdAt: string;
+  updatedAt: string;
+  licence: string;
 };
 
 declare interface City {
