@@ -12,6 +12,7 @@ export type BaseAppointment = {
   scheduledDate: DateRange;
   allergies: string[];
   current_medications: string[];
+  reason: string;
   attachments: Array<{
     id: string;
     url: string;

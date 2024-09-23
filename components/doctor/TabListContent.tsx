@@ -18,7 +18,7 @@ const TabListContent = ({ day, dayIndex }: TabListContentProps) => {
 
   return (
     <TabsContent value={day} key={dayIndex}>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-col sm:flex-row gap-6">
         <h3 className="text-xl font-medium capitalize">{day}</h3>
         <AddTimeSlotDialog day={day} dayIndex={dayIndex} />
       </div>

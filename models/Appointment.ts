@@ -47,17 +47,15 @@ export const appointmentCreationSchema = z.object({
       })
     )
     .optional(),
-  scheduled_date: z.string({
+  appointment_date: z.string({
     required_error: "Scheduled date is required",
   }),
-  appointment_date: z.string({
-    required_error: "Appointment date is required",
+  scheduled_date: z.object({
+    start_time: z.string(),
+    end_time: z.string(),
   }),
-  appointment_time: z.string({
-    required_error: "Appointment time is required",
-  }),
-  appointment_type: z.string({
-    required_error: "Appointment type is required",
+  reason: z.string({
+    required_error: "Reason is required",
   }),
   appointment_reason: z.string({
     required_error: "Appointment reason is required",

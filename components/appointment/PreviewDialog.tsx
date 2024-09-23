@@ -19,12 +19,16 @@ interface PreviewDialogProps {
   onClose: () => void;
 }
 
-const PreviewDialog: React.FC<PreviewDialogProps> = ({ file }) => {
+const PreviewDialog: React.FC<PreviewDialogProps> = ({
+  file,
+  onClose,
+  open,
+}) => {
   if (!file) return;
 
   return (
     <>
-      <Dialog defaultOpen>
+      <Dialog open={open} onOpenChange={onClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Preview</DialogTitle>

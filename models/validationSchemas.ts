@@ -189,7 +189,7 @@ const userSchema = z.object({
     .optional(),
   years_of_experience: z.string().refine(
     (val) => {
-      return parseFloat(val) >= 0 || parseFloat(val) <= 50;
+      return parseFloat(val) >= 0 && parseFloat(val) <= 50;
     },
     {
       message: "Years of experience must be greater than or equal to 0",

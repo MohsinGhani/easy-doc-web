@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "../ui/card";
+import { formatTimeForUI } from "@/lib/utils";
 
 export default function AvailableTimings({
   availableDays,
@@ -73,7 +74,7 @@ const TimeSlot = ({
 }) => (
   <div className="bg-white shadow-md rounded-md p-3 text-center">
     <p>
-      {startTime} - {endTime}
+      {formatTimeForUI(startTime)} - {formatTimeForUI(endTime)}
     </p>
   </div>
 );

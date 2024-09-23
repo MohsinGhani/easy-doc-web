@@ -34,6 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MultiSelectWithSearch } from "../MultiSelectWithSearch";
+import MonthDayPicker from "../ui/day-picker";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -51,6 +52,7 @@ export enum FormFieldType {
   TEXTAREA = "textarea",
   AUTO_RESIZE_TEXTAREA = "textarea",
   DATE_PICKER = "date-picker",
+  DAY_PICKER = "day-picker",
   YEAR_PICKER = "year-picker",
   SKELETON = "skeleton",
 }
@@ -341,8 +343,21 @@ const RenderInput = ({
         </FormControl>
       );
 
+    case FormFieldType.DAY_PICKER:
+      return (
+        <FormControl>
+          <MonthDayPicker
+            {...field}
+            disabled={props.disabled}
+            placeholder={props.placeholder}
+          />
+        </FormControl>
+      );
+
     case FormFieldType.SKELETON:
-      return props.renderSkeleton ? props.renderSkeleton(field) : null;
+      return props.renderSkeleton ? (
+        <FormControl>{props.renderSkeleton(field)}</FormControl>
+      ) : null;
 
     default:
       return null;

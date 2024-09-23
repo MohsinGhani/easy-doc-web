@@ -16,7 +16,7 @@ interface DoctorCardProps {
 const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
   if (!doctor) return null;
   return (
-    <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0">
+    <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0 space-y-4">
       <div className="relative">
         <div className="w-full min-h-56 rounded-lg">
           <Image
@@ -35,7 +35,7 @@ const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
           <Heart className="w-6 h-6" />
         </button>
       </div>
-      <div className="p-4 space-y-4">
+      <div className="sm:p-0 p-4 space-y-4">
         <div className="flex justify-between items-start">
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">

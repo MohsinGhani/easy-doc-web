@@ -1,27 +1,36 @@
 import AppointmentForm from "@/components/appointment/AppointmentForm";
 import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
+import { useRouter } from "next/router";
 
 interface BookAppointmentPageProps {
   params: {
     doctorId: string;
   };
+  searchParams: {
+    doctorName: string;
+  };
 }
 
-const BannerData = {
-  title: "Book Appointment",
-  description: "",
-  location: [
-    { name: "Home", path: "/" },
-    { name: "Doctors", path: "/doctors" },
-    { name: "Book Appointment", path: "#" },
-  ],
-};
-
-const BookAppointmentPage: React.FC<BookAppointmentPageProps> = ({
+const BookAppointmentPage = ({
   params,
-}) => {
+  searchParams,
+}: BookAppointmentPageProps) => {
   const { doctorId } = params;
+  const doctorName = decodeURIComponent(
+    searchParams.doctorName || "Doctor Details"
+  );
+
+  const BannerData = {
+    title: "Book Appointment",
+    description: "",
+    location: [
+      { name: "Home", path: "/" },
+      { name: "Doctors", path: "/doctors" },
+      { name: doctorName, path: `/doctors/${doctorId}` },
+      { name: "Book Appointment", path: "#" },
+    ],
+  };
 
   return (
     <div className="w-full h-full">

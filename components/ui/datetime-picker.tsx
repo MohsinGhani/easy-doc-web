@@ -229,7 +229,7 @@ function display12HourValue(hours: number) {
   return `0${hours % 12}`;
 }
 
-function genMonths(
+export function genMonths(
   locale: Pick<Locale, "options" | "localize" | "formatLong">
 ) {
   return Array.from({ length: 12 }, (_, i) => ({
@@ -238,7 +238,7 @@ function genMonths(
   }));
 }
 
-function genYears(yearRange = 50) {
+export function genYears(yearRange = 50) {
   const today = new Date();
   return Array.from({ length: yearRange * 2 + 1 }, (_, i) => ({
     value: today.getFullYear() - yearRange + i,

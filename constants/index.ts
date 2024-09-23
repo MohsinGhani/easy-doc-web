@@ -218,3 +218,20 @@ export const CONSULTATION_TYPES = ["Self", "Other"].map((elem) => ({
   label: elem,
   value: elem,
 }));
+
+export const WEEK_DAYS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
+
+export const APPOINTMENTS_REASONS = ["Consultation", "Follow Up"].map(
+  (elem) => ({
+    label: elem,
+    value: elem,
+  })
+);

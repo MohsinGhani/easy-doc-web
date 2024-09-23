@@ -19,7 +19,7 @@ import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewSchema, reviewSchemaType } from "@/models/validationSchemas";
-import { Form, FormControl } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { CustomFormField } from "@/components/auth";
 import { FormFieldType } from "@/components/auth/CustomFormField";
 
@@ -93,23 +93,21 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
                   control={control}
                   name="rating"
                   renderSkeleton={(field) => (
-                    <FormControl>
-                      <div className="flex justify-center mb-6">
-                        {[1, 2, 3, 4, 5].map((value) => (
-                          <StarIcon
-                            key={value}
-                            onClick={() => {
-                              field.onChange(value);
-                            }}
-                            className={`w-10 h-10 cursor-pointer ${
-                              value <= field.value
-                                ? "text-yellow-500"
-                                : "text-gray-400"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </FormControl>
+                    <div className="flex justify-center mb-6">
+                      {[1, 2, 3, 4, 5].map((value) => (
+                        <StarIcon
+                          key={value}
+                          onClick={() => {
+                            field.onChange(value);
+                          }}
+                          className={`w-10 h-10 cursor-pointer ${
+                            value <= field.value
+                              ? "text-yellow-500"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      ))}
+                    </div>
                   )}
                 />
 

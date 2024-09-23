@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/carousel";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function DoctorProfilePage() {
   const [activeTab, setActiveTab] = useState("basic-details");
@@ -28,7 +28,14 @@ export default function DoctorProfilePage() {
   }, [searchParams]);
 
   const navigateToTab = (newActiveTab: string) => {
-    router.push(`/settings?activeTab=${newActiveTab}`);
+    // Get the current query parameters
+    const currentParams = new URLSearchParams(searchParams);
+    // Update the 'activeTab' parameter
+    currentParams.set("activeTab", newActiveTab);
+
+    router.replace(`/settings/?${currentParams.toString()}`, {
+      scroll: false,
+    });
   };
 
   return (

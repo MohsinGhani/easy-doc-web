@@ -8,6 +8,7 @@ import createApiClient from "@/helpers/createApiClient";
 import { ApiServiceName, getServiceUrl } from "@/helpers/getServiceUrl";
 import { FileItem } from "@/components/appointment/FileUploadComponent";
 import axios from "axios";
+import { enUS } from "date-fns/locale";
 
 interface Cities {
   [key: string]: City[];
@@ -79,6 +80,26 @@ export const formatTime = (date: Date) => format(date, "hh:mm aa");
 export const formatTimeToHHMM = (date: Date) => format(date, "HH:mm");
 export const formatTimeForUI = (time: string) =>
   format(parseTime(time), "hh:mm aa");
+export const removeDaySuffix = (dateString: string): string => {
+  return dateString.replace(/(\d+)(st|nd|rd|th)/, "$1");
+};
+export const getDayName = (dateString: string) => {
+  // Step 1: Remove day suffix
+  const cleanedDate = removeDaySuffix(dateString);
+
+  // Step 2: Parse the date
+  const date = parse(cleanedDate, "d MMM yyyy", new Date(), { locale: enUS });
+
+  // Step 3: Check if the parsed date is valid
+  if (isNaN(date.getTime())) {
+    console.error("Invalid date format or parsing error:", cleanedDate);
+    return "Invalid date";
+  }
+
+  // Step 4: Format the date to get the name of the day
+  const dayName = format(date, "EEEE", { locale: enUS });
+  return dayName;
+};
 
 export const isOverlapping = (
   start1: string,

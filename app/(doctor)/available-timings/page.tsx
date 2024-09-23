@@ -12,16 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-
-const weekdays = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-];
+import { WEEK_DAYS } from "@/constants";
 
 const AvailableTimingsPage = () => {
   return (
@@ -33,9 +24,9 @@ const AvailableTimingsPage = () => {
           <Tabs defaultValue="monday" className="w-full">
             <h2 className="text-sm font-medium">Select Available Days</h2>
             <TabsList className="md:hidden w-full mb-6 mt-2">
-              <Carousel className="w-full max-w-[80%]">
+              <Carousel className="w-full sm:max-w-[80%] max-w-[65%]">
                 <CarouselContent className="w-full">
-                  {weekdays.map((day, i) => (
+                  {WEEK_DAYS.map((day, i) => (
                     <CarouselItem
                       key={i}
                       className="basis-1/4 min-w-[130px] max-w-[130px]"
@@ -55,7 +46,7 @@ const AvailableTimingsPage = () => {
             </TabsList>
 
             <TabsList className="hidden md:flex w-full justify-between bg-background mb-6 mt-2">
-              {weekdays.map((day, i) => (
+              {WEEK_DAYS.map((day, i) => (
                 <TabsTrigger
                   key={i}
                   value={day}
@@ -67,7 +58,7 @@ const AvailableTimingsPage = () => {
             </TabsList>
 
             <CardContent>
-              {weekdays.map((day, dayIndex) => (
+              {WEEK_DAYS.map((day, dayIndex) => (
                 <TabListContent day={day} dayIndex={dayIndex} key={dayIndex} />
               ))}
             </CardContent>

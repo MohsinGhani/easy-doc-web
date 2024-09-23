@@ -15,7 +15,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import TimelineComponent from "../timelines/TimelineComponent";
 import AvailableTimings from "./AvailableTimings";
 import PatientReviews from "./review/PatientReviews";
@@ -41,12 +41,12 @@ interface DoctorProfileProps {
 
 const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
   const dispatch = useAppDispatch();
-  const [activeTab, setActiveTab] = useState("basic-details");
+  const [activeTab, setActiveTab] = useState("experience");
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    setActiveTab(searchParams.get("activeTab") || "basic-details");
+    setActiveTab(searchParams.get("activeTab") || "experience");
   }, [searchParams]);
 
   const navigateToTab = (newActiveTab: string) => {
@@ -211,7 +211,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                     </span>
                   </p>
                   <Link
-                    href={`/doctors/${doctorId}/book-appointment`}
+                    href={`/doctors/${doctorId}/book-appointment?doctorName=${doctor.display_name}`}
                     className={cn(
                       "w-full sm:w-auto",
                       buttonVariants({ size: "xl", variant: "default" })
@@ -230,7 +230,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
         <Tabs defaultValue={activeTab} className="w-full">
           <CardContent>
             <TabsList className="md:hidden w-full">
-              <Carousel className="w-full max-w-[80%]">
+              <Carousel className="w-full sm:max-w-[80%] max-w-[65%]">
                 <CarouselContent className="w-full">
                   {tabs.map((tab) => (
                     <CarouselItem

@@ -17,7 +17,7 @@ import {
   availableSlotSchemaType,
   availableSlotSchema,
 } from "@/models/validationSchemas";
-import { Form, FormControl } from "../ui/form";
+import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
 import _ from "lodash";
@@ -227,13 +227,11 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
                   name="start_time"
                   label="Start time"
                   renderSkeleton={(field) => (
-                    <FormControl>
-                      <TimeInput
-                        id="start_time"
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
+                    <TimeInput
+                      id="start_time"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   )}
                 />
 
@@ -243,13 +241,11 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
                   name="end_time"
                   label="End time"
                   renderSkeleton={(field) => (
-                    <FormControl>
-                      <TimeInput
-                        id="end_time"
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
+                    <TimeInput
+                      id="end_time"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   )}
                 />
               </div>
