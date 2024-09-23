@@ -46,6 +46,7 @@ const initialState: authState = {
     createdAt: "",
     licence: "",
     updatedAt: "",
+    totalReviews: 0,
   },
   loading: false,
   error: null,
@@ -77,6 +78,7 @@ export const authSlice = createSlice({
       Object.assign(state, initialState);
 
       Cookies.remove("userId");
+      Cookies.remove("auth");
     },
   },
   extraReducers: (builder) => {
@@ -206,7 +208,7 @@ export const authSlice = createSlice({
           state.isLoggedIn = true;
           !Cookies.get("auth") &&
             Cookies.set("auth", JSON.stringify(action.payload), {
-              expires: 1 / 24,
+              expires: 1 / 24, // 1 hour
             });
           state.loading = false;
         }

@@ -5,7 +5,6 @@ import LeaveReviewDialog from "./LeaveReviewDialog";
 import RatingSummary from "./RatingSummary";
 import ReviewItem from "./ReviewItem";
 import { Loader } from "@/components/common/Loader";
-import { calculateRatingsData } from "@/lib/utils";
 
 interface PatientReviewsProps {
   reviews: Review[];

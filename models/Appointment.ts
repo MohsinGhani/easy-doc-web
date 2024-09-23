@@ -38,7 +38,15 @@ export const appointmentCreationSchema = z.object({
   allergies: z.array(z.string()).optional(),
   current_medication: z.array(z.string()).optional(),
   description: z.string().optional(),
-  attachments: z.array(z.string()).optional(),
+  attachments: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string(),
+        mimeType: z.string(),
+      })
+    )
+    .optional(),
   scheduled_date: z.string({
     required_error: "Scheduled date is required",
   }),

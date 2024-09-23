@@ -15,7 +15,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TimelineComponent from "../timelines/TimelineComponent";
 import AvailableTimings from "./AvailableTimings";
 import PatientReviews from "./review/PatientReviews";
@@ -25,6 +25,7 @@ import { Loader } from "../common/Loader";
 import { cn, getCityNameById, getCountryNameByCode } from "@/lib/utils";
 import EmptyState from "../common/EmptyState";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const tabs = [
   { value: "experience", label: "Experience" },
@@ -40,6 +41,25 @@ interface DoctorProfileProps {
 
 const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
   const dispatch = useAppDispatch();
+  const [activeTab, setActiveTab] = useState("basic-details");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    setActiveTab(searchParams.get("activeTab") || "basic-details");
+  }, [searchParams]);
+
+  const navigateToTab = (newActiveTab: string) => {
+    // Get the current query parameters
+    const currentParams = new URLSearchParams(searchParams);
+    // Update the 'activeTab' parameter
+    currentParams.set("activeTab", newActiveTab);
+
+    router.replace(`/doctors/${doctorId}?${currentParams.toString()}`, {
+      scroll: false,
+    });
+  };
+
   const { loading, fetchedDoctor: doctor } = useAppSelector(
     (state) => state.doctor
   );
@@ -207,7 +227,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
       </Card>
 
       <Card className="w-full">
-        <Tabs defaultValue="experience" className="w-full">
+        <Tabs defaultValue={activeTab} className="w-full">
           <CardContent>
             <TabsList className="md:hidden w-full">
               <Carousel className="w-full max-w-[80%]">
@@ -220,6 +240,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                       <TabsTrigger
                         value={tab.value}
                         className="w-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                        onClick={() => navigateToTab(tab.value)}
                       >
                         {tab.label}
                       </TabsTrigger>
@@ -237,6 +258,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                   key={tab.value}
                   value={tab.value}
                   className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  onClick={() => navigateToTab(tab.value)}
                 >
                   {tab.label}
                 </TabsTrigger>

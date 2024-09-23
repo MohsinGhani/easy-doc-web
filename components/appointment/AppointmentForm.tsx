@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   appointmentCreationSchema,
@@ -25,83 +19,35 @@ import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { ALLERGIES, BLOOD_GROUPS, GENDERS, MEDICATIONS } from "@/constants";
-import { functionsApiClient } from "@/lib/utils";
-import { UploadCloud } from "lucide-react";
-import { Button } from "../ui/button";
+import { appointmentsApiClient, uploadFilesToS3 } from "@/lib/utils";
 import { toast } from "sonner";
+import FileUploadComponent, { FileItem } from "./FileUploadComponent";
 import { Loader } from "../common/Loader";
+import DoctorCard from "../patient/DoctorCard";
+import PriceDetails from "./PriceDetails";
 
 interface AppointmentFormProps {
   doctorId: string;
 }
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
+  // Redux state selectors & actions
   const dispatch = useAppDispatch();
-  const filesInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [filePreviewUrls, setFilePreviewUrls] = useState<string[]>([]);
-  console.log("🚀 ~ selectedFiles:", selectedFiles);
-  console.log("🚀 ~ filePreviewUrls:", filePreviewUrls);
-
   const { user, loading } = useAppSelector((state) => state.auth);
   const { fetchedDoctor, loading: doctorLoader } = useAppSelector(
     (state) => state.doctor
   );
 
-  const handleFilesInputClick = useCallback(() => {
-    filesInputRef.current?.click();
-  }, []);
+  const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
 
-  const handleFilesChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files;
-
-      if (!files || files.length === 0) return;
-
-      const filesArray = Array.from(files);
-
-      for (const file of filesArray) {
-        if (file.size > 10 * 1024 * 1024) {
-          return toast.error("File must be less than 10MB.");
-        }
-
-        setSelectedFiles((prev) => [...prev, file]);
-
-        const { data } = await functionsApiClient.post(
-          "/generate-presigned-url",
-          {
-            fileName: file.name,
-            fileType: file.type,
-          }
-        );
-
-        const { uploadURL } = data;
-
-        await functionsApiClient.put(uploadURL, file, {
-          headers: {
-            "Content-Type": file.type,
-          },
-        });
-
-        toast.success("File uploaded successfully.");
-
-        if (file.type.startsWith("image/")) {
-          setFilePreviewUrls((prev) => [...prev, URL.createObjectURL(file)]);
-        } else {
-          setFilePreviewUrls((prev) => [...prev, ""]);
-        }
-      }
-    },
-    []
-  );
-
+  // Fetch doctor details based on doctorId prop
   useEffect(() => {
-    if (doctorId && typeof doctorId === "string") {
+    if (doctorId) {
       dispatch(doctorThunks.fetchDoctorById(doctorId));
     }
   }, [dispatch, doctorId]);
 
+  // Setup the form with default values
   const form = useForm<AppointmentCreationType>({
     resolver: zodResolver(appointmentCreationSchema),
     defaultValues: {
@@ -118,22 +64,50 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     },
   });
 
+  // Form submit handler
   const onSubmit = async (data: AppointmentCreationType) => {
-    console.log("🚀 ~ onSubmit ~ data:", data);
+    try {
+      // Step 1: Upload files to S3 using the helper function
+      const uploadedFiles = await uploadFilesToS3(selectedFiles);
+
+      // Step 2: Add uploaded files to form data
+      data.attachments = uploadedFiles;
+
+      // Step 3: Submit form data to the backend
+      await appointmentsApiClient.post("/appointments", data);
+
+      toast.success("Appointment created successfully.");
+      form.reset(); // Reset the form fields
+      setSelectedFiles([]); // Clear selected files
+    } catch (error) {
+      console.error("Error submitting appointment:", error);
+      toast.error("Failed to create appointment.");
+    }
   };
 
+  // Extract control and handleSubmit methods from form
   const { control, handleSubmit, watch } = form;
 
+  const speciality = watch("speciality");
+  console.log("🚀 ~ speciality:", speciality)
+
+  // Compute unique specialities based on doctor services
   const uniqueSpecialities = useMemo(
     () => new Set(fetchedDoctor?.services.map((service) => service.speciality)),
     [fetchedDoctor?.services]
   );
 
+  const handleProceedToCheckout = () => {
+    // Handle checkout logic here
+    console.log("Proceed to checkout clicked!");
+  };
+
+  // Show loader if doctor details or user details are loading
   if (doctorLoader || loading) return <Loader />;
 
   return (
-    <div className="gap-16 grid lg:grid-cols-4">
-      <Accordion type="multiple" className="col-span-3">
+    <div className="gap-16 grid xl:grid-cols-4">
+      <Accordion type="multiple" className="xl:col-span-3">
         <AccordionItem value="patient-details">
           <AccordionTrigger className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6">
             Patient Details
@@ -142,7 +116,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
             <Form {...form}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid lg:grid-cols-2 gap-8">
-                  {/* consulting_for */}
+                  {/* Consulting For */}
                   <CustomFormField
                     name="consulting_for"
                     label="Consulting For"
@@ -154,7 +128,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* patient_name */}
+                  {/* Patient Name */}
                   <CustomFormField
                     name="patient_name"
                     label="Patient full name"
@@ -162,7 +136,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* gender */}
+                  {/* Gender */}
                   <CustomFormField
                     name="gender"
                     label="Gender"
@@ -172,7 +146,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* dob */}
+                  {/* Date of Birth */}
                   <CustomFormField
                     name="dob"
                     label="Date of Birth"
@@ -180,7 +154,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* blood_group */}
+                  {/* Blood Group */}
                   <CustomFormField
                     name="blood_group"
                     label="Blood Group"
@@ -189,7 +163,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* speciality */}
+                  {/* Speciality */}
                   <CustomFormField
                     name="speciality"
                     label="Speciality"
@@ -201,15 +175,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* consultation_type */}
+                  {/* Consultation Type */}
                   <CustomFormField
                     name="consultation_type"
                     label="Consultation Type"
                     fieldType={FormFieldType.SELECT}
                     items={fetchedDoctor?.services
                       ?.filter(
-                        (s) =>
-                          s?.speciality.toLowerCase() === watch("speciality")
+                        (s) => s?.speciality.toLowerCase() === speciality
                       )
                       .map((s) => ({
                         label: s?.service,
@@ -218,7 +191,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* phone_number */}
+                  {/* Phone Number */}
                   <CustomFormField
                     name="phone_number"
                     label="Contact no:"
@@ -226,7 +199,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* email */}
+                  {/* Email */}
                   <CustomFormField
                     name="email"
                     label="Email"
@@ -234,7 +207,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* allergies */}
+                  {/* Allergies */}
                   <CustomFormField
                     name="allergies"
                     label="Allergies"
@@ -243,17 +216,18 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                     control={control}
                   />
 
-                  {/* current_medication */}
+                  {/* Current Medication */}
                   <CustomFormField
                     name="current_medication"
                     label="Current medications:"
+                    placeholder="Select medications"
                     fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
                     items={MEDICATIONS}
                     control={control}
                   />
                 </div>
 
-                {/* description */}
+                {/* Description */}
                 <CustomFormField
                   name="description"
                   label="Description"
@@ -261,39 +235,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                   control={control}
                 />
 
-                <div
-                  className="flex items-center gap-6 p-8 border rounded-xl border-dashed cursor-pointer"
-                  onClick={handleFilesInputClick}
-                >
-                  {/* Icon */}
-                  <UploadCloud
-                    size={48}
-                    color="#00000066"
-                    className="text-muted-foreground stroke-1"
-                  />
-
-                  <div className="flex items-center justify-between w-full">
-                    <div className="space-y-2">
-                      <p className="text-[#1e1e1e] text-[13px] font-normal">
-                        Select a file or drag and drop here
-                      </p>
-
-                      <p className="text-black/40 text-xs font-normal">
-                        JPG, PNG or PDF, file size no more than 10MB
-                      </p>
-                    </div>
-
-                    <Button variant={"outline"}>Select file</Button>
-                  </div>
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={filesInputRef}
-                    style={{ display: "none" }}
-                    onChange={handleFilesChange}
-                  />
-                </div>
+                {/* File Upload Component */}
+                <FileUploadComponent onFilesUploaded={setSelectedFiles} />
               </form>
             </Form>
           </AccordionContent>
@@ -303,11 +246,20 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
           <AccordionTrigger className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6">
             Appointment Date & Time
           </AccordionTrigger>
-          <AccordionContent>asd</AccordionContent>
+          <AccordionContent>
+            <div>Select date and time for your appointment</div>
+          </AccordionContent>
         </AccordionItem>
       </Accordion>
 
-      <div className="">asd</div>
+      <div className="gap-6 grid xl:grid-cols-1 lg:grid-cols-2">
+        <DoctorCard doctor={fetchedDoctor as User} isBookingCard />
+
+        <PriceDetails
+          consultingFee={120.32}
+          onProceed={handleProceedToCheckout}
+        />
+      </div>
     </div>
   );
 };

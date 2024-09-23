@@ -102,6 +102,7 @@ declare type User = {
   gender: Gender;
   location: string;
   overallRating: number;
+  totalReviews: number;
   ratingsBreakdownPercentages: { [key: number]: number };
   available: boolean;
   verified: number;

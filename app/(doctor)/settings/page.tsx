@@ -15,7 +15,22 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+
 export default function DoctorProfilePage() {
+  const [activeTab, setActiveTab] = useState("basic-details");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    setActiveTab(searchParams.get("activeTab") || "basic-details");
+  }, [searchParams]);
+
+  const navigateToTab = (newActiveTab: string) => {
+    router.push(`/settings?activeTab=${newActiveTab}`);
+  };
+
   return (
     <ContentLayout title="Dashboard">
       <section>
@@ -27,7 +42,7 @@ export default function DoctorProfilePage() {
           </div>
         </div>
 
-        <Tabs defaultValue="basic-details">
+        <Tabs defaultValue={activeTab}>
           <TabsList className="md:hidden w-full mb-6 mt-2">
             <Carousel className="w-full max-w-[80%]">
               <CarouselContent className="w-full">
@@ -37,6 +52,7 @@ export default function DoctorProfilePage() {
                       <TabsTrigger
                         value={value}
                         className="w-full capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                        onClick={() => navigateToTab(value)}
                       >
                         {value.split("-").join(" ")}
                       </TabsTrigger>
@@ -56,6 +72,7 @@ export default function DoctorProfilePage() {
                   key={i}
                   value={value}
                   className="flex-1 capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  onClick={() => navigateToTab(value)}
                 >
                   {value.split("-").join(" ")}
                 </TabsTrigger>

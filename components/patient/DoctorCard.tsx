@@ -1,25 +1,32 @@
 "use client";
 
 import { CardContent } from "@/components/ui/card";
-import { Heart, Star } from "lucide-react";
+import { Award, Heart, Star, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Crown } from "../icons";
+import { Separator } from "../ui/separator";
+import { Badge } from "../ui/badge";
 
 interface DoctorCardProps {
   doctor: User;
+  isBookingCard?: boolean;
 }
 
-const DoctorCard = ({ doctor }: DoctorCardProps) => {
+const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
+  if (!doctor) return null;
   return (
     <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0">
       <div className="relative">
-        <Image
-          src={doctor.picture}
-          alt={doctor.display_name}
-          width={300}
-          height={300}
-          className="w-full h-56 object-cover rounded-lg"
-        />
+        <div className="w-full min-h-56 rounded-lg">
+          <Image
+            src={doctor.picture}
+            alt={doctor.display_name}
+            width={300}
+            height={300}
+            className="w-full h-full object-cover bg-no-repeat rounded-lg"
+          />
+        </div>
         <div className="absolute top-2 left-2 bg-yellow-400 text-white px-2 py-1 rounded-md text-sm font-semibold flex items-center">
           <Star className="w-4 h-4 mr-1 fill-current" />
           {doctor.overallRating}/5
@@ -28,21 +35,15 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
           <Heart className="w-6 h-6" />
         </button>
       </div>
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
+      <div className="p-4 space-y-4">
+        <div className="flex justify-between items-start">
           <div>
             <h2 className="text-lg font-semibold flex items-center gap-2">
-              {doctor.display_name}{" "}
-              <Image
-                src={"/assets/icons/crown.svg"}
-                width={20}
-                height={20}
-                alt="crown icon"
-              />
+              {doctor.display_name} <Crown className="w-4 h-4" />
             </h2>
-            <p className="text-sm text-gray-600">{doctor.designation}</p>
+            <p className="text-sm text-primary">{doctor.designation}</p>
           </div>
-          {doctor.verified && (
+          {doctor.available && (
             <div className="px-2 py-1 bg-green-50 rounded">
               <span className="text-green-500 text-sm flex items-center">
                 <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
@@ -51,21 +52,76 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
             </div>
           )}
         </div>
-        <p className="text-sm text-gray-600 mb-1">
-            {doctor.years_of_experience.toString().padStart(2, '0')} years experience
-        </p>
-        <p className="text-sm text-gray-600 mb-4">{doctor.location}</p>
-        <div className="flex justify-between items-center">
-          <Link
-            href={`/doctors/${doctor.userId}`}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-          >
-            View details
-          </Link>
-          <span className="text-gray-900 font-semibold">
-            Fee: ${doctor.average_fee.toFixed(0)}
-          </span>
+        <div className="flex items-center gap-4">
+          <p className="text-sm text-gray-600 mb-1">
+            {doctor.years_of_experience.toString().padStart(2, "0")} years
+            experience
+          </p>
+
+          <Separator
+            orientation="vertical"
+            className="w-[1px] h-[14px] bg-secondary"
+          />
+
+          <p className="text-sm text-gray-600">{doctor.location}</p>
         </div>
+        {isBookingCard ? (
+          <>
+            <div>
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                Known Languages
+              </h2>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {doctor.languages.map((language) => (
+                  <Badge
+                    key={language}
+                    className="flex items-center gap-2 capitalize flex-wrap"
+                    variant={"default"}
+                  >
+                    {language}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="flex items-center sm:justify-center justify-between sm:w-fit w-full  gap-6 mb-4 md:mb-0">
+              <div className="mr-4">
+                <p className="text-sm text-muted-foreground">
+                  Satisfied Patients
+                </p>
+                <div className="flex items-center">
+                  <Users className="w-5 h-5 mr-1 text-blue-400" />
+                  <p className="lg:text-base text-sm font-bold sm:font-semibold">
+                    200+
+                  </p>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Total Awards</p>
+                <div className="flex items-center">
+                  <Award className="w-5 h-5 mr-1 text-green-400" />
+                  <p className="lg:text-base text-sm font-bold sm:font-semibold">
+                    {doctor?.awards?.length}+
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex justify-between items-center">
+            <Link
+              href={`/doctors/${doctor.userId}`}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              View details
+            </Link>
+            <span className="text-gray-900 font-semibold">
+              Fee: ${doctor.average_fee.toFixed(0)}
+            </span>
+          </div>
+        )}
       </div>
     </CardContent>
   );

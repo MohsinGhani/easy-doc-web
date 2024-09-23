@@ -67,7 +67,8 @@ const LeaveReviewDialog: React.FC<{ doctorId: string }> = ({ doctorId }) => {
   };
 
   const { control, handleSubmit } = form;
-  console.log("isReviewSubmitted", isReviewSubmitted);
+  // TODO: add here a success dialog
+  // console.log("isReviewSubmitted", isReviewSubmitted);
 
   return (
     <>
