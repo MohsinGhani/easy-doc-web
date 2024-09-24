@@ -24,15 +24,35 @@ const fetchAllDoctors = createAsyncThunk<User[]>(
 // Fetch doctor by ID (check if the doctor already exists in the store)
 const fetchDoctorById = createAsyncThunk<User, string>(
   "doctor/fetchDoctorById",
-  async (doctorId, { rejectWithValue }) => {
+  async (doctorId, { getState, rejectWithValue }) => {
     try {
+      const state = getState() as {
+        doctor: {
+          fetchedDoctor?: User;
+          allDoctors: User[];
+        };
+      };
+      let doctor: User | null | undefined = null;
+      doctor = state.doctor.allDoctors.find((d) => d.userId === doctorId);
+
+      if (doctor) {
+        return doctor;
+      }
+
+      doctor = state.doctor.fetchedDoctor;
+      if (doctor && doctor.userId === doctorId) {
+        return doctor;
+      }
+
       const response = await functionsApiClient.get(
         `/doctors/${doctorId}?profile_status=COMPLETED`
       );
       return response.data.data as User;
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || error.message || "Error getting doctor, Pease try again!";
+        error.response?.data?.message ||
+        error.message ||
+        "Error getting doctor, Pease try again!";
       return rejectWithValue(errorMessage);
     }
   }

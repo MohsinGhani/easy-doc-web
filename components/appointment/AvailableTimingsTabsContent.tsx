@@ -37,7 +37,7 @@ const AvailableTimingsTabsContent = ({
   const { availableDays } = fetchedDoctor;
 
   return (
-    <TabsContent value={day} key={dayIndex}>
+    <TabsContent value={day} key={dayIndex} className="min-h-96">
       {availableDays[dayIndex]?.slots?.length > 0 ? (
         // TODO: Make this grid to perform well
         <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-2 max-h-96 overflow-y-auto">
@@ -67,9 +67,9 @@ const AvailableTimingsTabsContent = ({
           )}
         </div>
       ) : (
-        <p className="text-center text-gray-500">
+        <div className="min-h-96 text-gray-500 flex items-center justify-center w-full h-full">
           No slots available for this day.
-        </p>
+        </div>
       )}
     </TabsContent>
   );

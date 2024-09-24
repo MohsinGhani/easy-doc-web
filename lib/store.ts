@@ -3,6 +3,7 @@ import authReducer from "./features/auth/authSlice";
 import sidebarReducer from "./features/sidebar/sidebarSlice";
 import patientReducer from "./features/patient/patientSlice";
 import doctorReducer from "./features/doctor/doctorSlice";
+import appointmentReducer from "./features/appointment/appointmentSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       sidebar: sidebarReducer,
       patient: patientReducer,
       doctor: doctorReducer,
+      appointment: appointmentReducer,
     },
   });
 };

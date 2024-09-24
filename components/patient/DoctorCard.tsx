@@ -16,9 +16,9 @@ interface DoctorCardProps {
 const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
   if (!doctor) return null;
   return (
-    <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0 space-y-4">
+    <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0 space-y-4 max-w-sm">
       <div className="relative">
-        <div className="w-full min-h-56 rounded-lg">
+        <div className="w-full min-h-56 rounded-lg p-2">
           <Image
             src={doctor.picture}
             alt={doctor.display_name}

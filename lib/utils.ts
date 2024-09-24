@@ -4,6 +4,7 @@ import {
   addMinutes,
   differenceInMinutes,
   format,
+  getDay,
   parse,
   startOfToday,
 } from "date-fns";
@@ -92,8 +93,34 @@ export const removeDaySuffix = (dateString: string) => {
   return dateString.replace(/(\d+)(st|nd|rd|th)/, "$1").trim();
 };
 
-export const addDaySuffix = (dateString: string) => {
-  return dateString.replace(/(\d+)/, "$1st").trim();
+export const addDaySuffix = (date: number) => {
+  if (date > 3 && date < 21) return `${date}th`;
+  switch (date % 10) {
+    case 1:
+      return `${date}st`;
+    case 2:
+      return `${date}nd`;
+    case 3:
+      return `${date}rd`;
+    default:
+      return `${date}th`;
+  }
+};
+
+export const getUpdatedDaysWithDates = (
+  startDate: Date,
+  sortedDays: string[]
+) => {
+  return sortedDays.map((day, index) => {
+    const updatedDate = addDays(startDate, index); // Increment date based on index
+    return {
+      day,
+      date: `${addDaySuffix(updatedDate.getDate())} ${format(
+        updatedDate,
+        "MMM yyyy"
+      )}`,
+    };
+  });
 };
 
 export const getDayName = (dateString: string) => {
@@ -101,21 +128,6 @@ export const getDayName = (dateString: string) => {
   const date = new Date(cleanedDate);
   if (isNaN(date.getTime())) return "Invalid Date";
   return format(date, "EEEE").toLowerCase();
-};
-
-export const getSortedWeekDays = () => {
-  const today = new Date();
-  const currentDay = today.getDay();
-  return [...WEEK_DAYS.slice(currentDay), ...WEEK_DAYS.slice(0, currentDay)];
-};
-
-export const getNextDateOfDay = (dayName: string, startDate: Date) => {
-  const dayIndex = getSortedWeekDays().findIndex(
-    (day) => day === dayName.toLowerCase()
-  );
-  const startDayIndex = startDate.getDay();
-  const daysToAdd = (dayIndex - startDayIndex + 7) % 7;
-  return addDays(startDate, daysToAdd);
 };
 
 export const isOverlapping = (

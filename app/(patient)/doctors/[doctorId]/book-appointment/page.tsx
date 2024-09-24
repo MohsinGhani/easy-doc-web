@@ -1,7 +1,6 @@
 import AppointmentForm from "@/components/appointment/AppointmentForm";
 import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
-import { useRouter } from "next/router";
 
 interface BookAppointmentPageProps {
   params: {

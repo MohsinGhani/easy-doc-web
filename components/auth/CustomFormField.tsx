@@ -76,6 +76,7 @@ interface CustomProps {
   items?: { value: string; label: string }[];
   fieldType: FormFieldType;
   defaultValue?: string;
+  maxSelectionText?: string;
   maxSelection?: number;
 }
 
@@ -279,7 +280,7 @@ const RenderInput = ({
               defaultValues={field.value || []}
               placeholder={props.placeholder}
               maxSelected={props.maxSelection || 10}
-              maxSelectedMessage="You can select up to 5 languages"
+              maxSelectedMessage={props.maxSelectionText}
             />
           </FormControl>
         </>

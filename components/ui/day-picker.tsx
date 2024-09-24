@@ -53,7 +53,7 @@ const MonthDayPicker: React.FC<MonthDayPickerProps> = ({
   const [currentMonth, setCurrentMonth] = useState<Date>(today);
 
   useEffect(() => {
-    if (value) {
+    if (value && value !== selectedDay) {
       setSelectedDay(value);
     }
   }, [value]);

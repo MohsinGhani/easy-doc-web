@@ -1,13 +1,18 @@
 import { z } from "zod";
 
 export enum ConsultingFor {
-  SELF = "self",
-  OTHER = "other",
+  SELF = "Self",
+  OTHER = "Other",
+}
+
+export enum APPOINTMENT_STATUS {
+  UNPAID = "unpaid",
+  UPCOMING = "upcoming",
+  REJECTED = "rejected",
+  COMPLETED = "completed",
 }
 
 export const appointmentCreationSchema = z.object({
-  patientId: z.string().min(1, "Patient ID is required"),
-  doctorId: z.string().min(1, "Doctor ID is required"),
   consulting_for: z.nativeEnum(ConsultingFor, {
     required_error: "Consulting for is required",
   }),
@@ -57,12 +62,22 @@ export const appointmentCreationSchema = z.object({
   reason: z.string({
     required_error: "Reason is required",
   }),
-  appointment_reason: z.string({
-    required_error: "Appointment reason is required",
-  }),
-  appointment_status: z.string({
+  status: z.string({
     required_error: "Appointment status is required",
   }),
 });
 
+export const paymentSchema = z.object({
+  method: z.string({
+    required_error: "Payment method is required",
+  }),
+  amount: z.string({
+    required_error: "Amount is required",
+  }),
+  payment_date: z.string({
+    required_error: "Payment date is required",
+  }),
+});
+
 export type AppointmentCreationType = z.infer<typeof appointmentCreationSchema>;
+export type PaymentType = z.infer<typeof paymentSchema>;

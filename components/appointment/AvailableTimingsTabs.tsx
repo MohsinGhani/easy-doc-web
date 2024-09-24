@@ -3,61 +3,33 @@
 import { useFormContext } from "react-hook-form";
 import React, { useEffect, useState } from "react";
 import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
-import { WEEK_DAYS } from "@/constants"; // Adjust the import path as needed
+import { WEEK_DAYS } from "@/constants";
 import {
   getDayName,
-  getNextDateOfDay,
-  getSortedWeekDays,
+  getUpdatedDaysWithDates,
   removeDaySuffix,
-} from "@/lib/utils"; // Adjust the import path as needed
-import { addDays, format, startOfToday, getDay } from "date-fns";
+} from "@/lib/utils";
+import { format, startOfToday } from "date-fns";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Carousel,
   CarouselContent,
-  CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import AvailableTimingsTabsContent from "./AvailableTimingsTabsContent"; // Adjust the import path as needed
-
-const addDaySuffix = (date: number) => {
-  if (date > 3 && date < 21) return `${date}th`;
-  switch (date % 10) {
-    case 1:
-      return `${date}st`;
-    case 2:
-      return `${date}nd`;
-    case 3:
-      return `${date}rd`;
-    default:
-      return `${date}th`;
-  }
-};
-
-const getSortedDaysWithDates = () => {
-  const sortedDays = getSortedWeekDays(); // Get sorted week days starting from today
-  const today = startOfToday();
-  return sortedDays.map((day) => {
-    const nextDate = getNextDateOfDay(day, today);
-    return {
-      day,
-      date: `${addDaySuffix(nextDate.getDate())} ${format(
-        nextDate,
-        "MMM yyyy"
-      )}`,
-    };
-  });
-};
+import AvailableTimingsTabsContent from "./AvailableTimingsTabsContent";
 
 const AvailableTimingsTabs = () => {
   const { setValue, watch, control } = useFormContext();
   const today = startOfToday();
-
   const appointment_date = watch("appointment_date");
-  const [activeTab, setActiveTab] = useState<string>(WEEK_DAYS[0]);
-  console.log("🚀 appointment_date:", appointment_date);
-  console.log("🚀 activeTab:", activeTab);
+
+  const [activeTab, setActiveTab] = useState<string>(
+    format(today, "EEEE").toLowerCase()
+  );
+  const [sortedDaysWithDates, setSortedDaysWithDates] = useState(() =>
+    getUpdatedDaysWithDates(today, WEEK_DAYS)
+  );
 
   useEffect(() => {
     if (!appointment_date) return;
@@ -65,41 +37,57 @@ const AvailableTimingsTabs = () => {
     const dayName = getDayName(appointment_date);
     if (dayName === "Invalid Date") return;
 
-    if (dayName !== activeTab) {
-      setActiveTab(dayName);
-    }
+    if (dayName === activeTab) return;
+    setActiveTab(dayName);
+
+    const appointmentDate = new Date(removeDaySuffix(appointment_date));
+    if (isNaN(appointmentDate.getTime())) return;
+
+    const startDayIndex = WEEK_DAYS.indexOf(dayName);
+    const sortedDays = [
+      ...WEEK_DAYS.slice(startDayIndex),
+      ...WEEK_DAYS.slice(0, startDayIndex),
+    ];
+    const updatedDays = getUpdatedDaysWithDates(appointmentDate, sortedDays);
+    setSortedDaysWithDates(updatedDays);
   }, [appointment_date]);
 
   useEffect(() => {
     if (!activeTab) return;
 
-    const currentAppointmentDate = new Date(
-      removeDaySuffix(appointment_date || "")
+    const presentTab = sortedDaysWithDates.find((day) => day.day === activeTab);
+    if (!presentTab) return;
+
+    const dayName = getDayName(appointment_date);
+    if (dayName === "Invalid Date") return;
+    if (dayName === presentTab?.day) return;
+
+    const newValueToBeSet = format(
+      new Date(removeDaySuffix(presentTab.date)),
+      "d MMM yyyy"
     );
 
-    const isCurrentDateValid =
-      !isNaN(currentAppointmentDate.getTime()) &&
-      currentAppointmentDate >= today &&
-      currentAppointmentDate <= addDays(today, 89);
+    if (!newValueToBeSet || newValueToBeSet === "Invalid Date") return;
 
-    if (isCurrentDateValid) {
-      const nextDate = getNextDateOfDay(activeTab, today);
-      setValue("appointment_date", format(nextDate, "d MMM yyyy"));
-    }
+    setValue("appointment_date", newValueToBeSet);
   }, [activeTab]);
 
   const renderTabs = () => {
-    const sortedDaysWithDates = getSortedDaysWithDates();
-    return sortedDaysWithDates.map(({ day, date }) => (
+    return sortedDaysWithDates.map(({ day, date }, i) => (
       <TabsTrigger
         key={day}
         value={day}
-        className={`flex-1 capitalize py-2 px-1 text-center text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground`}
-        onClick={() => setActiveTab(day)} // Ensure correct tab is selected on click
+        className={`flex-1 capitalize py-2 px-2 text-center text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer pl-1`}
+        onClick={() => setActiveTab(day)}
+        disabled={new Date(removeDaySuffix(date)) < today}
       >
         <div className="space-y-2">
-          {day.charAt(0).toUpperCase() + day.slice(1)} <br />
-          <span className="tab-date text-xs text-black">{date}</span>
+          <span className="capitalize">
+            <span className="md:hidden inline"> {day.slice(0, 3)}</span>
+            <span className="hidden md:inline">{day}</span>
+          </span>
+          <br />
+          <span className="text-xs text-black">{date}</span>
         </div>
       </TabsTrigger>
     ));
@@ -117,16 +105,14 @@ const AvailableTimingsTabs = () => {
           className="w-full"
         >
           {/* Mobile View */}
-          <div className="md:hidden w-full">
-            <div className="max-w-xs mx-auto">
-              <TabsList className="w-full h-16">
-                <Carousel className="w-full max-w-[65%] mx-auto">
-                  <CarouselContent>{renderTabs()}</CarouselContent>
-                  <CarouselPrevious type="button" />
-                  <CarouselNext type="button" />
-                </Carousel>
-              </TabsList>
-            </div>
+          <div className="md:hidden @xs:w-auto">
+            <TabsList className="w-full h-16">
+              <Carousel className="w-[100vw] max-w-[65%] mx-auto">
+                <CarouselContent>{renderTabs()}</CarouselContent>
+                <CarouselPrevious type="button" />
+                <CarouselNext type="button" />
+              </Carousel>
+            </TabsList>
           </div>
 
           {/* Desktop View */}

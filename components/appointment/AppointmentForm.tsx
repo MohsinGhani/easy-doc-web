@@ -26,30 +26,28 @@ import {
   GENDERS,
   MEDICATIONS,
 } from "@/constants";
-import {
-  appointmentsApiClient,
-  getDayName,
-  uploadFilesToS3,
-} from "@/lib/utils";
-import { toast } from "sonner";
+import { uploadFilesToS3 } from "@/lib/utils";
 import FileUploadComponent, { FileItem } from "./FileUploadComponent";
 import { Loader } from "../common/Loader";
 import DoctorCard from "../patient/DoctorCard";
 import PriceDetails from "./PriceDetails";
 import { format } from "date-fns";
 import AvailableTimingsTabs from "./AvailableTimingsTabs";
+import { useRouter } from "next/navigation";
+import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
 
 interface AppointmentFormProps {
   doctorId: string;
 }
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
-  // Redux state selectors & actions
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { user, loading } = useAppSelector((state) => state.auth);
   const { fetchedDoctor, loading: doctorLoader } = useAppSelector(
     (state) => state.doctor
   );
+
   const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
 
   useEffect(() => {
@@ -61,8 +59,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
   const form = useForm<AppointmentCreationType>({
     resolver: zodResolver(appointmentCreationSchema),
     defaultValues: {
-      doctorId: doctorId || "",
-      patientId: user?.userId || "",
       consulting_for: "self" as ConsultingFor,
       patient_name: `${user?.given_name} ${user.family_name}` || "",
       gender: GENDERS[0].value,
@@ -71,6 +67,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       consultation_type: "online",
       phone_number: user?.phone_number || "",
       email: user?.email || "",
+      reason: APPOINTMENTS_REASONS[0].value,
+      allergies: [],
+      current_medication: [],
+      description: "",
+      appointment_date: format(new Date(), "d MMM yyyy"),
+      speciality: "",
+      attachments: [],
+      status: "PENDING",
     },
   });
 
@@ -81,32 +85,53 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
       // Step 2: Add uploaded files to form data
       data.attachments = uploadedFiles;
+      console.log("🚀 ~ onSubmit ~ data:", data);
+
+      const newAppointment = {
+        ...data,
+        doctorId: doctorId,
+        patientId: user.userId,
+        visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
+      };
 
       // Step 3: Submit form data to the backend
-      await appointmentsApiClient.post("/appointments", data);
+      const { payload, type } = await dispatch(
+        appointmentThunks.createAppointment(
+          newAppointment as Partial<Appointment>
+        )
+      );
 
-      toast.success("Appointment created successfully.");
-      form.reset(); // Reset the form fields
-      setSelectedFiles([]); // Clear selected files
+      if (type === "appointment/createAppointment/fulfilled") {
+        const createdAppointment = payload as Appointment;
+        const appointmentId = createdAppointment?.appointmentId;
+
+        form.reset();
+        setSelectedFiles([]);
+        router.push(
+          `/appointments/${appointmentId}/checkout?appointmentReason=${data?.reason}`
+        );
+      }
     } catch (error) {
       console.error("Error submitting appointment:", error);
-      toast.error("Failed to create appointment.");
     }
   };
 
   const { control, handleSubmit, watch } = form;
-
   const speciality = watch("speciality");
+  const consultation_type = watch("consultation_type");
 
   const uniqueSpecialities = useMemo(
     () => new Set(fetchedDoctor?.services.map((service) => service.speciality)),
     [fetchedDoctor?.services]
   );
 
-  const handleProceedToCheckout = () => {
-    // Handle checkout logic here
-    console.log("Proceed to checkout clicked!");
-  };
+  const consultingFee = useMemo(() => {
+    const service = fetchedDoctor?.services.find(
+      (s) => s.service === consultation_type
+    );
+
+    return +(service?.fee || 0);
+  }, [consultation_type]);
 
   if (doctorLoader || loading) return <Loader />;
 
@@ -228,6 +253,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                       fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
                       items={ALLERGIES}
                       control={control}
+                      maxSelection={6}
+                      maxSelectionText="Maximum 6 allergies can be selected"
                     />
 
                     {/* Current Medication */}
@@ -238,6 +265,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                       fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
                       items={MEDICATIONS}
                       control={control}
+                      maxSelection={6}
+                      maxSelectionText="Maximum 6 medications can be selected"
                     />
                   </div>
 
@@ -259,7 +288,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
               <AccordionTrigger className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6">
                 Appointment Date & Time
               </AccordionTrigger>
-              <AccordionContent className="space-y-8">
+              <AccordionContent className="space-y-8 @container">
                 <div className="grid lg:grid-cols-2 gap-6">
                   <div className="flex-col justify-start items-start gap-[5px] inline-flex">
                     <p className="text-muted-foreground text-sm font-normal">
@@ -287,14 +316,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
             </AccordionItem>
           </Accordion>
 
-          {/* <div className="gap-6 grid xl:grid-cols-1 lg:grid-cols-2">
+          <div className="gap-6 grid xl:grid-cols-1 sm:grid-cols-2">
             <DoctorCard doctor={fetchedDoctor as User} isBookingCard />
 
-            <PriceDetails
-              consultingFee={120.32}
-              onProceed={handleProceedToCheckout}
-            />
-          </div> */}
+            <PriceDetails consultingFee={consultingFee} />
+          </div>
         </div>
       </form>
     </Form>

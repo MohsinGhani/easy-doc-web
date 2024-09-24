@@ -134,3 +134,46 @@ declare interface Language {
   label: string;
   value: string;
 }
+
+declare type APPOINTMENT_STATUS =
+  | "UNPAID"
+  | "UPCOMING"
+  | "REJECTED"
+  | "COMPLETED";
+
+declare type Appointment = {
+  patientId: string;
+  doctorId: string;
+  appointmentId: string;
+  patient: User;
+  doctor: User;
+
+  // Appointment Specific Fields
+  note: string;
+  speciality: string;
+  consultation_type: string;
+  scheduled_date: DateRange;
+  appointment_date: string;
+  visible_date: string;
+  allergies: string[];
+  current_medications: string[];
+  reason: string;
+  attachments: Attachment[];
+  description: string;
+  status: APPOINTMENT_STATUS;
+  payment: Payment;
+};
+
+declare type Payment = {
+  method: string;
+  paymentId: string;
+  payment_date: string;
+  amount: string;
+};
+
+declare type Attachment = {
+  id: string;
+  url: string;
+  name: string;
+  mimeType: string;
+};
