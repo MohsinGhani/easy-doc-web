@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/select";
 import { MultiSelectWithSearch } from "../MultiSelectWithSearch";
 import MonthDayPicker from "../ui/day-picker";
+import { removeDaySuffix } from "@/lib/utils";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -348,6 +349,11 @@ const RenderInput = ({
         <FormControl>
           <MonthDayPicker
             {...field}
+            value={
+              !field.value
+                ? new Date()
+                : new Date(removeDaySuffix(field?.value || ""))
+            }
             disabled={props.disabled}
             placeholder={props.placeholder}
           />

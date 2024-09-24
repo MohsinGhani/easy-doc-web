@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { format, addDays, startOfToday, isBefore, isAfter } from "date-fns";
 import {
@@ -24,7 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 
 interface MonthDayPickerProps {
-  value?: string;
+  value: Date;
   onChange: (day: string) => void;
   disabled?: boolean;
   placeholder?: string;
@@ -49,10 +49,14 @@ const MonthDayPicker: React.FC<MonthDayPickerProps> = ({
 
   const next90Days = generateNext90Days();
 
-  const [selectedDay, setSelectedDay] = useState<Date>(
-    value ? new Date(value) : today
-  );
+  const [selectedDay, setSelectedDay] = useState<Date>(today);
   const [currentMonth, setCurrentMonth] = useState<Date>(today);
+
+  useEffect(() => {
+    if (value) {
+      setSelectedDay(value);
+    }
+  }, [value]);
 
   const handleDaySelect = (day: Date | undefined) => {
     if (day && isDateWithinRange(day)) {
@@ -103,7 +107,7 @@ const MonthDayPicker: React.FC<MonthDayPickerProps> = ({
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {selectedDay ? format(selectedDay, "PPP") : placeholder}
+          {value ? format(selectedDay, "PPP") : placeholder}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">

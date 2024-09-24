@@ -1,9 +1,16 @@
 import { type ClassValue, clsx } from "clsx";
-import { addMinutes, differenceInMinutes, format, parse } from "date-fns";
+import {
+  addDays,
+  addMinutes,
+  differenceInMinutes,
+  format,
+  parse,
+  startOfToday,
+} from "date-fns";
 import { twMerge } from "tailwind-merge";
 import cities from "@/public/data/groupedCities.json";
 import services from "@/public/data/services.json";
-import { COUNTRIES } from "@/constants";
+import { COUNTRIES, WEEK_DAYS } from "@/constants";
 import createApiClient from "@/helpers/createApiClient";
 import { ApiServiceName, getServiceUrl } from "@/helpers/getServiceUrl";
 import { FileItem } from "@/components/appointment/FileUploadComponent";
@@ -80,25 +87,35 @@ export const formatTime = (date: Date) => format(date, "hh:mm aa");
 export const formatTimeToHHMM = (date: Date) => format(date, "HH:mm");
 export const formatTimeForUI = (time: string) =>
   format(parseTime(time), "hh:mm aa");
-export const removeDaySuffix = (dateString: string): string => {
-  return dateString.replace(/(\d+)(st|nd|rd|th)/, "$1");
+
+export const removeDaySuffix = (dateString: string) => {
+  return dateString.replace(/(\d+)(st|nd|rd|th)/, "$1").trim();
 };
+
+export const addDaySuffix = (dateString: string) => {
+  return dateString.replace(/(\d+)/, "$1st").trim();
+};
+
 export const getDayName = (dateString: string) => {
-  // Step 1: Remove day suffix
   const cleanedDate = removeDaySuffix(dateString);
+  const date = new Date(cleanedDate);
+  if (isNaN(date.getTime())) return "Invalid Date";
+  return format(date, "EEEE").toLowerCase();
+};
 
-  // Step 2: Parse the date
-  const date = parse(cleanedDate, "d MMM yyyy", new Date(), { locale: enUS });
+export const getSortedWeekDays = () => {
+  const today = new Date();
+  const currentDay = today.getDay();
+  return [...WEEK_DAYS.slice(currentDay), ...WEEK_DAYS.slice(0, currentDay)];
+};
 
-  // Step 3: Check if the parsed date is valid
-  if (isNaN(date.getTime())) {
-    console.error("Invalid date format or parsing error:", cleanedDate);
-    return "Invalid date";
-  }
-
-  // Step 4: Format the date to get the name of the day
-  const dayName = format(date, "EEEE", { locale: enUS });
-  return dayName;
+export const getNextDateOfDay = (dayName: string, startDate: Date) => {
+  const dayIndex = getSortedWeekDays().findIndex(
+    (day) => day === dayName.toLowerCase()
+  );
+  const startDayIndex = startDate.getDay();
+  const daysToAdd = (dayIndex - startDayIndex + 7) % 7;
+  return addDays(startDate, daysToAdd);
 };
 
 export const isOverlapping = (

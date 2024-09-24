@@ -22,14 +22,13 @@ import {
   ALLERGIES,
   APPOINTMENTS_REASONS,
   BLOOD_GROUPS,
+  CONSULTATION_TYPES,
   GENDERS,
   MEDICATIONS,
-  WEEK_DAYS,
 } from "@/constants";
 import {
   appointmentsApiClient,
   getDayName,
-  removeDaySuffix,
   uploadFilesToS3,
 } from "@/lib/utils";
 import { toast } from "sonner";
@@ -37,17 +36,8 @@ import FileUploadComponent, { FileItem } from "./FileUploadComponent";
 import { Loader } from "../common/Loader";
 import DoctorCard from "../patient/DoctorCard";
 import PriceDetails from "./PriceDetails";
-import { format, parse } from "date-fns";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import AvailableTimingsTabsContent from "./AvailableTimingsTabsContent";
-import { enUS } from "date-fns/locale";
+import { format } from "date-fns";
+import AvailableTimingsTabs from "./AvailableTimingsTabs";
 
 interface AppointmentFormProps {
   doctorId: string;
@@ -60,17 +50,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
   const { fetchedDoctor, loading: doctorLoader } = useAppSelector(
     (state) => state.doctor
   );
-  const [activeTab, setActiveTab] = useState("monday");
   const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
 
-  // Fetch doctor details based on doctorId prop
   useEffect(() => {
     if (doctorId) {
       dispatch(doctorThunks.fetchDoctorById(doctorId));
     }
   }, [dispatch, doctorId]);
 
-  // Setup the form with default values
   const form = useForm<AppointmentCreationType>({
     resolver: zodResolver(appointmentCreationSchema),
     defaultValues: {
@@ -87,7 +74,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     },
   });
 
-  // Form submit handler
   const onSubmit = async (data: AppointmentCreationType) => {
     try {
       // Step 1: Upload files to S3 using the helper function
@@ -108,39 +94,10 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     }
   };
 
-  // Extract control and handleSubmit methods from form
   const { control, handleSubmit, watch } = form;
 
   const speciality = watch("speciality");
-  const appointment_date = watch("appointment_date");
-  console.log("🚀 ~ appointment_date:", appointment_date);
-  console.log("🚀 ~ activeTab:", activeTab);
 
-  useEffect(() => {
-    if (appointment_date) {
-      console.log("🚀 ~ useEffect ~ appointment_date:", appointment_date);
-
-      const dayOfWeek = getDayName(appointment_date);
-      console.log("🚀 ~ useEffect ~ dayOfWeek:", dayOfWeek);
-      setActiveTab(dayOfWeek);
-    }
-  }, [appointment_date]);
-
-  useEffect(() => {
-    if (activeTab && appointment_date) {
-      const date = parse(appointment_date, "d MMM yyyy", new Date());
-      const currentDayOfWeek = format(date, "EEEE").toLowerCase();
-      if (currentDayOfWeek !== activeTab) {
-        const daysToAdd =
-          WEEK_DAYS.findIndex((day) => day === activeTab) - date.getDay();
-        const newDate = new Date(date);
-        newDate.setDate(date.getDate() + daysToAdd);
-        form.setValue("appointment_date", format(newDate, "yyyy-MM-dd"));
-      }
-    }
-  }, [activeTab]);
-
-  // Compute unique specialities based on doctor services
   const uniqueSpecialities = useMemo(
     () => new Set(fetchedDoctor?.services.map((service) => service.speciality)),
     [fetchedDoctor?.services]
@@ -151,7 +108,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     console.log("Proceed to checkout clicked!");
   };
 
-  // Show loader if doctor details or user details are loading
   if (doctorLoader || loading) return <Loader />;
 
   return (
@@ -171,10 +127,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                       name="consulting_for"
                       label="Consulting For"
                       fieldType={FormFieldType.SELECT}
-                      items={[
-                        { label: "Self", value: "self" },
-                        { label: "Other", value: "other" },
-                      ]}
+                      items={CONSULTATION_TYPES}
                       control={control}
                     />
 
@@ -310,7 +263,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                 <div className="grid lg:grid-cols-2 gap-6">
                   <div className="flex-col justify-start items-start gap-[5px] inline-flex">
                     <p className="text-muted-foreground text-sm font-normal">
-                      Today's date:
+                      Today&apos;s date:
                     </p>
                     <p className="text-base font-medium">
                       {format(new Date(), "dd MMMM yyyy - EEEE")}
@@ -329,63 +282,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                   </div>
                 </div>
 
-                <CustomFormField
-                  name="scheduled_date"
-                  fieldType={FormFieldType.SKELETON}
-                  control={control}
-                  renderSkeleton={(field) => (
-                    <Tabs
-                      defaultValue={activeTab}
-                      onValueChange={setActiveTab}
-                      className="w-full"
-                    >
-                      <div className="md:hidden w-full">
-                        <TabsList className="w-full">
-                          <Carousel className="w-full max-w-[65%] mx-auto">
-                            <CarouselContent>
-                              {WEEK_DAYS.map((day, i) => (
-                                <CarouselItem
-                                  key={i}
-                                  className="basis-1/3 pl-1"
-                                >
-                                  <TabsTrigger
-                                    value={day}
-                                    className="w-full capitalize py-2 px-1 text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                                  >
-                                    {day.slice(0, 3)}
-                                  </TabsTrigger>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
-                            <CarouselPrevious type="button" />
-                            <CarouselNext type="button" />
-                          </Carousel>
-                        </TabsList>
-                      </div>
-
-                      <TabsList className="hidden md:flex w-full justify-between bg-background mb-6 mt-2">
-                        {WEEK_DAYS.map((day, i) => (
-                          <TabsTrigger
-                            key={i}
-                            value={day}
-                            className="flex-1 capitalize py-2 px-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                          >
-                            {day}
-                          </TabsTrigger>
-                        ))}
-                      </TabsList>
-
-                      {WEEK_DAYS.map((day, dayIndex) => (
-                        <AvailableTimingsTabsContent
-                          day={day}
-                          dayIndex={dayIndex}
-                          key={dayIndex}
-                          field={field} // Replace with your actual field prop
-                        />
-                      ))}
-                    </Tabs>
-                  )}
-                />
+                <AvailableTimingsTabs />
               </AccordionContent>
             </AccordionItem>
           </Accordion>

@@ -46,6 +46,7 @@ const AvailableTimingsTabsContent = ({
               <div
                 className="border rounded-md p-2 flex items-center justify-center shadow cursor-pointer"
                 onClick={() => handleTimeSlotChange(start_time, end_time)}
+                key={slotIndex}
               >
                 <div className="flex items-center gap-2 min-w-40 max-w-[320px]">
                   <p className="text-sm whitespace-nowrap">
