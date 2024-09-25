@@ -5,12 +5,14 @@ import { Navbar } from "@/components/navbar/Navbar";
 import PatientFooter from "@/components/patient/Footer";
 import PatientsLandingPage from "@/components/patient/PatientsLandingPage";
 import { useAppSelector } from "@/lib/hooks";
-
+import { usePathname } from "next/navigation";
 export default function Home() {
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
+  const pathname = usePathname()
   return (
     <div>
-      <Navbar />
+      {pathname !== "/" && <Navbar/>}
+      {/* <Navbar /> */}
       {isLoggedIn ? (
         <>
           <div className="flex flex-col items-center">
