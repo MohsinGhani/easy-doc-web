@@ -78,44 +78,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     },
   });
 
-  const onSubmit = async (data: AppointmentCreationType) => {
-    try {
-      // Step 1: Upload files to S3 using the helper function
-      const uploadedFiles = await uploadFilesToS3(selectedFiles);
-
-      // Step 2: Add uploaded files to form data
-      data.attachments = uploadedFiles;
-      console.log("🚀 ~ onSubmit ~ data:", data);
-
-      const newAppointment = {
-        ...data,
-        doctorId: doctorId,
-        patientId: user.userId,
-        visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
-      };
-
-      // Step 3: Submit form data to the backend
-      const { payload, type } = await dispatch(
-        appointmentThunks.createAppointment(
-          newAppointment as Partial<Appointment>
-        )
-      );
-
-      if (type === "appointment/createAppointment/fulfilled") {
-        const createdAppointment = payload as Appointment;
-        const appointmentId = createdAppointment?.appointmentId;
-
-        form.reset();
-        setSelectedFiles([]);
-        router.push(
-          `/appointments/${appointmentId}/checkout?appointmentReason=${data?.reason}`
-        );
-      }
-    } catch (error) {
-      console.error("Error submitting appointment:", error);
-    }
-  };
-
   const { control, handleSubmit, watch } = form;
   const speciality = watch("speciality");
   const consultation_type = watch("consultation_type");
@@ -132,6 +94,58 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
     return +(service?.fee || 0);
   }, [consultation_type]);
+
+  const onSubmit = async (data: AppointmentCreationType) => {
+    try {
+      // Step 1: Upload files to S3 using the helper function
+      const uploadedFiles = await uploadFilesToS3(selectedFiles);
+
+      // Step 2: Add uploaded files to form data
+      data.attachments = uploadedFiles;
+      console.log("🚀 ~ onSubmit ~ data:", data);
+
+      const patientData = {
+        patient_name: data.patient_name,
+        gender: data.gender,
+        dob: data.dob,
+        blood_group: data.blood_group,
+        phone_number: data.phone_number,
+        email: data.email,
+      };
+
+      const newAppointment = {
+        ...data,
+        doctorId: doctorId,
+        patientId: user.userId,
+        visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
+        amount: consultingFee,
+        status: "UNPAID",
+        patientData,
+      };
+
+      console.log("🚀 ~ onSubmit ~ newAppointment:", newAppointment);
+
+      // Step 3: Submit form data to the backend
+      const { payload, type } = await dispatch(
+        appointmentThunks.createAppointment(
+          newAppointment as Partial<Appointment>
+        )
+      );
+
+      if (type === "appointment/createAppointment/fulfilled") {
+        const createdAppointment = payload as Appointment;
+        const appointmentId = createdAppointment?.appointmentId;
+
+        form.reset();
+        setSelectedFiles([]);
+        router.push(
+          `/my-appointments/${appointmentId}/checkout?appointmentReason=${data?.reason}`
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting appointment:", error);
+    }
+  };
 
   if (doctorLoader || loading) return <Loader />;
 

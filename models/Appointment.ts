@@ -22,9 +22,20 @@ export const appointmentCreationSchema = z.object({
   gender: z.string({
     required_error: "Gender is required",
   }),
-  dob: z.string({
-    required_error: "Date of birth is required",
-  }),
+  dob: z
+    .string()
+    .refine((val) => new Date(val) <= new Date(), {
+      message: "Date of birth cannot be in the future",
+    })
+    .refine((val) => new Date(val) >= new Date("1900-01-01"), {
+      message: "Date of birth cannot be before 1900",
+    })
+    .refine(
+      (val) => new Date().getFullYear() - new Date(val).getFullYear() >= 18,
+      {
+        message: "User must be at least 18 years old",
+      }
+    ),
   blood_group: z.string({
     required_error: "Blood group is required",
   }),

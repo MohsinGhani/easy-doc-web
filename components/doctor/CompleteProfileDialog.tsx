@@ -20,39 +20,33 @@ interface ProfileField {
   link: string;
 }
 
+const checkGeneralDetailsCompletion = (user: User) => {
+  return (
+    !!user.email &&
+    !!user.given_name &&
+    !!user.family_name &&
+    !!user.years_of_experience &&
+    !!user.city &&
+    !!user.country &&
+    !!user.display_name &&
+    !!user.phone_number &&
+    !!user.picture &&
+    !!user.designation &&
+    !!user.bio &&
+    !!user.dob &&
+    !!user.gender &&
+    !!user.languages
+  );
+};
+
 const profileFields: ProfileField[] = [
-  { label: "Email", completed: false, link: "/settings" },
-  { label: "Given Name", completed: false, link: "/settings" },
-  { label: "Family Name", completed: false, link: "/settings" },
-  { label: "Display Name", completed: false, link: "/settings" },
-  { label: "Phone Number", completed: false, link: "/settings" },
-  {
-    label: "Profile Picture",
-    completed: false,
-    link: "/settings",
-  },
-  { label: "Designation", completed: false, link: "/settings" },
-  { label: "Bio", completed: false, link: "/settings" },
-  {
-    label: "Years of Experience",
-    completed: false,
-    link: "/settings",
-  },
-  { label: "City", completed: false, link: "/settings" },
-  { label: "Country", completed: false, link: "/settings" },
-  { label: "Date of Birth", completed: false, link: "/settings" },
-  { label: "Gender", completed: false, link: "/settings" },
+  { label: "General Details", completed: false, link: "/settings" },
   { label: "Availability", completed: false, link: "/settings" },
-  // {
-  //   label: "Verification Status",
-  //   completed: false,
-  //   link: "/settings/verification",
-  // },
-  { label: "Languages", completed: false, link: "/settings" },
+  { label: "Payment methods", completed: false, link: "/payout-settings" },
   {
     label: "Services",
     completed: false,
-    link: "/settings/specialities-and-services",
+    link: "/specialities-and-services",
   },
   {
     label: "Experiences",
@@ -73,53 +67,14 @@ const CompleteProfileDialog: React.FC = () => {
 
   profileFields.forEach((field) => {
     switch (field.label) {
-      case "Email":
-        field.completed = !!user.email;
+      case "General Details":
+        field.completed = checkGeneralDetailsCompletion(user);
         break;
-      case "Given Name":
-        field.completed = !!user.given_name;
-        break;
-      case "Family Name":
-        field.completed = !!user.family_name;
-        break;
-      case "Display Name":
-        field.completed = !!user.display_name;
-        break;
-      case "Phone Number":
-        field.completed = !!user.phone_number;
-        break;
-      case "Profile Picture":
-        field.completed = !!user.picture;
-        break;
-      case "Designation":
-        field.completed = !!user.designation;
-        break;
-      case "Bio":
-        field.completed = !!user.bio;
-        break;
-      case "Years of Experience":
-        field.completed = !!user.years_of_experience;
-        break;
-      case "City":
-        field.completed = !!user.city;
-        break;
-      case "Country":
-        field.completed = !!user.country;
-        break;
-      case "Date of Birth":
-        field.completed = !!user.dob;
-        break;
-      case "Gender":
-        field.completed = !!user.gender;
+      case "Payment methods":
+        field.completed = user.stripe_account_active;
         break;
       case "Availability":
         field.completed = user.available !== undefined && user.available;
-        break;
-      // case "Verification Status":
-      //   field.completed = user.verified !== undefined;
-      //   break;
-      case "Languages":
-        field.completed = user.languages && user.languages.length > 0;
         break;
       case "Services":
         field.completed = user.services && user.services.length > 0;
@@ -157,14 +112,12 @@ const CompleteProfileDialog: React.FC = () => {
 
           <div className="py-4 space-y-2">
             {profileFields.map((field) => (
-              <div
+              <Link
                 key={field.label}
-                className="flex justify-between items-center p-2 border rounded-lg hover:bg-gray-100"
+                href={field.link}
+                className="flex justify-between items-center p-2 border rounded-lg hover:bg-gray-100 cursor-pointer"
               >
-                <Link
-                  href={field.link}
-                  className="flex items-center space-x-2 text-sm font-medium"
-                >
+                <div className="flex items-center space-x-2 text-sm font-medium">
                   <>
                     {field.completed ? (
                       <Check className="text-green-500" />
@@ -173,13 +126,13 @@ const CompleteProfileDialog: React.FC = () => {
                     )}
                     <span>{field.label}</span>
                   </>
-                </Link>
+                </div>
                 {field.completed ? (
                   <span className="text-green-500">Completed</span>
                 ) : (
                   <span className="text-red-500">Incomplete</span>
                 )}
-              </div>
+              </Link>
             ))}
           </div>
 

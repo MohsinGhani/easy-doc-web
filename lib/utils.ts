@@ -4,19 +4,22 @@ import {
   addMinutes,
   differenceInMinutes,
   format,
-  getDay,
   parse,
-  startOfToday,
 } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import cities from "@/public/data/groupedCities.json";
 import services from "@/public/data/services.json";
-import { COUNTRIES, WEEK_DAYS } from "@/constants";
+import { COUNTRIES } from "@/constants";
 import createApiClient from "@/helpers/createApiClient";
 import { ApiServiceName, getServiceUrl } from "@/helpers/getServiceUrl";
 import { FileItem } from "@/components/appointment/FileUploadComponent";
 import axios from "axios";
-import { enUS } from "date-fns/locale";
+
+export interface RatingsData {
+  overallRating: number;
+  totalReviews: number;
+  ratingsBreakdownPercentages: { [key: number]: number };
+}
 
 interface Cities {
   [key: string]: City[];
@@ -258,4 +261,52 @@ export const uploadFilesToS3 = async (
   }
 
   return uploadedFiles;
+};
+
+export const calculateUpdatedRatings = (
+  newRating: number,
+  currentOverallRating: number,
+  currentTotalReviews: number,
+  currentRatingsBreakdownPercentages: { [key: number]: number }
+): RatingsData => {
+  // Increment total reviews
+  const totalReviews = currentTotalReviews + 1;
+
+  // Calculate new overall rating
+  const totalRatingSum = currentOverallRating * currentTotalReviews + newRating;
+  const overallRating = parseFloat((totalRatingSum / totalReviews).toFixed(1));
+
+  // Convert percentages back to counts
+  const ratingsBreakdownCounts: { [key: number]: number } = {
+    1: (currentRatingsBreakdownPercentages[1] / 100) * currentTotalReviews,
+    2: (currentRatingsBreakdownPercentages[2] / 100) * currentTotalReviews,
+    3: (currentRatingsBreakdownPercentages[3] / 100) * currentTotalReviews,
+    4: (currentRatingsBreakdownPercentages[4] / 100) * currentTotalReviews,
+    5: (currentRatingsBreakdownPercentages[5] / 100) * currentTotalReviews,
+  };
+
+  // Increment the count for the new rating
+  ratingsBreakdownCounts[newRating] += 1;
+
+  // Convert counts back to percentages
+  const ratingsBreakdownPercentages = Object.keys(
+    ratingsBreakdownCounts
+  ).reduce(
+    (acc: { [key: number]: number }, rating) => {
+      acc[Number(rating)] = parseFloat(
+        ((ratingsBreakdownCounts[Number(rating)] / totalReviews) * 100).toFixed(
+          2
+        )
+      );
+      return acc;
+    },
+    { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+  );
+
+  // Return updated RatingsData
+  return {
+    overallRating,
+    totalReviews,
+    ratingsBreakdownPercentages,
+  };
 };

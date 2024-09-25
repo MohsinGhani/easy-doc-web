@@ -91,6 +91,7 @@ declare type User = {
   given_name: string;
   family_name: string;
   display_name: string;
+  patient_name: string;
   phone_number: string;
   picture: string;
   designation: string;
@@ -114,11 +115,14 @@ declare type User = {
   availableDays: AvailableDay[];
   reviews: Review[];
   services: Service[];
+  no_of_appointments: number;
   profile_status: PROFILE_STATUS;
   profile_completion: number;
   createdAt: string;
   updatedAt: string;
   licence: string;
+  stripeAccountId: string;
+  stripe_account_active: boolean;
 };
 
 declare interface City {
@@ -160,6 +164,7 @@ declare type Appointment = {
   reason: string;
   attachments: Attachment[];
   description: string;
+  amount: number;
   status: APPOINTMENT_STATUS;
   payment: Payment;
 };
@@ -168,7 +173,7 @@ declare type Payment = {
   method: string;
   paymentId: string;
   payment_date: string;
-  amount: string;
+  amount: number;
 };
 
 declare type Attachment = {
@@ -177,3 +182,24 @@ declare type Attachment = {
   name: string;
   mimeType: string;
 };
+
+declare interface authState {
+  user: User;
+  loading: boolean;
+  error: string | null;
+  isLoggedIn: boolean;
+}
+
+declare interface doctorState {
+  allDoctors: User[];
+  fetchedDoctor: User | null;
+  loading: boolean;
+  error: string | null | undefined;
+}
+
+declare interface appointmentState {
+  allAppointments: Appointment[];
+  fetchedAppointment: Appointment | null;
+  loading: boolean;
+  error: string | null | undefined;
+}

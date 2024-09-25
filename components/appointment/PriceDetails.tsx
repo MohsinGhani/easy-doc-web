@@ -5,13 +5,9 @@ import { useAppSelector } from "@/lib/hooks";
 
 interface PriceDetailsProps {
   consultingFee: number;
-  taxRate?: number; // Optional tax rate prop (default value can be set inside the component)
 }
 
-const PriceDetails: React.FC<PriceDetailsProps> = ({
-  consultingFee,
-  taxRate = 0.07, // Default tax rate of 7%
-}) => {
+const PriceDetails: React.FC<PriceDetailsProps> = ({ consultingFee }) => {
   const { loading: appointmentLoading } = useAppSelector(
     (state) => state.appointment
   );
@@ -21,11 +17,11 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({
     console.log("Proceed to checkout clicked!");
   };
 
-  // Calculate tax and service fees based on the consulting fee
-  const taxAndServiceFees = consultingFee * taxRate;
+  // Calculate the platform fee (5% of consulting fee)
+  const platformFee = consultingFee * 0.05;
 
-  // Calculate the total amount
-  const total = consultingFee + taxAndServiceFees;
+  // Calculate the total amount (consulting fee + platform fee)
+  const total = consultingFee + platformFee;
 
   return (
     <div className="bg-white max-w-xs">
@@ -39,8 +35,8 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({
         </div>
 
         <div className="flex justify-between mb-2">
-          <p className="text-gray-700">Tax and service fees</p>
-          <p className="font-medium">${taxAndServiceFees.toFixed(2)}</p>
+          <p className="text-gray-700">Platform Fee (5%)</p>
+          <p className="font-medium">${platformFee.toFixed(2)}</p>
         </div>
 
         <hr className="my-4" />
@@ -50,8 +46,12 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({
           <p>${total.toFixed(2)}</p>
         </div>
 
+        <div className="flex justify-between text-sm mb-4 text-gray-500">
+          <p>Taxes included and will be calculated by Stripe</p>
+        </div>
+
         <Button
-          // onClick={onProceed}
+          onClick={handleProceedToCheckout}
           variant={"default"}
           size={"xl"}
           className="w-full"

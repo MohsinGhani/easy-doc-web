@@ -1,5 +1,7 @@
-import { functionsApiClient } from "@/lib/utils";
+import { calculateUpdatedRatings, functionsApiClient } from "@/lib/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { updateAuthState } from "../auth/authSlice";
+import { RootState } from "@/lib/store";
 
 // Fetch all doctors
 const fetchAllDoctors = createAsyncThunk<User[]>(
@@ -64,18 +66,30 @@ const submitDoctorReview = createAsyncThunk<
   { reviewData: Review }
 >(
   "doctor/submitDoctorReview",
-  async ({ reviewData }, { getState, rejectWithValue }) => {
+  async ({ reviewData }, { getState, rejectWithValue, dispatch }) => {
     try {
-      const state = getState() as { doctor: { fetchedDoctor: User } };
+      const state = getState() as RootState;
+
       const fetchedDoctor = state.doctor.fetchedDoctor;
+      if (!fetchedDoctor) {
+        return rejectWithValue("Doctor not found!");
+      }
 
       const response = await functionsApiClient.post(
         `/doctor/${reviewData.doctorId}/reviews`,
         reviewData
       );
 
+      const updatedData = calculateUpdatedRatings(
+        reviewData.rating,
+        fetchedDoctor.overallRating,
+        fetchedDoctor.totalReviews,
+        fetchedDoctor.ratingsBreakdownPercentages
+      );
+
       return {
         ...fetchedDoctor,
+        ...updatedData,
         reviews: [...fetchedDoctor.reviews, response.data.data],
       };
     } catch (error: any) {

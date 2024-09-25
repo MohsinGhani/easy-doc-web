@@ -4,13 +4,6 @@ import { authThunks } from "./authThunks";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 
-interface authState {
-  user: User;
-  loading: boolean;
-  error: string | null;
-  isLoggedIn: boolean;
-}
-
 const initialState: authState = {
   user: {
     userId: "",
@@ -47,6 +40,9 @@ const initialState: authState = {
     licence: "",
     updatedAt: "",
     totalReviews: 0,
+    stripeAccountId: "",
+    stripe_account_active: false,
+    no_of_appointments: 0,
   },
   loading: false,
   error: null,
@@ -79,6 +75,9 @@ export const authSlice = createSlice({
 
       Cookies.remove("userId");
       Cookies.remove("auth");
+    },
+    updateAuthState: (state, action: PayloadAction<Partial<authState>>) => {
+      Object.assign(state, action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -258,10 +257,62 @@ export const authSlice = createSlice({
           state.error = action.payload;
           toast.error(action.payload || "Failed to update profile");
         }
+      )
+
+      .addCase(authThunks.connectStripeAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        authThunks.connectStripeAccount.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          window.location.href = action.payload;
+          state.loading = false;
+        }
+      )
+      .addCase(
+        authThunks.connectStripeAccount.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.error = action.payload;
+          state.loading = false;
+          toast.error(action.payload);
+        }
+      )
+
+      .addCase(authThunks.verifyStripeAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        authThunks.verifyStripeAccount.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.user.stripe_account_active = action.payload;
+          if (Cookies.get("auth")) {
+            Cookies.set(
+              "auth",
+              JSON.stringify({
+                ...state.user,
+                stripe_account_active: action.payload,
+              }),
+              {
+                expires: 1 / 24,
+              }
+            );
+          }
+          state.loading = false;
+        }
+      )
+      .addCase(
+        authThunks.verifyStripeAccount.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.error = action.payload;
+          state.loading = false;
+          // toast.error(action.payload);
+        }
       );
   },
 });
 
-export const { signin, signout } = authSlice.actions;
+export const { signin, signout, updateAuthState } = authSlice.actions;
 
 export default authSlice.reducer;

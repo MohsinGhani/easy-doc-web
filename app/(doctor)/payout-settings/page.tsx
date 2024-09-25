@@ -1,18 +1,21 @@
 "use client";
 
+import { Loader } from "@/components/common/Loader";
+import ConnectStripeButton from "@/components/doctor/ConnectStripeButton";
 import EditPaymentMethodForm from "@/components/EditPaymentMethodForm";
 import { ContentLayout } from "@/components/layout/content-layout";
-import PaymentMethodForm from "@/components/PaymentMethodForm";
 import { paymentsColumns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/data-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { Payment } from "@/types/table";
 import { format } from "date-fns";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 const paymentsData: Payment[] = [
   {
@@ -197,8 +200,28 @@ const paymentsData: Payment[] = [
   },
 ];
 
-export default function PaymentsPage() {
+interface PaymentsPageProps {
+  searchParams: {
+    stripe_attached: string;
+  };
+}
+
+const PaymentsPage: React.FC<PaymentsPageProps> = () => {
   const columns = useMemo(() => paymentsColumns(), []);
+  const dispatch = useAppDispatch();
+
+  const {
+    loading,
+    user: { userId, stripe_account_active },
+  } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(authThunks.verifyStripeAccount({ doctorId: userId }));
+    }
+  }, [userId, dispatch]);
+
+  if (loading) return <Loader />;
 
   return (
     <ContentLayout title="Doctor | Patient's Requests">
@@ -212,11 +235,12 @@ export default function PaymentsPage() {
               </p>
             </div>
 
-            <PaymentMethodForm />
+            {!stripe_account_active && <ConnectStripeButton />}
           </div>
 
           <RadioGroup className="sm:w-[80%] lg:w-[65%] w-full grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-6 min-h-[132px]">
-            {["stripe", "paypal", "visa"].map((v, i) => (
+            {/* {["stripe", "paypal", "visa"].map((v, i) => ( */}
+            {["stripe"].map((v, i) => (
               <div
                 className="relative flex items-start flex-col justify-between gap-10 flex-1 h-full rounded-2xl border border-zinc-200 p-4"
                 key={i}
@@ -267,4 +291,6 @@ export default function PaymentsPage() {
       </Card>
     </ContentLayout>
   );
-}
+};
+
+export default PaymentsPage;

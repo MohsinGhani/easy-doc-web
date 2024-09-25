@@ -2,14 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 import { doctorThunks } from "./doctorThunks";
 
-interface doctorSlice {
-  allDoctors: User[];
-  fetchedDoctor: User | null;
-  loading: boolean;
-  error: string | null | undefined;
-}
-
-const initialState: doctorSlice = {
+const initialState: doctorState = {
   allDoctors: [],
   fetchedDoctor: null,
   loading: false,

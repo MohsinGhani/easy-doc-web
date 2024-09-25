@@ -21,6 +21,7 @@ import {
 } from "@/types/auth";
 import Cookies from "js-cookie";
 import { functionsApiClient } from "@/lib/utils";
+import { RootState } from "@/lib/store";
 
 export const authThunks = {
   signup: createAsyncThunk(
@@ -194,7 +195,9 @@ export const authThunks = {
         toast.success("Logged out Successfully");
         router.push("/auth/sign-in");
       } catch (error: any) {
-        return rejectWithValue(error.message || "Error signing out, Please try again!");
+        return rejectWithValue(
+          error.message || "Error signing out, Please try again!"
+        );
       }
     }
   ),
@@ -212,7 +215,9 @@ export const authThunks = {
 
         toast.success("Code sent successfully");
       } catch (error: any) {
-        return rejectWithValue(error.message || "Error Sending Confirmation code, Pease try again!");
+        return rejectWithValue(
+          error.message || "Error Sending Confirmation code, Pease try again!"
+        );
       }
     }
   ),
@@ -228,7 +233,9 @@ export const authThunks = {
         resetPassword({ username: email });
         toast.success("Code sent successfully");
       } catch (error: any) {
-        return rejectWithValue(error.message || "Error in sending code, Pease try again!");
+        return rejectWithValue(
+          error.message || "Error in sending code, Pease try again!"
+        );
       }
     }
   ),
@@ -250,7 +257,9 @@ export const authThunks = {
         toast.success("Password reset successful!");
         router.push("/auth/sign-in");
       } catch (error: any) {
-        return rejectWithValue(error.message || "Error changing password, Pease try again!");
+        return rejectWithValue(
+          error.message || "Error changing password, Pease try again!"
+        );
       }
     }
   ),
@@ -269,7 +278,7 @@ export const authThunks = {
           await signOut();
           dispatch(signoutAction());
 
-          return rejectWithValue("No user ID or auth found");
+          // return toast.error("No user ID or auth found");
         }
 
         if (auth) {
@@ -283,7 +292,9 @@ export const authThunks = {
         await signOut();
         dispatch(signoutAction());
 
-        return rejectWithValue("Error in confirming your identity, Pease signin again!");
+        return rejectWithValue(
+          "Error in confirming your identity, Pease signin again!"
+        );
       }
     }
   ),
@@ -330,4 +341,70 @@ export const authThunks = {
       }
     }
   ),
+
+  connectStripeAccount: createAsyncThunk<
+    { accountId: string; accountLink: string }, // Return type
+    { userId: string; email: string; stripeAccountId?: string }, // Parameters to the action
+    { rejectValue: string; state: RootState } // Additional options
+  >(
+    "auth/connectStripeAccount",
+    async (
+      { userId, email, stripeAccountId },
+      { getState, rejectWithValue }
+    ) => {
+      try {
+        // Get the user's role from the state (optional, based on your use case)
+        const state = getState();
+        const role = state.auth.user?.role;
+
+        if (!role || role !== "doctor") {
+          // Optional role check if you want to restrict this action to doctors only
+          return rejectWithValue("Only doctors can connect a Stripe account.");
+        }
+
+        // Make an API call to the backend to create the Stripe account
+        const response = await functionsApiClient.post(
+          "/connect-stripe-account",
+          {
+            email,
+            doctorId: userId, // Use userId as doctorId for Stripe onboarding
+            stripeAccountId, // Optional: Use existing Stripe account ID if available
+          }
+        );
+
+        // Return the accountId and accountLink from the response
+        return response.data.data.accountLink;
+      } catch (error: any) {
+        // Handle errors gracefully and return a meaningful error message
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to connect Stripe account. Please try again!";
+        return rejectWithValue(errorMessage);
+      }
+    }
+  ),
+
+  verifyStripeAccount: createAsyncThunk<
+    { isActive: boolean; status: string; capabilities: any }, // Return type
+    { doctorId: string }, // Parameters to the action
+    { rejectValue: string }
+  >("auth/verifyStripeAccount", async ({ doctorId }, { rejectWithValue }) => {
+    try {
+      // Make an API call to the backend to verify the Stripe account
+      const response = await functionsApiClient.post(
+        `/verify-stripe-account?doctorId=${doctorId}`
+      );
+
+      // Return the verification details from the response
+      return response.data.data.status;
+    } catch (error: any) {
+      // Handle errors gracefully and return a meaningful error message
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to verify Stripe account. Please try again!";
+      return rejectWithValue(errorMessage);
+    }
+  }),
 };

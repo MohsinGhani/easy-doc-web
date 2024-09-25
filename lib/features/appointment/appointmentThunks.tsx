@@ -50,7 +50,7 @@ const fetchAppointmentById = createAsyncThunk<Appointment, string>(
   async (appointmentId, { rejectWithValue }) => {
     try {
       const response = await appointmentsApiClient.get(
-        `/appointments/${appointmentId}?profile_status=COMPLETED`
+        `/appointments/${appointmentId}?status=UNPAID`
       );
       return response.data.data as Appointment;
     } catch (error: any) {
@@ -64,32 +64,26 @@ const fetchAppointmentById = createAsyncThunk<Appointment, string>(
 );
 
 // Make the payment of appointment
-const makePayment = createAsyncThunk<
+const makePaymentIntent = createAsyncThunk<
   Appointment,
-  { appointmentId: string; data: Partial<Payment> }
->(
-  "appointment/makePayment",
-  async ({ appointmentId, data }, { rejectWithValue }) => {
-    try {
-      const response = await appointmentsApiClient.post(
-        `/appointments/${appointmentId}/payment`,
-        data
-      );
-      return response.data.data as Appointment;
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Error making payment, Pease try again!";
-      return rejectWithValue(errorMessage);
-    }
+  Partial<Payment> & { [key: string]: any }
+>("appointment/makePayment", async (data, { rejectWithValue }) => {
+  try {
+    const response = await appointmentsApiClient.post(`/payments/intent`, data);
+    return response.data.data;
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Error making payment, Pease try again!";
+    return rejectWithValue(errorMessage);
   }
-);
+});
 
 // Export all thunks
 export const appointmentThunks = {
   fetchAllAppointments,
   fetchAppointmentById,
   createAppointment,
-  makePayment,
+  makePaymentIntent,
 };

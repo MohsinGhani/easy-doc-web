@@ -2,14 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 import { appointmentThunks } from "./appointmentThunks";
 
-interface appointmentSlice {
-  allAppointments: Appointment[];
-  fetchedAppointment: Appointment | null;
-  loading: boolean;
-  error: string | null | undefined;
-}
-
-const initialState: appointmentSlice = {
+const initialState: appointmentState = {
   allAppointments: [],
   fetchedAppointment: null,
   loading: false,
@@ -83,6 +76,27 @@ export const appointmentSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
           toast.error(action.payload || "Failed to create appointment");
+        }
+      )
+
+      // Make payment intent
+      .addCase(appointmentThunks.makePaymentIntent.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        appointmentThunks.makePaymentIntent.fulfilled,
+        (state, action: PayloadAction<Appointment>) => {
+          state.loading = false;
+          toast.success("Payment successful.");
+        }
+      )
+      .addCase(
+        appointmentThunks.makePaymentIntent.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+          toast.error(action.payload || "Failed to make payment");
         }
       );
   },

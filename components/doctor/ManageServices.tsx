@@ -156,10 +156,10 @@ export default function ManageServices() {
           ))}
         </Accordion>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      {/* <CardFooter className="flex justify-between">
         <Button variant="outline">Cancel</Button>
         <Button>Update Services</Button>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }
