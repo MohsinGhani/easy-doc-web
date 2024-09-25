@@ -6,8 +6,13 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { cn } from "@/lib/utils";
 
-const CarousalsSlidder = () => {
+interface CarousalsSlidderProps {
+  className?: string;
+}
+
+const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
   const contentData = [
     {
       image: "/assets/images/landingpageimg.svg",
@@ -15,14 +20,15 @@ const CarousalsSlidder = () => {
       author: "Robert Mathew",
     },
     {
-        image: "/assets/images/landingpageimg.svg",
-        text: "You only have to know one thing that you can learn anything anywhere to do you discover yourself.",
-        author: "Robert Mathew",
+      image: "/assets/images/landingpageimg.svg",
+      text: "You only have to know one thing that you can learn anything anywhere to do you discover yourself.",
+      author: "Robert Mathew",
     },
     {
-        image: "/assets/images/landingpageimg.svg",
-        text: "You only have to know one thing that you can learn anything anywhere to do you discover yourself.",
-        author: "Robert Mathew",},
+      image: "/assets/images/landingpageimg.svg",
+      text: "You only have to know one thing that you can learn anything anywhere to do you discover yourself.",
+      author: "Robert Mathew",
+    },
     // Add more objects for additional slides if needed
   ];
 
@@ -32,13 +38,15 @@ const CarousalsSlidder = () => {
         align: "start",
         // You can customize the carousel behavior further if needed
       }}
-      className="w-full max-w-sm"
+      className={cn("w-full max-w-sm", className)}
     >
       <CarouselContent>
         {contentData.map((item, index) => (
-          <CarouselItem key={index} className="w-full"> {/* Change to w-full to ensure it takes the full width */}
+          <CarouselItem key={index} className="w-full">
+            {" "}
+            {/* Change to w-full to ensure it takes the full width */}
             <div className="p-4     ">
-              <Card >
+              <Card>
                 <CardContent className="flex flex-col  p-6">
                   <Image
                     className="  object-cover"
@@ -47,12 +55,12 @@ const CarousalsSlidder = () => {
                     height={40}
                     alt="carousel-image"
                   />
-                  <div className="font-[Outfit] text-[16px] md:text-[18px] font-normal leading-[24px] md:leading-[29px] pt-4 text-left text-[#5C5C5B]">
+                  <div className="  text-[16px] md:text-[18px] font-normal leading-[24px] md:leading-[29px] pt-4 text-left text-[#5C5C5B]">
                     <p>{item.text}</p>
                   </div>
                   <div className="flex mt-3">
                     <div className="border-t-2 mt-3 border-[#140F07] w-10"></div>
-                    <div className="pl-2 font-[Outfit] text-[#140F07] font-bold text-[14px] md:text-[16px]">
+                    <div className="pl-2   text-[#140F07] font-bold text-[14px] md:text-[16px]">
                       {item.author}
                     </div>
                   </div>
@@ -66,7 +74,10 @@ const CarousalsSlidder = () => {
       {/* Dots Navigation */}
       <div className="flex justify-center mt-2">
         {contentData.map((_, index) => (
-          <div key={index} className="w-2 h-2 mx-1 bg-[#4D77FF] rounded-full cursor-pointer" />
+          <div
+            key={index}
+            className="w-2 h-2 mx-1 bg-primary rounded-full cursor-pointer"
+          />
         ))}
       </div>
     </Carousel>

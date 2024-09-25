@@ -5,7 +5,6 @@ import Link from "next/link";
 import { UserPopup } from "@/components/navbar/UserPopup";
 import { useAppSelector } from "@/lib/hooks";
 import LogoText from "../LogoText";
-import SelectLanguage from "./SelectLanguage";
 import NavLinks from "./NavLinks";
 import Hamburber from "./Hamburber";
 import { buttonVariants } from "../ui/button";
@@ -32,12 +31,8 @@ export const Navbar = ({ className }: { className?: string }) => {
         </div>
 
         <div className="hidden @3xl:flex items-center gap-5">
-          <SelectLanguage />
-
           {isLoggedIn ? (
-            <>
-              <UserPopup />
-            </>
+            <UserPopup />
           ) : (
             <>
               <Link
