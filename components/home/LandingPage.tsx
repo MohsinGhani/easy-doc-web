@@ -12,11 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Car, TitleEmphasizer } from "../icons";
+import {  Car , TitleEmphasizer   } from "../icons";
 import { buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/lib/hooks";
 import { Card, CardContent } from "../ui/card";
+import SvgLocation from "../icons/Location";
 
 const FirstSection = () => {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
@@ -106,7 +107,7 @@ const AppointmentSection = () => (
         <div className="w-60">
           <div className="text-[#909090]">Consultation Type</div>
           <div className="flex items-center gap-2">
-            <Car className="fill-current text-primary stroke-2 h-4" />
+            <Car className=" text-primary stroke-2 h-6" />
             <Select>
               <SelectTrigger className="w-[180px] border-none">
                 <SelectValue placeholder="Select" />
@@ -122,9 +123,19 @@ const AppointmentSection = () => (
           </div>
         </div>
         <div className="w-60">
-          <div className="text-[#909090]">Location</div>
-          {/* Add location select or input here if needed */}
+          <div className="text-[#909090]">Location
+<div className="">
+<SvgLocation className=""/>
+
+</div>
+
+          </div>
+          {/* <Location/> */}
         </div>
+        {/* <div>
+          dhh
+        </div>
+        <div>jjj</div> */}
       </CardContent>
     </Card>
   </div>
