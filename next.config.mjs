@@ -29,7 +29,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "randomuser.me",
+        hostname: "avatar.iran.liara.run",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "easy-doc-profile-images-dev.s3.amazonaws.com",
         port: "",
       },
     ],

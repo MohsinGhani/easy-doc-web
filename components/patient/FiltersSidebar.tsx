@@ -50,7 +50,7 @@ export default function FiltersSidebar() {
         </div>
 
         <div className="space-y-2">
-          <Label>Fee</Label>
+          <Label>Average Fee</Label>
           <div className="flex items-center space-x-2">
             <DualRangeSlider
               label={(value) => <span className="mb-1">{value}</span>}
@@ -87,9 +87,9 @@ export default function FiltersSidebar() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="specialty">Specialty</Label>
+          <Label htmlFor="designation">Designation</Label>
           <Select>
-            <SelectTrigger id="specialty">
+            <SelectTrigger id="designation">
               <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>

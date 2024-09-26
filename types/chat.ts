@@ -31,7 +31,7 @@ export interface Reply {
 export const chats: Chat[] = [
   {
     chatId: Math.random().toString(36).substring(2, 22),
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    avatar: "https://avatar.iran.liara.run/public/1",
     name: "Ashwind Khanna",
     messages: [
       {
@@ -42,7 +42,7 @@ export const chats: Chat[] = [
         attachments: [
           {
             name: "Zaki.png",
-            url: "https://randomuser.me/api/portraits/men/1.jpg",
+            url: "https://avatar.iran.liara.run/public/1",
             mimeType: "Png",
             size: "2MB",
           },
@@ -68,7 +68,7 @@ export const chats: Chat[] = [
   },
   {
     chatId: Math.random().toString(36).substring(2, 22),
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    avatar: "https://avatar.iran.liara.run/public/1",
     name: "Jane Doe",
     messages: [
       {
@@ -79,7 +79,7 @@ export const chats: Chat[] = [
         attachments: [
           {
             name: "Zaki.png",
-            url: "https://randomuser.me/api/portraits/men/1.jpg",
+            url: "https://avatar.iran.liara.run/public/1",
             mimeType: "Png",
             size: "2MB",
           },
@@ -101,7 +101,7 @@ export const chats: Chat[] = [
         attachments: [
           {
             name: "Zaki.png",
-            url: "https://randomuser.me/api/portraits/men/1.jpg",
+            url: "https://avatar.iran.liara.run/public/1",
             mimeType: "Png",
             size: "2MB",
           },

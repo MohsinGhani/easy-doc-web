@@ -17,7 +17,7 @@ interface TimeInputProps {
 }
 
 export function TimeInput({ id, value, onChange }: TimeInputProps) {
-  const [hours, minutes] = value.split(":");
+  const [hours, minutes] = value?.split(":");
   const numericHours = parseInt(hours);
   const period = numericHours >= 12 ? "PM" : "AM";
   const displayHours = numericHours % 12 || 12;
@@ -60,7 +60,7 @@ export function TimeInput({ id, value, onChange }: TimeInputProps) {
         max={12}
         value={displayHours.toString()}
         onChange={(e) => handleHourChange(e.target.value)}
-        className="w-14 p-2"
+        className="w-20"
       />
       <span>:</span>
       <Select value={minutes} onValueChange={handleMinuteChange}>

@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import ConnectStripeButton from "./doctor/ConnectStripeButton";
 
 export default function PaymentMethodForm() {
   return (
@@ -18,7 +19,7 @@ export default function PaymentMethodForm() {
       <DialogTrigger className={cn(buttonVariants({ variant: "default" }))}>
         Add Payout Method
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Payout Method</DialogTitle>
           <CardContent className="px-0">
@@ -58,6 +59,10 @@ export default function PaymentMethodForm() {
                 </DialogClose>
               </div>
             </form>
+            <p className="text-center text-muted-foreground my-4">OR</p>
+            <div className="flex justify-center">
+              <ConnectStripeButton />
+            </div>
           </CardContent>
         </DialogHeader>
       </DialogContent>

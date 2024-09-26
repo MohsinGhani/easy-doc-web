@@ -4,7 +4,7 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { MenuIcon } from "lucide-react";
-import { navLinks, navLinksForAuth } from "@/constants";
+import { NAV_LINKS, NAV_LINKS_FOR_AUTH } from "@/constants";
 import LogoText from "../LogoText";
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
@@ -50,7 +50,7 @@ export default function Hamburber() {
         <nav className="grid gap-4">
           {isLoggedIn ? (
             <>
-              {navLinksForAuth.map(
+              {NAV_LINKS_FOR_AUTH.map(
                 ({ label, location }: LinkItem, index: number) => (
                   <Link
                     className="flex items-center gap-2 py-2 text-lg font-medium"
@@ -87,7 +87,7 @@ export default function Hamburber() {
             </>
           ) : (
             <>
-              {navLinks.map(({ label, location }: LinkItem, index: number) => (
+              {NAV_LINKS.map(({ label, location }: LinkItem, index: number) => (
                 <Link
                   className="flex items-center gap-2 py-2 text-lg font-medium"
                   href={location}

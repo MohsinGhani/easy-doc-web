@@ -33,18 +33,20 @@ export default function Layout({
         <StoreProvider>
           {children}
 
-          <Toaster
-            position="top-center"
-            icons={{
-              success: "✅",
-              error: "❌",
-              info: "📝",
-              warning: "⚠️",
-              loading: "⏳",
-            }}
-            closeButton={true}
-          />
-        </StoreProvider>
+            <Toaster
+              position="top-center"
+              icons={{
+                success: "✅",
+                error: "❌",
+                info: "📝",
+                warning: "⚠️",
+                loading: "⏳",
+              }}
+              closeButton={true}
+            />
+          </StoreProvider>
+
+
       </body>
     </html>
   );
