@@ -20,7 +20,7 @@ export type BaseAppointment = {
     mimeType: string;
   }>;
   description: string;
-  status: "unpaid" | "completed" | "cancelled" | "upcoming";
+  status: APPOINTMENT_STATUS;
   paid: boolean;
   payment: Payment;
 };

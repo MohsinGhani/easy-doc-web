@@ -1,4 +1,8 @@
 declare type Gender = "male" | "female" | "other" | "N/D";
+declare interface DateRange {
+  start_time: string;
+  end_time: string;
+}
 
 declare type weekDay =
   | "monday"
@@ -15,10 +19,12 @@ declare type AvailableDay = {
 };
 
 declare type PROFILE_STATUS = "COMPLETED" | "INCOMPLETE";
+declare type PAYMENT_STATUS = "PENDING" | "FAILED" | "COMPLETED";
 
 declare type AvailableSlot = {
   start_time: string;
   end_time: string;
+  reserved?: boolean;
 };
 
 declare type EMPLOYEMENT_TYPE = "Full Time" | "Part Time" | "Contract";
@@ -99,6 +105,9 @@ declare type User = {
   years_of_experience: string;
   city: string;
   country: string;
+  address: string;
+  state: string;
+  zip_code: string;
   dob: string;
   gender: Gender;
   location: string;
@@ -140,10 +149,13 @@ declare interface Language {
 }
 
 declare type APPOINTMENT_STATUS =
-  | "UNPAID"
-  | "UPCOMING"
+  | "PAYMENT_PENDING"
+  | "PAYMENT_FAILED"
+  | "PENDING_APPROVAL"
   | "REJECTED"
-  | "COMPLETED";
+  | "UPCOMING"
+  | "COMPLETED"
+  | "CANCELLED";
 
 declare type Appointment = {
   patientId: string;
@@ -170,10 +182,13 @@ declare type Appointment = {
 };
 
 declare type Payment = {
-  method: string;
   paymentId: string;
-  payment_date: string;
+  appointmentId: string;
   amount: number;
+  currency: string;
+  paymentMethod: string;
+  status: PAYMENT_STATUS;
+  created: number;
 };
 
 declare type Attachment = {

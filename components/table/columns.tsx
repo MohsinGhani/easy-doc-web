@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { BaseAppointment, Payment } from "@/types/table";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import {
   ArrowUpDown,
   EllipsisVertical,
@@ -27,6 +27,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn, formatTimeForUI } from "@/lib/utils";
+import RejectAppointmentDialog from "../patient/CancelAppointmentDialog";
+import Link from "next/link";
 
 interface requestsColumnsProps {
   handlePreview: (data: BaseAppointment) => void;
@@ -254,7 +257,7 @@ export const requestsColumns = ({
       meta: { className: "hidden sm:table-cell" },
     },
     {
-      accessorKey: "scheduledDate",
+      accessorKey: "scheduled_date",
       header: ({ column }) => {
         return (
           <Button
@@ -442,6 +445,182 @@ export const requestsColumns = ({
   ];
 };
 
+export const patientColumns = (): ColumnDef<Appointment>[] => {
+  return [
+    {
+      header: "S.no",
+      cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "scheduled_date",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="px-1.5"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Appointment Date & Time
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ getValue, row }) => {
+        const value = getValue() as DateRange;
+        const appointment_date = row.original.appointment_date;
+
+        if (!appointment_date || !value) {
+          return "N/A";
+        }
+
+        const fromTime = new Date(value.start_time);
+        const toTime = new Date(value.end_time);
+
+        const appointmentDate = new Date(appointment_date);
+
+        if (!isValid(appointmentDate)) {
+          return "Invalid Date";
+        }
+
+        return `${formatTimeForUI(appointmentDate)} - ${value.start_time} - ${
+          value.end_time
+        }`;
+      },
+      filterFn: (row, columnId, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
+        const { start, end } = filterValue;
+
+        return isWithinInterval(appointmentDate, { start, end });
+      },
+    },
+    {
+      accessorKey: "speciality",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="px-1.5"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Speciality
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("speciality")}</div>
+      ),
+      meta: { className: "hidden sm:table-cell" },
+    },
+    {
+      accessorKey: "consultation_type",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="px-1.5"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span className="hidden md:block">Consultation </span>Type
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            {/* Hidden on mobile, visible on larger screens */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={`/my-appointments/${row.original.appointmentId}`}
+                      className={cn(
+                        buttonVariants({ variant: "outline", size: "icon" })
+                      )}
+                    >
+                      <EyeIcon className="h-5 w-5 cursor-pointer" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">View Details</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <RejectAppointmentDialog
+                      reason={row.original.reason}
+                      onReject={() =>
+                        console.log("rejected", row.original.doctorId)
+                      }
+                      trigger={
+                        <Button variant="outline" size="icon">
+                          <X className="h-5 w-5 cursor-pointer" />
+                        </Button>
+                      }
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Cancel Appointment</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            {/* Visible on mobile, hidden on larger screens */}
+            <div className="sm:hidden">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <EllipsisVertical className="h-5 w-5 cursor-pointer" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  side="left"
+                  className="flex flex-col items-start gap-2 w-40"
+                >
+                  <Link
+                    href={`/my-appointments/${row.original.appointmentId}`}
+                    className={cn(
+                      "w-full justify-start",
+                      buttonVariants({ variant: "outline", size: "sm" })
+                    )}
+                  >
+                    <EyeIcon className="h-5 w-5 mr-2" /> View Details
+                  </Link>
+                  <RejectAppointmentDialog
+                    reason={row.original.reason}
+                    onReject={() =>
+                      console.log("rejected", row.original.doctorId)
+                    }
+                    trigger={
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start"
+                      >
+                        <X className="h-5 w-5 mr-2" /> Cancel Appointment
+                      </Button>
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        );
+      },
+      meta: {
+        className: "sticky right-0 bg-white z-10 shadow-lg",
+      },
+    },
+  ];
+};
+
 export const upcomingColumns = ({
   handleMeetingJoin,
   handleChat,
@@ -490,7 +669,7 @@ export const upcomingColumns = ({
       },
     },
     {
-      accessorKey: "scheduledDate",
+      accessorKey: "scheduled_date",
       header: ({ column }) => {
         return (
           <Button
@@ -695,7 +874,7 @@ export function createAppointment(id: string, index: number): BaseAppointment {
       services: [],
       profile_completion: 0,
       profile_status: "COMPLETED",
-      ratingsBreakdownPercentages: []
+      ratingsBreakdownPercentages: [],
     },
     patient: {
       picture: `https://i.pravatar.cc/150?img=${index}`,
@@ -730,9 +909,9 @@ export function createAppointment(id: string, index: number): BaseAppointment {
       services: [],
       profile_completion: 0,
       profile_status: "COMPLETED",
-      ratingsBreakdownPercentages: []
+      ratingsBreakdownPercentages: [],
     },
-    scheduledDate: {
+    scheduled_date: {
       from: new Date(Date.now() + Math.random() * (24 * 60 * 60 * 1000)),
       to: new Date(
         Date.now() + Math.random() * (24 * 60 * 60 * 1000) + 30 * 60 * 1000

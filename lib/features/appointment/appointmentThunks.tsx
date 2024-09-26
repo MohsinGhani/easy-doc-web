@@ -1,3 +1,4 @@
+import { RootState } from "@/lib/store";
 import { appointmentsApiClient } from "@/lib/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -26,11 +27,20 @@ const fetchAllAppointments = createAsyncThunk<Appointment[]>(
   "appointment/fetchAllAppointments",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const state = getState() as { auth: { user?: { role?: string } } };
-      const role = state.auth.user?.role;
+      const state = getState() as RootState;
+      const { role, userId } = state.auth.user;
+      console.log("🚀 ~ role, userId:", role, userId);
+
+      if (!role) {
+        return rejectWithValue("User role is missing");
+      }
+
+      if (!userId) {
+        return rejectWithValue("User ID is missing");
+      }
 
       const response = await appointmentsApiClient.get(
-        `${role === "doctor" ? "doctors" : "patients"}/appointments`
+        `${role === "doctor" ? "doctors" : "patients"}/${userId}/appointments`
       );
       return response.data.data as Appointment[];
     } catch (error: any) {
@@ -50,7 +60,7 @@ const fetchAppointmentById = createAsyncThunk<Appointment, string>(
   async (appointmentId, { rejectWithValue }) => {
     try {
       const response = await appointmentsApiClient.get(
-        `/appointments/${appointmentId}?status=UNPAID`
+        `/appointments/${appointmentId}?status=PAYMENT_PENDING`
       );
       return response.data.data as Appointment;
     } catch (error: any) {
@@ -80,10 +90,28 @@ const makePaymentIntent = createAsyncThunk<
   }
 });
 
+// Make the payment of appointment
+const makePayment = createAsyncThunk<
+  Appointment,
+  Partial<Payment> & { [key: string]: any }
+>("appointment/makePayment", async (data, { rejectWithValue }) => {
+  try {
+    const response = await appointmentsApiClient.post(`/payments`, data);
+    return response.data.data;
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Error making payment, Pease try again!";
+    return rejectWithValue(errorMessage);
+  }
+});
+
 // Export all thunks
 export const appointmentThunks = {
   fetchAllAppointments,
   fetchAppointmentById,
   createAppointment,
   makePaymentIntent,
+  makePayment,
 };

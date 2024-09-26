@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/lib/hooks";
 import { TabsContent } from "@/components/ui/tabs";
 import { Loader } from "@/components/common/Loader";
-import { formatTimeForUI } from "@/lib/utils";
+import { cn, formatTimeForUI } from "@/lib/utils";
 import { ControllerRenderProps } from "react-hook-form";
 import { CircleCheckBigIcon } from "lucide-react";
 
@@ -42,9 +42,14 @@ const AvailableTimingsTabsContent = ({
         // TODO: Make this grid to perform well
         <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-2 max-h-96 overflow-y-auto">
           {availableDays[dayIndex]?.slots?.map(
-            ({ start_time, end_time }, slotIndex) => (
+            ({ start_time, end_time, reserved = false }, slotIndex) => (
               <div
-                className="border rounded-md p-2 flex items-center justify-center shadow cursor-pointer"
+                className={cn(
+                  "border rounded-md p-2 flex items-center justify-center shadow cursor-pointer",
+                  {
+                    "cursor-not-allowed bg-gray-100": reserved,
+                  }
+                )}
                 onClick={() => handleTimeSlotChange(start_time, end_time)}
                 key={slotIndex}
               >

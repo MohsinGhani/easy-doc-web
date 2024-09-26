@@ -43,6 +43,10 @@ const initialState: authState = {
     stripeAccountId: "",
     stripe_account_active: false,
     no_of_appointments: 0,
+    address: "",
+    state: "",
+    zip_code: "",
+    patient_name: "",
   },
   loading: false,
   error: null,
@@ -184,8 +188,8 @@ export const authSlice = createSlice({
         state.error = null;
       })
       .addCase(authThunks.confirmPasswordReset.fulfilled, (state) => {
-        state.loading = false;
         Object.assign(state, initialState);
+        state.loading = false;
       })
       .addCase(
         authThunks.confirmPasswordReset.rejected,
@@ -203,8 +207,8 @@ export const authSlice = createSlice({
       .addCase(
         authThunks.initializeAuth.fulfilled,
         (state, action: PayloadAction<any>) => {
-          state.user = action.payload;
           state.isLoggedIn = true;
+          state.user = action.payload;
           !Cookies.get("auth") &&
             Cookies.set("auth", JSON.stringify(action.payload), {
               expires: 1 / 24, // 1 hour

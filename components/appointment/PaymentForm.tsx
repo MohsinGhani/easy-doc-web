@@ -1,14 +1,14 @@
 "use client";
 
-import React from "react";
-import { useAppSelector } from "@/lib/hooks";
-import { Loader } from "../common/Loader";
+import React, { useState } from "react";
 import {
   useStripe,
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
-import PriceDetails from "./PriceDetails";
+import { Button } from "../ui/button";
+import { useAppSelector } from "@/lib/hooks";
+import { Loader } from "../common/Loader";
 import { DOMAIN } from "@/constants";
 
 interface PaymentFormProps {
@@ -17,8 +17,9 @@ interface PaymentFormProps {
 }
 
 const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
-  const { user, loading } = useAppSelector((state) => state.auth);
-  const { loading: appointmentLoader } = useAppSelector(
+  const { loading } = useAppSelector((state) => state.auth);
+  const [loader, setLoader] = useState(false);
+  const { loading: appointmentLoader, fetchedAppointment } = useAppSelector(
     (state) => state.appointment
   );
 
@@ -34,26 +35,66 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
       return;
     }
 
-    const result = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${DOMAIN}/appointments/${appointmentId}/success`,
-      },
-    });
-
-    if (result.error) {
-      console.log(result.error.message);
-    } else {
-      console.log("Payment successful");
+    try {
+      setLoader(true);
+      const result = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${DOMAIN}/my-appointments/${appointmentId}/success`,
+        },
+      });
+      if (result.error) {
+        console.log(result.error.message);
+      } else {
+        console.log("Payment successful");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoader(false);
     }
   };
 
   return (
     <form className="grid lg:grid-cols-3 gap-8" onSubmit={handleSubmit}>
       <div className="lg:col-span-2">
-        <PaymentElement />
+        <PaymentElement
+          options={{
+            defaultValues: {
+              billingDetails: {
+                name: fetchedAppointment?.patient?.patient_name || "", // Prefill if available
+                email: fetchedAppointment?.patient?.email || "",
+                address: {
+                  line1: fetchedAppointment?.patient?.address || "",
+                  city: fetchedAppointment?.patient?.city || "",
+                  state: fetchedAppointment?.patient?.state || "",
+                  postal_code: fetchedAppointment?.patient?.zip_code || "",
+                  country: fetchedAppointment?.patient?.country || "US", // Set default country
+                },
+              },
+            },
+            fields: {
+              billingDetails: {
+                name: "auto", // Disable name input if already provided
+                email: "auto", // Disable email input if already provided
+                address: "auto", // Show address fields auto
+              },
+            },
+            business: {
+              name: fetchedAppointment?.doctor.display_name, // Display business name in the Payment Element
+            },
+          }}
+        />
       </div>
-      <PriceDetails consultingFee={amount} />
+      <Button
+        variant={"default"}
+        size={"xl"}
+        className="w-full"
+        type="submit"
+        disabled={appointmentLoader || loading || loader}
+      >
+        Proceed to Checkout
+      </Button>
     </form>
   );
 };

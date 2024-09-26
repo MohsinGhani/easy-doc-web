@@ -119,7 +119,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         patientId: user.userId,
         visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
         amount: consultingFee,
-        status: "UNPAID",
+        status: "PAYMENT_PENDING",
         patientData,
       };
 
@@ -128,7 +128,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       // Step 3: Submit form data to the backend
       const { payload, type } = await dispatch(
         appointmentThunks.createAppointment(
-          newAppointment as Partial<Appointment>
+          newAppointment as unknown as Partial<
+            Appointment & { [key: string]: any }
+          >
         )
       );
 
@@ -160,7 +162,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-6">
-                  <div className="grid lg:grid-cols-2 gap-8">
+                  <div className="grid lg:grid-cols-2 grid-cols-1 gap-8">
                     {/* Consulting For */}
                     <CustomFormField
                       name="consulting_for"

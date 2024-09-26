@@ -88,7 +88,7 @@ export const appointmentSlice = createSlice({
         appointmentThunks.makePaymentIntent.fulfilled,
         (state, action: PayloadAction<Appointment>) => {
           state.loading = false;
-          toast.success("Payment successful.");
+          // toast.success("Payment successful.");
         }
       )
       .addCase(

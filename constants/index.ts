@@ -221,13 +221,13 @@ export const CONSULTATION_TYPES = ["Self", "Other"].map((elem) => ({
 }));
 
 export const WEEK_DAYS = [
+  "sunday",
   "monday",
   "tuesday",
   "wednesday",
   "thursday",
   "friday",
   "saturday",
-  "sunday",
 ];
 
 export const APPOINTMENTS_REASONS = ["Consultation", "Follow Up"].map(

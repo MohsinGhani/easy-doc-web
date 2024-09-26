@@ -11,7 +11,7 @@ export const doctorRoutes = [
   "/available-timings",
 ];
 
-export const patientRoutes = ["/doctors"];
+export const patientRoutes = ["/doctors", "my-appointments"];
 
 export const adminRoutes = ["/admin"];
 

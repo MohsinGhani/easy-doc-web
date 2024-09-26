@@ -89,8 +89,10 @@ export const calculateTimeSlots = (
 export const parseTime = (time: string) => parse(time, "HH:mm", new Date());
 export const formatTime = (date: Date) => format(date, "hh:mm aa");
 export const formatTimeToHHMM = (date: Date) => format(date, "HH:mm");
-export const formatTimeForUI = (time: string) =>
-  format(parseTime(time), "hh:mm aa");
+export const formatTimeForUI = (time: string | Date) =>
+  typeof time === "string"
+    ? format(parseTime(time), "hh:mm aa")
+    : format(time, "hh:mm aa");
 
 export const removeDaySuffix = (dateString: string) => {
   return dateString.replace(/(\d+)(st|nd|rd|th)/, "$1").trim();

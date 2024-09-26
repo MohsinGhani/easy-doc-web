@@ -6,10 +6,13 @@ export enum ConsultingFor {
 }
 
 export enum APPOINTMENT_STATUS {
-  UNPAID = "unpaid",
-  UPCOMING = "upcoming",
-  REJECTED = "rejected",
-  COMPLETED = "completed",
+  PAYMENT_PENDING = "PAYMENT_PENDING",
+  PAYMENT_FAILED = "PAYMENT_FAILED",
+  PENDING_APPROVAL = "PENDING_APPROVAL",
+  REJECTED = "REJECTED",
+  UPCOMING = "UPCOMING",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
 }
 
 export const appointmentCreationSchema = z.object({

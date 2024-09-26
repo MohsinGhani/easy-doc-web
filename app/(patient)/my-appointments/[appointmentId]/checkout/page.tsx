@@ -29,19 +29,28 @@ const AppointmetnCheckoutPage: React.FC<AppointmentCheckoutPageProps> = ({
   params,
   searchParams,
 }) => {
+  const dispatch = useAppDispatch();
+  const [clientSecret, setClientSecret] = useState("");
   const { appointmentId } = params;
+
   const appointmentReason = decodeURIComponent(
     searchParams.appointmentReason || "Appointment Details"
   );
 
-  const dispatch = useAppDispatch();
+  const BannerData = {
+    title: "Book Appointment",
+    description: "",
+    location: [
+      { name: "Home", path: "/" },
+      { name: "Appointments", path: "/appointments" },
+      { name: appointmentReason, path: `/appointments/${appointmentId}` },
+      { name: "Checkout", path: "#" },
+    ],
+  };
+
   const { fetchedAppointment, loading } = useAppSelector(
     (state) => state.appointment
   );
-  const [clientSecret, setClientSecret] = useState("");
-  console.log("🚀 ~ clientSecret:", clientSecret);
-
-  console.log("🚀 ~ fetchedAppointment:", fetchedAppointment);
 
   useEffect(() => {
     dispatch(appointmentThunks.fetchAppointmentById(appointmentId));
@@ -59,23 +68,11 @@ const AppointmetnCheckoutPage: React.FC<AppointmentCheckoutPageProps> = ({
         stripeAccountId: fetchedAppointment.doctor.stripeAccountId,
       })
     ).then((res: any) => {
-      console.log("🚀 ~ ).then ~ res:", res);
       if (res.payload && res.payload.clientSecret) {
         setClientSecret(res.payload.clientSecret);
       }
     });
   }, [dispatch, fetchedAppointment]);
-
-  const BannerData = {
-    title: "Book Appointment",
-    description: "",
-    location: [
-      { name: "Home", path: "/" },
-      { name: "Appointments", path: "/appointments" },
-      { name: appointmentReason, path: `/appointments/${appointmentId}` },
-      { name: "Checkout", path: "/checkout" },
-    ],
-  };
 
   const options = {
     clientSecret,
