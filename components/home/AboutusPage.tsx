@@ -6,8 +6,8 @@ import { BlueCircle } from "../icons";
 
 const AboutusPage = () => {
   return (
-    <div className="w-full flex justify-center h-full">
-      <div className=" w-[90%] lg:flex justify-between ">
+    <div className="w-full flex justify-center items-center h-full lg:mt-72">
+      <div className="w-[90%] lg:flex justify-between gap-6">
         <div className=" pt-12 ">
           <div className="text-primary text-[18px] font-medium leading-[27px] ">
             ABOUT US

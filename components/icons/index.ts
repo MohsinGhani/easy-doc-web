@@ -34,6 +34,7 @@ export { default as RocketIcon } from './RocketIcon';
 export { default as Send } from './Send';
 export { default as ServiceIcon } from './ServiceIcon';
 export { default as Stripe } from './Stripe';
+export { default as TitleEmphasizer } from './TitleEmphasizer';
 export { default as Upload } from './Upload';
 export { default as User } from './User';
 export { default as Verified } from './Verified';

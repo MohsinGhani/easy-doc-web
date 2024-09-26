@@ -6,12 +6,12 @@ import PatientFooter from "@/components/patient/Footer";
 
 export default function Home() {
   return (
-    <PatientLayout className="relative">
-      <div className="">
+    <div className="">
+      <PatientLayout className="relative">
         <LandingPage />
+      </PatientLayout>
 
-        <PatientFooter />
-      </div>
-    </PatientLayout>
+      <PatientFooter />
+    </div>
   );
 }
