@@ -1,46 +1,203 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Navbar } from "../navbar/Navbar";
+import CarousalsSlider from "../CarousalsSlider";
+import AboutusPage from "./AboutusPage";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {  Car , TitleEmphasizer   } from "../icons";
+import { buttonVariants , Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/lib/hooks";
+import { Card, CardContent } from "../ui/card";
+import SvgLocation from "../icons/Location";
+import SvgCalendar from "../icons/Calendar";
+import MedicalServices from "./MedicalServices";
+
+const FirstSection = () => {
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
+
+  return (
+    <div className="absolute top-28 md:top-32 left-1/2 transform -translate-x-1/2 flex flex-col md:flex-row justify-between w-[90%] p-4 z-50     ">
+      <div className="lg:w-1/2 w-full lg:text-start text-center z-10">
+        <h1 className="text-[#121212] text-[30px] md:text-[54px] font-bold leading-tight lg:leading-[68.04px] tracking-[0.02em] ">
+          <span className="whitespace-nowrap relative">
+            Medical Care Now
+            <TitleEmphasizer
+              width={120}
+              height={120}
+              className="absolute -right-24 -top-16"
+            />
+          </span>
+          <br />
+          Simplified For <br />
+        </h1>
+        <p className="text-[14px] md:text-[16px] font-normal leading-normal lg:leading-[36px] text-[#5C5C5B] mt-4">
+          You Only Have To Know One Thing That You Can <br />
+          Learn Anything Anywhere To Do You Discover <br />
+          Yourself.
+        </p>
+        <Link
+          href={!isLoggedIn ? `/auth/sign-in` : `doctors`}
+          className={cn(
+            buttonVariants({ size: "xl" }),
+            "rounded-full font-bold mt-3"
+          )}
+        >
+          {!isLoggedIn ? "Join Now!" : "Book an appointment"}
+        </Link>
+      </div>
+
+      <AppointmentSection />
+
+      <CarousalsSlider className={"hidden lg:block"} />
+    </div>
+  );
+};
+
+const HeroImages = () => (
+  <>
+    <div className="flex justify-between items-center relative">
+      <div className="w-96 hidden md:block">
+        <Image
+          className="w-full"
+          src="/assets/images/landingpage-bg.png"
+          width={400}
+          height={200}
+          alt="landingpage-bg"
+        />
+      </div>
+      <div className="top-0 right-0 z-50">
+        <Image
+          src="/assets/images/landingpagecircle-bg.png"
+          width={500}
+          height={400}
+          alt="landingpagecircle-bg"
+        />
+      </div>
+    </div>
+  </>
+);
+
+const AppointmentSection = () => (
+  <div className="absolute inset-0 left-1/2 -translate-x-1/2 top-0 flex flex-col items-center justify-center w-full min-h-[500px] md:min-h-[700px]">
+    {/* Blue Half Circle */}
+    <div className="absolute overflow-hidden w-[90%] sm:w-[70%] h-[30%] sm:h-[60%] -bottom-24 left-1/2 transform 
+    -translate-x-1/2 bg-primary rounded-tl-full rounded-tr-full -z-[1] md:bottom-0  " />
+<div className=" md:hidden pt-96">
+<Image
+          src="/assets/images/doctorimg.png"
+          width={300}
+          height={100}
+          alt="doc-img"
+        />
+</div>
+
+    {/* Image Overlay */}
+    <div className="absolute hidden md:flex items-center justify-center w-1/2 bottom-4">
+      <Image
+        src="/assets/images/landingpagemain-img.png"
+        width={1000}
+        height={1000}
+        alt="man-image"
+        className="w-full h-full object-contain"
+      />
+    </div>
+
+    {/* Information Section */}
+    <Card className="relative w-full md:w-[80%] lg:w-[70%] bg-white  items-center justify-center z-30 -bottom-96 rounded-full hidden md:flex  ">
+      <CardContent className="flex items-center justify-between flex-wrap gap-5 w-full ">
+      <div className="flex items-center gap-8  ml-10 ">
+  {/* Consultation Type */}
+  <div className="w-48 pl-4">
+    <div className="text-[#909090]">Consultation Type</div>
+    <div className="flex items-center gap-2">
+      <Car className="text-primary stroke-2 h-6" />
+      <Select>
+        <SelectTrigger className="w-[180px] border-none">
+          <SelectValue placeholder="Select" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="routine-checkup">Routine Checkup</SelectItem>
+          <SelectItem value="acme-consultation">Acme Consultation</SelectItem>
+          <SelectItem value="other">Other</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  </div>
+
+  {/* Location */}
+  <div className="w-40 ">
+    <div className="text-[#909090] pb-2">
+      Location
+      <div className="flex pt-1 pr-2">
+        <div >
+          <SvgLocation />
+        </div>
+        <div className="text-[]">Choose Location</div>
+      </div>
+    </div>
+  </div>
+
+  {/* Vertical Line */}
+  <div className="h-12 w-px bg-gray-300"></div>
+
+  {/* Appointment Date */}
+  <div className="flex items-center gap-6">
+    <div>
+      <div className="text-[#909090]">Appointment date</div>
+      <div className="flex items-center gap-2">
+        <SvgCalendar className="text-primaryS stroke-2 h-6 " />
+        <Select>
+          <SelectTrigger className="w-[160px] border-none pt-1">
+            <SelectValue className="font-bold" placeholder="17 July 2021" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="routine-checkup">20 July 2021</SelectItem>
+            <SelectItem value="acme-consultation">12 July 2021</SelectItem>
+            <SelectItem value="other">10 July 2021</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+
+    {/* Search Button */}
+    <div>
+      <Button
+        className={cn(
+          buttonVariants({ size: "xl" }),
+          "rounded-full font-bold mt-3"
+        )}
+      >
+        Search
+      </Button>
+    </div>
+  </div>
+</div>
+ 
+      </CardContent>
+    </Card>
+  </div>
+);
 
 const LandingPage = () => {
   return (
-    <>
-      {/* <Navbar /> */}
-      <div className="w-full mx-auto flex justify-between h-full gap-5 px-12">
-        <div className="space-y-7 flex flex-col text-center items-center justify-center h-[400px] mx-auto mt-20">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Welcome to <span className="text-blue-500">Doctory</span>
-          </h1>
-          <p className="max-w-md text-xl mx-auto">
-            A medical <u className="border-b border-blue-500">appointment</u>{" "}
-            scheduling platform <br /> for{" "}
-            <span className="text-blue-500">patients</span> and{" "}
-            <span className="text-blue-500">doctors</span>
-          </p>
-
-          <div className="flex items-center gap-4 w-fit max-w-md mx-auto">
-            <Link href={`/auth/sign-up`} className="font-bold">
-              <Button size={"lg"}>Join Now!</Button>
-            </Link>
-            <span className="text-sm text-muted-foreground">OR</span>
-            <Link href={`/auth/sign-up?role=doctor`} className="font-bold">
-              <Button size={"lg"} variant={"secondary"}>
-                Join as a Doctor..
-              </Button>
-            </Link>
-          </div>
-        </div>
-        <Image
-          src={"/sign-up-img.png"}
-          width={500}
-          height={1000}
-          alt="sign up image"
-        />
-      </div>
-    </>
+    <div>
+      <Navbar className="relative" />
+      <HeroImages /> {/* Behind FirstSection */}
+      <FirstSection />
+      <AboutusPage />
+      <MedicalServices/>
+    </div>
   );
 };
+
 
 export default LandingPage;

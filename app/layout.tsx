@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 import { cn } from "@/lib/utils";
@@ -31,11 +30,8 @@ export default function Layout({
           outfit.variable
         )}
       >
-        {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <StoreProvider>
-            {children}
-
+        <StoreProvider>
+          {children}
 
             <Toaster
               position="top-center"
@@ -49,7 +45,8 @@ export default function Layout({
               closeButton={true}
             />
           </StoreProvider>
-        </ThemeProvider>
+
+
       </body>
     </html>
   );
