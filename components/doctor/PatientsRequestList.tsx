@@ -5,10 +5,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import RequestReviewSheet from "./RequestReviewSheet";
 import SuccessPage from "../SuccessPage";
 import { createAppointment, requestsColumns } from "../table/columns";
-import { PendingRequest } from "@/types/table";
+import { BaseAppointment } from "@/types/table";
 import { DataTable } from "../table/data-table";
 
-let approvalRequests: PendingRequest[] = [];
+let approvalRequests: BaseAppointment[] = [];
 
 for (let index = 0; index < 20; index++) {
   const appointment = createAppointment((index + 1).toString(), index + 1);
@@ -24,16 +24,16 @@ const PatientsRequestList = ({
 }: PatientsRequestListProps) => {
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [selectedRequest, setSelectedRequest] =
-    React.useState<PendingRequest | null>(null);
+    React.useState<BaseAppointment | null>(null);
   const [isSuccessOpen, setIsSuccessOpen] = React.useState(false);
   const isPrimaryHeader = headerType === "primary";
 
-  const handlePreview = (request: PendingRequest) => {
+  const handlePreview = (request: BaseAppointment) => {
     setSelectedRequest(request);
     setIsPreviewOpen(true);
   };
 
-  const handleAcceptRequest = (request: PendingRequest) => {
+  const handleAcceptRequest = (request: BaseAppointment) => {
     setIsSuccessOpen(true);
   };
 

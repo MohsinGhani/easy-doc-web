@@ -2,59 +2,23 @@
 
 import React, { useEffect } from "react";
 import DoctorCard from "./DoctorCard";
-import { API_URL } from "@/constants";
-import axios from "axios";
-
-const doctors: Doctor[] = [
-  {
-    name: "Dr. John",
-    specialty: "Dentist",
-    experience: "05 years experience",
-    location: "Florida, USA",
-    rating: 4,
-    available: true,
-    fee: 400,
-    imageUrl:
-      "https://randomuser.me/api/portraits/men/1.jpg?height=300&width=300",
-  },
-  {
-    name: "Dr. John",
-    specialty: "Dentist",
-    experience: "05 years experience",
-    location: "Florida, USA",
-    rating: 4,
-    available: true,
-    fee: 400,
-    imageUrl:
-      "https://randomuser.me/api/portraits/men/1.jpg?height=300&width=300",
-  },
-  {
-    name: "Dr. John",
-    specialty: "Dentist",
-    experience: "05 years experience",
-    location: "Florida, USA",
-    rating: 4,
-    available: true,
-    fee: 400,
-    imageUrl:
-      "https://randomuser.me/api/portraits/men/1.jpg?height=300&width=300",
-  },
-];
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
+import { Loader } from "../common/Loader";
 
 export default function DoctorsList() {
-  // const [doctors, setDoctors] = useState([])
-  useEffect(() => {
-    const getAllDoctors = async () => {
-      try {
-        const { data } = await axios.get(API_URL + "/doctors/all");
-        console.log(data);
-      } catch (error) {
-        console.log("🚀 ~ getAllDoctors ~ error:", error);
-      }
-    };
+  const dispatch = useAppDispatch();
+  const { allDoctors: doctors, loading } = useAppSelector(
+    (state) => state.doctor
+  );
 
-    getAllDoctors();
-  }, []);
+  useEffect(() => {
+    if (doctors.length === 0) {
+      dispatch(doctorThunks.fetchAllDoctors());
+    }
+  }, [dispatch, doctors.length]);
+
+  if (loading) return <Loader />;
 
   return (
     <div className="w-full lg:col-span-3">

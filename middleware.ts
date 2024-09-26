@@ -4,7 +4,6 @@ import { decodeJWT } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import { userPoolId, identityPoolId, userPoolClientId } from "./constants";
 import {
-  privateRoutes,
   publicRoutes,
   doctorRoutes,
   adminRoutes,
@@ -24,44 +23,52 @@ Amplify.configure({
 export async function middleware(req: NextRequest, res: NextResponse) {
   try {
     const { pathname } = req.nextUrl;
-    const token = req.cookies.get("token")?.value || "";
 
     const isPublicRoute = publicRoutes.includes(pathname);
-    const isProtectedRoute = privateRoutes.includes(pathname);
     const isPatientRoute = patientRoutes.includes(pathname);
     const isDoctorRoute = doctorRoutes.includes(pathname);
     const isAdminRoute = adminRoutes.includes(pathname);
 
-    if (isProtectedRoute && !token) {
+    const cookies = req.cookies;
+
+    const token = Array.from(cookies.getAll()).find((key) =>
+      key.name.includes(".idToken")
+    )?.value;
+
+    if (
+      (!token && isAdminRoute) ||
+      (!token && isDoctorRoute) ||
+      (!token && isPatientRoute)
+    ) {
       return NextResponse.redirect(new URL("/auth/sign-in", req.url));
     }
 
-    const { "custom:role": role } = decodeJWT(token).payload;
+    const { "custom:role": role } = decodeJWT(token as string).payload;
 
-    if (!role) return NextResponse.redirect(new URL("/auth/sign-in", req.url));
-
-    if (isPublicRoute && token) {
+    if ((isPublicRoute && role) || (role && pathname === "/")) {
       return NextResponse.redirect(
         new URL(
           role === "doctor"
             ? "/dashboard"
             : role === "admin"
             ? "/admin"
-            : "/doctors-listing",
+            : "/doctors",
           req.url
         )
       );
     }
 
+    if (!role) return NextResponse.redirect(new URL("/auth/sign-in", req.url));
+
     if (isDoctorRoute && role !== "doctor") {
       return NextResponse.redirect(
-        new URL(role === "patient" ? "/doctors-list" : "/admin", req.url)
+        new URL(role === "patient" ? "/doctors" : "/admin", req.url)
       );
     }
 
     if (isAdminRoute && role !== "admin") {
       return NextResponse.redirect(
-        new URL(role === "patient" ? "/doctors-list" : "/dashboard", req.url)
+        new URL(role === "patient" ? "/doctors" : "/dashboard", req.url)
       );
     }
 

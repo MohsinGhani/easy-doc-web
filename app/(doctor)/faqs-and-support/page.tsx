@@ -9,7 +9,6 @@ import {
   Linkedin,
   Mail,
   MessageCircleDashed,
-  Phone,
   PhoneOutgoing,
   Slack,
   Twitter,
@@ -21,26 +20,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
+import { FAQS } from "@/constants";
 
 export default function FaqsAndSupportPage() {
-  const [faqs, setFaqs] = useState([
-    {
-      id: 1,
-      question: "What is Lorem Ipsum?",
-      answer:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    },
-    {
-      id: 2,
-      question: "What is Our Goal?",
-      answer: "Our Goal is to simplify the healthcare experience for everyone.",
-    },
-    {
-      id: 3,
-      question: "Are we on Social Media?",
-      answer: "Of course! We are on social media.",
-    },
-  ]);
+  const [faqs, setFaqs] = useState(FAQS);
   const [value, setValue] = useState("");
 
   useEffect(() => {

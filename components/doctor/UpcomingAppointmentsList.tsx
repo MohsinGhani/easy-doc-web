@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import { createAppointment, upcomingColumns } from "../table/columns";
-import { UpcomingAppointment } from "@/types/table";
+import { BaseAppointment } from "@/types/table";
 import { DataTable } from "../table/data-table";
 
-let upcomingAppointments: UpcomingAppointment[] = [];
+let upcomingAppointments: BaseAppointment[] = [];
 
 for (let index = 0; index < 20; index++) {
   const appointment = createAppointment((index + 1).toString(), index + 1);
@@ -21,11 +21,11 @@ const UpcomingAppointmentsList = ({
 }: UpcomingAppointmentsListProps) => {
   const isPrimaryHeader = headerType === "primary";
 
-  const handleMeetingJoin = (appointment: UpcomingAppointment) => {
+  const handleMeetingJoin = (appointment: BaseAppointment) => {
     console.log("🚀 ~ handleMeetingJoin ~ appointment:", appointment);
   };
 
-  const handleChat = (appointment: UpcomingAppointment) => {
+  const handleChat = (appointment: BaseAppointment) => {
     console.log("🚀 ~ handleChat ~ appointment:", appointment);
   };
 

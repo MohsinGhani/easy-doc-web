@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 
 interface SuccessPageProps {
   heading: string;
+  subHeading?: string;
   linkText: string;
   linkHref: string;
   open?: boolean;
@@ -16,6 +17,7 @@ interface SuccessPageProps {
 
 const SuccessPage = ({
   heading,
+  subHeading,
   linkText,
   linkHref,
   open = true,
@@ -36,7 +38,14 @@ const SuccessPage = ({
             height={144}
           />
           <div className="self-stretch h-[94px] flex-col justify-start items-center gap-6 flex">
-            <div className="text-black text-2xl font-medium">{heading}</div>
+            <h2 className="text-black text-2xl font-medium">{heading}</h2>
+
+            {subHeading && (
+              <p className="text-muted-foreground text-base font-normal text-center">
+                {subHeading}
+              </p>
+            )}
+
 
             <Link href={linkHref}>
               <Button

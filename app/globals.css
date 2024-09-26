@@ -18,6 +18,8 @@ body {
   font-optical-sizing: auto;
   font-style: normal;
   -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 html::-webkit-scrollbar {
@@ -115,5 +117,5 @@ body {
 
 /* =====  SHADCN OVERRIDES */
 .shad-otp-slot {
-  @apply font-bold text-3xl justify-center flex border rounded-lg size-16 gap-4 !important;
+  @apply font-bold sm:text-3xl text-lg justify-center flex border rounded-lg size-8 sm:size-16 gap-4 !important;
 }

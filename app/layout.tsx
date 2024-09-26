@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/sonner";
 
 import { cn } from "@/lib/utils";
 import StoreProvider from "@/lib/StoreProvider";
-// import Footer from "@/components/footer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -37,7 +36,6 @@ export default function Layout({
           <StoreProvider>
             {children}
 
-            {/* <Footer /> */}
 
             <Toaster
               position="top-center"

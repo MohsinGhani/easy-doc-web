@@ -1,0 +1,142 @@
+{
+  "Dermatology": [
+    {
+      "name": "Acne Treatment Consultation",
+      "description": "Comprehensive assessment of acne and a personalized treatment plan to improve skin clarity.",
+      "price": 150,
+      "duration": 30
+    },
+    {
+      "name": "Skin Cancer Screening",
+      "description": "A thorough examination of the skin to detect early signs of skin cancer, including suspicious moles.",
+      "price": 200,
+      "duration": 45
+    },
+    {
+      "name": "Eczema Management",
+      "description": "Consultation to help manage chronic eczema through lifestyle adjustments and medication.",
+      "price": 120,
+      "duration": 30
+    }
+  ],
+  "Cardiology": [
+    {
+      "name": "Heart Health Checkup",
+      "description": "A comprehensive assessment of heart health, including blood pressure and cholesterol levels.",
+      "price": 250,
+      "duration": 60
+    },
+    {
+      "name": "ECG Consultation",
+      "description": "Electrocardiogram consultation to monitor heart function and diagnose any abnormalities.",
+      "price": 180,
+      "duration": 40
+    },
+    {
+      "name": "Cholesterol Management",
+      "description": "A consultation for personalized strategies to manage and lower cholesterol levels.",
+      "price": 120,
+      "duration": 30
+    }
+  ],
+  "Dentistry": [
+    {
+      "name": "Dental Cleaning and Checkup",
+      "description": "Routine dental cleaning and a comprehensive oral health checkup.",
+      "price": 100,
+      "duration": 45
+    },
+    {
+      "name": "Teeth Whitening Consultation",
+      "description": "Consultation for teeth whitening options, including in-office or at-home treatments.",
+      "price": 180,
+      "duration": 30
+    },
+    {
+      "name": "Cavity Filling",
+      "description": "Filling of cavities using state-of-the-art techniques to restore tooth health and function.",
+      "price": 90,
+      "duration": 30
+    }
+  ],
+  "Pediatrics": [
+    {
+      "name": "Routine Checkup",
+      "description": "General health checkup for children, including growth tracking and immunizations.",
+      "price": 120,
+      "duration": 30
+    },
+    {
+      "name": "Developmental Screening",
+      "description": "Screening to track your child's developmental milestones and provide guidance if delays are detected.",
+      "price": 140,
+      "duration": 45
+    },
+    {
+      "name": "Immunization Consultation",
+      "description": "Consultation and administration of required immunizations for children.",
+      "price": 100,
+      "duration": 20
+    }
+  ],
+  "Psychiatry": [
+    {
+      "name": "Initial Psychiatric Evaluation",
+      "description": "A thorough evaluation of mental health to diagnose and create a personalized treatment plan.",
+      "price": 220,
+      "duration": 60
+    },
+    {
+      "name": "Follow-up Consultation",
+      "description": "Regular follow-up consultations to monitor mental health progress and adjust treatment plans as needed.",
+      "price": 150,
+      "duration": 45
+    },
+    {
+      "name": "Counseling Session",
+      "description": "One-on-one counseling session to support mental health and emotional well-being.",
+      "price": 130,
+      "duration": 60
+    }
+  ],
+  "Orthopedics": [
+    {
+      "name": "Joint Pain Consultation",
+      "description": "Evaluation and treatment plan for joint pain, including arthritis or injury-related issues.",
+      "price": 180,
+      "duration": 45
+    },
+    {
+      "name": "Fracture Assessment",
+      "description": "Assessment and treatment plan for fractures, including X-ray review and recovery strategies.",
+      "price": 200,
+      "duration": 60
+    },
+    {
+      "name": "Sports Injury Consultation",
+      "description": "Consultation to evaluate sports injuries and develop a personalized recovery plan.",
+      "price": 220,
+      "duration": 45
+    }
+  ],
+  "Gynecology": [
+    {
+      "name": "Routine Gynecological Exam",
+      "description": "Annual gynecological exam, including Pap smear and breast exam for women’s health.",
+      "price": 150,
+      "duration": 45
+    },
+    {
+      "name": "Fertility Consultation",
+      "description": "Consultation to assess fertility health and discuss options for conception.",
+      "price": 200,
+      "duration": 60
+    },
+    {
+      "name": "Prenatal Checkup",
+      "description": "Comprehensive prenatal care checkup for expectant mothers.",
+      "price": 180,
+      "duration": 30
+    }
+  ]
+}

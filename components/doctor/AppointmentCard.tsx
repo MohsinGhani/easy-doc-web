@@ -25,9 +25,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Top Section: Name, Gender, Age, Location */}
       <div className="flex items-start flex-wrap gap-2">
         <Image
-          src={`https://randomuser.me/api/portraits/men/${Math.floor(
+          src={`https://avatar.iran.liara.run/public/${Math.floor(
             Math.random() * 100
-          )}.jpg`}
+          )}`}
           alt="doctor"
           width={50}
           height={50}

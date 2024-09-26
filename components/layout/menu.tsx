@@ -33,7 +33,7 @@ export function Menu({ isOpen }: MenuProps) {
   const [menuList, setMenuList] = useState(getMenuList(pathname));
   const [value, setValue] = useState("");
   const { signout } = useAuth();
-  const { avatar, email, family_name, given_name } = useAppSelector(
+  const { picture, email, family_name, given_name } = useAppSelector(
     (state) => state.auth.user
   );
 
@@ -134,58 +134,56 @@ export function Menu({ isOpen }: MenuProps) {
         {/* Lower menu items (FAQ & Settings) */}
         <div className="flex flex-col justify-end">
           <ul className="space-y-1 px-2">
-            {lowerMenuItems.map(
-              ({ href, label, icon, active }, index) => (
-                <li key={index} className="w-full">
-                  <div className="w-full" key={index}>
-                    <TooltipProvider disableHoverableContent>
-                      <Tooltip delayDuration={100}>
-                        <TooltipTrigger
-                          asChild
-                          className={cn(
-                            "w-full h-10 mb-1",
-                            buttonVariants({
-                              variant: active ? "secondary" : "ghost",
-                            })
-                          )}
-                        >
-                          <Link href={href}>
-                            <div
+            {lowerMenuItems.map(({ href, label, icon, active }, index) => (
+              <li key={index} className="w-full">
+                <div className="w-full" key={index}>
+                  <TooltipProvider disableHoverableContent>
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger
+                        asChild
+                        className={cn(
+                          "w-full h-10 mb-1",
+                          buttonVariants({
+                            variant: active ? "secondary" : "ghost",
+                          })
+                        )}
+                      >
+                        <Link href={href}>
+                          <div
+                            className={cn(
+                              "flex items-center h-full w-full justify-start",
+                              {
+                                "justify-center": !isOpen,
+                                "text-primary": active,
+                              }
+                            )}
+                          >
+                            <span
+                              className={cn(isOpen === false ? "" : "mr-3")}
+                            >
+                              {icon}
+                            </span>
+                            <p
                               className={cn(
-                                "flex items-center h-full w-full justify-start",
-                                {
-                                  "justify-center": !isOpen,
-                                  "text-primary": active,
-                                }
+                                "max-w-[200px] truncate",
+                                isOpen === false
+                                  ? "-translate-x-96 opacity-0 hidden"
+                                  : "translate-x-0 opacity-100"
                               )}
                             >
-                              <span
-                                className={cn(isOpen === false ? "" : "mr-3")}
-                              >
-                                {icon}
-                              </span>
-                              <p
-                                className={cn(
-                                  "max-w-[200px] truncate",
-                                  isOpen === false
-                                    ? "-translate-x-96 opacity-0 hidden"
-                                    : "translate-x-0 opacity-100"
-                                )}
-                              >
-                                {label}
-                              </p>
-                            </div>
-                          </Link>
-                        </TooltipTrigger>
-                        {isOpen === false && (
-                          <TooltipContent side="right">{label}</TooltipContent>
-                        )}
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </li>
-              )
-            )}
+                              {label}
+                            </p>
+                          </div>
+                        </Link>
+                      </TooltipTrigger>
+                      {isOpen === false && (
+                        <TooltipContent side="right">{label}</TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </li>
+            ))}
 
             {/* Manually added Signout Button */}
             <li
@@ -208,7 +206,11 @@ export function Menu({ isOpen }: MenuProps) {
                                 : "opacity-100"
                             )}
                           >
-                            <AvatarImage src={avatar} alt="Avatar" />
+                            <AvatarImage
+                              src={picture}
+                              alt="Avatar"
+                              className="object-cover rounded-full object-top"
+                            />
                             <AvatarFallback className="bg-transparent">
                               JD
                             </AvatarFallback>
