@@ -90,7 +90,7 @@ const AppointmentSection = () => (
     <div className="absolute overflow-hidden w-[70%] h-[60%] bottom-0 bg-primary rounded-tl-full rounded-tr-full -z-[1]" />
 
     {/* Image Overlay */}
-    <div className="absolute flex items-center justify-center w-1/2 bottom-4">
+    <div className="absolute hidden md:flex items-center justify-center w-1/2 bottom-4">
       <Image
         src="/assets/images/landingpagemain-img.png"
         width={1000}
