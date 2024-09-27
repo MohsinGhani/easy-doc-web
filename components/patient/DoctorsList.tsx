@@ -19,8 +19,8 @@ const doctors: Doctor[] = [
   },
   {
     name: "Dr. John",
-    specialty: "Dentist",
-    experience: "05 years experience",
+     specialty: "Dentist",
+   experience: "05 years experience",
     location: "Florida, USA",
     rating: 4,
     available: true,

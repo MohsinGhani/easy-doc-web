@@ -3,6 +3,7 @@ import Cardscarousel from '../ui/cardscarousel';
 
 const MedicalServices = () => {
   return (
+    
     <div className="relative w-full ">
         <div className='w-full flex flex-col justify-center items-center pt-10 px-4'>
   <div className="font-poppins font-medium text-[18px] leading-[27px] text-center text-primary">
@@ -17,17 +18,15 @@ const MedicalServices = () => {
   </div>
 </div>
 
+        <div>
     <div 
       className="absolute top-24 right-0  w-[600px] h-[500px] bg-no-repeat bg-right bg-cover hidden md:block"
       style={{ backgroundImage: 'url("/assets/images/landingpage-bg.png")' }}
     >
     </div>
-        <div>
-            <Cardscarousel/>
-        </div>
-  
-   
-  </div>
+    <Cardscarousel/>
+    </div>
+    </div>
   
   )
 }

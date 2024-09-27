@@ -25,7 +25,7 @@ const AboutusPage = () => {
           <div className="mt-8 ">
             <div className="flex gap-3 items-start md:items-center text-center ml-[-12px] ">
               <BlueCircle />
-              <h2 className="text-base font-semibold ">
+              <h2 className="text-base font-semibold">
                 100% free app designed to help you find the right doctor for
                 you.
               </h2>
@@ -48,13 +48,14 @@ const AboutusPage = () => {
         </div>
 
         <div>
-          <Image
-            src={"/assets/images/aboutpageimg.png"}
-            width="1000"
-            height="1000"
-            alt="man-image"
-            className="w-full h-auto object-contain"
-          />
+        <Image
+    src="/assets/images/aboutpageimg.png"
+    width={1500}  
+    height={1500} 
+    alt="man-image"
+    className="object-cover w-full h-auto" 
+/>
+
         </div>
       </div>
     </div>

@@ -35,32 +35,27 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
         tittle: "Primary Health Care",
         description: "EasyDoc is a free, health app that goes beyond matching you with doctors. It actively helps you find the right doctor based on your medical and personal needs and connects you with your needs and connects you with ",
       },
-    // ... More items can be added here
   ];
 
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   const handleDotClick = (index: number) => {
     setCurrentIndex(index);
-    // Add logic to change the slide if necessary
   };
 
-  // Update the current index based on the carousel's change event
   const handleCarouselChange = (event: React.FormEvent<HTMLDivElement>) => {
-    const newIndex = getNewIndexFromEvent(event); // Replace this with your method to get the new index
+    const newIndex = getNewIndexFromEvent(event); 
     setCurrentIndex(newIndex);
   };
 
   return (
     <div className={`w-full flex flex-col items-center justify-center ${className}`}>
-      {/* Carousel Container */}
       <Carousel
         opts={{
           align: "start",
-          // Any other valid options
         }}
         className="w-full"
-        onChange={handleCarouselChange} // Use the event handler that captures the event
+        onChange={handleCarouselChange}
       >
         <CarouselContent>
           {contentData.map((item, index) => (
@@ -71,7 +66,7 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
                     <Image
                       className="object-cover"
                       src={item.image}
-                      width={90} // Image size remains consistent
+                      width={90} 
                       height={60}
                       alt="carousel-image"
                     />
@@ -84,7 +79,7 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
   {item.description}
 </div>
 
-                    </div>
+                  </div>
                   </CardContent>
                 </Card>
               </div>
@@ -93,13 +88,12 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
         </CarouselContent>
       </Carousel>
 
-      {/* Dots Navigation directly beneath the cards */}
       <div className="flex justify-center mt-4">
         {contentData.map((_, index) => (
           <div
             key={index}
             className={`w-3 h-3 mx-1 rounded-full cursor-pointer ${currentIndex === index ? 'bg-primary' : 'bg-gray-300'}`}
-            onClick={() => handleDotClick(index)} // Call the handler on dot click
+            onClick={() => handleDotClick(index)} 
           />
         ))}
       </div>
@@ -109,9 +103,7 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
 
 export default CarousalsSlidder;
 
-// Function to determine the new index from the event
 function getNewIndexFromEvent(event: React.FormEvent<HTMLDivElement>): number {
-  // Implement your logic to determine the index from the event
-  // For example, if the event contains the new index, extract it here
-  return 0; // Replace with actual logic
+  
+  return 0; 
 }
