@@ -5,10 +5,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 // Fetch all payments
 const fetchAllPayments = createAsyncThunk<Payment[]>(
   "payment/fetchAllPayments",
-  async (_, { rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
     try {
+      const state = getState() as RootState;
+      const { role, userId } = state.auth.user;
+
       const response = await paymentsApiClient.get(
-        "/payments/all?status=COMPLETED"
+        `/payments/all?status=COMPLETED&limit=10&role=${role}&userId=${userId}`
       );
       return response.data.data as Payment[];
     } catch (error: any) {

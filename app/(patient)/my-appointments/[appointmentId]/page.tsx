@@ -13,7 +13,7 @@ const BannerData = {
   description: "",
   location: [
     { name: "Home", path: "/" },
-    { name: "Appointments", path: "/appointments" },
+    { name: "Appointments", path: "/my-appointments" },
     { name: "Appointment Details", path: `#` },
   ],
 };
@@ -33,3 +33,4 @@ const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({
 };
 
 export default AppointmentDetailsPage;
+  

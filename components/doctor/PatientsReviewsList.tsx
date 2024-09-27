@@ -19,6 +19,8 @@ const PatientsReviewsList = ({ viewAll = false }: PatientsReviewsListProps) => {
     loading,
   } = useAppSelector((state) => state.auth);
 
+  if (loading) <Loader />;
+
   return (
     <Card>
       {viewAll && (

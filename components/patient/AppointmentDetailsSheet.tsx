@@ -4,30 +4,33 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetClose,
   Sheet,
   SheetFooter,
 } from "@/components/ui/sheet";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, X } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectRequestDialog from "../RejectRequestDialog";
+import { formatTimeForUI } from "@/lib/utils";
+import RejectAppointmentDialog from "./CancelAppointmentDialog";
 
-interface RequestReviewSheetProps {
-  selectedRequest: Appointment | null;
+interface AppointmentDetailsSheetProps {
+  selectedAppointment: Appointment | null;
   open?: boolean;
   setOpen: (open: boolean) => void;
 }
 
-const RequestReviewSheet = ({
-  selectedRequest,
+const AppointmentDetailsSheet = ({
+  selectedAppointment,
   open,
   setOpen,
-}: RequestReviewSheetProps) => {
+}: AppointmentDetailsSheetProps) => {
   const handleClose = () => {
     setOpen(false);
   };
 
-  if (!selectedRequest) return null;
+  if (!selectedAppointment) return null;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -42,26 +45,26 @@ const RequestReviewSheet = ({
             <div className="flex items-center gap-2">
               <Avatar>
                 <AvatarImage
-                  src={selectedRequest?.patient.picture}
+                  src={selectedAppointment?.patient.picture}
                   alt="Avatar"
                   width={50}
                   height={50}
                   className="object-cover rounded-full object-top"
                 />
                 <AvatarFallback>
-                  {selectedRequest.patient.patient_name
+                  {selectedAppointment.patient.patient_name
                     .charAt(0)
                     .toUpperCase() +
-                    selectedRequest.patient.patient_name.slice(1)}
+                    selectedAppointment.patient.patient_name.slice(1)}
                 </AvatarFallback>
               </Avatar>
 
               <div className="flex flex-col gap-1">
                 <h2 className="font-medium sm:text-2xl text-lg leading-none">
-                  {selectedRequest?.patient.patient_name}
+                  {selectedAppointment?.patient.patient_name}
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  {selectedRequest?.speciality}
+                  {selectedAppointment?.speciality}
                 </p>
               </div>
             </div>
@@ -73,13 +76,13 @@ const RequestReviewSheet = ({
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Consulting for:</p>
-                <p className="font-medium">{`Dr. ${selectedRequest?.consulting_for}`}</p>
+                <p className="font-medium">{`Dr. ${selectedAppointment?.consulting_for}`}</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Patient name:</p>
                 <p className="font-medium">
-                  {selectedRequest?.patient.patient_name}
+                  {selectedAppointment?.patient.email}
                 </p>
               </div>
             </div>
@@ -87,12 +90,14 @@ const RequestReviewSheet = ({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Gender:</p>
-                <p className="font-medium">{selectedRequest?.patient.gender}</p>
+                <p className="font-medium">
+                  {selectedAppointment?.patient.gender}
+                </p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Age:</p>
-                <p className="font-medium">{selectedRequest?.patient.age}</p>
+                <p className="font-medium">{selectedAppointment.patient.age}</p>
               </div>
             </div>
 
@@ -100,13 +105,13 @@ const RequestReviewSheet = ({
               <div className="space-y-1">
                 <p className="text-muted-foreground">Blood Group:</p>
                 <p className="font-medium">
-                  {selectedRequest?.patient.blood_group}
+                  {selectedAppointment.patient.blood_group}-
                 </p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Specialty:</p>
-                <p className="font-medium">{selectedRequest?.speciality}</p>
+                <p className="font-medium">{selectedAppointment.speciality}</p>
               </div>
             </div>
 
@@ -114,7 +119,7 @@ const RequestReviewSheet = ({
               <div className="space-y-1">
                 <p className="text-muted-foreground">Consultation type:</p>
                 <p className="font-medium">
-                  {selectedRequest?.consultation_type}
+                  {selectedAppointment.consultation_type}
                 </p>
               </div>
 
@@ -123,7 +128,7 @@ const RequestReviewSheet = ({
                   Appointment date & time:
                 </p>
                 <p className="font-medium">
-                  {`${selectedRequest.appointment_date} - ${selectedRequest.scheduled_date.start_time} - ${selectedRequest.scheduled_date.end_time}`}
+                  {`${selectedAppointment.appointment_date} - ${selectedAppointment.scheduled_date.start_time} - ${selectedAppointment.scheduled_date.end_time}`}
                 </p>
               </div>
             </div>
@@ -131,13 +136,13 @@ const RequestReviewSheet = ({
             <div className="space-y-1">
               <p className="text-muted-foreground">Contact no:</p>
               <p className="font-medium">
-                {selectedRequest.patient.phone_number}
+                {selectedAppointment.patient.phone_number}
               </p>
             </div>
 
             <div className="space-y-1">
               <p className="text-muted-foreground">Email:</p>
-              <p className="font-medium">{selectedRequest.patient.email}</p>
+              <p className="font-medium">{selectedAppointment.patient.email}</p>
             </div>
 
             <div />
@@ -145,7 +150,7 @@ const RequestReviewSheet = ({
             <div className="space-y-1">
               <p className="text-muted-foreground">Allergies:</p>
               <div className="flex gap-2">
-                {selectedRequest.allergies.map(
+                {selectedAppointment.allergies.map(
                   (allergy: string, index: number) => (
                     <div
                       key={index}
@@ -161,7 +166,7 @@ const RequestReviewSheet = ({
             <div className="space-y-1">
               <p className="text-muted-foreground">Current medications:</p>
               <div className="flex gap-2">
-                {selectedRequest.current_medications.map(
+                {selectedAppointment.current_medications.map(
                   (medication: string, index: number) => (
                     <div
                       key={index}
@@ -176,14 +181,14 @@ const RequestReviewSheet = ({
 
             <div className="space-y-4">
               <SheetTitle>Description:</SheetTitle>
-              <p>{selectedRequest.description}</p>
+              <p>{selectedAppointment.description}</p>
             </div>
 
             <div className="space-y-4">
               <SheetTitle>Documents:</SheetTitle>
 
               <div className="grid gap-4">
-                {selectedRequest?.attachments?.map(
+                {selectedAppointment?.attachments?.map(
                   (attachment: any, index: number) => (
                     <a
                       href={attachment.url}
@@ -205,12 +210,14 @@ const RequestReviewSheet = ({
         </SheetHeader>
 
         <SheetFooter className="items-center justify-center gap-4 flex-row">
-          <RejectRequestDialog
-            name={selectedRequest?.patient.patient_name}
-            onReject={() => console.log("rejected", selectedRequest.patientId)}
+          <RejectAppointmentDialog
+            reason={selectedAppointment.reason}
+            onReject={() =>
+              console.log("rejected", selectedAppointment.doctorId)
+            }
             trigger={
-              <Button size={"lg"} variant={"outline"}>
-                Reject
+              <Button variant="outline" size="icon">
+                <X className="h-5 w-5 cursor-pointer" />
               </Button>
             }
           />
@@ -224,4 +231,4 @@ const RequestReviewSheet = ({
   );
 };
 
-export default RequestReviewSheet;
+export default AppointmentDetailsSheet;

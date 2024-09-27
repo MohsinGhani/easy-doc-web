@@ -4,7 +4,6 @@ import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import UpcomingAppointmentsList from "@/components/doctor/UpcomingAppointmentsList";
-import { useEffect, useState } from "react";
 import {
   Carousel,
   CarouselContent,

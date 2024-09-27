@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { Appointment } from "@/types/appointment";
 import { AlarmCheck } from "lucide-react";
 
 interface AppointmentsListProps {
@@ -16,15 +15,15 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
     <div className="space-y-4 max-h-[400px] overflow-y-auto">
       {appointments.map((appointment) => (
         <div
-          key={appointment.id}
+          key={appointment.appointmentId}
           className="flex items-center justify-between cursor-pointer"
           onClick={() => onSelect(appointment)}
         >
           <div>
             <p className="text-zinc-600 text-xs font-normal leading-none mb-4">Today, 08:30 am - 10:30 am</p>
-            <p className="text-sm font-semibold">{appointment.time}</p>
-            <p className="text-sm text-gray-600">{appointment.patientName}</p>
-            <p className="text-xs text-primary">{appointment.issue}</p>
+            <p className="text-sm font-semibold">{appointment.scheduled_date.start_time}</p>
+            <p className="text-sm text-gray-600">{appointment.patient.patient_name}</p>
+            <p className="text-xs text-primary">{appointment.reason}</p>
           </div>
           <Button variant="ghost" size={"icon"}>
             <AlarmCheck className="w-6 h-6 fill-white" />

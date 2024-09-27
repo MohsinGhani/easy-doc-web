@@ -1,6 +1,5 @@
 import PatientsReviewsList from "@/components/doctor/PatientsReviewsList";
 import { ContentLayout } from "@/components/layout/content-layout";
-import { useAppSelector } from "@/lib/hooks";
 
 export default function PatientsReviewaPage() {
   return (

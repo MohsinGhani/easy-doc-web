@@ -4,8 +4,8 @@ import MyAppointmentsList from "@/components/patient/MyAppointmentsList";
 import React from "react";
 
 const BannerData = {
-  title: "Book Appointment",
-  description: "",
+  title: "My Appointments",
+  description: "Here you can view all your appointments",
   location: [
     { name: "Home", path: "/" },
     { name: "My Appointments", path: "#" },

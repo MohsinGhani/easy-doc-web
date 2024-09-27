@@ -2,10 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Button, buttonVariants } from "../ui/button";
 import { useAppSelector } from "@/lib/hooks";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import CompleteProfileDialog from "../doctor/CompleteProfileDialog";
 
 const ProfileCompletionCard: React.FC = () => {
@@ -47,16 +44,8 @@ const ProfileCompletionCard: React.FC = () => {
               />
             </div>
           </div>
-          {/* <Link
-            href={"/settings"}
-            className={cn(
-              "w-full mt-4",
-              buttonVariants({ variant: "default" })
-            )}
-          >
-            Complete Profile
-          </Link> */}
-           <CompleteProfileDialog />
+
+          <CompleteProfileDialog />
         </>
       )}
     </div>

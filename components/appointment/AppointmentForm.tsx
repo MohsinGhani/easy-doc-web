@@ -111,6 +111,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         blood_group: data.blood_group,
         phone_number: data.phone_number,
         email: data.email,
+        age: new Date().getFullYear() - new Date(new Date(data.dob).toISOString()).getFullYear()
       };
 
       const newAppointment = {

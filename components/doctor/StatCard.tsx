@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-// import { appointmentsThunks } from "@/lib/features/appointments/appointmentsThunks";
 
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -14,33 +13,36 @@ import {
 } from "@/components/ui/tooltip";
 import Link from "next/link";
 import Image from "next/image";
+import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
 
 interface Props {
   heading: string;
   className?: string;
-  status: "pending" | "active" | "completed" | "cancelled";
+  status: "PENDING_APPROVAL" | "UPCOMING" | "COMPLETED" | "CANCELLED";
   icon: string;
 }
 
 const AppointmentsEnumCard = ({ heading, className, status, icon }: Props) => {
-  // const { appointments } = useAppSelector((state) => state.appointments);
-  // const dispatch = useAppDispatch();
+  const { allAppointments } = useAppSelector((state) => state.appointment);
+  const dispatch = useAppDispatch();
 
-  // const filteredAppointments = appointments.filter((a) => a.status === status);
+  const filteredAppointments = allAppointments.filter(
+    (a) => a.status === status
+  );
 
-  // useEffect(() => {
-  //   dispatch(appointmentsThunks.getAllAppointments());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(appointmentThunks.fetchAllAppointments());
+  }, [dispatch]);
 
   return (
     <Card
       className={cn(
         `w-1/3 h-60 flex flex-col items-center justify-center gap-7 cursor-pointer`,
         {
-          "bg-appointments": status === "pending",
-          "bg-yellow-300": status === "active",
-          "bg-green-200": status === "completed",
-          "bg-destructive": status === "cancelled",
+          "bg-appointments": status === "PENDING_APPROVAL",
+          "bg-yellow-300": status === "UPCOMING",
+          "bg-green-200": status === "COMPLETED",
+          "bg-destructive": status === "CANCELLED",
         }
       )}
     >
@@ -52,7 +54,6 @@ const AppointmentsEnumCard = ({ heading, className, status, icon }: Props) => {
           alt="appointments"
           className="size-8 w-fit"
         />
-        {/* <h2 className="text-32-bold text-white">{count}</h2> */}
         <Link href={""}>
           <TooltipProvider>
             <Tooltip delayDuration={0}>
@@ -63,8 +64,7 @@ const AppointmentsEnumCard = ({ heading, className, status, icon }: Props) => {
                     className
                   )}
                 >
-                  {/* {filteredAppointments.length} */}
-                  250
+                  {filteredAppointments.length}
                 </span>
               </TooltipTrigger>
               <TooltipContent

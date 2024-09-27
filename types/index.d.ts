@@ -109,6 +109,8 @@ declare type User = {
   state: string;
   zip_code: string;
   dob: string;
+  age: number;
+  blood_group: string
   gender: Gender;
   location: string;
   overallRating: number;
@@ -168,6 +170,7 @@ declare type Appointment = {
   note: string;
   speciality: string;
   consultation_type: string;
+  consulting_for: string;
   scheduled_date: DateRange;
   appointment_date: string;
   visible_date: string;

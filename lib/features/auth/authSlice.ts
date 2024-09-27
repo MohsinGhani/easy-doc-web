@@ -47,6 +47,8 @@ const initialState: authState = {
     state: "",
     zip_code: "",
     patient_name: "",
+    age: 0,
+    blood_group: "",
   },
   loading: false,
   error: null,

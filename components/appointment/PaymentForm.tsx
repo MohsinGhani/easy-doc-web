@@ -23,8 +23,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
     (state) => state.appointment
   );
 
-  if (appointmentLoader || loading) return <Loader />;
-
   const stripe = useStripe();
   const elements = useElements();
 
@@ -54,6 +52,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
       setLoader(false);
     }
   };
+
+  if (appointmentLoader || loading) return <Loader />;
 
   return (
     <form className="grid lg:grid-cols-3 gap-8" onSubmit={handleSubmit}>

@@ -12,11 +12,6 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({ consultingFee }) => {
     (state) => state.appointment
   );
 
-  const handleProceedToCheckout = () => {
-    // Handle checkout logic here
-    console.log("Proceed to checkout clicked!");
-  };
-
   return (
     <div className="max-w-sm">
       <div className="p-5 rounded-t-xl bg-primary text-white">
@@ -35,7 +30,6 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({ consultingFee }) => {
             </div>
 
             <Button
-              onClick={handleProceedToCheckout}
               variant={"default"}
               size={"xl"}
               className="w-full"

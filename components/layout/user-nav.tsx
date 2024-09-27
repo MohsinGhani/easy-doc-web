@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/lib/hooks";
 import { useAuth } from "@/hooks/useAuth";
-import { Switch } from "../ui/switch";
 import AvailabilitySwitch from "../doctor/AvailabilitySwitch";
 
 export function UserNav() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Button, buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
 import {
   ArrowUpDown,
   EllipsisVertical,
@@ -26,9 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { cn, formatTimeForUI } from "@/lib/utils";
 import RejectAppointmentDialog from "../patient/CancelAppointmentDialog";
-import Link from "next/link";
 
 interface requestsColumnsProps {
   handlePreview: (data: Appointment) => void;
@@ -38,6 +36,9 @@ interface requestsColumnsProps {
 interface upcomingColumnsProps {
   handleMeetingJoin: (data: Appointment) => void;
   handleChat: (data: Appointment) => void;
+}
+interface patientColumnsProps {
+  handlePreview: (data: Appointment) => void;
 }
 
 export const paymentsColumns = (): ColumnDef<Payment>[] => {
@@ -227,7 +228,8 @@ export const requestsColumns = ({
               className="object-cover rounded-full object-top"
             />
             <AvatarFallback>
-              {row.original.patient.given_name.charAt(0)}
+              {row.original.patient.given_name.charAt(0)}{" "}
+              {row.original.patient.family_name.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div>
@@ -235,13 +237,15 @@ export const requestsColumns = ({
             {/* <div className="text-sm text-muted-foreground">
               {row.getValue("email")}
             </div> */}
-            <div className="text-sm text-muted-foreground">London , UK</div>
+            <div className="text-sm text-muted-foreground">
+              {row.original.patient.location}
+            </div>
           </div>
         </div>
       ),
     },
     {
-      accessorKey: "age",
+      accessorKey: "patient.age",
       header: ({ column }) => {
         return (
           <Button
@@ -256,7 +260,7 @@ export const requestsColumns = ({
       },
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.getValue("age")}, {row.original.patient.gender}
+          {row.original.patient.age}, {row.original.patient.gender}
         </div>
       ),
       meta: { className: "hidden sm:table-cell" },
@@ -275,37 +279,29 @@ export const requestsColumns = ({
           </Button>
         );
       },
-      cell: ({ getValue }) => {
-        const value = getValue() as { from: Date | string; to: Date | string };
+      cell: ({ getValue, row }) => {
+        const value = getValue() as DateRange;
+        const appointment_date = row.original.appointment_date;
 
-        if (!value || !value.from || !value.to) {
+        if (!appointment_date || !value) {
           return "N/A";
         }
 
-        const fromDate =
-          value.from instanceof Date ? value.from : new Date(value.from);
-        const toDate = value.to instanceof Date ? value.to : new Date(value.to);
+        const appointmentDate = new Date(appointment_date);
 
-        if (!isValid(fromDate) || !isValid(toDate)) {
+        if (!isValid(appointmentDate)) {
           return "Invalid Date";
         }
 
-        return `${format(fromDate, "MMM dd, HH:mm")} - ${format(
-          toDate,
-          "MMM dd, HH:mm"
-        )}`;
+        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
       },
-      filterFn: (row, columnId, filterValue: { start: Date; end: Date }) => {
-        const cellValue = row.getValue(columnId) as { from: Date; to: Date };
-        if (!cellValue || !filterValue) return true;
+      filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
         const { start, end } = filterValue;
-        const cellDateFrom = setYear(new Date(cellValue.from), 2024);
-        const cellDateTo = setYear(new Date(cellValue.to), 2024);
-        return (
-          isWithinInterval(cellDateFrom, { start, end }) ||
-          isWithinInterval(cellDateTo, { start, end }) ||
-          (cellDateFrom <= start && cellDateTo >= end)
-        );
+
+        return isWithinInterval(appointmentDate, { start, end });
       },
     },
     {
@@ -450,7 +446,9 @@ export const requestsColumns = ({
   ];
 };
 
-export const patientColumns = (): ColumnDef<Appointment>[] => {
+export const patientColumns = ({
+  handlePreview,
+}: patientColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
       header: "S.no",
@@ -484,11 +482,10 @@ export const patientColumns = (): ColumnDef<Appointment>[] => {
           return "Invalid Date";
         }
 
-        return `${formatTimeForUI(appointmentDate)} - ${value.start_time} - ${
-          value.end_time
-        }`;
+        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
       },
-      filterFn: (row, columnId, filterValue: { start: Date; end: Date }) => {
+      filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
+        console.log("🚀 ~ filterValue:", filterValue)
         const appointment_date = row.original.appointment_date;
         if (!appointment_date || !filterValue) return true;
         const appointmentDate = new Date(appointment_date);
@@ -532,6 +529,24 @@ export const patientColumns = (): ColumnDef<Appointment>[] => {
       },
     },
     {
+      accessorKey: "status",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="px-1.5"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span>Status</span>
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("status")}</div>
+      ),
+    },
+    {
       id: "actions",
       header: "Actions",
       enableHiding: false,
@@ -543,14 +558,13 @@ export const patientColumns = (): ColumnDef<Appointment>[] => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Link
-                      href={`/my-appointments/${row.original.appointmentId}`}
-                      className={cn(
-                        buttonVariants({ variant: "outline", size: "icon" })
-                      )}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handlePreview(row.original)}
                     >
                       <EyeIcon className="h-5 w-5 cursor-pointer" />
-                    </Link>
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">View Details</TooltipContent>
                 </Tooltip>
@@ -586,15 +600,14 @@ export const patientColumns = (): ColumnDef<Appointment>[] => {
                   side="left"
                   className="flex flex-col items-start gap-2 w-40"
                 >
-                  <Link
-                    href={`/my-appointments/${row.original.appointmentId}`}
-                    className={cn(
-                      "w-full justify-start",
-                      buttonVariants({ variant: "outline", size: "sm" })
-                    )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handlePreview(row.original)}
                   >
                     <EyeIcon className="h-5 w-5 mr-2" /> View Details
-                  </Link>
+                  </Button>
                   <RejectAppointmentDialog
                     reason={row.original.reason}
                     onReject={() =>
@@ -684,35 +697,29 @@ export const upcomingColumns = ({
           </Button>
         );
       },
-      cell: ({ getValue }) => {
-        const value = getValue() as { from: Date | string; to: Date | string };
+      cell: ({ getValue, row }) => {
+        const value = getValue() as DateRange;
+        const appointment_date = row.original.appointment_date;
 
-        const fromDate =
-          value.from instanceof Date ? value.from : new Date(value.from);
-        const toDate = value.to instanceof Date ? value.to : new Date(value.to);
+        if (!appointment_date || !value) {
+          return "N/A";
+        }
 
-        if (!isValid(fromDate) || !isValid(toDate)) {
+        const appointmentDate = new Date(appointment_date);
+
+        if (!isValid(appointmentDate)) {
           return "Invalid Date";
         }
 
-        const formattedDate = `${format(fromDate, "MMM dd, HH:mm")} - ${format(
-          toDate,
-          "MMM dd, HH:mm"
-        )}`;
-
-        return <div className="text-sm font-normal">{formattedDate}</div>;
+        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
       },
-      filterFn: (row, columnId, filterValue: { start: Date; end: Date }) => {
-        const cellValue = row.getValue(columnId) as { from: Date; to: Date };
-        if (!cellValue || !filterValue) return true;
+      filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
         const { start, end } = filterValue;
-        const cellDateFrom = setYear(new Date(cellValue.from), 2024);
-        const cellDateTo = setYear(new Date(cellValue.to), 2024);
-        return (
-          isWithinInterval(cellDateFrom, { start, end }) ||
-          isWithinInterval(cellDateTo, { start, end }) ||
-          (cellDateFrom <= start && cellDateTo >= end)
-        );
+
+        return isWithinInterval(appointmentDate, { start, end });
       },
     },
     {
@@ -838,113 +845,3 @@ export const upcomingColumns = ({
     },
   ];
 };
-
-export function createAppointment(id: string, index: number): Appointment {
-  return {
-    doctorId: id,
-    patientId: `PID-${id}`,
-    doctor: {
-      picture: `https://i.pravatar.cc/150?img=${index}`,
-      given_name: `Patient ${id}`,
-      family_name: `Surname ${id}`,
-      email: `patient${id}@example.com`,
-      phone_number: `+123456789${id}`,
-      city: `City ${id}`,
-      country: `Country ${id}`,
-      available: false,
-      availableDays: [],
-      awards: [],
-      bio: `Bio ${id}`,
-      designation: "",
-      display_name: "",
-      dob: format(
-        new Date(Date.now() - 30 * 365 * 24 * 60 * 60 * 1000),
-        "yyyy-MM-dd"
-      ),
-      education: [],
-      experiences: [],
-      average_fee: 0,
-      gender: "male",
-      languages: [],
-      location: "",
-      overallRating: 0,
-      reviews: [],
-      role: "patient",
-      userId: `UID-${id}`,
-      verified: 0,
-      years_of_experience: "0",
-      services: [],
-      profile_completion: 0,
-      profile_status: "COMPLETED",
-      ratingsBreakdownPercentages: [],
-    },
-    patient: {
-      picture: `https://i.pravatar.cc/150?img=${index}`,
-      given_name: `Patient ${id}`,
-      family_name: `Surname ${id}`,
-      email: `patient${id}@example.com`,
-      phone_number: `+123456789${id}`,
-      city: `City ${id}`,
-      country: `Country ${id}`,
-      available: false,
-      availableDays: [],
-      awards: [],
-      bio: `Bio ${id}`,
-      designation: "",
-      display_name: "",
-      dob: format(
-        new Date(Date.now() - 30 * 365 * 24 * 60 * 60 * 1000),
-        "yyyy-MM-dd"
-      ),
-      education: [],
-      experiences: [],
-      average_fee: 0,
-      gender: "male",
-      languages: [],
-      location: "",
-      overallRating: 0,
-      reviews: [],
-      role: "patient",
-      userId: `UID-${id}`,
-      verified: 0,
-      years_of_experience: "0",
-      services: [],
-      profile_completion: 0,
-      profile_status: "COMPLETED",
-      ratingsBreakdownPercentages: [],
-    },
-    scheduled_date: {
-      from: new Date(Date.now() + Math.random() * (24 * 60 * 60 * 1000)),
-      to: new Date(
-        Date.now() + Math.random() * (24 * 60 * 60 * 1000) + 30 * 60 * 1000
-      ),
-    },
-    consultationType: "General",
-    speciality: "General",
-    attachments: [
-      {
-        id: `ATT-${id}-1`,
-        url: `https://i.pravatar.cc/150?img=${index}`,
-        name: `Document 1`,
-        mimeType: `application/pdf`,
-      },
-      {
-        id: `ATT-${id}-2`,
-        url: `https://i.pravatar.cc/150?img=${index + 1}`,
-        name: `Document 2`,
-        mimeType: `application/pdf`,
-      },
-    ],
-    allergies: [],
-    current_medications: [],
-    description: "",
-    paid: false,
-    payment: {
-      amount: "$100",
-      method: "cash",
-      paymentId: `PAY-${id}`,
-      paymentDate: format(new Date(), "yyyy-MM-dd"),
-    },
-    status: "pending",
-  };
-}

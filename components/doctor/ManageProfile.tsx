@@ -96,6 +96,16 @@ const ManageProfile = () => {
         }`;
       }
     }
+    if (updateExpression.dob) {
+      const formattedDOB = new Date(updateExpression.dob);
+
+      const age =
+        new Date().getFullYear() - new Date(formattedDOB).getFullYear();
+
+      if (age) {
+        updateExpression.age = age;
+      }
+    }
 
     const res = await dispatch(
       authThunks.updateProfile({
