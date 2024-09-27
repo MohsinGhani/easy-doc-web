@@ -215,6 +215,10 @@ export const functionsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.FUNCTIONS) || ""
 );
 
+export const paymentsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.PAYMENTS) || ""
+);
+
 export const appointmentsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.APPOINTMENTS) || ""
 );

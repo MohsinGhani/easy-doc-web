@@ -123,7 +123,10 @@ export function DataTable<TData, TValue>({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild className="">
-                <Button variant={"outline"} className="w-full md:w-28 px-4 py-2">
+                <Button
+                  variant={"outline"}
+                  className="w-full md:w-28 px-4 py-2"
+                >
                   <Filter className="w-4 h-4 mr-2" />
                   <span>Filter by</span>
                 </Button>

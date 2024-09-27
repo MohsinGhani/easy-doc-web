@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { BaseAppointment, Payment } from "@/types/table";
 import { Button, buttonVariants } from "../ui/button";
 import {
   ArrowUpDown,
@@ -32,13 +31,13 @@ import RejectAppointmentDialog from "../patient/CancelAppointmentDialog";
 import Link from "next/link";
 
 interface requestsColumnsProps {
-  handlePreview: (data: BaseAppointment) => void;
-  handleAcceptRequest: (data: BaseAppointment) => void;
+  handlePreview: (data: Appointment) => void;
+  handleAcceptRequest: (data: Appointment) => void;
 }
 
 interface upcomingColumnsProps {
-  handleMeetingJoin: (data: BaseAppointment) => void;
-  handleChat: (data: BaseAppointment) => void;
+  handleMeetingJoin: (data: Appointment) => void;
+  handleChat: (data: Appointment) => void;
 }
 
 export const paymentsColumns = (): ColumnDef<Payment>[] => {
@@ -48,7 +47,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
       cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
     },
     {
-      accessorKey: "id",
+      accessorKey: "paymentId",
       header: ({ column }) => {
         return (
           <Button
@@ -62,11 +61,13 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
         );
       },
       cell: ({ row }) => (
-        <div className="capitalize">PA-{row.getValue("id")}</div>
+        <div className="capitalize max-w-20 truncate">
+          PA-{row.getValue("paymentId")}
+        </div>
       ),
     },
     {
-      accessorKey: "method",
+      accessorKey: "paymentMethod",
       header: ({ column }) => {
         return (
           <Button
@@ -79,18 +80,22 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
           </Button>
         );
       },
-      cell: ({ row }) => (
-        <Image
-          src={`/assets/icons/${row.getValue("method")}.svg`}
-          alt={"role"}
-          width={57}
-          height={19}
-        />
-      ),
+      cell: ({ row }) => {
+        console.log("paymentMethod", row.getValue("paymentMethod"));
+
+        return (
+          <Image
+            src={`/assets/icons/stripe.svg`}
+            alt={"role"}
+            width={57}
+            height={19}
+          />
+        );
+      },
       meta: { className: "hidden sm:table-cell" },
     },
     {
-      accessorKey: "paymentDate",
+      accessorKey: "created",
       header: ({ column }) => {
         return (
           <Button
@@ -172,7 +177,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
 export const requestsColumns = ({
   handleAcceptRequest,
   handlePreview,
-}: requestsColumnsProps): ColumnDef<BaseAppointment>[] => {
+}: requestsColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
       header: "S.no",
@@ -473,9 +478,6 @@ export const patientColumns = (): ColumnDef<Appointment>[] => {
           return "N/A";
         }
 
-        const fromTime = new Date(value.start_time);
-        const toTime = new Date(value.end_time);
-
         const appointmentDate = new Date(appointment_date);
 
         if (!isValid(appointmentDate)) {
@@ -624,7 +626,7 @@ export const patientColumns = (): ColumnDef<Appointment>[] => {
 export const upcomingColumns = ({
   handleMeetingJoin,
   handleChat,
-}: upcomingColumnsProps): ColumnDef<BaseAppointment>[] => {
+}: upcomingColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
       accessorKey: "patientId",
@@ -837,7 +839,7 @@ export const upcomingColumns = ({
   ];
 };
 
-export function createAppointment(id: string, index: number): BaseAppointment {
+export function createAppointment(id: string, index: number): Appointment {
   return {
     doctorId: id,
     patientId: `PID-${id}`,

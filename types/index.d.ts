@@ -212,6 +212,13 @@ declare interface doctorState {
   error: string | null | undefined;
 }
 
+declare interface paymentState {
+  allPayments: Payment[];
+  fetchedPayment: Payment | null;
+  loading: boolean;
+  error: string | null | undefined;
+}
+
 declare interface appointmentState {
   allAppointments: Appointment[];
   fetchedAppointment: Appointment | null;
