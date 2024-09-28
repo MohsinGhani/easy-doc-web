@@ -3,14 +3,12 @@
 import { useFormContext } from "react-hook-form";
 import { CardDescription, CardTitle } from "../ui/card";
 import CustomFormField, { FormFieldType } from "./CustomFormField";
-import { Button } from "../ui/button";
-import { useAuth } from "@/hooks/useAuth";
+import DelayedResendButton from "./DelayedResendButton";
 
 const EnterOtpForm = ({ destination = "" }: { destination?: string }) => {
   const { control } = useFormContext();
-  const email = control?._fields?.email?._f?.value;
 
-  const { resendConfirmationCode } = useAuth();
+  const email = control?._fields?.email?._f?.value;
 
   return (
     <>
@@ -35,13 +33,7 @@ const EnterOtpForm = ({ destination = "" }: { destination?: string }) => {
       />
 
       <CardDescription className="self-end">
-        <Button
-          className="font-semibold text-primary hover:text-primary/80"
-          variant={"link"}
-          onClick={() => resendConfirmationCode(email)}
-        >
-          Resend OTP?
-        </Button>
+        <DelayedResendButton email={email} delay={60} runOnRender={false} />
       </CardDescription>
     </>
   );

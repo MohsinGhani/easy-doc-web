@@ -5,7 +5,6 @@ import Link from "next/link";
 import { UserPopup } from "@/components/navbar/UserPopup";
 import { useAppSelector } from "@/lib/hooks";
 import LogoText from "../LogoText";
-import SelectLanguage from "./SelectLanguage";
 import NavLinks from "./NavLinks";
 import Hamburber from "./Hamburber";
 import { buttonVariants } from "../ui/button";
@@ -16,7 +15,7 @@ export const Navbar = ({ className }: { className?: string }) => {
   return (
     <header
       className={cn(
-        "@container sticky top-0 z-50 w-full flex items-center justify-center bg-background/80 backdrop-blur-sm lg:px-[100px] md:px-[50px] sm:px-[30px] px-4 py-4 max-w-[1400px] mx-auto",
+        "@container sticky top-0 z-50 w-full flex items-center justify-center  bg-background/80 backdrop-blur-sm lg:px-[100px] md:px-[50px] sm:px-[30px] px-4 py-4 max-w-[1400px] mx-auto",
         className
       )}
     >
@@ -32,12 +31,8 @@ export const Navbar = ({ className }: { className?: string }) => {
         </div>
 
         <div className="hidden @3xl:flex items-center gap-5">
-          <SelectLanguage />
-
           {isLoggedIn ? (
-            <>
-              <UserPopup />
-            </>
+            <UserPopup />
           ) : (
             <>
               <Link

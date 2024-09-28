@@ -1,16 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { createAppointment, upcomingColumns } from "../table/columns";
-import { UpcomingAppointment } from "@/types/table";
+import { upcomingColumns } from "../table/columns";
 import { DataTable } from "../table/data-table";
-
-let upcomingAppointments: UpcomingAppointment[] = [];
-
-for (let index = 0; index < 20; index++) {
-  const appointment = createAppointment((index + 1).toString(), index + 1);
-  upcomingAppointments.push(appointment);
-}
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
+import { Loader } from "../common/Loader";
 
 interface UpcomingAppointmentsListProps {
   headerType?: "primary" | "secondary";
@@ -21,11 +16,11 @@ const UpcomingAppointmentsList = ({
 }: UpcomingAppointmentsListProps) => {
   const isPrimaryHeader = headerType === "primary";
 
-  const handleMeetingJoin = (appointment: UpcomingAppointment) => {
+  const handleMeetingJoin = (appointment: Appointment) => {
     console.log("🚀 ~ handleMeetingJoin ~ appointment:", appointment);
   };
 
-  const handleChat = (appointment: UpcomingAppointment) => {
+  const handleChat = (appointment: Appointment) => {
     console.log("🚀 ~ handleChat ~ appointment:", appointment);
   };
 
@@ -34,11 +29,28 @@ const UpcomingAppointmentsList = ({
     []
   );
 
+  const dispatch = useAppDispatch();
+
+  const { allAppointments, loading } = useAppSelector(
+    (state) => state.appointment
+  );
+
+  const { role, userId } = useAppSelector((state) => state.auth.user);
+
+  React.useEffect(() => {
+    // Fetch all appointments
+    if (userId && role) {
+      dispatch(appointmentThunks.fetchAllAppointments());
+    }
+  }, [dispatch, userId, role]);
+
+  if (loading) <Loader />;
+
   return (
     <>
       <DataTable
         columns={columns}
-        data={upcomingAppointments}
+        data={allAppointments}
         isPrimaryHeader={isPrimaryHeader}
         title="Upcoming Appintments"
       />

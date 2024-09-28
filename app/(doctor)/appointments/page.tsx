@@ -4,77 +4,61 @@ import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import UpcomingAppointmentsList from "@/components/doctor/UpcomingAppointmentsList";
-import { useEffect, useState } from "react";
-
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDownIcon } from "lucide-react";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const AppointmentsPage = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const handleResize = () => setIsMobile(mediaQuery.matches);
-
-    mediaQuery.addEventListener("change", handleResize);
-    handleResize();
-
-    return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
-
   return (
     <ContentLayout title="Appointments">
       <Card>
         <CardContent>
           <Tabs defaultValue="upcoming">
-            <TabsList className="mb-6 mt-2 w-full" defaultValue="upcoming">
-              {!isMobile ? (
-                <>
+            <TabsList
+              className="md:hidden w-full mb-6 mt-2"
+              defaultValue="upcoming"
+            >
+              <Carousel className="w-full max-w-[80%]">
+                <CarouselContent className="w-full">
                   {["upcoming", "cancelled", "completed"].map((value, i) => (
-                    <TabsTrigger
-                      value={value}
-                      className="flex-1 capitalize p-1"
-                      key={i}
-                    >
-                      {value}
-                      <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
-                        {Math.floor(Math.random() * 100) + 1}
-                      </span>
-                    </TabsTrigger>
+                    <CarouselItem key={i} className="basis-1/3 min-w-[150px]">
+                      <TabsTrigger
+                        value={value}
+                        className="w-full capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                      >
+                        {value}
+                        <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
+                          {Math.floor(Math.random() * 100) + 1}
+                        </span>
+                      </TabsTrigger>
+                    </CarouselItem>
                   ))}
-                </>
-              ) : (
-                <>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="flex items-center justify-between w-full px-2 py-2">
-                      Select by status <ChevronDownIcon />
-                    </DropdownMenuTrigger>
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </TabsList>
 
-                    <DropdownMenuContent className="w-96">
-                      {["upcoming", "cancelled", "completed"].map(
-                        (value, i) => (
-                          <DropdownMenuItem key={i} className="!w-full">
-                            <TabsTrigger
-                              value={value}
-                              className="flex-1 capitalize p-1"
-                            >
-                              {value}
-                              <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
-                                {Math.floor(Math.random() * 100) + 1}
-                              </span>
-                            </TabsTrigger>
-                          </DropdownMenuItem>
-                        )
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              )}
+            <TabsList
+              className="hidden md:flex w-full justify-between bg-background mb-6 mt-2"
+              defaultValue="upcoming"
+            >
+              {["upcoming", "cancelled", "completed"].map((value, i) => (
+                <TabsTrigger
+                  key={i}
+                  value={value}
+                  className="flex-1 capitalize p-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  {value}
+                  <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
+                    {Math.floor(Math.random() * 100) + 1}
+                  </span>
+                </TabsTrigger>
+              ))}
             </TabsList>
 
             <TabsContent value="upcoming">

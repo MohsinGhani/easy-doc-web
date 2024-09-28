@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppSelector } from "@/lib/hooks";
 import { useAuth } from "@/hooks/useAuth";
-import { Switch } from "../ui/switch";
+import AvailabilitySwitch from "../doctor/AvailabilitySwitch";
 
 export function UserNav() {
   const { user } = useAppSelector((state) => state.auth);
@@ -38,8 +38,14 @@ export function UserNav() {
                 className="relative h-8 w-8 rounded-full"
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user?.avatar} alt="Avatar" />
-                  <AvatarFallback className="bg-transparent">JD</AvatarFallback>
+                  <AvatarImage
+                    src={user?.picture}
+                    alt="Avatar"
+                    className="object-cover rounded-full object-top"
+                  />
+                  <AvatarFallback className="bg-transparent">
+                    {user.given_name.charAt(0) + user.family_name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -53,7 +59,7 @@ export function UserNav() {
           <p className="text-sm font-semibold">My account</p>
           <div className="flex items-center space-x-2">
             <span className="text-sm font-semibold">Available</span>
-            <Switch id="available" />
+            <AvailabilitySwitch />
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

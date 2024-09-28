@@ -4,7 +4,6 @@ import { CalendarCheck2, Clock3, MapPin } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { GenderMale } from "../icons";
-import { Appointment } from "@/types/appointment";
 
 interface AppointmentCardProps {
   className?: string;
@@ -18,16 +17,14 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   return (
     <div
       className={cn(
-        "w-full bg-[#f5f8ff] rounded-lg p-4 flex flex-col justify-between h-fit",
+        "w-full bg-[#f5f8ff] rounded-lg p-4 flex flex-col justify-between h-fit min-h-[200px]",
         className
       )}
     >
       {/* Top Section: Name, Gender, Age, Location */}
       <div className="flex items-start flex-wrap gap-2">
         <Image
-          src={`https://randomuser.me/api/portraits/men/${Math.floor(
-            Math.random() * 100
-          )}.jpg`}
+          src={appointment.patient.picture}
           alt="doctor"
           width={50}
           height={50}
@@ -40,11 +37,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
               "text-primary text-sm font-semibold flex items-center gap-1"
             )}
           >
-            {appointment.patientName}{" "}
+            {appointment.patient.patient_name}{" "}
             <GenderMale className="w-4 h-4 fill-white" />
           </h2>
           <div className="flex items-center gap-2 justify-between">
-            <p className="text-sm font-semibold">{appointment.age} years old</p>
+            <p className="text-sm font-semibold">{appointment.patient.age} years old</p>
             <Separator
               orientation="vertical"
               className="h-4 w-px bg-[#e2e8f0]"
@@ -52,7 +49,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <div className="flex gap-1">
               <MapPin className="w-4 h-4" />
               <p className="text-xs font-normal leading-tight">
-                {appointment.location}
+                {appointment.patient.location}
               </p>
             </div>
           </div>
@@ -63,15 +60,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className="flex items-center flex-wrap justify-between mt-4">
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Blood</p>
-          <span className="text-base font-bold">{appointment.bloodGroup}</span>
+          <span className="text-base font-bold">{appointment.patient.blood_group}</span>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Height</p>
-          <span className="text-base font-bold">{appointment.height}</span>
+          {/* <span className="text-base font-bold">{appointment.height}</span> */}
+          <span className="text-base font-bold">10</span>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Weight</p>
-          <span className="text-base font-bold">{appointment.weight}</span>
+          {/* <span className="text-base font-bold">{appointment.weight}</span> */}
+          <span className="text-base font-bold">10</span>
         </div>
       </div>
 
@@ -85,7 +84,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <div className="flex flex-col gap-1">
             <p className="text-xs font-normal">Consultation Type</p>
             <span className="text-xs font-bold">
-              {appointment.consultationType}
+              {appointment.consultation_type}
             </span>
           </div>
         </div>
@@ -95,7 +94,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <div className="flex items-center flex-wrap justify-between gap-2">
             <span className="text-xs font-bold inline-flex items-center gap-1">
               <CalendarCheck2 className="w-4 h-4 relative" />{" "}
-              {appointment.appointmentDate}
+              {appointment.appointment_date}
             </span>
             <Separator
               orientation="vertical"
@@ -103,7 +102,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             />
             <span className="text-xs font-bold inline-flex items-center gap-1">
               <Clock3 className="w-4 h-4 relative" />{" "}
-              {appointment.appointmentTime}
+              {appointment.scheduled_date.start_time} -{" "} {appointment.scheduled_date.end_time}
             </span>
           </div>
         </div>

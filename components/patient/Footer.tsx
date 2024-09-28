@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export default function PatientFooter() {
   return (
-    <footer className="mx-auto max-w-[1440px] pt-8">
+    <footer className="mx-auto max-w-[1440px] pt-8 w-full">
       <div className="bg-slate-50 sm:px-8 lg:px-[150px] px-4 lg:py-[100px] py-4 grid gap-10 lg:grid-cols-2 grid-cols-1">
         <div className="space-y-6">
           <LogoText />

@@ -48,9 +48,9 @@ export function DatePickerWithRange<TData>({
         2024
       );
 
-      table.getColumn("scheduledDate")?.setFilterValue({ start, end });
+      table.getColumn("scheduled_date")?.setFilterValue({ start, end });
     } else {
-      table.getColumn("scheduledDate")?.setFilterValue(undefined);
+      table.getColumn("scheduled_date")?.setFilterValue(undefined);
     }
   }, [table, dateRange, startTime, endTime]);
 
@@ -103,7 +103,6 @@ export function DatePickerWithRange<TData>({
       <PopoverContent className="w-auto p-0">
         <div className="p-4 space-y-4">
           <Calendar
-            initialFocus
             mode="range"
             defaultMonth={new Date()}
             selected={dateRange}

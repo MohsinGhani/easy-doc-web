@@ -1,204 +1,53 @@
 "use client";
 
+import { Loader } from "@/components/common/Loader";
+import ConnectStripeButton from "@/components/doctor/ConnectStripeButton";
 import EditPaymentMethodForm from "@/components/EditPaymentMethodForm";
 import { ContentLayout } from "@/components/layout/content-layout";
-import PaymentMethodForm from "@/components/PaymentMethodForm";
 import { paymentsColumns } from "@/components/table/columns";
 import { DataTable } from "@/components/table/data-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { paymentThunks } from "@/lib/features/payment/paymentThunks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
-import { Payment } from "@/types/table";
-import { format } from "date-fns";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
-const paymentsData: Payment[] = [
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$100",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$200",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$30",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$50",
-  },
-  {
-    method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$70",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$150",
-  },
-  {
-    method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$250",
-  },
-  {
-    method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$300",
-  },
-  {
-    method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$400",
-  },
-  {
-    method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$500",
-  },
-  {
-    method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$600",
-  },
-  {
-    method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$700",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$800",
-  },
-  {
-    method: "stripe",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$900",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$1000",
-  },
-  {
-    method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$1100",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$1200",
-  },
-  {
-    method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$1300",
-  },
-  {
-    method: "paypal",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$1400",
-  },
-  {
-    method: "visa",
-    id: `${Math.floor(Math.random() * 10000) + 1}`,
-    paymentDate: format(
-      new Date(Date.now() - Math.random() * (24 * 60 * 60 * 1000)),
-      "d MMM, h:mm a"
-    ),
-    amount: "$1500",
-  },
-];
+interface PaymentsPageProps {
+  searchParams: {
+    stripe_attached: string;
+  };
+}
 
-export default function PaymentsPage() {
+const PaymentsPage: React.FC<PaymentsPageProps> = () => {
   const columns = useMemo(() => paymentsColumns(), []);
+
+  const dispatch = useAppDispatch();
+
+  const {
+    loading,
+    user: { userId, stripe_account_active, role },
+  } = useAppSelector((state) => state.auth);
+  const { allPayments, loading: paymentLoader } = useAppSelector(
+    (state) => state.payment
+  );
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(authThunks.verifyStripeAccount({ doctorId: userId }));
+    }
+  }, [userId, dispatch]);
+
+  useEffect(() => {
+    if (userId && role) {
+      dispatch(paymentThunks.fetchAllPayments());
+    }
+  }, [dispatch, userId, role]);
+
+  if (loading || paymentLoader) <Loader />;
 
   return (
     <ContentLayout title="Doctor | Patient's Requests">
@@ -212,11 +61,12 @@ export default function PaymentsPage() {
               </p>
             </div>
 
-            <PaymentMethodForm />
+            {!stripe_account_active && <ConnectStripeButton />}
           </div>
 
           <RadioGroup className="sm:w-[80%] lg:w-[65%] w-full grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-6 min-h-[132px]">
-            {["stripe", "paypal", "visa"].map((v, i) => (
+            {/* {["stripe", "paypal", "visa"].map((v, i) => ( */}
+            {["stripe"].map((v, i) => (
               <div
                 className="relative flex items-start flex-col justify-between gap-10 flex-1 h-full rounded-2xl border border-zinc-200 p-4"
                 key={i}
@@ -258,7 +108,7 @@ export default function PaymentsPage() {
           <h2 className="text-xl font-medium mb-5">Payouts</h2>
           <DataTable
             columns={columns}
-            data={paymentsData}
+            data={allPayments}
             isPrimaryHeader={true}
             title="Payments"
             searchKey="id"
@@ -267,4 +117,6 @@ export default function PaymentsPage() {
       </Card>
     </ContentLayout>
   );
-}
+};
+
+export default PaymentsPage;

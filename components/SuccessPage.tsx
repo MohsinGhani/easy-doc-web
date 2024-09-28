@@ -3,11 +3,13 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
+import { buttonVariants } from "./ui/button";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 interface SuccessPageProps {
   heading: string;
+  subHeading?: string;
   linkText: string;
   linkHref: string;
   open?: boolean;
@@ -16,6 +18,7 @@ interface SuccessPageProps {
 
 const SuccessPage = ({
   heading,
+  subHeading,
   linkText,
   linkHref,
   open = true,
@@ -27,28 +30,35 @@ const SuccessPage = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[425px] h-[396px] p-16 rounded-[10px] bg-white flex-col justify-center items-center gap-2.5 inline-flex border">
-        <div className="h-[270px] flex-col justify-start items-center gap-8 flex">
-          <Image
-            src={"/assets/images/success.png"}
-            alt="logo"
-            width={160}
-            height={144}
-          />
-          <div className="self-stretch h-[94px] flex-col justify-start items-center gap-6 flex">
-            <div className="text-black text-2xl font-medium">{heading}</div>
+      <DialogContent
+        className={cn(
+          "sm:max-w-[425px] p-10 min-h-[320px] flex flex-col items-center justify-center gap-6 text-center"
+        )}
+      >
+        <Image
+          src={"/assets/images/success.png"}
+          alt="logo"
+          width={160}
+          height={144}
+        />
+        <h2 className="text-black text-2xl font-medium">{heading}</h2>
 
-            <Link href={linkHref}>
-              <Button
-                size={"xl"}
-                className="w-[274px] h-10"
-                onClick={handleClose}
-              >
-                {linkText}
-              </Button>
-            </Link>
-          </div>
-        </div>
+        {subHeading && (
+          <p className="text-muted-foreground text-base font-normal">
+            {subHeading}
+          </p>
+        )}
+
+        <Link
+          href={linkHref}
+          className={cn(
+            "w-full",
+            buttonVariants({ size: "xl", variant: "default" })
+          )}
+          onClick={handleClose}
+        >
+          {linkText}
+        </Link>
       </DialogContent>
     </Dialog>
   );

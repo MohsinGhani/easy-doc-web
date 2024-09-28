@@ -4,7 +4,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetClose,
   Sheet,
   SheetFooter,
 } from "@/components/ui/sheet";
@@ -14,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectRequestDialog from "../RejectRequestDialog";
 
 interface RequestReviewSheetProps {
-  selectedRequest: any;
+  selectedRequest: Appointment | null;
   open?: boolean;
   setOpen: (open: boolean) => void;
 }
@@ -27,6 +26,9 @@ const RequestReviewSheet = ({
   const handleClose = () => {
     setOpen(false);
   };
+
+  if (!selectedRequest) return null;
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent className="sm:max-w-[600px] overflow-x-scroll">
@@ -40,17 +42,23 @@ const RequestReviewSheet = ({
             <div className="flex items-center gap-2">
               <Avatar>
                 <AvatarImage
-                  src={selectedRequest?.avatar}
+                  src={selectedRequest?.patient.picture}
                   alt="Avatar"
                   width={50}
                   height={50}
+                  className="object-cover rounded-full object-top"
                 />
-                <AvatarFallback>MJ</AvatarFallback>
+                <AvatarFallback>
+                  {selectedRequest.patient.patient_name
+                    .charAt(0)
+                    .toUpperCase() +
+                    selectedRequest.patient.patient_name.slice(1)}
+                </AvatarFallback>
               </Avatar>
 
               <div className="flex flex-col gap-1">
                 <h2 className="font-medium sm:text-2xl text-lg leading-none">
-                  {selectedRequest?.name}
+                  {selectedRequest?.patient.patient_name}
                 </h2>
                 <p className="text-muted-foreground text-sm">
                   {selectedRequest?.speciality}
@@ -65,43 +73,49 @@ const RequestReviewSheet = ({
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Consulting for:</p>
-                <p className="font-medium">{`Dr. ${selectedRequest?.name}`}</p>
+                <p className="font-medium">{`Dr. ${selectedRequest?.consulting_for}`}</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Patient name:</p>
-                <p className="font-medium">{selectedRequest?.email}</p>
+                <p className="font-medium">
+                  {selectedRequest?.patient.patient_name}
+                </p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Gender:</p>
-                <p className="font-medium">{selectedRequest?.gender}</p>
+                <p className="font-medium">{selectedRequest?.patient.gender}</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Age:</p>
-                <p className="font-medium">32</p>
+                <p className="font-medium">{selectedRequest?.patient.age}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Blood Group:</p>
-                <p className="font-medium">B-</p>
+                <p className="font-medium">
+                  {selectedRequest?.patient.blood_group}
+                </p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Specialty:</p>
-                <p className="font-medium">Dermatologist</p>
+                <p className="font-medium">{selectedRequest?.speciality}</p>
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Consultation type:</p>
-                <p className="font-medium">Acne Treatment Consultation</p>
+                <p className="font-medium">
+                  {selectedRequest?.consultation_type}
+                </p>
               </div>
 
               <div className="space-y-1">
@@ -109,19 +123,21 @@ const RequestReviewSheet = ({
                   Appointment date & time:
                 </p>
                 <p className="font-medium">
-                  12th Aug 2024 - 08:30 am - 10:30 am
+                  {`${selectedRequest.appointment_date} - ${selectedRequest.scheduled_date.start_time} - ${selectedRequest.scheduled_date.end_time}`}
                 </p>
               </div>
             </div>
 
             <div className="space-y-1">
               <p className="text-muted-foreground">Contact no:</p>
-              <p className="font-medium">+123 456 789</p>
+              <p className="font-medium">
+                {selectedRequest.patient.phone_number}
+              </p>
             </div>
 
             <div className="space-y-1">
               <p className="text-muted-foreground">Email:</p>
-              <p className="font-medium">innocentsameer@email.com</p>
+              <p className="font-medium">{selectedRequest.patient.email}</p>
             </div>
 
             <div />
@@ -129,51 +145,38 @@ const RequestReviewSheet = ({
             <div className="space-y-1">
               <p className="text-muted-foreground">Allergies:</p>
               <div className="flex gap-2">
-                <div className="bg-primary/10 rounded text-primary sm:text-sm text-[12px] text-center font-medium p-1.5">
-                  Aspirin Allergy
-                </div>
-                <div className="bg-primary/10 rounded text-primary sm:text-sm text-[12px] text-center font-medium p-1.5">
-                  Antibiotic Allergy{" "}
-                </div>
-                <div className="bg-primary/10 rounded text-primary sm:text-sm text-[12px] text-center font-medium p-1.5">
-                  Milk Allergy{" "}
-                </div>
-                <div className="bg-primary/10 rounded text-primary sm:text-sm text-[12px] text-center font-medium p-1.5">
-                  Egg Allergy{" "}
-                </div>
+                {selectedRequest.allergies.map(
+                  (allergy: string, index: number) => (
+                    <div
+                      key={index}
+                      className="bg-foreground/10 rounded sm:text-sm text-[12px] text-center font-semibold p-2"
+                    >
+                      {allergy}
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
             <div className="space-y-1">
               <p className="text-muted-foreground">Current medications:</p>
               <div className="flex gap-2">
-                <div className="bg-foreground/10 rounded sm:text-sm text-[12px] text-center font-semibold p-2">
-                  Panadol - 25mg
-                </div>
-                <div className="bg-foreground/10 rounded sm:text-sm text-[12px] text-center font-semibold p-2">
-                  Brunol - 25mg
-                </div>
-                <div className="bg-foreground/10 rounded sm:text-sm text-[12px] text-center font-semibold p-2">
-                  Tylenol - 25mg
-                </div>
-                <div className="bg-foreground/10 rounded sm:text-sm text-[12px] text-center font-semibold p-2">
-                  Advil - 25mg
-                </div>
+                {selectedRequest.current_medications.map(
+                  (medication: string, index: number) => (
+                    <div
+                      key={index}
+                      className="bg-foreground/10 rounded sm:text-sm text-[12px] text-center font-semibold p-2"
+                    >
+                      {medication}
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
             <div className="space-y-4">
               <SheetTitle>Description:</SheetTitle>
-              <p>
-                Consectetur adipisicing eliteiuim sete eiu tempor incidit
-                utoreas etnalom dolore maena aliquae udiminimate veniam quis
-                norud exercita ullamco laboris nisi aliquip commodo consequat
-                Duis aute irure inem reprederit inoluptate velit esse cillum
-                dolore eu fugiat nulla pariatur eexcepteur occaecat cupidatat
-                non proident sunt in culpa qui officia deserunt mollit anim id
-                est laborum sed ut perspiciatis unde n culpa qui officia
-                deserunt mollit anim id est laborum sed ut perspiciatis{" "}
-              </p>
+              <p>{selectedRequest.description}</p>
             </div>
 
             <div className="space-y-4">
@@ -203,8 +206,8 @@ const RequestReviewSheet = ({
 
         <SheetFooter className="items-center justify-center gap-4 flex-row">
           <RejectRequestDialog
-            name={selectedRequest?.name}
-            onReject={() => console.log("rejected", selectedRequest.id)}
+            name={selectedRequest?.patient.patient_name}
+            onReject={() => console.log("rejected", selectedRequest.patientId)}
             trigger={
               <Button size={"lg"} variant={"outline"}>
                 Reject

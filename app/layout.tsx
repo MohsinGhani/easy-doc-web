@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 import { cn } from "@/lib/utils";
 import StoreProvider from "@/lib/StoreProvider";
-// import Footer from "@/components/footer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -32,12 +30,8 @@ export default function Layout({
           outfit.variable
         )}
       >
-        {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <StoreProvider>
-            {children}
-
-            {/* <Footer /> */}
+        <StoreProvider>
+          {children}
 
             <Toaster
               position="top-center"
@@ -51,7 +45,8 @@ export default function Layout({
               closeButton={true}
             />
           </StoreProvider>
-        </ThemeProvider>
+
+
       </body>
     </html>
   );

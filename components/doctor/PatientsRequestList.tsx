@@ -4,16 +4,11 @@ import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import RequestReviewSheet from "./RequestReviewSheet";
 import SuccessPage from "../SuccessPage";
-import { createAppointment, requestsColumns } from "../table/columns";
-import { PendingRequest } from "@/types/table";
+import { requestsColumns } from "../table/columns";
 import { DataTable } from "../table/data-table";
-
-let approvalRequests: PendingRequest[] = [];
-
-for (let index = 0; index < 20; index++) {
-  const appointment = createAppointment((index + 1).toString(), index + 1);
-  approvalRequests.push(appointment);
-}
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
+import { Loader } from "../common/Loader";
 
 interface PatientsRequestListProps {
   headerType?: "primary" | "secondary";
@@ -24,16 +19,22 @@ const PatientsRequestList = ({
 }: PatientsRequestListProps) => {
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [selectedRequest, setSelectedRequest] =
-    React.useState<PendingRequest | null>(null);
+    React.useState<Appointment | null>(null);
   const [isSuccessOpen, setIsSuccessOpen] = React.useState(false);
   const isPrimaryHeader = headerType === "primary";
 
-  const handlePreview = (request: PendingRequest) => {
+  const dispatch = useAppDispatch();
+  const { allAppointments, loading } = useAppSelector(
+    (state) => state.appointment
+  );
+  const { role, userId } = useAppSelector((state) => state.auth.user);
+
+  const handlePreview = (request: Appointment) => {
     setSelectedRequest(request);
     setIsPreviewOpen(true);
   };
 
-  const handleAcceptRequest = (request: PendingRequest) => {
+  const handleAcceptRequest = (request: Appointment) => {
     setIsSuccessOpen(true);
   };
 
@@ -46,12 +47,21 @@ const PatientsRequestList = ({
     []
   );
 
+  React.useEffect(() => {
+    // Fetch all appointments
+    if (userId && role) {
+      dispatch(appointmentThunks.fetchAllAppointments());
+    }
+  }, [dispatch, userId, role]);
+
+  if (loading) <Loader />;
+
   return (
     <Card>
       <CardContent>
         <DataTable
           columns={columns}
-          data={approvalRequests}
+          data={allAppointments}
           isPrimaryHeader={isPrimaryHeader}
           title="Patient's Requests"
         />

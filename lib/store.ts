@@ -1,14 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/authSlice";
 import sidebarReducer from "./features/sidebar/sidebarSlice";
-import availabilityReducer from "./features/doctor/availabilitySlice";
+import doctorReducer from "./features/doctor/doctorSlice";
+import appointmentReducer from "./features/appointment/appointmentSlice";
+import paymentReducer from "./features/payment/paymentSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       auth: authReducer,
       sidebar: sidebarReducer,
-      availability: availabilityReducer,
+      doctor: doctorReducer,
+      appointment: appointmentReducer,
+      payment: paymentReducer,
     },
   });
 };

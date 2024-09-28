@@ -6,11 +6,20 @@ import Calendar from "./Calendar";
 import AppointmentCard from "./AppointmentCard";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
-import dummyAppointments from "@/data/dummyAppointments";
-import { Appointment } from "@/types/appointment";
 import { format, parseISO } from "date-fns";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
+import { Loader } from "../common/Loader";
 
 const SecondaryUpcomingAppointmentsList: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const { allAppointments, loading } = useAppSelector(
+    (state) => state.appointment
+  );  
+
+  const { role, userId } = useAppSelector((state) => state.auth.user);
+
   const [selectedDay, setSelectedDay] = useState<string>("Mon");
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
   const [selectedAppointment, setSelectedAppointment] =
@@ -30,20 +39,30 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
     setSelectedAppointment(appointment);
   };
 
+  React.useEffect(() => {
+    // Fetch all appointments
+    if (userId && role) {
+      dispatch(appointmentThunks.fetchAllAppointments());
+    }
+  }, [dispatch, userId, role]);
+
   const filteredAppointments = useMemo(() => {
     const selectedMonthString = format(selectedMonth, "yyyy-MM");
     const selectedDayIndex =
       ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(selectedDay) +
       1;
 
-    return dummyAppointments.filter((appointment) => {
-      const appointmentDate = parseISO(appointment.date);
+    return allAppointments.filter((appointment) => {
+      const appointmentDate = parseISO(appointment.appointment_date);
       return (
         format(appointmentDate, "yyyy-MM") === selectedMonthString &&
         appointmentDate.getDay() === selectedDayIndex
       );
     });
   }, [selectedDay, selectedMonth]);
+
+  if (loading) return <Loader />;
+  if (allAppointments.length === 0) return null;
 
   return (
     <Card>
@@ -58,7 +77,7 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
           <AppointmentCard appointment={selectedAppointment} />
         ) : (
           <AppointmentCard
-            appointment={filteredAppointments[0] || dummyAppointments[0]}
+            appointment={filteredAppointments[0] || allAppointments[0]}
           />
         )}
 

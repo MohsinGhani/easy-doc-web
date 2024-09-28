@@ -1,17 +1,12 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  BaseAppointment,
-  PendingRequest,
-  Payment,
-  UpcomingAppointment,
-} from "@/types/table";
 import { Button } from "../ui/button";
 import {
   ArrowUpDown,
   EllipsisVertical,
   EyeIcon,
+  Filter,
   LucideCheck,
   Mail,
   MapPin,
@@ -23,7 +18,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectRequestDialog from "../RejectRequestDialog";
-import { format, isValid, isWithinInterval, setYear } from "date-fns";
+import { format, isValid, isWithinInterval } from "date-fns";
 import Image from "next/image";
 import {
   Tooltip,
@@ -32,15 +27,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import RejectAppointmentDialog from "../patient/CancelAppointmentDialog";
+import { formatTimeForUI } from "@/lib/utils";
 
 interface requestsColumnsProps {
-  handlePreview: (data: PendingRequest) => void;
-  handleAcceptRequest: (data: PendingRequest) => void;
+  handlePreview: (data: Appointment) => void;
+  handleAcceptRequest: (data: Appointment) => void;
 }
 
 interface upcomingColumnsProps {
-  handleMeetingJoin: (data: PendingRequest) => void;
-  handleChat: (data: PendingRequest) => void;
+  handleMeetingJoin: (data: Appointment) => void;
+  handleChat: (data: Appointment) => void;
+}
+interface PatientColumnsProps {
+  handlePreview: (data: Appointment) => void;
 }
 
 export const paymentsColumns = (): ColumnDef<Payment>[] => {
@@ -50,7 +50,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
       cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
     },
     {
-      accessorKey: "id",
+      accessorKey: "paymentId",
       header: ({ column }) => {
         return (
           <Button
@@ -64,11 +64,13 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
         );
       },
       cell: ({ row }) => (
-        <div className="capitalize">PA-{row.getValue("id")}</div>
+        <div className="capitalize max-w-20 truncate">
+          PA-{row.getValue("paymentId")}
+        </div>
       ),
     },
     {
-      accessorKey: "method",
+      accessorKey: "paymentMethod",
       header: ({ column }) => {
         return (
           <Button
@@ -81,18 +83,22 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
           </Button>
         );
       },
-      cell: ({ row }) => (
-        <Image
-          src={`/assets/icons/${row.getValue("method")}.svg`}
-          alt={"role"}
-          width={57}
-          height={19}
-        />
-      ),
+      cell: ({ row }) => {
+        console.log("paymentMethod", row.getValue("paymentMethod"));
+
+        return (
+          <Image
+            src={`/assets/icons/stripe.svg`}
+            alt={"role"}
+            width={57}
+            height={19}
+          />
+        );
+      },
       meta: { className: "hidden sm:table-cell" },
     },
     {
-      accessorKey: "paymentDate",
+      accessorKey: "created",
       header: ({ column }) => {
         return (
           <Button
@@ -174,20 +180,19 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
 export const requestsColumns = ({
   handleAcceptRequest,
   handlePreview,
-}: requestsColumnsProps): ColumnDef<PendingRequest>[] => {
+}: requestsColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
-      // accessorKey: "id",
       header: "S.no",
       cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
     },
     {
-      accessorKey: "id",
+      accessorKey: "patientId",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
-            className="px-1.5"
+            className="px-1.5 w-full truncate"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             <span className="hidden md:block">Patient Id</span>
@@ -203,7 +208,7 @@ export const requestsColumns = ({
       ),
     },
     {
-      accessorKey: "email",
+      accessorKey: "patient.email",
       header: ({ column }) => {
         return (
           <Button
@@ -219,21 +224,30 @@ export const requestsColumns = ({
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={row.original.avatarUrl} alt="Avatar" />
-            <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
+            <AvatarImage
+              src={row.original.patient.picture}
+              alt="Avatar"
+              className="object-cover rounded-full object-top"
+            />
+            <AvatarFallback>
+              {row.original.patient.given_name.charAt(0)}{" "}
+              {row.original.patient.family_name.charAt(0)}
+            </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{row.original.name}</div>
+            <div className="font-medium">{row.original.patient.given_name}</div>
             {/* <div className="text-sm text-muted-foreground">
               {row.getValue("email")}
             </div> */}
-            <div className="text-sm text-muted-foreground">London , UK</div>
+            <div className="text-sm text-muted-foreground">
+              {row.original.patient.location}
+            </div>
           </div>
         </div>
       ),
     },
     {
-      accessorKey: "age",
+      accessorKey: "patient.age",
       header: ({ column }) => {
         return (
           <Button
@@ -248,13 +262,13 @@ export const requestsColumns = ({
       },
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.getValue("age")}, {row.original.gender}
+          {row.original.patient.age}, {row.original.patient.gender}
         </div>
       ),
       meta: { className: "hidden sm:table-cell" },
     },
     {
-      accessorKey: "scheduledDate",
+      accessorKey: "scheduled_date",
       header: ({ column }) => {
         return (
           <Button
@@ -267,33 +281,29 @@ export const requestsColumns = ({
           </Button>
         );
       },
-      cell: ({ getValue }) => {
-        const value = getValue() as { from: Date | string; to: Date | string };
+      cell: ({ getValue, row }) => {
+        const value = getValue() as DateRange;
+        const appointment_date = row.original.appointment_date;
 
-        const fromDate =
-          value.from instanceof Date ? value.from : new Date(value.from);
-        const toDate = value.to instanceof Date ? value.to : new Date(value.to);
+        if (!appointment_date || !value) {
+          return "N/A";
+        }
 
-        if (!isValid(fromDate) || !isValid(toDate)) {
+        const appointmentDate = new Date(appointment_date);
+
+        if (!isValid(appointmentDate)) {
           return "Invalid Date";
         }
 
-        return `${format(fromDate, "MMM dd, HH:mm")} - ${format(
-          toDate,
-          "MMM dd, HH:mm"
-        )}`;
+        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
       },
-      filterFn: (row, columnId, filterValue: { start: Date; end: Date }) => {
-        const cellValue = row.getValue(columnId) as { from: Date; to: Date };
-        if (!cellValue || !filterValue) return true;
+      filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
         const { start, end } = filterValue;
-        const cellDateFrom = setYear(new Date(cellValue.from), 2024);
-        const cellDateTo = setYear(new Date(cellValue.to), 2024);
-        return (
-          isWithinInterval(cellDateFrom, { start, end }) ||
-          isWithinInterval(cellDateTo, { start, end }) ||
-          (cellDateFrom <= start && cellDateTo >= end)
-        );
+
+        return isWithinInterval(appointmentDate, { start, end });
       },
     },
     {
@@ -353,8 +363,10 @@ export const requestsColumns = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <RejectRequestDialog
-                      name={row.original.name}
-                      onReject={() => console.log("rejected", row.original.id)}
+                      name={row.original.patient.given_name}
+                      onReject={() =>
+                        console.log("rejected", row.original.doctorId)
+                      }
                       trigger={
                         <Button variant="outline" size="icon">
                           <X className="h-5 w-5 cursor-pointer" />
@@ -401,8 +413,10 @@ export const requestsColumns = ({
                     <EyeIcon className="h-5 w-5 mr-2" /> View Request
                   </Button>
                   <RejectRequestDialog
-                    name={row.original.name}
-                    onReject={() => console.log("rejected", row.original.id)}
+                    name={row.original.patient.given_name}
+                    onReject={() =>
+                      console.log("rejected", row.original.doctorId)
+                    }
                     trigger={
                       <Button
                         variant="outline"
@@ -434,13 +448,219 @@ export const requestsColumns = ({
   ];
 };
 
+export const patientColumns = ({
+  handlePreview,
+}: PatientColumnsProps): ColumnDef<Appointment>[] => {
+  return [
+    {
+      header: "S.no",
+      cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "patient.email",
+      id: "patient.email",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const email = row.getValue("patient.email") as string;
+        return <div>{email}</div>;
+      },
+      filterFn: "includesString",
+    },
+    {
+      accessorKey: "scheduled_date",
+      id: "scheduled_date",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Appointment Date & Time
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ getValue, row }) => {
+        const value = getValue() as any; // Adjust the type as needed
+        const appointment_date = row.original.appointment_date;
+
+        if (!appointment_date || !value) {
+          return "N/A";
+        }
+
+        const appointmentDate = new Date(appointment_date);
+
+        if (!isValid(appointmentDate)) {
+          return "Invalid Date";
+        }
+
+        return `${appointment_date} - ${formatTimeForUI(
+          value.start_time
+        )} - ${formatTimeForUI(value.end_time)}`;
+      },
+      filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
+        const { start, end } = filterValue;
+
+        return isWithinInterval(appointmentDate, { start, end });
+      },
+    },
+    {
+      accessorKey: "speciality",
+      id: "speciality",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Speciality
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("speciality")}</div>
+      ),
+      meta: { className: "hidden sm:table-cell" },
+    },
+    {
+      accessorKey: "consultation_type",
+      id: "consultation_type",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span className="hidden md:block">Consultation </span>Type
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "status",
+      id: "status",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span>Status</span>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("status")}</div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            {/* Hidden on mobile, visible on larger screens */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handlePreview(row.original)}
+                    >
+                      <EyeIcon className="h-5 w-5 cursor-pointer" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">View Details</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <RejectAppointmentDialog
+                      reason={row.original.reason}
+                      onReject={() =>
+                        console.log("rejected", row.original.doctorId)
+                      }
+                      trigger={
+                        <Button variant="outline" size="icon">
+                          <X className="h-5 w-5 cursor-pointer" />
+                        </Button>
+                      }
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Cancel Appointment</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            {/* Visible on mobile, hidden on larger screens */}
+            <div className="sm:hidden">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Filter className="h-5 w-5 cursor-pointer" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  side="left"
+                  className="flex flex-col items-start gap-2 w-40"
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handlePreview(row.original)}
+                  >
+                    <EyeIcon className="h-5 w-5 mr-2" /> View Details
+                  </Button>
+                  <RejectAppointmentDialog
+                    reason={row.original.reason}
+                    onReject={() =>
+                      console.log("rejected", row.original.doctorId)
+                    }
+                    trigger={
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start"
+                      >
+                        <X className="h-5 w-5 mr-2" /> Cancel Appointment
+                      </Button>
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        );
+      },
+      meta: {
+        className: "sticky right-0 bg-white z-10 shadow-lg",
+      },
+    },
+  ];
+};
+
 export const upcomingColumns = ({
   handleMeetingJoin,
   handleChat,
-}: upcomingColumnsProps): ColumnDef<UpcomingAppointment>[] => {
+}: upcomingColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
-      accessorKey: "id",
+      accessorKey: "patientId",
       header: ({ column }) => {
         return (
           <Button
@@ -457,14 +677,22 @@ export const upcomingColumns = ({
         return (
           <div className="flex items-start gap-2">
             <Avatar>
-              <AvatarImage src={row.original.avatarUrl} alt="Avatar" />
-              <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
+              <AvatarImage
+                src={row.original.patient.picture}
+                alt="Avatar"
+                className="object-cover rounded-full object-top"
+              />
+              <AvatarFallback>
+                {row.original.patient.given_name.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="text-xs font-normal text-muted-foreground">
                 # PA-{row.getValue("id")}
               </div>
-              <div className="text-base font-semibold">{row.original.name}</div>
+              <div className="text-base font-semibold">
+                {row.original.patient.given_name}
+              </div>
               <div className="text-sm text-muted-foreground flex items-center">
                 <MapPin className="mr-1 h-4 w-4" /> Florida , USA
               </div>
@@ -474,7 +702,7 @@ export const upcomingColumns = ({
       },
     },
     {
-      accessorKey: "scheduledDate",
+      accessorKey: "scheduled_date",
       header: ({ column }) => {
         return (
           <Button
@@ -487,39 +715,33 @@ export const upcomingColumns = ({
           </Button>
         );
       },
-      cell: ({ getValue }) => {
-        const value = getValue() as { from: Date | string; to: Date | string };
+      cell: ({ getValue, row }) => {
+        const value = getValue() as DateRange;
+        const appointment_date = row.original.appointment_date;
 
-        const fromDate =
-          value.from instanceof Date ? value.from : new Date(value.from);
-        const toDate = value.to instanceof Date ? value.to : new Date(value.to);
+        if (!appointment_date || !value) {
+          return "N/A";
+        }
 
-        if (!isValid(fromDate) || !isValid(toDate)) {
+        const appointmentDate = new Date(appointment_date);
+
+        if (!isValid(appointmentDate)) {
           return "Invalid Date";
         }
 
-        const formattedDate = `${format(fromDate, "MMM dd, HH:mm")} - ${format(
-          toDate,
-          "MMM dd, HH:mm"
-        )}`;
-
-        return <div className="text-sm font-normal">{formattedDate}</div>;
+        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
       },
-      filterFn: (row, columnId, filterValue: { start: Date; end: Date }) => {
-        const cellValue = row.getValue(columnId) as { from: Date; to: Date };
-        if (!cellValue || !filterValue) return true;
+      filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
         const { start, end } = filterValue;
-        const cellDateFrom = setYear(new Date(cellValue.from), 2024);
-        const cellDateTo = setYear(new Date(cellValue.to), 2024);
-        return (
-          isWithinInterval(cellDateFrom, { start, end }) ||
-          isWithinInterval(cellDateTo, { start, end }) ||
-          (cellDateFrom <= start && cellDateTo >= end)
-        );
+
+        return isWithinInterval(appointmentDate, { start, end });
       },
     },
     {
-      accessorKey: "email",
+      accessorKey: "patient.email",
       header: ({ column }) => {
         return (
           <Button
@@ -536,11 +758,11 @@ export const upcomingColumns = ({
         <div className="flex flex-col gap-2">
           <div className="text-sm font-normal flex gap-1 items-center">
             <Mail className="w-5 h-5" />
-            {row.getValue("email")}
+            {row.getValue("patient.email")}
           </div>
           <div className="text-sm font-normal flex gap-1 items-center">
             <PhoneCall className="w-5 h-5" />
-            {row.original.phone}
+            {row.original.patient.phone_number}
           </div>
         </div>
       ),
@@ -641,43 +863,3 @@ export const upcomingColumns = ({
     },
   ];
 };
-
-export function createAppointment(id: string, index: number): BaseAppointment {
-  return {
-    id,
-    avatarUrl: `https://i.pravatar.cc/150?img=${index}`,
-    patientId: `PID-${id}`,
-    name: `Patient ${id}`,
-    email: `patient${id}@example.com`,
-    phone: `+123456789${id}`,
-    city: `City ${id}`,
-    state: `State ${id}`,
-    country: `Country ${id}`,
-    scheduledDate: {
-      from: new Date(Date.now() + Math.random() * (24 * 60 * 60 * 1000)),
-      to: new Date(
-        Date.now() + Math.random() * (24 * 60 * 60 * 1000) + 30 * 60 * 1000
-      ),
-    },
-    consultationType: "General",
-    gender: "Male",
-    address: `Address ${id}`,
-    birthDate: "1990-01-01",
-    speciality: "General",
-    age: 30,
-    attachments: [
-      {
-        id: `ATT-${id}-1`,
-        url: `https://i.pravatar.cc/150?img=${index}`,
-        name: `Document 1`,
-        mimeType: `application/pdf`,
-      },
-      {
-        id: `ATT-${id}-2`,
-        url: `https://i.pravatar.cc/150?img=${index + 1}`,
-        name: `Document 2`,
-        mimeType: `application/pdf`,
-      },
-    ],
-  };
-}

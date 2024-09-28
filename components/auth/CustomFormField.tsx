@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Control } from "react-hook-form";
+import { Control, ControllerRenderProps } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -17,6 +17,25 @@ import {
   InputOTPSlot,
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
+import { SelectWithSearch } from "@/components/SelectWithSearch";
+import { Checkbox } from "../ui/checkbox";
+import { Textarea } from "../ui/textarea";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
+import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
+import { format } from "date-fns";
+import YearPicker from "../ui/year-picker";
+import { PhoneInput } from "../ui/phone-input";
+import { CountryCode } from "libphonenumber-js";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MultiSelectWithSearch } from "../MultiSelectWithSearch";
+import MonthDayPicker from "../ui/day-picker";
+import { removeDaySuffix } from "@/lib/utils";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -28,6 +47,15 @@ export enum FormFieldType {
   PHONE_INPUT = "phoneInput",
   ROLE_SELECT = "role",
   COMBOBOX = "combobox",
+  SELECT = "select",
+  SELECT_WITH_SEARCH = "select_with_search",
+  MULTI_SELECT_WITH_SEARCH = "multi_select_with_search",
+  TEXTAREA = "textarea",
+  AUTO_RESIZE_TEXTAREA = "textarea",
+  DATE_PICKER = "date-picker",
+  DAY_PICKER = "day-picker",
+  YEAR_PICKER = "year-picker",
+  SKELETON = "skeleton",
 }
 
 interface CustomProps {
@@ -40,17 +68,35 @@ interface CustomProps {
   disabled?: boolean;
   dateFormat?: string;
   showTimeSelect?: boolean;
+  enableCreation?: boolean;
   children?: React.ReactNode;
-  renderSkeleton?: (field: any) => React.ReactNode;
+  renderSkeleton?: (
+    field: ControllerRenderProps<any, string>
+  ) => React.ReactNode;
+  items?: { value: string; label: string }[];
   fieldType: FormFieldType;
+  defaultValue?: string;
+  maxSelectionText?: string;
+  maxSelection?: number;
 }
 
-const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
+const RenderInput = ({
+  field,
+  props,
+}: {
+  field: ControllerRenderProps<any, string>;
+  props: CustomProps;
+}) => {
+  // console.log("🚀 ~ RenderInput ~ field:", field.value);
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
         <FormControl>
-          <Input placeholder={props.placeholder} {...field} />
+          <Input
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            {...field}
+          />
         </FormControl>
       );
 
@@ -78,21 +124,35 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.EMAIL:
       return (
         <FormControl>
-          <Input placeholder={props.placeholder} {...field} type="email" />
+          <Input
+            placeholder={props.placeholder}
+            type="email"
+            disabled={props.disabled}
+            {...field}
+          />
         </FormControl>
       );
 
     case FormFieldType.PASSWORD:
       return (
         <FormControl>
-          <PasswordInput placeholder={props.placeholder} {...field} />
+          <PasswordInput
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            {...field}
+          />
         </FormControl>
       );
 
     case FormFieldType.PHONE_INPUT:
       return (
         <FormControl>
-          <Input type={"tel"} placeholder={props.placeholder} {...field} />
+          <PhoneInput
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            defaultCountry={props.defaultValue as CountryCode}
+            {...field}
+          />
         </FormControl>
       );
 
@@ -102,9 +162,31 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <Input
             placeholder={props.placeholder}
             type="number"
-            {...field}
             id="myNumberInput"
+            disabled={props.disabled}
+            {...field}
           />
+        </FormControl>
+      );
+
+    case FormFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              name={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              id={props.name}
+              disabled={props.disabled}
+            />
+            <label
+              htmlFor={props.name}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {props.label}
+            </label>
+          </div>
         </FormControl>
       );
 
@@ -156,6 +238,133 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           </RadioGroup>
         </FormControl>
       );
+
+    case FormFieldType.SELECT_WITH_SEARCH:
+      return (
+        <FormControl>
+          <SelectWithSearch
+            items={props.items || []}
+            defaultValue={field.value || ""}
+            onChange={field.onChange}
+            className="w-full"
+            enableCreation={props.enableCreation}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.SELECT:
+      return (
+        <FormControl>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={props.placeholder ?? "Select"} />
+            </SelectTrigger>
+            <SelectContent>
+              {props?.items?.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormControl>
+      );
+
+    case FormFieldType.MULTI_SELECT_WITH_SEARCH:
+      return (
+        <>
+          <FormControl>
+            <MultiSelectWithSearch
+              items={props.items || []}
+              onChange={field.onChange}
+              defaultValues={field.value || []}
+              placeholder={props.placeholder}
+              maxSelected={props.maxSelection || 10}
+              maxSelectedMessage={props.maxSelectionText}
+            />
+          </FormControl>
+        </>
+      );
+
+    case FormFieldType.TEXTAREA:
+      return (
+        <FormControl>
+          <Textarea
+            placeholder={props.placeholder}
+            className="w-full"
+            rows={5}
+            disabled={props.disabled}
+            {...field}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.AUTO_RESIZE_TEXTAREA:
+      return (
+        <FormControl>
+          <AutosizeTextarea
+            placeholder={props.placeholder}
+            rows={5}
+            disabled={props.disabled}
+            {...field}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.DATE_PICKER:
+      return (
+        <FormControl>
+          <DateTimePicker
+            value={
+              !field.value
+                ? new Date()
+                : field.value === "Present"
+                ? new Date()
+                : new Date(field.value)
+            }
+            onChange={(value) =>
+              field.onChange(format(value as Date, "yyyy/MM/dd"))
+            }
+            granularity={"day"}
+            displayFormat={{ hour24: "yyyy/MM/dd" }}
+            disabled={props.disabled}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.YEAR_PICKER:
+      return (
+        <FormControl>
+          <YearPicker
+            value={field.value}
+            onChange={field.onChange}
+            fromYear={new Date().getFullYear() - 70}
+            toYear={new Date().getFullYear()}
+            disabled={props.disabled}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.DAY_PICKER:
+      return (
+        <FormControl>
+          <MonthDayPicker
+            {...field}
+            value={
+              !field.value
+                ? new Date()
+                : new Date(removeDaySuffix(field?.value || ""))
+            }
+            disabled={props.disabled}
+            placeholder={props.placeholder}
+          />
+        </FormControl>
+      );
+
+    case FormFieldType.SKELETON:
+      return props.renderSkeleton ? (
+        <FormControl>{props.renderSkeleton(field)}</FormControl>
+      ) : null;
 
     default:
       return null;

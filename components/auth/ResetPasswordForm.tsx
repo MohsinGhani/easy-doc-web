@@ -74,7 +74,7 @@ const ResetPasswordForm = () => {
 
           {getResetFormContent(activeStep)}
 
-          {activeStep === 0 ? (
+          {activeStep === 1 ? (
             <Button
               size={"xl"}
               disabled={loading}

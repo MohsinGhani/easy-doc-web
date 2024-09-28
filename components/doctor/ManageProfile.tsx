@@ -1,6 +1,7 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,43 +11,159 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { toast } from "sonner";
+import { Loader } from "../common/Loader";
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { COUNTRIES, GENDERS, LANGUAGES } from "@/constants";
+import { getCitiesByCountry, getCityNameById } from "@/lib/utils";
+import { userSchema, userSchemaType } from "@/models/validationSchemas";
+import { Form } from "../ui/form";
+import { CustomFormField } from "../auth";
+import { FormFieldType } from "../auth/CustomFormField";
 
 const ManageProfile = () => {
+  const { user, loading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  const form = useForm<userSchemaType>({
+    resolver: zodResolver(userSchema),
+  });
+
+  const {
+    handleSubmit,
+    getValues,
+    control,
+    formState: { dirtyFields, isDirty },
+  } = form;
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [base64Image, setBase64Image] = useState<string | ArrayBuffer | null>(
+    null
+  );
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const country = getValues("country");
+  const handleImageUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.size <= 4 * 1024 * 1024) {
+      setSelectedImage(file);
+      setImagePreviewUrl(URL.createObjectURL(file));
+
+      // Convert the file to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBase64Image(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      toast.error("Image must be less than 4MB.");
+    }
+  };
+  const onSubmit = async (data: userSchemaType) => {
+    const updateExpression: Record<string, any> = {};
+
+    Object.keys(dirtyFields).forEach((field) => {
+      const value = data[field as keyof userSchemaType];
+      updateExpression[field] = Array.isArray(value)
+        ? { value, replace: true }
+        : value;
+    });
+
+    if (selectedImage) {
+      if (!base64Image) {
+        toast.error("Image not ready for upload.");
+        return;
+      }
+
+      updateExpression.picture = {
+        image: (base64Image as string).split(",")[1],
+        fileName: selectedImage.name,
+        mimeType: selectedImage.type,
+      };
+    }
+
+    if (updateExpression.city && updateExpression.country) {
+      const cityName = getCityNameById(updateExpression.city);
+
+      if (cityName) {
+        updateExpression.location = `${cityName.split(" ")[0]}, ${
+          updateExpression.country
+        }`;
+      }
+    }
+    if (updateExpression.dob) {
+      const formattedDOB = new Date(updateExpression.dob);
+
+      const age =
+        new Date().getFullYear() - new Date(formattedDOB).getFullYear();
+
+      if (age) {
+        updateExpression.age = age;
+      }
+    }
+
+    const res = await dispatch(
+      authThunks.updateProfile({
+        userId: user?.userId,
+        updateData: updateExpression,
+      })
+    );
+
+    if (res.type.includes("rejected")) {
+      return;
+    }
+
+    setSelectedImage(null);
+    setBase64Image("");
+    setImagePreviewUrl("");
+  };
+  useEffect(() => {
+    if (user) {
+      form.reset(user as unknown as userSchemaType);
+    }
+  }, [user, form]);
+
+  if (loading) return <Loader />;
+  if (!user) return null;
+
   return (
     <>
       <Card>
         <CardHeader>
           <CardTitle>Profile Picture</CardTitle>
-          <CardDescription>This will be shared to our platform</CardDescription>
+          <CardDescription>This will be shared on our platform</CardDescription>
         </CardHeader>
+
         <CardContent className="p-4 sm:p-6">
           <div className="flex sm:flex-row flex-col items-center sm:items-start sm:space-x-4 space-y-4 sm:space-y-0 w-full text-center sm:text-left">
-            <div className="w-28 h-28 border-2 bg-neutral-50 rounded-2xl border-dashed border-neutral-400 sm:flex items-center justify-center hidden">
-              <Image
-                src={"/assets/icons/png.svg"}
-                width={36}
-                height={36}
-                alt="image"
-                className="w-full h-full object-contain"
-              />
+            <div
+              className="min-w-28 w-full max-w-28 h-28 border-2 bg-neutral-50 rounded-2xl border-dashed border-neutral-400 sm:flex items-center justify-center"
+              onClick={handleImageUploadClick}
+            >
+              {imagePreviewUrl ? (
+                <Image
+                  src={imagePreviewUrl}
+                  width={100}
+                  height={100}
+                  alt="Profile Picture"
+                  className="w-full h-full object-contain rounded-2xl"
+                />
+              ) : (
+                <Image
+                  src={user?.picture}
+                  width={100}
+                  height={100}
+                  alt="Profile Picture"
+                  className="w-full h-full object-contain rounded-2xl"
+                />
+              )}
             </div>
+
             <div className="flex flex-col items-center sm:items-start justify-between gap-5 w-full">
               <div className="space-y-1.5">
                 <CardTitle>Upload Profile Picture</CardTitle>
@@ -55,117 +172,183 @@ const ManageProfile = () => {
                   svg.
                 </CardDescription>
               </div>
-
-              <Image
-                src={"/assets/icons/png.svg"}
-                width={36}
-                height={36}
-                alt="image"
-                className="w-28 h-28 object-contain border-2 bg-neutral-50 rounded-2xl border-dashed border-neutral-400 sm:hidden"
-              />
-              <Button className="w-full sm:w-auto">Upload Image</Button>
+              <Button
+                className="w-full sm:w-auto"
+                onClick={handleImageUploadClick}
+              >
+                Upload Image
+              </Button>
             </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
           </div>
         </CardContent>
       </Card>
+
       <Card className="mt-6">
         <CardHeader>
           <CardTitle>Personal Details</CardTitle>
-          <CardDescription>This will be shared to our platform</CardDescription>
+          <CardDescription>This will be shared on our platform</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="first-name">First name</Label>
-              <Input id="first-name" placeholder="Enter your first name" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="last-name">Last name</Label>
-              <Input id="last-name" placeholder="Enter your last name" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="display-name">Display name</Label>
-              <Input id="display-name" placeholder="Enter your display name" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="dob">Date of Birth</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="pl-3 text-left font-normal text-muted-foreground w-full"
-                  >
-                    Pick a date
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" />
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="gender">Gender</Label>
-              <Select>
-                <SelectTrigger id="gender">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="designation">Designation</Label>
-              <Input id="designation" placeholder="Enter your designation" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input id="email" placeholder="Enter your email" type="email" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="contact">Contact no</Label>
-              <Input id="contact" placeholder="Enter your contact no" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
-              <Input id="country" placeholder="Search country" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
-              <Input id="city" placeholder="Search city" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="languages">Known Languages</Label>
-              <Select>
-                <SelectTrigger id="languages">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="english">English</SelectItem>
-                  <SelectItem value="spanish">Spanish</SelectItem>
-                  <SelectItem value="french">French</SelectItem>
-                  <SelectItem value="german">German</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="col-span-1 sm:col-span-2 space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                placeholder="Enter Bio"
-                className="min-h-[100px]"
-              />
-            </div>
-          </div>
-        </CardContent>
+          <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* given_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="given_name"
+                  label="First Name"
+                  placeholder="Enter first name"
+                />
 
-        <CardFooter className="flex justify-end space-x-2">
-          <Button variant="ghost">Cancel</Button>
-          <Button>Save Changes</Button>
-        </CardFooter>
+                {/* family_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="family_name"
+                  label="Last Name"
+                  placeholder="Enter last name"
+                />
+
+                {/* display_name */}
+                <CustomFormField
+                  fieldType={FormFieldType.SKELETON}
+                  control={control}
+                  name="display_name"
+                  label="Display Name"
+                  renderSkeleton={(field) => (
+                    <div className="flex h-10 items-center border border-input rounded-md px-3 py-[15px]">
+                      <span className="mr-2">Dr.</span>
+                      <input
+                        {...field}
+                        id="display_name"
+                        type="text"
+                        className="flex-grow bg-transparent outline-none text-sm"
+                        placeholder="Enter your display name"
+                      />
+                    </div>
+                  )}
+                />
+
+                {/* dob */}
+                <CustomFormField
+                  fieldType={FormFieldType.DATE_PICKER}
+                  control={control}
+                  name={`dob`}
+                  label="Date of Birth"
+                />
+
+                {/* gender */}
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT}
+                  control={control}
+                  items={GENDERS}
+                  name={`gender`}
+                  label="Gender"
+                />
+
+                {/* designation */}
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  control={control}
+                  name="designation"
+                  label="Designation"
+                  placeholder="Enter your designation"
+                />
+
+                {/* email */}
+                <CustomFormField
+                  fieldType={FormFieldType.EMAIL}
+                  control={control}
+                  name="email"
+                  label="Email Address"
+                  placeholder="Enter email address"
+                  disabled
+                />
+
+                {/* phone_number */}
+                <CustomFormField
+                  fieldType={FormFieldType.PHONE_INPUT}
+                  control={control}
+                  name="phone_number"
+                  label="Contact no"
+                  placeholder="Enter a phone number"
+                />
+
+                {/* country */}
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                  control={control}
+                  items={COUNTRIES}
+                  name={`country`}
+                  label="Country"
+                  placeholder={"Select country..."}
+                  enableCreation={false}
+                />
+
+                {/* city */}
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                  control={control}
+                  items={getCitiesByCountry(country as string).map((c) => ({
+                    label: `${c.name} - ${c.admin1}`,
+                    value: c.id,
+                  }))}
+                  name={`city`}
+                  label="City"
+                  placeholder={"Select city..."}
+                  enableCreation={false}
+                />
+
+                {/* languages */}
+                <CustomFormField
+                  fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
+                  control={control}
+                  items={LANGUAGES}
+                  name={`languages`}
+                  label="Known Languages"
+                  placeholder={"Select languages..."}
+                  enableCreation={false}
+                />
+
+                {/* years_of_experience */}
+                <CustomFormField
+                  fieldType={FormFieldType.NUMBER}
+                  control={control}
+                  name={`years_of_experience`}
+                  label="Years of Experience"
+                  placeholder={"ex: 2"}
+                />
+              </div>
+
+              {/* bio */}
+              <CustomFormField
+                fieldType={FormFieldType.AUTO_RESIZE_TEXTAREA}
+                control={control}
+                name="bio"
+                label="Bio"
+                placeholder="Enter your bio"
+              />
+
+              <CardFooter className="flex justify-end space-x-2">
+                <Button variant="ghost" type="reset">
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={loading || !isDirty}>
+                  Save Changes
+                </Button>
+              </CardFooter>
+            </form>
+          </Form>
+        </CardContent>
       </Card>
     </>
   );
