@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   isPrimaryHeader = true,
-  searchKey = "email",
+  searchKey = "patient.email",
   title,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -101,17 +101,14 @@ export function DataTable<TData, TValue>({
                 placeholder={`Search by ${searchKey}`}
                 id={searchKey}
                 value={
-                  (table
-                    .getColumn(`${searchKey}`)
-                    ?.getFilterValue() as string) ?? ""
+                  (table.getColumn(searchKey)?.getFilterValue() as string) ?? ""
                 }
                 onChange={(event) =>
-                  table
-                    .getColumn(`${searchKey}`)
-                    ?.setFilterValue(event.target.value)
+                  table.getColumn(searchKey)?.setFilterValue(event.target.value)
                 }
                 autoComplete="off"
               />
+
               <div className="absolute inset-y-0 right-0 flex items-center">
                 <span className="mr-2 text-gray-500">
                   <LucideSearch className="h-5 w-5" />

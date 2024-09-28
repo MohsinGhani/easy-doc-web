@@ -23,6 +23,8 @@ interface PaymentsPageProps {
 }
 
 const PaymentsPage: React.FC<PaymentsPageProps> = () => {
+  const columns = useMemo(() => paymentsColumns(), []);
+
   const dispatch = useAppDispatch();
 
   const {
@@ -44,8 +46,6 @@ const PaymentsPage: React.FC<PaymentsPageProps> = () => {
       dispatch(paymentThunks.fetchAllPayments());
     }
   }, [dispatch, userId, role]);
-
-  const columns = useMemo(() => paymentsColumns(), []);
 
   if (loading || paymentLoader) <Loader />;
 

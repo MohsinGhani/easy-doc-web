@@ -5,12 +5,12 @@ import allergies from "@/public/data/allergies.json";
 import medications from "@/public/data/medications.json";
 
 export const identityPoolId =
-  process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || "";
+  process.env.COGNITO_IDENTITY_POOL_ID || "";
 
 export const userPoolClientId =
-  process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID || "";
+  process.env.COGNITO_USER_POOL_CLIENT_ID || "";
 
-export const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || "";
+export const userPoolId = process.env.COGNITO_USER_POOL_ID || "";
 export const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || "";
 
 // Navbar Links

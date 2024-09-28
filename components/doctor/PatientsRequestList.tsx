@@ -17,6 +17,15 @@ interface PatientsRequestListProps {
 const PatientsRequestList = ({
   headerType = "primary",
 }: PatientsRequestListProps) => {
+  const columns = React.useMemo(
+    () =>
+      requestsColumns({
+        handleAcceptRequest,
+        handlePreview,
+      }),
+    []
+  );
+
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [selectedRequest, setSelectedRequest] =
     React.useState<Appointment | null>(null);
@@ -46,15 +55,6 @@ const PatientsRequestList = ({
   const handleAcceptRequest = (request: Appointment) => {
     setIsSuccessOpen(true);
   };
-
-  const columns = React.useMemo(
-    () =>
-      requestsColumns({
-        handleAcceptRequest,
-        handlePreview,
-      }),
-    []
-  );
 
   if (loading) <Loader />;
 

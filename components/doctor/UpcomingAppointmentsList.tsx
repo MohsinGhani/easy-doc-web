@@ -14,6 +14,11 @@ interface UpcomingAppointmentsListProps {
 const UpcomingAppointmentsList = ({
   headerType = "primary",
 }: UpcomingAppointmentsListProps) => {
+  const columns = React.useMemo(
+    () => upcomingColumns({ handleMeetingJoin, handleChat }),
+    []
+  );
+
   const isPrimaryHeader = headerType === "primary";
 
   const handleMeetingJoin = (appointment: Appointment) => {
@@ -38,11 +43,6 @@ const UpcomingAppointmentsList = ({
       dispatch(appointmentThunks.fetchAllAppointments());
     }
   }, [dispatch, userId, role]);
-
-  const columns = React.useMemo(
-    () => upcomingColumns({ handleMeetingJoin, handleChat }),
-    []
-  );
 
   if (loading) <Loader />;
 

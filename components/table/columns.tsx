@@ -6,6 +6,7 @@ import {
   ArrowUpDown,
   EllipsisVertical,
   EyeIcon,
+  Filter,
   LucideCheck,
   Mail,
   MapPin,
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectRequestDialog from "../RejectRequestDialog";
-import { format, isValid, isWithinInterval, setYear } from "date-fns";
+import { format, isValid, isWithinInterval } from "date-fns";
 import Image from "next/image";
 import {
   Tooltip,
@@ -27,6 +28,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import RejectAppointmentDialog from "../patient/CancelAppointmentDialog";
+import { formatTimeForUI } from "@/lib/utils";
 
 interface requestsColumnsProps {
   handlePreview: (data: Appointment) => void;
@@ -37,7 +39,7 @@ interface upcomingColumnsProps {
   handleMeetingJoin: (data: Appointment) => void;
   handleChat: (data: Appointment) => void;
 }
-interface patientColumnsProps {
+interface PatientColumnsProps {
   handlePreview: (data: Appointment) => void;
 }
 
@@ -206,7 +208,7 @@ export const requestsColumns = ({
       ),
     },
     {
-      accessorKey: "email",
+      accessorKey: "patient.email",
       header: ({ column }) => {
         return (
           <Button
@@ -448,28 +450,46 @@ export const requestsColumns = ({
 
 export const patientColumns = ({
   handlePreview,
-}: patientColumnsProps): ColumnDef<Appointment>[] => {
+}: PatientColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
       header: "S.no",
       cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
     },
     {
-      accessorKey: "scheduled_date",
-      header: ({ column }) => {
-        return (
-          <Button
-            className="px-1.5"
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Appointment Date & Time
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+      accessorKey: "patient.email",
+      id: "patient.email",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const email = row.getValue("patient.email") as string;
+        return <div>{email}</div>;
       },
+      filterFn: "includesString",
+    },
+    {
+      accessorKey: "scheduled_date",
+      id: "scheduled_date",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Appointment Date & Time
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ getValue, row }) => {
-        const value = getValue() as DateRange;
+        const value = getValue() as any; // Adjust the type as needed
         const appointment_date = row.original.appointment_date;
 
         if (!appointment_date || !value) {
@@ -482,10 +502,11 @@ export const patientColumns = ({
           return "Invalid Date";
         }
 
-        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
+        return `${appointment_date} - ${formatTimeForUI(
+          value.start_time
+        )} - ${formatTimeForUI(value.end_time)}`;
       },
-      filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
-        console.log("🚀 ~ filterValue:", filterValue)
+      filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
         if (!appointment_date || !filterValue) return true;
         const appointmentDate = new Date(appointment_date);
@@ -496,18 +517,17 @@ export const patientColumns = ({
     },
     {
       accessorKey: "speciality",
-      header: ({ column }) => {
-        return (
-          <Button
-            className="px-1.5"
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Speciality
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      id: "speciality",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Speciality
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("speciality")}</div>
       ),
@@ -515,33 +535,31 @@ export const patientColumns = ({
     },
     {
       accessorKey: "consultation_type",
-      header: ({ column }) => {
-        return (
-          <Button
-            className="px-1.5"
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="hidden md:block">Consultation </span>Type
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      id: "consultation_type",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span className="hidden md:block">Consultation </span>Type
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
     },
     {
       accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <Button
-            className="px-1.5"
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span>Status</span>
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      id: "status",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span>Status</span>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("status")}</div>
       ),
@@ -593,7 +611,7 @@ export const patientColumns = ({
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <EllipsisVertical className="h-5 w-5 cursor-pointer" />
+                    <Filter className="h-5 w-5 cursor-pointer" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -723,7 +741,7 @@ export const upcomingColumns = ({
       },
     },
     {
-      accessorKey: "email",
+      accessorKey: "patient.email",
       header: ({ column }) => {
         return (
           <Button
@@ -740,7 +758,7 @@ export const upcomingColumns = ({
         <div className="flex flex-col gap-2">
           <div className="text-sm font-normal flex gap-1 items-center">
             <Mail className="w-5 h-5" />
-            {row.getValue("email")}
+            {row.getValue("patient.email")}
           </div>
           <div className="text-sm font-normal flex gap-1 items-center">
             <PhoneCall className="w-5 h-5" />

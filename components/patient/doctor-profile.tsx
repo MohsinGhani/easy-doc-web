@@ -217,7 +217,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ doctorId }) => {
                       buttonVariants({ size: "xl", variant: "default" })
                     )}
                   >
-                    Book as appointment
+                    Book an appointment
                   </Link>
                 </div>
               </div>
