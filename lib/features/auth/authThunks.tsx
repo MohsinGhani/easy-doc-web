@@ -267,10 +267,9 @@ export const authThunks = {
   initializeAuth: createAsyncThunk(
     "auth/fetchUserDetails",
     async (_, { rejectWithValue, dispatch }) => {
+      const userId = Cookies.get("userId");
+      const auth = Cookies.get("auth");
       try {
-        const userId = Cookies.get("userId");
-        const auth = Cookies.get("auth");
-
         // TODO: instead of using userId, get the userId from cognito Cookie
         if (!userId && !auth) {
           // console.log("No user ID or auth found");
@@ -292,9 +291,11 @@ export const authThunks = {
         await signOut();
         dispatch(signoutAction());
 
-        return rejectWithValue(
-          "Error in confirming your identity, Pease signin again!"
-        );
+        if (userId) {
+          return rejectWithValue(
+            "Error in confirming your identity, Pease signin again!"
+          );
+        }
       }
     }
   ),

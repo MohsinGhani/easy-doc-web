@@ -222,8 +222,8 @@ export const authSlice = createSlice({
         authThunks.initializeAuth.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.error = action.payload;
-          toast.error(action.payload);
+          state.error = action.payload ?? "Failed to initialize auth";
+          action.payload && toast.error(action.payload);
         }
       )
 
