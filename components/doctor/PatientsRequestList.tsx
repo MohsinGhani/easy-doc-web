@@ -17,15 +17,6 @@ interface PatientsRequestListProps {
 const PatientsRequestList = ({
   headerType = "primary",
 }: PatientsRequestListProps) => {
-  const columns = React.useMemo(
-    () =>
-      requestsColumns({
-        handleAcceptRequest,
-        handlePreview,
-      }),
-    []
-  );
-
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [selectedRequest, setSelectedRequest] =
     React.useState<Appointment | null>(null);
@@ -33,19 +24,10 @@ const PatientsRequestList = ({
   const isPrimaryHeader = headerType === "primary";
 
   const dispatch = useAppDispatch();
-
   const { allAppointments, loading } = useAppSelector(
     (state) => state.appointment
   );
-
   const { role, userId } = useAppSelector((state) => state.auth.user);
-
-  React.useEffect(() => {
-    // Fetch all appointments
-    if (userId && role) {
-      dispatch(appointmentThunks.fetchAllAppointments());
-    }
-  }, [dispatch, userId, role]);
 
   const handlePreview = (request: Appointment) => {
     setSelectedRequest(request);
@@ -55,6 +37,22 @@ const PatientsRequestList = ({
   const handleAcceptRequest = (request: Appointment) => {
     setIsSuccessOpen(true);
   };
+
+  const columns = React.useMemo(
+    () =>
+      requestsColumns({
+        handleAcceptRequest,
+        handlePreview,
+      }),
+    []
+  );
+
+  React.useEffect(() => {
+    // Fetch all appointments
+    if (userId && role) {
+      dispatch(appointmentThunks.fetchAllAppointments());
+    }
+  }, [dispatch, userId, role]);
 
   if (loading) <Loader />;
 

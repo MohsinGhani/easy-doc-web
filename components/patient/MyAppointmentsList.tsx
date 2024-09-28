@@ -10,7 +10,6 @@ import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks"
 import AppointmentDetailsSheet from "./AppointmentDetailsSheet";
 
 const MyAppointmentsList = () => {
-  const columns = React.useMemo(() => patientColumns({ handlePreview }), []);
   const dispatch = useAppDispatch();
 
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
@@ -23,16 +22,18 @@ const MyAppointmentsList = () => {
 
   const { role, userId } = useAppSelector((state) => state.auth.user);
 
+  const handlePreview = (request: Appointment) => {
+    setSelectedAppointment(request);
+    setIsPreviewOpen(true);
+  };
+
+  const columns = React.useMemo(() => patientColumns({ handlePreview }), []);
+
   React.useEffect(() => {
     if (userId && role) {
       dispatch(appointmentThunks.fetchAllAppointments());
     }
   }, [dispatch, userId, role]);
-
-  const handlePreview = (request: Appointment) => {
-    setSelectedAppointment(request);
-    setIsPreviewOpen(true);
-  };
 
   if (loading) return <Loader />;
 
