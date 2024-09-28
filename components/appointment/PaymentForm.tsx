@@ -81,7 +81,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
               },
             },
             business: {
-              name: fetchedAppointment?.doctor.display_name, // Display business name in the Payment Element
+              name: fetchedAppointment?.doctor.display_name || "Doctor", // Display business name in the Payment Element
             },
           }}
         />

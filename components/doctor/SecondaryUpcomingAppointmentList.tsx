@@ -16,7 +16,7 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
 
   const { allAppointments, loading } = useAppSelector(
     (state) => state.appointment
-  );
+  );  
 
   const { role, userId } = useAppSelector((state) => state.auth.user);
 
