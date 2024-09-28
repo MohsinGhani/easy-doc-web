@@ -46,9 +46,6 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
     }
   }, [dispatch, userId, role]);
 
-  if (loading) return <Loader />;
-  if (allAppointments.length === 0) return null;
-
   const filteredAppointments = useMemo(() => {
     const selectedMonthString = format(selectedMonth, "yyyy-MM");
     const selectedDayIndex =
@@ -63,6 +60,9 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
       );
     });
   }, [selectedDay, selectedMonth]);
+
+  if (loading) return <Loader />;
+  if (allAppointments.length === 0) return null;
 
   return (
     <Card>
