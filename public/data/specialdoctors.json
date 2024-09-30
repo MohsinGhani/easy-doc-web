@@ -1,0 +1,68 @@
+[
+    {
+      "userId": "1",
+      "display_name": "Dr. John",
+      "designation": "Dentist",
+      "location": "Florida, USA",
+      "overallRating": 4.5,
+      "average_fee": 400,
+      "years_of_experience": "05",
+      "available": true,
+      "picture": "/assets/images/Dr-john-dentist.png"
+    },
+    {
+      "userId": "2",
+      "display_name": "Dr. John",
+      "designation": "Dentist",
+      "location": "Florida, USA",
+      "overallRating": 4.5,
+      "average_fee": 400,
+      "years_of_experience": "05",
+      "available": true,
+      "picture": "/assets/images/Dr-john-dentist.png"
+    }, {
+        "userId": "3",
+        "display_name": "Dr. John",
+        "designation": "Dentist",
+        "location": "Florida, USA",
+        "overallRating": 4.5,
+        "average_fee": 400,
+        "years_of_experience": "05",
+        "available": true,
+        "picture": "/assets/images/Dr-john-dentist.png"
+      }
+      ,{
+        "userId": "4",
+        "display_name": "Dr. John",
+        "designation": "Dentist",
+        "location": "Florida, USA",
+        "overallRating": 4.5,
+        "average_fee": 400,
+        "years_of_experience": "05",
+        "available": true,
+        "picture": "/assets/images/Dr-john-dentist.png"
+      },{
+        "userId": "4",
+        "display_name": "Dr. John",
+        "designation": "Dentist",
+        "location": "Florida, USA",
+        "overallRating": 4.5,
+        "average_fee": 400,
+        "years_of_experience": "05",
+        "available": true,
+        "picture": "/assets/images/Dr-john-dentist.png"
+      },{
+        "userId": "4",
+        "display_name": "Dr. John",
+        "designation": "Dentist",
+        "location": "Florida, USA",
+        "overallRating": 4.5,
+        "average_fee": 400,
+        "years_of_experience": "05",
+        "available": true,
+        "picture": "/assets/images/Dr-john-dentist.png"
+      }
+
+  ]
+
+  
