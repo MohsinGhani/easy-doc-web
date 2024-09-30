@@ -62,7 +62,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       consulting_for: "self" as ConsultingFor,
       patient_name: `${user?.given_name} ${user.family_name}` || "",
       gender: GENDERS[0].value,
-      dob: "",
+      dob: user?.dob || "",
       blood_group: BLOOD_GROUPS[0].value,
       consultation_type: "online",
       phone_number: user?.phone_number || "",

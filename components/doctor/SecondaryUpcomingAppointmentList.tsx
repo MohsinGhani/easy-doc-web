@@ -16,7 +16,7 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
 
   const { allAppointments, loading } = useAppSelector(
     (state) => state.appointment
-  );  
+  );
 
   const { role, userId } = useAppSelector((state) => state.auth.user);
 
@@ -40,9 +40,12 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
   };
 
   React.useEffect(() => {
-    // Fetch all appointments
     if (userId && role) {
-      dispatch(appointmentThunks.fetchAllAppointments());
+      dispatch(
+        appointmentThunks.fetchAllAppointments({
+          limit: 10,
+        })
+      );
     }
   }, [dispatch, userId, role]);
 
@@ -53,7 +56,7 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
       1;
 
     return allAppointments.filter((appointment) => {
-      const appointmentDate = parseISO(appointment.appointment_date);
+      const appointmentDate = new Date(appointment.appointment_date);
       return (
         format(appointmentDate, "yyyy-MM") === selectedMonthString &&
         appointmentDate.getDay() === selectedDayIndex

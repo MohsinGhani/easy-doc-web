@@ -225,22 +225,24 @@ export const requestsColumns = ({
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage
-              src={row.original.patient.picture}
+              src={row.original.patient?.picture}
               alt="Avatar"
               className="object-cover rounded-full object-top"
             />
             <AvatarFallback>
-              {row.original.patient.given_name.charAt(0)}{" "}
-              {row.original.patient.family_name.charAt(0)}
+              {row.original.patient?.given_name.charAt(0)}{" "}
+              {row.original.patient?.family_name.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{row.original.patient.given_name}</div>
+            <div className="font-medium">
+              {row.original.patient?.given_name}
+            </div>
             {/* <div className="text-sm text-muted-foreground">
               {row.getValue("email")}
             </div> */}
             <div className="text-sm text-muted-foreground">
-              {row.original.patient.location}
+              {row.original.patient?.location}
             </div>
           </div>
         </div>
@@ -262,7 +264,7 @@ export const requestsColumns = ({
       },
       cell: ({ row }) => (
         <div className="capitalize">
-          {row.original.patient.age}, {row.original.patient.gender}
+          {row.original.patient?.age}, {row.original.patient?.gender}
         </div>
       ),
       meta: { className: "hidden sm:table-cell" },
@@ -363,7 +365,7 @@ export const requestsColumns = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <RejectRequestDialog
-                      name={row.original.patient.given_name}
+                      name={row.original.patient?.given_name}
                       onReject={() =>
                         console.log("rejected", row.original.doctorId)
                       }
@@ -413,7 +415,7 @@ export const requestsColumns = ({
                     <EyeIcon className="h-5 w-5 mr-2" /> View Request
                   </Button>
                   <RejectRequestDialog
-                    name={row.original.patient.given_name}
+                    name={row.original.patient?.given_name}
                     onReject={() =>
                       console.log("rejected", row.original.doctorId)
                     }

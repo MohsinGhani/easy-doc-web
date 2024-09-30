@@ -14,6 +14,7 @@ interface UpcomingAppointmentsListProps {
 const UpcomingAppointmentsList = ({
   headerType = "primary",
 }: UpcomingAppointmentsListProps) => {
+  const dispatch = useAppDispatch();
   const isPrimaryHeader = headerType === "primary";
 
   const handleMeetingJoin = (appointment: Appointment) => {
@@ -29,20 +30,34 @@ const UpcomingAppointmentsList = ({
     []
   );
 
-  const dispatch = useAppDispatch();
-
-  const { allAppointments, loading } = useAppSelector(
+  const { allAppointments, lastEvaluatedKey, loading } = useAppSelector(
     (state) => state.appointment
   );
+  console.log("🚀 ~ lastEvaluatedKey:", lastEvaluatedKey);
 
   const { role, userId } = useAppSelector((state) => state.auth.user);
 
   React.useEffect(() => {
     // Fetch all appointments
     if (userId && role) {
-      dispatch(appointmentThunks.fetchAllAppointments());
+      dispatch(
+        appointmentThunks.fetchAllAppointments({
+          limit: 10,
+          startKey: lastEvaluatedKey,
+        })
+      );
     }
   }, [dispatch, userId, role]);
+
+  // Handle page change
+  const handlePageChange = () => {
+    dispatch(
+      appointmentThunks.fetchAllAppointments({
+        limit: 10,
+        startKey: lastEvaluatedKey,
+      })
+    );
+  };
 
   if (loading) <Loader />;
 
@@ -53,6 +68,7 @@ const UpcomingAppointmentsList = ({
         data={allAppointments}
         isPrimaryHeader={isPrimaryHeader}
         title="Upcoming Appintments"
+        onPageChange={handlePageChange}
       />
     </>
   );

@@ -22,14 +22,18 @@ const createAppointment = createAsyncThunk<Appointment, Partial<Appointment>>(
   }
 );
 
-// Fetch all appointments
-const fetchAllAppointments = createAsyncThunk<Appointment[]>(
+// Fetch all appointments with pagination
+const fetchAllAppointments = createAsyncThunk<
+  { items: Appointment[]; lastEvaluatedKey: string | null },
+  { limit: number; startKey?: string | null }
+>(
   "appointment/fetchAllAppointments",
-  async (_, { getState, rejectWithValue }) => {
+  async (params, { getState, rejectWithValue }) => {
+    const { limit = 10, startKey = null } = params;
+    console.log("🚀 ~ limit = 10, startKey:", limit, startKey);
     try {
       const state = getState() as RootState;
       const { role, userId } = state.auth.user;
-      console.log("🚀 ~ role, userId:", role, userId);
 
       if (!role) {
         return rejectWithValue("User role is missing");
@@ -39,16 +43,23 @@ const fetchAllAppointments = createAsyncThunk<Appointment[]>(
         return rejectWithValue("User ID is missing");
       }
 
-      const response = await appointmentsApiClient.get(
-        `${role === "doctor" ? "doctors" : "patients"}/${userId}/appointments`
-      );
-      return response.data.data as Appointment[];
+      let url = `${
+        role === "doctor" ? "doctors" : "patients"
+      }/${userId}/appointments?limit=${limit}`;
+
+      if (startKey) {
+        url += `&startKey=${encodeURIComponent(startKey)}`;
+      }
+
+      const response = await appointmentsApiClient.get(url);
+
+      return response.data.data;
     } catch (error: any) {
-      // Extract error message from response or fallback to default
+      console.log("🚀 ~ error:", error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "Error getting appointments, Pease try again!";
+        "Error getting appointments, Please try again!";
       return rejectWithValue(errorMessage);
     }
   }

@@ -24,7 +24,7 @@ const PatientsRequestList = ({
   const isPrimaryHeader = headerType === "primary";
 
   const dispatch = useAppDispatch();
-  const { allAppointments, loading } = useAppSelector(
+  const { allAppointments, lastEvaluatedKey, loading } = useAppSelector(
     (state) => state.appointment
   );
   const { role, userId } = useAppSelector((state) => state.auth.user);
@@ -48,11 +48,24 @@ const PatientsRequestList = ({
   );
 
   React.useEffect(() => {
-    // Fetch all appointments
     if (userId && role) {
-      dispatch(appointmentThunks.fetchAllAppointments());
+      dispatch(
+        appointmentThunks.fetchAllAppointments({
+          startKey: lastEvaluatedKey,
+          limit: 10,
+        })
+      );
     }
   }, [dispatch, userId, role]);
+
+  const handlePageChange = () => {
+    dispatch(
+      appointmentThunks.fetchAllAppointments({
+        limit: 10,
+        startKey: lastEvaluatedKey,
+      })
+    );
+  };
 
   if (loading) <Loader />;
 
@@ -64,6 +77,8 @@ const PatientsRequestList = ({
           data={allAppointments}
           isPrimaryHeader={isPrimaryHeader}
           title="Patient's Requests"
+          onPageChange={handlePageChange}
+          lastEvaluatedKey={lastEvaluatedKey}
         />
       </CardContent>
 

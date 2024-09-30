@@ -7,6 +7,7 @@ const initialState: appointmentState = {
   fetchedAppointment: null,
   loading: false,
   error: null,
+  lastEvaluatedKey: null,
 };
 
 export const appointmentSlice = createSlice({
@@ -14,25 +15,32 @@ export const appointmentSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // Fetch all appointments
     builder
+      // Fetch all appointments
       .addCase(appointmentThunks.fetchAllAppointments.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.lastEvaluatedKey = null;
       })
       .addCase(
         appointmentThunks.fetchAllAppointments.fulfilled,
-        (state, action: PayloadAction<Appointment[]>) => {
-          state.allAppointments = action.payload;
+        (state, action) => {
+          const { items, lastEvaluatedKey } = action.payload;
+          state.allAppointments = [...state.allAppointments, ...items];
+          state.lastEvaluatedKey = lastEvaluatedKey || null;
+
           state.loading = false;
         }
       )
       .addCase(
         appointmentThunks.fetchAllAppointments.rejected,
-        (state, action: PayloadAction<any>) => {
+        (state, action) => {
+          console.log("🚀 ~ action:", action);
           state.loading = false;
-          state.error = action.payload;
-          toast.error(action.payload || "Failed to fetch appointments");
+          state.error = action.payload as string;
+          toast.error(
+            (action.payload as string) || "Failed to fetch appointments"
+          );
         }
       )
 

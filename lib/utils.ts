@@ -222,6 +222,9 @@ export const paymentsApiClient = createApiClient(
 export const appointmentsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.APPOINTMENTS) || ""
 );
+export const notificationsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.NOTIFICATIONS) || ""
+);
 
 /**
  * Helper function to generate presigned URLs and upload files to S3.

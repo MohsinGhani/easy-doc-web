@@ -16,7 +16,7 @@ const MyAppointmentsList = () => {
   const [selectedAppointment, setSelectedAppointment] =
     React.useState<Appointment | null>(null);
 
-  const { allAppointments, loading } = useAppSelector(
+  const { allAppointments, lastEvaluatedKey, loading } = useAppSelector(
     (state) => state.appointment
   );
 
@@ -31,9 +31,23 @@ const MyAppointmentsList = () => {
 
   React.useEffect(() => {
     if (userId && role) {
-      dispatch(appointmentThunks.fetchAllAppointments());
+      dispatch(
+        appointmentThunks.fetchAllAppointments({
+          limit: 10,
+          startKey: lastEvaluatedKey,
+        })
+      );
     }
   }, [dispatch, userId, role]);
+
+  const handlePageChange = () => {
+    dispatch(
+      appointmentThunks.fetchAllAppointments({
+        limit: 10,
+        startKey: lastEvaluatedKey,
+      })
+    );
+  };
 
   if (loading) return <Loader />;
 
@@ -44,6 +58,8 @@ const MyAppointmentsList = () => {
           columns={columns}
           data={allAppointments}
           title="My Appointments"
+          onPageChange={handlePageChange}
+          lastEvaluatedKey={lastEvaluatedKey}
         />
       </CardContent>
 

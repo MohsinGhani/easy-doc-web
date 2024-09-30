@@ -110,7 +110,7 @@ declare type User = {
   zip_code: string;
   dob: string;
   age: number;
-  blood_group: string
+  blood_group: string;
   gender: Gender;
   location: string;
   overallRating: number;
@@ -229,4 +229,21 @@ declare interface appointmentState {
   fetchedAppointment: Appointment | null;
   loading: boolean;
   error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+
+declare interface notificationState {
+  allNotifications: Notification[];
+  fetchedNotification: Notification | null;
+  loading: boolean;
+  error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+
+declare interface Notification {
+  notificationId: string;
+  userId: string;
+  message: string;
+  status: "unread" | "read";
+  timestamp: number;
 }

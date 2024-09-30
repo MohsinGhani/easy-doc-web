@@ -52,6 +52,8 @@ interface DataTableProps<TData, TValue> {
   isPrimaryHeader?: boolean;
   title: string;
   searchKey?: string;
+  lastEvaluatedKey?: string | null;
+  onPageChange?: () => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -59,6 +61,8 @@ export function DataTable<TData, TValue>({
   data,
   isPrimaryHeader = true,
   searchKey = "patient.email",
+  lastEvaluatedKey = undefined,
+  onPageChange,
   title,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -202,12 +206,11 @@ export function DataTable<TData, TValue>({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => table.getCanPreviousPage() && table.previousPage()}
-              className={cn(
-                table.getCanPreviousPage()
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed"
-              )}
+              onClick={() => {
+                if (table.getCanPreviousPage()) {
+                  table.previousPage();
+                }
+              }}
             >
               Previous
             </PaginationPrevious>
@@ -215,9 +218,9 @@ export function DataTable<TData, TValue>({
           {[...Array(table.getPageCount())].map((_, index) => (
             <PaginationItem key={index}>
               <PaginationLink
-                onClick={() => table.setPageIndex(index)}
-                isActive={table.getState().pagination.pageIndex === index}
-                className="cursor-pointer"
+                onClick={() => {
+                  table.setPageIndex(index);
+                }}
               >
                 {index + 1}
               </PaginationLink>
@@ -225,10 +228,12 @@ export function DataTable<TData, TValue>({
           ))}
           <PaginationItem>
             <PaginationNext
-              onClick={() => table.getCanNextPage() && table.nextPage()}
-              className={cn(
-                table.getCanNextPage() ? "cursor-pointer" : "cursor-not-allowed"
-              )}
+              onClick={() => {
+                if (table.getCanNextPage()) {
+                  table.nextPage();
+                  lastEvaluatedKey && onPageChange?.();
+                }
+              }}
             >
               Next
             </PaginationNext>
