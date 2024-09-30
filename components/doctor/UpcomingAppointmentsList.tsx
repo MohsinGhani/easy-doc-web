@@ -33,7 +33,6 @@ const UpcomingAppointmentsList = ({
   const { allAppointments, lastEvaluatedKey, loading } = useAppSelector(
     (state) => state.appointment
   );
-  console.log("🚀 ~ lastEvaluatedKey:", lastEvaluatedKey);
 
   const { role, userId } = useAppSelector((state) => state.auth.user);
 

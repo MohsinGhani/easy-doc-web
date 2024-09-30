@@ -8,6 +8,7 @@ import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Loader } from "@/components/common/Loader";
 import { stripePubKey } from "@/constants";
+import { useRouter } from "next/navigation";
 
 const stripePromise = loadStripe(stripePubKey);
 
@@ -18,6 +19,7 @@ interface PaymentWrapperProps {
 const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ appointmentId }) => {
   const dispatch = useAppDispatch();
   const [clientSecret, setClientSecret] = useState("");
+  const router = useRouter();
 
   const { fetchedAppointment, loading } = useAppSelector(
     (state) => state.appointment
@@ -29,6 +31,11 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ appointmentId }) => {
 
   useEffect(() => {
     if (!fetchedAppointment) return;
+
+    if (fetchedAppointment.status !== "PAYMENT_PENDING") {
+      router.push(`/my-appointments/${appointmentId}`);
+      return;
+    }
 
     dispatch(
       appointmentThunks.makePaymentIntent({

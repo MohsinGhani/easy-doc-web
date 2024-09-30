@@ -1,5 +1,3 @@
-"use client";
-
 import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";

@@ -28,6 +28,7 @@ const RequestReviewSheet = ({
   };
 
   if (!selectedRequest) return null;
+  console.log("🚀 ~ selectedRequest:", selectedRequest);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -49,10 +50,10 @@ const RequestReviewSheet = ({
                   className="object-cover rounded-full object-top"
                 />
                 <AvatarFallback>
-                  {selectedRequest.patient?.patient_name
+                  {selectedRequest?.patient?.patient_name
                     .charAt(0)
                     .toUpperCase() +
-                    selectedRequest.patient?.patient_name.slice(1)}
+                    selectedRequest?.patient?.patient_name.slice(1)}
                 </AvatarFallback>
               </Avatar>
 
@@ -73,7 +74,7 @@ const RequestReviewSheet = ({
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Consulting for:</p>
-                <p className="font-medium">{`Dr. ${selectedRequest?.consulting_for}`}</p>
+                <p className="font-medium">{selectedRequest?.consulting_for}</p>
               </div>
 
               <div className="space-y-1">
@@ -87,7 +88,9 @@ const RequestReviewSheet = ({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <p className="text-muted-foreground">Gender:</p>
-                <p className="font-medium">{selectedRequest?.patient?.gender}</p>
+                <p className="font-medium">
+                  {selectedRequest?.patient?.gender}
+                </p>
               </div>
 
               <div className="space-y-1">
@@ -123,7 +126,7 @@ const RequestReviewSheet = ({
                   Appointment date & time:
                 </p>
                 <p className="font-medium">
-                  {`${selectedRequest.appointment_date} - ${selectedRequest.scheduled_date.start_time} - ${selectedRequest.scheduled_date.end_time}`}
+                  {`${selectedRequest?.appointment_date} - ${selectedRequest?.scheduled_date.start_time} - ${selectedRequest?.scheduled_date.end_time}`}
                 </p>
               </div>
             </div>
@@ -131,13 +134,13 @@ const RequestReviewSheet = ({
             <div className="space-y-1">
               <p className="text-muted-foreground">Contact no:</p>
               <p className="font-medium">
-                {selectedRequest.patient?.phone_number}
+                {selectedRequest?.patient?.phone_number}
               </p>
             </div>
 
             <div className="space-y-1">
               <p className="text-muted-foreground">Email:</p>
-              <p className="font-medium">{selectedRequest.patient?.email}</p>
+              <p className="font-medium">{selectedRequest?.patient?.email}</p>
             </div>
 
             <div />
@@ -145,7 +148,7 @@ const RequestReviewSheet = ({
             <div className="space-y-1">
               <p className="text-muted-foreground">Allergies:</p>
               <div className="flex gap-2">
-                {selectedRequest.allergies.map(
+                {selectedRequest?.allergies.map(
                   (allergy: string, index: number) => (
                     <div
                       key={index}
@@ -161,7 +164,7 @@ const RequestReviewSheet = ({
             <div className="space-y-1">
               <p className="text-muted-foreground">Current medications:</p>
               <div className="flex gap-2">
-                {selectedRequest.current_medications.map(
+                {selectedRequest?.current_medications?.map(
                   (medication: string, index: number) => (
                     <div
                       key={index}
@@ -176,7 +179,7 @@ const RequestReviewSheet = ({
 
             <div className="space-y-4">
               <SheetTitle>Description:</SheetTitle>
-              <p>{selectedRequest.description}</p>
+              <p>{selectedRequest?.description}</p>
             </div>
 
             <div className="space-y-4">
@@ -184,15 +187,15 @@ const RequestReviewSheet = ({
 
               <div className="grid gap-4">
                 {selectedRequest?.attachments?.map(
-                  (attachment: any, index: number) => (
+                  (attachment: Attachment, index: number) => (
                     <a
-                      href={attachment.url}
+                      href={attachment?.url}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center justify-between w-full hover:underline hover:bg-muted-foreground/20 rounded-lg px-2"
                       key={index}
                     >
-                      <div className="font-medium">{attachment?.fileName}</div>
+                      <div className="font-medium">{attachment?.name}</div>
                       <Button variant="ghost" size="icon">
                         <ExternalLink className="w-5 h-5" />
                       </Button>
@@ -207,7 +210,7 @@ const RequestReviewSheet = ({
         <SheetFooter className="items-center justify-center gap-4 flex-row">
           <RejectRequestDialog
             name={selectedRequest?.patient?.patient_name}
-            onReject={() => console.log("rejected", selectedRequest.patientId)}
+            onReject={() => console.log("rejected", selectedRequest?.patientId)}
             trigger={
               <Button size={"lg"} variant={"outline"}>
                 Reject
