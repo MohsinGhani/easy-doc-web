@@ -1,9 +1,6 @@
-"use client";
-
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { signin as signinAction, signout as signoutAction } from "./authSlice";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
 import {
   signIn,
   signUp,
@@ -12,7 +9,7 @@ import {
   resendSignUpCode,
   resetPassword,
   confirmResetPassword,
-  getCurrentUser,
+  fetchAuthSession,
 } from "aws-amplify/auth";
 import {
   ConfirmCodePayload,
@@ -22,7 +19,9 @@ import {
   SigninPayload,
   SignupPayload,
 } from "@/types/auth";
-import { handleTokenStorage } from "@/helpers/auth";
+import Cookies from "js-cookie";
+import { functionsApiClient } from "@/lib/utils";
+import { RootState } from "@/lib/store";
 
 export const authThunks = {
   signup: createAsyncThunk(
@@ -40,6 +39,9 @@ export const authThunks = {
               given_name,
               family_name,
               email,
+              picture: `https://avatar.iran.liara.run/public/${Math.floor(
+                Math.random() * 100
+              )}`,
               "custom:role": role,
               "custom:verified": role === "doctor" ? "false" : "true",
               "custom:licence": role === "doctor" ? licence : "",
@@ -48,8 +50,6 @@ export const authThunks = {
         });
 
         const { codeDeliveryDetails }: any = nextStep;
-
-        Cookies.set("auth", JSON.stringify({ email }));
 
         return codeDeliveryDetails;
       } catch (error: any) {
@@ -65,25 +65,65 @@ export const authThunks = {
       { rejectWithValue, dispatch }
     ) => {
       try {
-        await confirmSignUp({
+        const { nextStep } = await confirmSignUp({
           username: values.email,
           confirmationCode: values.confirmationCode,
         });
 
-        if (!values.password) {
-          toast.success("Email verification successful!, you can sign in now");
-          router.push("/auth/sign-in");
-          return;
+        switch (nextStep.signUpStep) {
+          case "DONE":
+            if (!values.password) {
+              toast.success(
+                "Email verification successful!, you can sign in now"
+              );
+              router.push("/auth/sign-in");
+              return;
+            }
+
+            const { isSignedIn, nextStep } = await signIn({
+              username: values.email,
+              password: values.password,
+            });
+
+            break;
+
+          case "CONFIRM_SIGN_UP":
+            router.push("/auth/verify-email?email=" + values.email);
+            return rejectWithValue("Please verify your email first!");
+
+          case "COMPLETE_AUTO_SIGN_IN":
+            toast.success("Sign in successful!, you'll be redirected shortly");
+
+            const payload = (await fetchAuthSession()).tokens?.idToken?.payload;
+
+            if (!payload) {
+              return rejectWithValue("Sign-in failed. Please try again.");
+            }
+
+            dispatch(signinAction({ payload }));
+
+            const role = payload["custom:role"];
+            router.push(
+              role === "doctor"
+                ? `/dashboard`
+                : role === "admin"
+                ? `/admin`
+                : `/doctors`
+            );
+            break;
+
+          default:
+            break;
         }
 
-        await signIn({
-          username: values.email,
-          password: values.password,
-        });
+        const payload = (await fetchAuthSession()).tokens?.idToken?.payload;
 
-        const { userId } = await getCurrentUser();
-        const payload = handleTokenStorage(userId);
+        if (!payload) {
+          return rejectWithValue("Sign-in failed. Please try again.");
+        }
+
         dispatch(signinAction({ payload }));
+
         toast.success("Sign in successful!, you'll be redirected shortly");
         const role = payload["custom:role"];
 
@@ -91,7 +131,7 @@ export const authThunks = {
           role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
         );
       } catch (error: any) {
-        return rejectWithValue(error.message);
+        return rejectWithValue(error.message || "Something went wrong");
       }
     }
   ),
@@ -113,11 +153,14 @@ export const authThunks = {
           return rejectWithValue("Please verify your email first!");
         }
 
+        const payload = (await fetchAuthSession()).tokens?.idToken?.payload;
 
-        const { userId } = await getCurrentUser();
-        const payload = handleTokenStorage(userId);
+        if (!payload) {
+          return rejectWithValue("Sign-in failed. Please try again.");
+        }
 
         dispatch(signinAction({ payload }));
+        await dispatch(authThunks.initializeAuth());
 
         const role = payload["custom:role"];
         toast.success("Sign in successful!");
@@ -125,7 +168,6 @@ export const authThunks = {
           role === "doctor" ? `/dashboard` : role === "admin" ? `/admin` : `/`
         );
       } catch (error: any) {
-        console.log(error.message);
         const errorType =
           error.__type || error.code || error.name || error.message || error;
 
@@ -148,13 +190,14 @@ export const authThunks = {
     async (router: any, { rejectWithValue, dispatch }) => {
       try {
         await signOut();
-        Cookies.remove("token");
 
         dispatch(signoutAction());
         toast.success("Logged out Successfully");
         router.push("/auth/sign-in");
       } catch (error: any) {
-        return rejectWithValue(error.message);
+        return rejectWithValue(
+          error.message || "Error signing out, Please try again!"
+        );
       }
     }
   ),
@@ -166,11 +209,15 @@ export const authThunks = {
       { rejectWithValue }
     ) => {
       try {
-        await resendSignUpCode({ username: values.email });
+        const nextStep = await resendSignUpCode({ username: values.email });
+
+        const { attributeName, deliveryMedium, destination } = nextStep;
+
         toast.success("Code sent successfully");
       } catch (error: any) {
-        toast.error(error.message);
-        return rejectWithValue(error.message);
+        return rejectWithValue(
+          error.message || "Error Sending Confirmation code, Pease try again!"
+        );
       }
     }
   ),
@@ -186,8 +233,9 @@ export const authThunks = {
         resetPassword({ username: email });
         toast.success("Code sent successfully");
       } catch (error: any) {
-        toast.error(error.message || "Failed to request password reset.");
-        return rejectWithValue(error.message || "Something went wrong");
+        return rejectWithValue(
+          error.message || "Error in sending code, Pease try again!"
+        );
       }
     }
   ),
@@ -209,9 +257,154 @@ export const authThunks = {
         toast.success("Password reset successful!");
         router.push("/auth/sign-in");
       } catch (error: any) {
-        toast.error(error.message || "Failed to reset password.");
-        return rejectWithValue(error.message || "Something went wrong");
+        return rejectWithValue(
+          error.message || "Error changing password, Pease try again!"
+        );
       }
     }
   ),
+
+  initializeAuth: createAsyncThunk(
+    "auth/fetchUserDetails",
+    async (_, { rejectWithValue, dispatch }) => {
+      try {
+        const userId = Cookies.get("userId");
+        const auth = Cookies.get("auth");
+
+        // TODO: instead of using userId, get the userId from cognito Cookie
+        if (!userId && !auth) {
+          // console.log("No user ID or auth found");
+
+          await signOut();
+          dispatch(signoutAction());
+
+          // return toast.error("No user ID or auth found");
+        }
+
+        if (auth) {
+          const parsedAuth = JSON.parse(auth) as User;
+          return parsedAuth;
+        } else if (userId) {
+          const response = await functionsApiClient.get(`/auth/${userId}`);
+          return response.data.data;
+        }
+      } catch (error) {
+        await signOut();
+        dispatch(signoutAction());
+
+        return rejectWithValue(
+          "Error in confirming your identity, Pease signin again!"
+        );
+      }
+    }
+  ),
+
+  updateProfile: createAsyncThunk<
+    Partial<User>,
+    { userId: string; updateData: Record<string, any> },
+    { rejectValue: string }
+  >(
+    "auth/updateProfile",
+    async ({ userId, updateData }, { getState, rejectWithValue }) => {
+      debugger;
+      try {
+        const state = getState() as { auth: { user?: { role?: string } } };
+        const role = state.auth.user?.role;
+
+        type params = {
+          updateData: Record<string, any>;
+          userId: string;
+          doctorId?: string;
+        };
+
+        const params: params = {
+          updateData,
+          userId,
+        };
+
+        if (role === "doctor") {
+          params.doctorId = userId;
+        }
+
+        const response = await functionsApiClient.put(
+          `/${role === "doctor" ? "doctor" : "auth"}/update`,
+          params
+        );
+
+        return response.data.data;
+      } catch (error: any) {
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to update profile, Please try again!";
+        return rejectWithValue(errorMessage);
+      }
+    }
+  ),
+
+  connectStripeAccount: createAsyncThunk<
+    { accountId: string; accountLink: string }, // Return type
+    { userId: string; email: string; stripeAccountId?: string }, // Parameters to the action
+    { rejectValue: string; state: RootState } // Additional options
+  >(
+    "auth/connectStripeAccount",
+    async (
+      { userId, email, stripeAccountId },
+      { getState, rejectWithValue }
+    ) => {
+      try {
+        // Get the user's role from the state (optional, based on your use case)
+        const state = getState();
+        const role = state.auth.user?.role;
+
+        if (!role || role !== "doctor") {
+          // Optional role check if you want to restrict this action to doctors only
+          return rejectWithValue("Only doctors can connect a Stripe account.");
+        }
+
+        // Make an API call to the backend to create the Stripe account
+        const response = await functionsApiClient.post(
+          "/connect-stripe-account",
+          {
+            email,
+            doctorId: userId, // Use userId as doctorId for Stripe onboarding
+            stripeAccountId, // Optional: Use existing Stripe account ID if available
+          }
+        );
+
+        // Return the accountId and accountLink from the response
+        return response.data.data.accountLink;
+      } catch (error: any) {
+        // Handle errors gracefully and return a meaningful error message
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to connect Stripe account. Please try again!";
+        return rejectWithValue(errorMessage);
+      }
+    }
+  ),
+
+  verifyStripeAccount: createAsyncThunk<
+    { isActive: boolean; status: string; capabilities: any }, // Return type
+    { doctorId: string }, // Parameters to the action
+    { rejectValue: string }
+  >("auth/verifyStripeAccount", async ({ doctorId }, { rejectWithValue }) => {
+    try {
+      // Make an API call to the backend to verify the Stripe account
+      const response = await functionsApiClient.post(
+        `/verify-stripe-account?doctorId=${doctorId}`
+      );
+
+      // Return the verification details from the response
+      return response.data.data.status;
+    } catch (error: any) {
+      // Handle errors gracefully and return a meaningful error message
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to verify Stripe account. Please try again!";
+      return rejectWithValue(errorMessage);
+    }
+  }),
 };

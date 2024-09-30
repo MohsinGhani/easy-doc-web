@@ -217,6 +217,7 @@ export function DataTable<TData, TValue>({
               <PaginationLink
                 onClick={() => table.setPageIndex(index)}
                 isActive={table.getState().pagination.pageIndex === index}
+                className="cursor-pointer"
               >
                 {index + 1}
               </PaginationLink>

@@ -11,20 +11,16 @@ import { Form } from "@/components/ui/form";
 import LogoText from "../LogoText";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
-import { useDelayedButton } from "@/hooks/useDelayedButton";
 import { useAppSelector } from "@/lib/hooks";
+import { useSearchParams } from "next/navigation";
+import DelayedResendButton from "./DelayedResendButton";
 
 const VerifyEmailForm = () => {
   const { loading } = useAppSelector((state) => state.auth);
-  const { resendConfirmationCode, confirmCode } = useAuth();
-  const { searchParams } = new URL(window.location.href);
-  const email = searchParams.get("email") || "";
-  const isEnabled = useDelayedButton(60000);
+  const { confirmCode } = useAuth();
 
-  useEffect(() => {
-    resendConfirmationCode({ email });
-  }, []);
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") || "";
 
   const form = useForm<ConfirmCode>({
     resolver: zodResolver(ConfirmCodeSchema),
@@ -63,14 +59,7 @@ const VerifyEmailForm = () => {
           />
 
           <CardDescription className="self-end">
-            <Button
-              disabled={!isEnabled || loading}
-              onClick={() => resendConfirmationCode({ email })}
-              className="font-semibold text-primary hover:text-primary/80"
-              variant={"link"}
-            >
-              Resend OTP?
-            </Button>
+            <DelayedResendButton runOnRender email={email} />
           </CardDescription>
 
           <Button

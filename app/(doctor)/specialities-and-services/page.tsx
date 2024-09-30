@@ -3,7 +3,6 @@
 import AddServiceDialog from "@/components/doctor/AddServiceDialog";
 import ManageServices from "@/components/doctor/ManageServices";
 import { ContentLayout } from "@/components/layout/content-layout";
-import { Button } from "@/components/ui/button";
 
 export default function SpecialitiesAndServicesPage() {
   return (

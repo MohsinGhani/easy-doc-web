@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import LogoText from "@/components/LogoText";
-
 import { useRef, useState } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import { UserSignup, UserSignupSchema } from "@/models/User";
@@ -29,10 +28,11 @@ const SignUpForm = () => {
     resolver: zodResolver(UserSignupSchema),
   });
 
-  const onSubmit = (values: UserSignup) => {
-    confirmCode(values);
-    if (!error && !loading) {
-      setActiveStep(activeStep + 1);
+  const onSubmit = async (values: UserSignup) => {
+    const res = await confirmCode(values);
+    if (res.type.includes("rejected")) {
+      setStatus("error");
+      return;
     }
   };
 
@@ -76,9 +76,9 @@ const SignUpForm = () => {
         licence: role === "doctor" ? form.getValues().licence : "",
       };
 
-      const res = await signup(values);
+      const data = await signup(values);
 
-      if (res.type === "auth/signup/rejected") {
+      if (data.type.includes("rejected")) {
         setStatus("error");
         return;
       }

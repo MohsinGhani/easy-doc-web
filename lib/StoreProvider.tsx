@@ -3,18 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Provider } from "react-redux";
 import { makeStore, AppStore } from "../lib/store";
-import { initializeAuthState } from "@/lib/features/auth/authSlice";
-import Cookies from "js-cookie";
-
+import { cognitoUserPoolsTokenProvider } from "aws-amplify/auth/cognito";
+import { CookieStorage } from "aws-amplify/utils";
 import { Amplify } from "aws-amplify";
-import {
-  userPoolId,
-  identityPoolId,
-  userPoolClientId,
-  API_URL,
-} from "@/constants";
-import axios from "axios";
-import { useAppSelector } from "./hooks";
+import { userPoolId, identityPoolId, userPoolClientId } from "@/constants";
+import { authThunks } from "./features/auth/authThunks";
 
 Amplify.configure({
   Auth: {
@@ -26,20 +19,7 @@ Amplify.configure({
   },
 });
 
-const configureAxios = (token: string) => {
-  axios.defaults.baseURL = API_URL;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-  axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response && error.response.status === 401) {
-        console.log("🚀 ~ configureAxios ~ error:", error);
-      }
-      return Promise.reject(error);
-    }
-  );
-};
+cognitoUserPoolsTokenProvider.setKeyValueStorage(new CookieStorage());
 
 export default function StoreProvider({
   children,
@@ -53,22 +33,14 @@ export default function StoreProvider({
   }, []);
 
   const storeRef = useRef<AppStore>();
-  const token = Cookies.get("token");
-
-  useEffect(() => {
-    if (token) {
-      configureAxios(token);
-    }
-  }, [token]);
 
   if (!storeRef.current) {
-    // Create the store instance the first time this renders
     if (!isClient) {
       return null;
     }
 
     storeRef.current = makeStore();
-    storeRef.current.dispatch(initializeAuthState());
+    storeRef.current.dispatch(authThunks.initializeAuth());
   }
 
   return <Provider store={storeRef.current}>{children}</Provider>;

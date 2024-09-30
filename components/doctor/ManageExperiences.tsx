@@ -1,5 +1,18 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { z } from "zod";
+import { authThunks } from "@/lib/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  experienceSchema,
+  experienceSchemaType,
+} from "@/models/validationSchemas";
+import { getCitiesByCountry } from "@/lib/utils";
+import { Form } from "../ui/form";
+import CustomFormField, { FormFieldType } from "../auth/CustomFormField";
+import AddExperienceDialog from "./AddExperienceDialog";
 import {
   Card,
   CardContent,
@@ -7,45 +20,85 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Image from "next/image";
-import AddExperienceDialog from "./AddExperienceDialog";
 import { Trash2 } from "lucide-react";
-import DeleteDialog from "../DeleteDialog";
-import { Separator } from "../ui/separator";
+import { COUNTRIES, EMPLOYEMENT_TYPES } from "@/constants";
+import { Button } from "../ui/button";
+import { Loader } from "../common/Loader";
+import DeleteDialog from "../common/DeleteDialog";
 
-export default function ManageExperiences() {
-  const [experiences, setExperiences] = useState([
-    {
-      id: 1,
-      hospitalName: "Aga Khan Hospital",
-      startDate: "2015",
-      endDate: "2018",
-      title: "Surgeon",
-      city: "Karachi",
-      employment: "Fulltime",
-      currentlyWorking: false,
-      description: "",
-      icon: "https://i.pravatar.cc/40?u=hospital",
+const ManageExperiences = () => {
+  const { user, loading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const schema = z.object({
+    experiences: z.array(experienceSchema),
+  });
+  const form = useForm<{ experiences: experienceSchemaType[] }>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      experiences: user?.experiences || [],
     },
-  ]);
+  });
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { isDirty },
+  } = form;
+  const { fields, replace } = useFieldArray({
+    control,
+    name: "experiences",
+  });
 
+  useEffect(() => {
+    if (user?.experiences) {
+      replace(user.experiences);
+    }
+  }, [user?.experiences, replace]);
+
+  useEffect(() => {
+    const subscriptions: Array<() => void> = fields.map((_, index) => {
+      return watch((value, { name }) => {
+        if (name === `experiences.${index}.currently_working`) {
+          const currentlyWorking =
+            value?.experiences?.[index]?.currently_working;
+          if (currentlyWorking) {
+            setValue(`experiences.${index}.end_date`, "Present");
+          }
+        }
+      }) as unknown as () => void;
+    });
+
+    return () => {
+      subscriptions.forEach((unsubscribe) => {
+        if (typeof unsubscribe === "function") {
+          unsubscribe();
+        }
+      });
+    };
+  }, [fields, watch, setValue, user]);
+
+  const onSubmit = async (data: { experiences: experienceSchemaType[] }) => {
+    await dispatch(
+      authThunks.updateProfile({
+        userId: user?.userId,
+        updateData: {
+          experiences: {
+            value: data.experiences,
+            replace: true,
+          },
+        },
+      })
+    );
+  };
+
+  if (loading) return <Loader />;
   return (
     <Card className="w-full">
       <CardHeader>
@@ -57,187 +110,193 @@ export default function ManageExperiences() {
         </div>
       </CardHeader>
       <CardContent>
-        <Accordion type="multiple" className="w-full">
-          {experiences.map((exp, index) => (
-            <AccordionItem value={`item-${index}`} key={exp.id}>
-              <AccordionTrigger
-                className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6"
-                DeleteIcon={
-                  <>
-                    <DeleteDialog
-                      trigger={
-                        <Trash2 className="h-4 w-4 shrink-0 text-destructive" />
-                      }
-                      text="Your experience will be deleted"
-                      onReject={() => {
-                        // do nothing
-                        console.log("rejected");
-                      }}
-                    />
-                  </>
-                }
-              >
-                <div className="flex flex-col items-start w-full">
-                  <h3 className="font-semibold">{exp.hospitalName}</h3>
-                  <p className="text-sm text-gray-500">
-                    {exp.startDate} - {exp.endDate}
-                  </p>
-                </div>
-              </AccordionTrigger>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {fields.length > 0 ? (
+              <Accordion type="multiple">
+                {fields.map((field, index) => {
+                  const currentlyWorking = watch(
+                    `experiences.${index}.currently_working`
+                  );
+                  const country = watch(`experiences.${index}.country`);
 
-              <AccordionContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`title-${exp.id}`}>Title</Label>
-                    <Input
-                      id={`title-${exp.id}`}
-                      value={exp.title}
-                      onChange={(e) => {
-                        const newExperiences = experiences.map((ex) =>
-                          ex.id === exp.id
-                            ? { ...ex, title: e.target.value }
-                            : ex
-                        );
-                        setExperiences(newExperiences);
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`hospital-${exp.id}`}>Hospital Name</Label>
-                    <Input
-                      id={`hospital-${exp.id}`}
-                      value={exp.hospitalName}
-                      onChange={(e) => {
-                        const newExperiences = experiences.map((ex) =>
-                          ex.id === exp.id
-                            ? { ...ex, hospitalName: e.target.value }
-                            : ex
-                        );
-                        setExperiences(newExperiences);
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`city-${exp.id}`}>City</Label>
-                    <Select
-                      value={exp.city}
-                      onValueChange={(value) => {
-                        const newExperiences = experiences.map((ex) =>
-                          ex.id === exp.id ? { ...ex, city: value } : ex
-                        );
-                        setExperiences(newExperiences);
-                      }}
+                  return (
+                    <AccordionItem
+                      value={`item-${index}`}
+                      key={field.id}
+                      className="mb-6"
                     >
-                      <SelectTrigger id={`city-${exp.id}`}>
-                        <SelectValue placeholder="Select city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="karachi">Karachi</SelectItem>
-                        <SelectItem value="lahore">Lahore</SelectItem>
-                        <SelectItem value="islamabad">Islamabad</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`employment-${exp.id}`}>Employment</Label>
-                    <Select
-                      value={exp.employment}
-                      onValueChange={(value) => {
-                        const newExperiences = experiences.map((ex) =>
-                          ex.id === exp.id ? { ...ex, employment: value } : ex
-                        );
-                        setExperiences(newExperiences);
-                      }}
-                    >
-                      <SelectTrigger id={`employment-${exp.id}`}>
-                        <SelectValue placeholder="Select employment type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="fulltime">Fulltime</SelectItem>
-                        <SelectItem value="parttime">Part-time</SelectItem>
-                        <SelectItem value="contract">Contract</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`start-date-${exp.id}`}>Start Date</Label>
-                    <Input
-                      id={`start-date-${exp.id}`}
-                      type="date"
-                      value={exp.startDate}
-                      onChange={(e) => {
-                        const newExperiences = experiences.map((ex) =>
-                          ex.id === exp.id
-                            ? { ...ex, startDate: e.target.value }
-                            : ex
-                        );
-                        setExperiences(newExperiences);
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`end-date-${exp.id}`}>End Date</Label>
-                    <Input
-                      id={`end-date-${exp.id}`}
-                      type="date"
-                      value={exp.endDate}
-                      onChange={(e) => {
-                        const newExperiences = experiences.map((ex) =>
-                          ex.id === exp.id
-                            ? { ...ex, endDate: e.target.value }
-                            : ex
-                        );
-                        setExperiences(newExperiences);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`current-${exp.id}`}
-                      checked={exp.currentlyWorking}
-                      onCheckedChange={(checked) => {
-                        const newExperiences = experiences.map((ex) =>
-                          ex.id === exp.id
-                            ? { ...ex, currentlyWorking: !!checked }
-                            : ex
-                        );
-                        setExperiences(newExperiences);
-                      }}
-                    />
-                    <label
-                      htmlFor={`current-${exp.id}`}
-                      className="text-sm font-medium leading-none"
-                    >
-                      I currently work here
-                    </label>
-                  </div>
-                </div>
-                <div className="mt-4 space-y-1.5">
-                  <Label htmlFor={`description-${exp.id}`}>Description</Label>
-                  <Textarea
-                    id={`description-${exp.id}`}
-                    value={exp.description}
-                    onChange={(e) => {
-                      const newExperiences = experiences.map((ex) =>
-                        ex.id === exp.id
-                          ? { ...ex, description: e.target.value }
-                          : ex
-                      );
-                      setExperiences(newExperiences);
-                    }}
-                  />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+                      <AccordionTrigger
+                        className="hover:no-underline p-4 data-[state=open]:bg-secondary rounded-xl border bg-card text-card-foreground shadow mb-6"
+                        DeleteIcon={
+                          <DeleteDialog
+                            trigger={
+                              <Trash2 className="h-4 w-4 shrink-0 text-destructive" />
+                            }
+                            text="Your education will be deleted"
+                            onReject={async () => {
+                              await dispatch(
+                                authThunks.updateProfile({
+                                  userId: user?.userId,
+                                  updateData: {
+                                    experiences: {
+                                      value: user?.experiences?.filter(
+                                        (_, i) => i !== index
+                                      ),
+                                      replace: true,
+                                    },
+                                  },
+                                })
+                              );
+                            }}
+                          />
+                        }
+                      >
+                        <div className="flex flex-col items-start w-full">
+                          <h3 className="font-semibold">
+                            {field.hospital_name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {field.title}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {format(field.start_date, "yyyy")} -{" "}
+                            {field.end_date === "Present"
+                              ? field.end_date
+                              : format(field.end_date, "yyyy")}
+                          </p>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4 p-6 rounded-xl bg-secondary/25">
+                          <div className="grid sm:grid-cols-2 gap-6">
+                            {/* title */}
+                            <CustomFormField
+                              fieldType={FormFieldType.INPUT}
+                              control={control}
+                              name={`experiences.${index}.title`}
+                              label="Title"
+                              placeholder="Enter Job Title"
+                            />
+
+                            {/* hospital_name */}
+                            <CustomFormField
+                              fieldType={FormFieldType.INPUT}
+                              control={control}
+                              name={`experiences.${index}.hospital_name`}
+                              label="Hospital Name"
+                              placeholder="Enter Hospital Name"
+                            />
+                          </div>
+                          {/* description */}
+                          <CustomFormField
+                            fieldType={FormFieldType.TEXTAREA}
+                            control={control}
+                            name={`experiences.${index}.description`}
+                            label="Description"
+                            placeholder="Tell us about your experience"
+                          />
+                          <div className="grid sm:grid-cols-2 gap-6">
+                            {/* start_date */}
+                            <CustomFormField
+                              fieldType={FormFieldType.DATE_PICKER}
+                              control={control}
+                              name={`experiences.${index}.start_date`}
+                              label="Start Date"
+                            />
+
+                            {/* end_date */}
+                            {!currentlyWorking ? (
+                              <CustomFormField
+                                fieldType={FormFieldType.DATE_PICKER}
+                                control={control}
+                                name={`experiences.${index}.end_date`}
+                                label="To"
+                                placeholder="Select end date"
+                              />
+                            ) : (
+                              <CustomFormField
+                                fieldType={FormFieldType.INPUT}
+                                control={control}
+                                name={`experiences.${index}.end_date`}
+                                label="To"
+                                defaultValue="Present"
+                                disabled
+                                placeholder="Present"
+                              />
+                            )}
+                          </div>
+                          <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-6">
+                            {/* country */}
+                            <CustomFormField
+                              fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                              control={control}
+                              items={COUNTRIES}
+                              name={`experiences.${index}.country`}
+                              label="Country"
+                              enableCreation={false}
+                              placeholder="Select"
+                            />
+
+                            {/* city */}
+                            <CustomFormField
+                              fieldType={FormFieldType.SELECT_WITH_SEARCH}
+                              enableCreation={false}
+                              control={control}
+                              items={getCitiesByCountry(country).map((c) => ({
+                                label: `${c.name} - ${c.admin1}`,
+                                value: c.id,
+                              }))}
+                              name={`experiences.${index}.city`}
+                              label="City"
+                              placeholder="Select"
+                            />
+
+                            {/* employment_type */}
+                            <CustomFormField
+                              fieldType={FormFieldType.SELECT}
+                              control={control}
+                              items={EMPLOYEMENT_TYPES}
+                              name={`experiences.${index}.employment_type`}
+                              label="Employment Type"
+                              placeholder="Select"
+                            />
+                          </div>
+                          {/* currently_working */}
+
+                          <CustomFormField
+                            fieldType={FormFieldType.CHECKBOX}
+                            control={control}
+                            name={`experiences.${index}.currently_working`}
+                            label="I currently work here"
+                          />
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            ) : (
+              <>No Experiences found, add one now!</>
+            )}
+            {/* Save button */}
+            <CardFooter className="flex justify-end space-x-2">
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={!isDirty || loading}
+                className="bg-blue-500 text-white"
+              >
+                Save Changes
+              </Button>
+            </CardFooter>{" "}
+          </form>
+        </Form>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button className="bg-blue-500 text-white">Save Changes</Button>
-      </CardFooter>
     </Card>
   );
-}
+};
+
+export default ManageExperiences;
