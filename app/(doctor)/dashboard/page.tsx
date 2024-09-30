@@ -11,6 +11,12 @@ import PatientsReviewsList from "@/components/doctor/PatientsReviewsList";
 import SecondaryUpcomingAppointmentsList from "@/components/doctor/SecondaryUpcomingAppointmentList";
 import MessagesSidebar from "@/components/messages/messages-sidebar";
 import { ContentLayout } from "@/components/layout/content-layout";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Doctor Dashboard",
+  description: "Here you can view & manage all the things related to doctor",
+};
 
 const DoctorDashboardPage = () => {
   return (

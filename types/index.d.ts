@@ -192,6 +192,8 @@ declare type Payment = {
   paymentMethod: string;
   status: PAYMENT_STATUS;
   created: number;
+  doctorId: string;
+  patientId: string;
 };
 
 declare type Attachment = {

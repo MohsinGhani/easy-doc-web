@@ -12,6 +12,9 @@ export const userPoolClientId =
 
 export const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || "";
 export const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || "";
+export const webSocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_API_URL || "";
+export const stripePubKey =
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
 
 // Navbar Links
 export const NAV_LINKS = [

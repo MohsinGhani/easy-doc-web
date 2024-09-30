@@ -277,8 +277,6 @@ export const authThunks = {
 
           await signOut();
           dispatch(signoutAction());
-
-          // return toast.error("No user ID or auth found");
         }
 
         if (auth) {

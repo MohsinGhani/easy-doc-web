@@ -1,6 +1,12 @@
 import AppointmentForm from "@/components/appointment/AppointmentForm";
 import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Book Appointment",
+  description: "Book an appointment with a doctor",
+};
 
 interface BookAppointmentPageProps {
   params: {

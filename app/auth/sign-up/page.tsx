@@ -1,4 +1,10 @@
 import SignUpForm from "@/components/auth/SignUpForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Sign up",
+  description: "Sign up for Easy Doc",
+};
 
 export default function SignUpPage() {
   return (

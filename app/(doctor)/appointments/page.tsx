@@ -1,5 +1,3 @@
-"use client";
-
 import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -11,6 +9,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Appointments",
+  description: "Here you can view & manage all your appointments",
+};
 
 const AppointmentsPage = () => {
   return (

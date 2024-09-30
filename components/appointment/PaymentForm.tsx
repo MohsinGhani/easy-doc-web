@@ -93,7 +93,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
         type="submit"
         disabled={appointmentLoader || loading || loader}
       >
-        Proceed to Checkout
+        Complete Checkout
       </Button>
     </form>
   );

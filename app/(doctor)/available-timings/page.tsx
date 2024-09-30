@@ -13,6 +13,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { WEEK_DAYS } from "@/constants";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Available Timings",
+  description: "Set your available timings",
+};
 
 const AvailableTimingsPage = () => {
   return (

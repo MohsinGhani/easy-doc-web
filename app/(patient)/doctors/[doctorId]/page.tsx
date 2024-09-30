@@ -2,6 +2,12 @@ import DoctorProfile from "@/components/patient/doctor-profile";
 import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Doctor Details",
+  description: "Find the best doctors near you",
+};
 
 interface DoctorDetailsPageProps {
   params: {

@@ -102,7 +102,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
       // Step 2: Add uploaded files to form data
       data.attachments = uploadedFiles;
-      console.log("🚀 ~ onSubmit ~ data:", data);
 
       const patientData = {
         patient_name: data.patient_name,
@@ -111,7 +110,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         blood_group: data.blood_group,
         phone_number: data.phone_number,
         email: data.email,
-        age: new Date().getFullYear() - new Date(new Date(data.dob).toISOString()).getFullYear()
+        age:
+          new Date().getFullYear() -
+          new Date(new Date(data.dob).toISOString()).getFullYear(),
       };
 
       const newAppointment = {
@@ -123,8 +124,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         status: "PAYMENT_PENDING",
         patientData,
       };
-
-      console.log("🚀 ~ onSubmit ~ newAppointment:", newAppointment);
 
       // Step 3: Submit form data to the backend
       const { payload, type } = await dispatch(
@@ -139,7 +138,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         const createdAppointment = payload as Appointment;
         const appointmentId = createdAppointment?.appointmentId;
 
-        form.reset();
         setSelectedFiles([]);
         router.push(
           `/my-appointments/${appointmentId}/checkout?appointmentReason=${data?.reason}`

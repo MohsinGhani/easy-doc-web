@@ -1,6 +1,12 @@
 import { PatientLayout } from "@/components/layout/patient-layout";
 import SuccessPage from "@/components/SuccessPage";
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Appointment Success",
+  description: "Appointment booked successfully",
+};
 
 interface AppointmentSuccessPageProps {
   params: {

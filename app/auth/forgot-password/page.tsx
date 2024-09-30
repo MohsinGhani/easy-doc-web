@@ -1,4 +1,10 @@
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Reset Password",
+  description: "Reset your password",
+};
 
 export default function ForgotPasswordPage() {
   return (
