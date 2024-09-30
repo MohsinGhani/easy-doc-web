@@ -10,7 +10,7 @@ const WebSocketInitializer = () => {
   const userId = Cookies.get("userId");
 
   const { connectionStatus, messages } = useWebSocket(
-    `${webSocketUrl}/${userId}`
+    `${webSocketUrl}?userId=${userId}`
   );
 
   useEffect(() => {
