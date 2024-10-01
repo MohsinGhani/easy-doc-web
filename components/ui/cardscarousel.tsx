@@ -52,7 +52,7 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
   ];
 
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const itemsPerView = 4; // Display 4 items at a time
+  const itemsPerView = 4; 
 
   const handleDotClick = (index: number) => {
     setCurrentIndex(index);
@@ -65,19 +65,19 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
     };
   };
 
-  return (
+  return ( 
     <div className={`w-full flex flex-col items-center justify-center ${className}`}>
       <div className="relative w-full overflow-hidden">
         <div className="flex w-full" style={getTransformStyle()}>
           {contentData.map((item, index) => (
-            <div key={index} className="w-1/4 p-1 flex-shrink-0"> {/* 4 cards fit in full width */}
+            <div key={index} className="w-1/4 p-1 flex-shrink-0"> 
               <Card className="w-[93%] bg-[#FFFF] h-96 flex items-center justify-center mt-10 mb-10 mx-auto">
                 <CardContent className="flex flex-col items-center justify-center">
                   <Image
-                    className="object-cover"
+                    className="object-cover" 
                     src={item.image}
                     width={90}
-                    height={60}
+                    height={60} 
                     alt="carousel-image"
                   />
                   <div className="text-[18px] font-[600] leading-[40px] tracking-[1.5%] pt-4 text-center text-[#121212]">
@@ -96,9 +96,8 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
         </div>
       </div>
 
-      {/* Dot Navigation */}
-      <div className="flex justify-center mt-4">
-        {contentData.map((_, index) => (
+      <div className="flex justify-center mt-4"> 
+        {contentData.map((_, index) => ( 
           <div
             key={index}
             className={`w-3 h-3 mx-1 rounded-full cursor-pointer ${
