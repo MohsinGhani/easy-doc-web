@@ -39,20 +39,14 @@ const UpcomingAppointmentsList = ({
   React.useEffect(() => {
     // Fetch all appointments
     if (userId && role) {
-      dispatch(
-        appointmentThunks.fetchAllAppointments({
-          limit: 10,
-          startKey: lastEvaluatedKey,
-        })
-      );
+      dispatch(appointmentThunks.fetchAllAppointments({ status: "UPCOMING" }));
     }
   }, [dispatch, userId, role]);
 
   // Handle page change
   const handlePageChange = () => {
     dispatch(
-      appointmentThunks.fetchAllAppointments({
-        limit: 10,
+      appointmentThunks.fetchAppointmentsByPagination({
         startKey: lastEvaluatedKey,
       })
     );

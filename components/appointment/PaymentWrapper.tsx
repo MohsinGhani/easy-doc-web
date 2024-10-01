@@ -44,6 +44,7 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ appointmentId }) => {
         patientId: fetchedAppointment.patientId,
         doctorId: fetchedAppointment.doctorId,
         stripeAccountId: fetchedAppointment.doctor.stripeAccountId,
+        email: fetchedAppointment.patient.email,
       })
     ).then((res: any) => {
       if (res.payload && res.payload.clientSecret) {

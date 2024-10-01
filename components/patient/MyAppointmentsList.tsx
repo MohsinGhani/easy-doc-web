@@ -27,23 +27,29 @@ const MyAppointmentsList = () => {
     setIsPreviewOpen(true);
   };
 
-  const columns = React.useMemo(() => patientColumns({ handlePreview }), []);
+  const handleCancel = async (request: Appointment) => {
+    await dispatch(
+      appointmentThunks.updateAppointmentStatus({
+        appointmentId: request.appointmentId,
+        status: "CANCELLED",
+      })
+    );
+  };
+
+  const columns = React.useMemo(
+    () => patientColumns({ handlePreview, handleCancel }),
+    []
+  );
 
   React.useEffect(() => {
     if (userId && role) {
-      dispatch(
-        appointmentThunks.fetchAllAppointments({
-          limit: 10,
-          startKey: lastEvaluatedKey,
-        })
-      );
+      dispatch(appointmentThunks.fetchAllAppointments({ status: "UPCOMING" }));
     }
   }, [dispatch, userId, role]);
 
   const handlePageChange = () => {
     dispatch(
-      appointmentThunks.fetchAllAppointments({
-        limit: 10,
+      appointmentThunks.fetchAppointmentsByPagination({
         startKey: lastEvaluatedKey,
       })
     );

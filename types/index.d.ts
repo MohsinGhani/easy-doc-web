@@ -246,4 +246,5 @@ declare interface Notification {
   message: string;
   status: "unread" | "read";
   timestamp: number;
+  link?: string;
 }

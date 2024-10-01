@@ -20,9 +20,37 @@ export const notificationSlice = createSlice({
       .addCase(notificationThunks.fetchAllNotifications.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.allNotifications = [];
       })
       .addCase(
         notificationThunks.fetchAllNotifications.fulfilled,
+        (state, action) => {
+          const { items, lastEvaluatedKey } = action.payload;
+          state.allNotifications = items;
+          state.lastEvaluatedKey = lastEvaluatedKey || null;
+
+          state.loading = false;
+        }
+      )
+      .addCase(
+        notificationThunks.fetchAllNotifications.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+          toast.error(action.payload || "Failed to fetch notifications");
+        }
+      )
+
+      // Fetch notifications with pagination
+      .addCase(
+        notificationThunks.fetchNotificationsWithPagination.pending,
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addCase(
+        notificationThunks.fetchNotificationsWithPagination.fulfilled,
         (state, action) => {
           const { items, lastEvaluatedKey } = action.payload;
           state.allNotifications = [...state.allNotifications, ...items];
@@ -32,7 +60,7 @@ export const notificationSlice = createSlice({
         }
       )
       .addCase(
-        notificationThunks.fetchAllNotifications.rejected,
+        notificationThunks.fetchNotificationsWithPagination.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

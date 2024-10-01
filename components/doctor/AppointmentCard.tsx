@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Separator } from "../ui/separator";
 import { CalendarCheck2, Clock3, MapPin } from "lucide-react";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatTimeForUI } from "@/lib/utils";
 import { GenderMale } from "../icons";
 
 interface AppointmentCardProps {
@@ -41,7 +41,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <GenderMale className="w-4 h-4 fill-white" />
           </h2>
           <div className="flex items-center gap-2 justify-between">
-            <p className="text-sm font-semibold">{appointment.patient.age} years old</p>
+            <p className="text-sm font-semibold">
+              {appointment.patient.age} years old
+            </p>
             <Separator
               orientation="vertical"
               className="h-4 w-px bg-[#e2e8f0]"
@@ -60,7 +62,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className="flex items-center flex-wrap justify-between mt-4">
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Blood</p>
-          <span className="text-base font-bold">{appointment.patient.blood_group}</span>
+          <span className="text-base font-bold">
+            {appointment.patient.blood_group}
+          </span>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Height</p>
@@ -102,7 +106,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             />
             <span className="text-xs font-bold inline-flex items-center gap-1">
               <Clock3 className="w-4 h-4 relative" />{" "}
-              {appointment.scheduled_date.start_time} -{" "} {appointment.scheduled_date.end_time}
+              {formatTimeForUI(appointment.scheduled_date.start_time)} -{" "}
+              {formatTimeForUI(appointment.scheduled_date.end_time)}
             </span>
           </div>
         </div>

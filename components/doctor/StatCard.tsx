@@ -31,7 +31,7 @@ const AppointmentsEnumCard = ({ heading, className, status, icon }: Props) => {
   );
 
   useEffect(() => {
-    dispatch(appointmentThunks.fetchAllAppointments());
+    dispatch(appointmentThunks.fetchAllAppointments({ status: "UPCOMING" }));
   }, [dispatch]);
 
   return (

@@ -13,12 +13,51 @@ const fetchAllNotifications = createAsyncThunk<{
       const state = getState() as RootState;
       const userId = state.auth.user?.userId;
 
-      const response = await notificationsApiClient.get(
-        `/notifications/${userId}`
-      );
+      if (!userId) {
+        return rejectWithValue("User not found!");
+      }
+
+      let url = `/notifications/${userId}`;
+
+      const response = await notificationsApiClient.get(url);
       return response.data.data;
     } catch (error: any) {
-      // Extract error message from response or fallback to default
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error getting notifications, Pease try again!";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+// Fetch all notifications
+const fetchNotificationsWithPagination = createAsyncThunk<
+  {
+    items: Notification[];
+    lastEvaluatedKey: string | null;
+  },
+  { startKey?: string | null }
+>(
+  "notification/fetchNotificationsWithPagination",
+  async (params, { getState, rejectWithValue }) => {
+    try {
+      const { startKey = null } = params;
+      const state = getState() as RootState;
+      const userId = state.auth.user?.userId;
+
+      if (!userId) {
+        return rejectWithValue("User not found!");
+      }
+
+      let url = `/notifications/${userId}`;
+      if (startKey) {
+        url += `?startKey=${encodeURIComponent(startKey)}`;
+      }
+
+      const response = await notificationsApiClient.get(url);
+      return response.data.data;
+    } catch (error: any) {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -37,7 +76,7 @@ const makeNotificationsRead = createAsyncThunk<Notification, string>(
       const userId = state.auth.user?.userId;
 
       const response = await notificationsApiClient.post(
-        `/notifications/${notificationId}/read?userId=${userId}`
+        `/notifications/read/${notificationId}?userId=${userId}`
       );
 
       return response.data.data;
@@ -55,5 +94,6 @@ const makeNotificationsRead = createAsyncThunk<Notification, string>(
 // Export all thunks
 export const notificationThunks = {
   fetchAllNotifications,
+  fetchNotificationsWithPagination,
   makeNotificationsRead,
 };

@@ -4,6 +4,7 @@ import sidebarReducer from "./features/sidebar/sidebarSlice";
 import doctorReducer from "./features/doctor/doctorSlice";
 import appointmentReducer from "./features/appointment/appointmentSlice";
 import paymentReducer from "./features/payment/paymentSlice";
+import notificationReducer from "./features/notification/notificationSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -13,6 +14,7 @@ export const makeStore = () => {
       doctor: doctorReducer,
       appointment: appointmentReducer,
       payment: paymentReducer,
+      notification: notificationReducer,
     },
   });
 };

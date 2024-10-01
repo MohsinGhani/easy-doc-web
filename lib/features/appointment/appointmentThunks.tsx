@@ -25,27 +25,72 @@ const createAppointment = createAsyncThunk<Appointment, Partial<Appointment>>(
 // Fetch all appointments with pagination
 const fetchAllAppointments = createAsyncThunk<
   { items: Appointment[]; lastEvaluatedKey: string | null },
-  { limit: number; startKey?: string | null }
+  { status?: APPOINTMENT_STATUS }
 >(
   "appointment/fetchAllAppointments",
   async (params, { getState, rejectWithValue }) => {
-    const { limit = 10, startKey = null } = params;
-    console.log("🚀 ~ limit = 10, startKey:", limit, startKey);
     try {
+      const { status } = params;
       const state = getState() as RootState;
       const { role, userId } = state.auth.user;
 
       if (!role) {
         return rejectWithValue("User role is missing");
       }
-
       if (!userId) {
         return rejectWithValue("User ID is missing");
       }
 
       let url = `${
         role === "doctor" ? "doctors" : "patients"
-      }/${userId}/appointments?limit=${limit}`;
+      }/${userId}/appointments`;
+
+      if (status) {
+        url += `?status=${status}`;
+      }
+
+      const response = await appointmentsApiClient.get(url);
+
+      return response.data.data;
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error getting appointments, Please try again!";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+// Fetch all appointments with pagination
+const fetchAppointmentsByPagination = createAsyncThunk<
+  { items: Appointment[]; lastEvaluatedKey: string | null },
+  {
+    startKey?: string | null;
+    status?: APPOINTMENT_STATUS;
+  }
+>(
+  "appointment/fetchAppointmentsByPagination",
+  async (params, { getState, rejectWithValue }) => {
+    try {
+      const { startKey = null, status } = params;
+      const state = getState() as RootState;
+      const { role, userId } = state.auth.user;
+
+      if (!role) {
+        return rejectWithValue("User role is missing");
+      }
+      if (!userId) {
+        return rejectWithValue("User ID is missing");
+      }
+
+      let url = `${
+        role === "doctor" ? "doctors" : "patients"
+      }/${userId}/appointments`;
+
+      if (status) {
+        url += `?status=${status}`;
+      }
 
       if (startKey) {
         url += `&startKey=${encodeURIComponent(startKey)}`;
@@ -55,7 +100,6 @@ const fetchAllAppointments = createAsyncThunk<
 
       return response.data.data;
     } catch (error: any) {
-      console.log("🚀 ~ error:", error);
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -118,6 +162,29 @@ const makePayment = createAsyncThunk<
   }
 });
 
+// Update the appointment status
+const updateAppointmentStatus = createAsyncThunk<
+  Appointment,
+  { appointmentId: string; status: APPOINTMENT_STATUS }
+>(
+  "appointment/updateAppointmentStatus",
+  async ({ appointmentId, status }, { rejectWithValue }) => {
+    try {
+      const response = await appointmentsApiClient.post(
+        `/appointments/update-status`,
+        { appointmentId, status }
+      );
+      return response.data.data as Appointment;
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error updating appointment, Pease try again!";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 // Export all thunks
 export const appointmentThunks = {
   fetchAllAppointments,
@@ -125,4 +192,6 @@ export const appointmentThunks = {
   createAppointment,
   makePaymentIntent,
   makePayment,
+  updateAppointmentStatus,
+  fetchAppointmentsByPagination,
 };

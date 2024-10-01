@@ -34,8 +34,24 @@ const PatientsRequestList = ({
     setIsPreviewOpen(true);
   };
 
-  const handleAcceptRequest = (request: Appointment) => {
-    setIsSuccessOpen(true);
+  const handleAcceptRequest = async (request: Appointment) => {
+    const res = await dispatch(
+      appointmentThunks.updateAppointmentStatus({
+        appointmentId: request.appointmentId,
+        status: "UPCOMING",
+      })
+    );
+
+    if (res.type.includes("fulfilled")) setIsSuccessOpen(true);
+  };
+
+  const handleRejectRequest = async (request: Appointment) => {
+    await dispatch(
+      appointmentThunks.updateAppointmentStatus({
+        appointmentId: request.appointmentId,
+        status: "REJECTED",
+      })
+    );
   };
 
   const columns = React.useMemo(
@@ -43,6 +59,7 @@ const PatientsRequestList = ({
       requestsColumns({
         handleAcceptRequest,
         handlePreview,
+        handleRejectRequest,
       }),
     []
   );
@@ -51,8 +68,7 @@ const PatientsRequestList = ({
     if (userId && role) {
       dispatch(
         appointmentThunks.fetchAllAppointments({
-          startKey: lastEvaluatedKey,
-          limit: 10,
+          status: "PENDING_APPROVAL",
         })
       );
     }
@@ -60,9 +76,9 @@ const PatientsRequestList = ({
 
   const handlePageChange = () => {
     dispatch(
-      appointmentThunks.fetchAllAppointments({
-        limit: 10,
+      appointmentThunks.fetchAppointmentsByPagination({
         startKey: lastEvaluatedKey,
+        status: "PENDING_APPROVAL",
       })
     );
   };
@@ -74,11 +90,12 @@ const PatientsRequestList = ({
       <CardContent>
         <DataTable
           columns={columns}
-          data={allAppointments}
+          data={allAppointments.filter(e => e.status === "PENDING_APPROVAL")}
           isPrimaryHeader={isPrimaryHeader}
           title="Patient's Requests"
           onPageChange={handlePageChange}
           lastEvaluatedKey={lastEvaluatedKey}
+          loading={loading}
         />
       </CardContent>
 

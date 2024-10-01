@@ -41,11 +41,7 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
 
   React.useEffect(() => {
     if (userId && role) {
-      dispatch(
-        appointmentThunks.fetchAllAppointments({
-          limit: 10,
-        })
-      );
+      dispatch(appointmentThunks.fetchAllAppointments({ status: "UPCOMING" }));
     }
   }, [dispatch, userId, role]);
 

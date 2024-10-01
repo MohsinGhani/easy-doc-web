@@ -33,6 +33,7 @@ import { formatTimeForUI } from "@/lib/utils";
 interface requestsColumnsProps {
   handlePreview: (data: Appointment) => void;
   handleAcceptRequest: (data: Appointment) => void;
+  handleRejectRequest: (data: Appointment) => void;
 }
 
 interface upcomingColumnsProps {
@@ -41,6 +42,7 @@ interface upcomingColumnsProps {
 }
 interface PatientColumnsProps {
   handlePreview: (data: Appointment) => void;
+  handleCancel: (data: Appointment) => void;
 }
 
 export const paymentsColumns = (): ColumnDef<Payment>[] => {
@@ -70,7 +72,7 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
       ),
     },
     {
-      accessorKey: "paymentMethod",
+      accessorKey: "payment_method",
       header: ({ column }) => {
         return (
           <Button
@@ -83,8 +85,8 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
           </Button>
         );
       },
-      cell: ({ row }) => {
-        console.log("paymentMethod", row.getValue("paymentMethod"));
+      cell: ({ getValue }) => {
+        const card = getValue() as string;
 
         return (
           <Image
@@ -180,32 +182,12 @@ export const paymentsColumns = (): ColumnDef<Payment>[] => {
 export const requestsColumns = ({
   handleAcceptRequest,
   handlePreview,
+  handleRejectRequest,
 }: requestsColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
       header: "S.no",
       cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
-    },
-    {
-      accessorKey: "patientId",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            className="px-1.5 w-full truncate"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            <span className="hidden md:block">Patient Id</span>
-            <span className="block md:hidden">P-Id</span>
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {Math.floor(Math.random() * 100000) + 1}
-        </div>
-      ),
     },
     {
       accessorKey: "patient.email",
@@ -325,7 +307,7 @@ export const requestsColumns = ({
       meta: { className: "hidden sm:table-cell" },
     },
     {
-      accessorKey: "consultationType",
+      accessorKey: "consultation_type",
       header: ({ column }) => {
         return (
           <Button
@@ -366,9 +348,7 @@ export const requestsColumns = ({
                   <TooltipTrigger asChild>
                     <RejectRequestDialog
                       name={row.original.patient?.given_name}
-                      onReject={() =>
-                        console.log("rejected", row.original.doctorId)
-                      }
+                      onReject={() => handleRejectRequest(row.original)}
                       trigger={
                         <Button variant="outline" size="icon">
                           <X className="h-5 w-5 cursor-pointer" />
@@ -416,9 +396,7 @@ export const requestsColumns = ({
                   </Button>
                   <RejectRequestDialog
                     name={row.original.patient?.given_name}
-                    onReject={() =>
-                      console.log("rejected", row.original.doctorId)
-                    }
+                    onReject={() => handleRejectRequest(row.original)}
                     trigger={
                       <Button
                         variant="outline"
@@ -452,6 +430,7 @@ export const requestsColumns = ({
 
 export const patientColumns = ({
   handlePreview,
+  handleCancel,
 }: PatientColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
@@ -471,8 +450,8 @@ export const patientColumns = ({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => {
-        const email = row.getValue("patient.email") as string;
+      cell: ({ getValue }) => {
+        const email = getValue() as string;
         return <div>{email}</div>;
       },
       filterFn: "includesString",
@@ -530,8 +509,8 @@ export const patientColumns = ({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("speciality")}</div>
+      cell: ({ getValue }) => (
+        <div className="capitalize">{getValue() as string}</div>
       ),
       meta: { className: "hidden sm:table-cell" },
     },
@@ -562,8 +541,8 @@ export const patientColumns = ({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("status")}</div>
+      cell: ({ getValue }) => (
+        <div className="capitalize">{getValue() as string}</div>
       ),
     },
     {
@@ -593,9 +572,7 @@ export const patientColumns = ({
                   <TooltipTrigger asChild>
                     <RejectAppointmentDialog
                       reason={row.original.reason}
-                      onReject={() =>
-                        console.log("rejected", row.original.doctorId)
-                      }
+                      onReject={() => handleCancel(row.original)}
                       trigger={
                         <Button variant="outline" size="icon">
                           <X className="h-5 w-5 cursor-pointer" />
@@ -630,9 +607,7 @@ export const patientColumns = ({
                   </Button>
                   <RejectAppointmentDialog
                     reason={row.original.reason}
-                    onReject={() =>
-                      console.log("rejected", row.original.doctorId)
-                    }
+                    onReject={() => handleCancel(row.original)}
                     trigger={
                       <Button
                         variant="outline"
@@ -662,7 +637,7 @@ export const upcomingColumns = ({
 }: upcomingColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
-      accessorKey: "patientId",
+      accessorKey: "patient",
       header: ({ column }) => {
         return (
           <Button
@@ -675,25 +650,24 @@ export const upcomingColumns = ({
           </Button>
         );
       },
-      cell: ({ row }) => {
+      cell: ({ row, getValue }) => {
+        const patient = getValue() as User;
         return (
           <div className="flex items-start gap-2">
             <Avatar>
               <AvatarImage
-                src={row.original.patient.picture}
+                src={patient.picture}
                 alt="Avatar"
                 className="object-cover rounded-full object-top"
               />
-              <AvatarFallback>
-                {row.original.patient.given_name.charAt(0)}
-              </AvatarFallback>
+              <AvatarFallback>{patient.given_name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <div className="text-xs font-normal text-muted-foreground">
-                # PA-{row.getValue("id")}
+              <div className="text-xs font-normal text-muted-foreground max-w-20 truncate">
+                # PA-{patient.userId}
               </div>
               <div className="text-base font-semibold">
-                {row.original.patient.given_name}
+                {patient.given_name}
               </div>
               <div className="text-sm text-muted-foreground flex items-center">
                 <MapPin className="mr-1 h-4 w-4" /> Florida , USA
@@ -731,7 +705,9 @@ export const upcomingColumns = ({
           return "Invalid Date";
         }
 
-        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
+        return `${appointment_date} - ${formatTimeForUI(
+          value.start_time
+        )} - ${formatTimeForUI(value.end_time)}`;
       },
       filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
@@ -756,11 +732,11 @@ export const upcomingColumns = ({
           </Button>
         );
       },
-      cell: ({ row }) => (
+      cell: ({ row, getValue }) => (
         <div className="flex flex-col gap-2">
           <div className="text-sm font-normal flex gap-1 items-center">
             <Mail className="w-5 h-5" />
-            {row.getValue("patient.email")}
+            {getValue() as string}
           </div>
           <div className="text-sm font-normal flex gap-1 items-center">
             <PhoneCall className="w-5 h-5" />
@@ -770,7 +746,7 @@ export const upcomingColumns = ({
       ),
     },
     {
-      accessorKey: "consultationType",
+      accessorKey: "consultation_type",
       header: ({ column }) => {
         return (
           <Button
@@ -785,7 +761,7 @@ export const upcomingColumns = ({
       },
       cell: ({ row }) => (
         <div className="text-sm font-normal">
-          {row.getValue("consultationType")} Consultation
+          {row.getValue("consultation_type")} Consultation
         </div>
       ),
     },
@@ -861,6 +837,195 @@ export const upcomingColumns = ({
       },
       meta: {
         className: "sticky right-0 bg-white z-10",
+      },
+    },
+  ];
+};
+
+export const cancelledColumns = (): ColumnDef<Appointment>[] => {
+  return [
+    {
+      header: "S.no",
+      cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "scheduled_date",
+      id: "scheduled_date",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Appointment Date & Time
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ getValue, row }) => {
+        const value = getValue() as any; // Adjust the type as needed
+        const appointment_date = row.original.appointment_date;
+
+        if (!appointment_date || !value) {
+          return "N/A";
+        }
+
+        const appointmentDate = new Date(appointment_date);
+
+        if (!isValid(appointmentDate)) {
+          return "Invalid Date";
+        }
+
+        return `${appointment_date} - ${formatTimeForUI(
+          value.start_time
+        )} - ${formatTimeForUI(value.end_time)}`;
+      },
+      filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
+        const { start, end } = filterValue;
+
+        return isWithinInterval(appointmentDate, { start, end });
+      },
+    },
+    {
+      accessorKey: "speciality",
+      id: "speciality",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Speciality
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("speciality")}</div>
+      ),
+      meta: { className: "hidden sm:table-cell" },
+    },
+    {
+      accessorKey: "consultation_type",
+      id: "consultation_type",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span className="hidden md:block">Consultation </span>Type
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+  ];
+};
+
+export const completedColumns = (): ColumnDef<Appointment>[] => {
+  return [
+    {
+      header: "S.no",
+      cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "scheduled_date",
+      id: "scheduled_date",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Appointment Date & Time
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ getValue, row }) => {
+        const value = getValue() as any; // Adjust the type as needed
+        const appointment_date = row.original.appointment_date;
+
+        if (!appointment_date || !value) {
+          return "N/A";
+        }
+
+        const appointmentDate = new Date(appointment_date);
+
+        if (!isValid(appointmentDate)) {
+          return "Invalid Date";
+        }
+
+        return `${appointment_date} - ${formatTimeForUI(
+          value.start_time
+        )} - ${formatTimeForUI(value.end_time)}`;
+      },
+      filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
+        const appointment_date = row.original.appointment_date;
+        if (!appointment_date || !filterValue) return true;
+        const appointmentDate = new Date(appointment_date);
+        const { start, end } = filterValue;
+
+        return isWithinInterval(appointmentDate, { start, end });
+      },
+    },
+    {
+      accessorKey: "speciality",
+      id: "speciality",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Speciality
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("speciality")}</div>
+      ),
+      meta: { className: "hidden sm:table-cell" },
+    },
+    {
+      accessorKey: "consultation_type",
+      id: "consultation_type",
+      header: ({ column }) => (
+        <Button
+          className="px-1.5"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span className="hidden md:block">Consultation </span>Type
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  // TODO: add a preview fn
+                  // onClick={() => handlePreview(row.original)}
+                >
+                  <ReceiptText className="h-5 w-5 cursor-pointer" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>View Receipt</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
+      meta: {
+        className: "sticky right-0 bg-white z-10 shadow shadow-lg px-2",
       },
     },
   ];
