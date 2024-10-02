@@ -214,15 +214,16 @@ export const calculateAverageFee = (services: Service[]): number => {
 export const functionsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.FUNCTIONS) || ""
 );
-
 export const paymentsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.PAYMENTS) || ""
 );
-
 export const appointmentsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.APPOINTMENTS) || ""
 );
 export const notificationsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.NOTIFICATIONS) || ""
+);
+export const meetingsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.NOTIFICATIONS) || ""
 );
 
