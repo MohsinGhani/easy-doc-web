@@ -12,10 +12,10 @@ const AboutusPage = () => {
           <div className="text-primary text-[18px] font-medium leading-[27px] ">
             ABOUT US
           </div>
-          <div className="text-[#121212] mt-5 font-outfit text-2xl md:text-[32px] font-semibold leading-[40px] tracking-[0.015em]   w-[86%] ">
+          <div className="text-[#121212] mt-5 text-2xl md:text-[32px] font-semibold leading-[40px] tracking-[0.015em]   w-[86%] ">
             Find the right doctor according to your complaint
           </div>
-          <div className="text-[#5C5C5B] mt-8 text-Outfit text-[16px] leading-[20px] tracking-[0.02em] text-left">
+          <div className="text-[#5C5C5B] mt-8 text-[16px] leading-[20px] tracking-[0.02em] text-left">
             EasyDoc is a free, health app that goes beyond matching you with{" "}
             <br /> doctors. It actively helps you find the right doctor based on
             your medical <br /> and personal needs and connects you with your

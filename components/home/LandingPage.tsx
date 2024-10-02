@@ -23,6 +23,9 @@ import MedicalServices from "./MedicalServices";
 import SpecialistDoctors from "./SpecialistDoctors";
 import PatientsAboutusSection from "./PatientsAboutusSection";
 import BecomeDoctorTemplate from "./BecomeDoctorTemplate";
+import { Accordion, AccordionItem } from "../ui/accordion";
+import { AccordionContent } from "@radix-ui/react-accordion";
+import AccordianSection from "./AccordianSection";
 
 
 
@@ -207,6 +210,7 @@ const LandingPage = () => {
 You only have to know one thing that you can learn anything <br /> anywhere to discover yourself.
 </>} />
 <BecomeDoctorTemplate/>
+<AccordianSection/>
     </div>
   );
 };

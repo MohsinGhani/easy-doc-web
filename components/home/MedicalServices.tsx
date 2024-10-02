@@ -1,5 +1,5 @@
 import React from 'react'
-import Cardscarousel from '../ui/cardscarousel';
+import Cardscarousel from './cardscarousel';
 
 const MedicalServices = () => {
   return (
@@ -9,10 +9,10 @@ const MedicalServices = () => {
   <div className="font-poppins font-medium text-[18px] leading-[27px] text-center text-primary">
     WHAT WE PROVIDE
   </div>
-  <div className="font-outfit text-[28px] md:text-[36px] font-semibold leading-[34px] md:leading-[45.36px] tracking-[0.02em] text-center">
+  <div className=" text-[28px] md:text-[36px] font-semibold leading-[34px] md:leading-[45.36px] tracking-[0.02em] text-center">
     Our Medical Services
   </div>
-  <div className="font-outfit text-[16px] md:text-[20px] font-normal leading-[24px] md:leading-[35.36px] tracking-[0.02em] text-center text-[#5C5C5B]">
+  <div className=" text-[16px] md:text-[20px] font-normal leading-[24px] md:leading-[35.36px] tracking-[0.02em] text-center text-[#5C5C5B]">
     You only have to know one thing that you can learn anything <br />
     anywhere to do you discover your
   </div>

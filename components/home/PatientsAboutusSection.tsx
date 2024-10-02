@@ -1,5 +1,5 @@
 import React from 'react'
-import Patientsreviewcards from '../ui/Patientsreviewcards';
+import Patientsreviewcards from './Patientsreviewcards';
 
 interface SpecialistDoctorsProps {
   profileText: string;
@@ -14,10 +14,10 @@ const PatientsAboutusSection : React.FC<SpecialistDoctorsProps> = ({ profileText
       <div className="pt-32 flex justify-between items-start">
         <div className=''>
           <p className="font-poppins text-lg font-bold leading-[27px] text-primary ">{profileText}</p>
-          <h1 className="font-outfit text-[36px] font-semibold leading-[45.36px] tracking-[0.02em] text-[#121212]">
+          <h1 className=" text-[36px] font-semibold leading-[45.36px] tracking-[0.02em] text-[#121212]">
 {headingText}
           </h1>
-          <p className="font-outfit text-[20px] font-normal leading-[33.6px] text-[#5C5C5B]">
+          <p className=" text-[20px] font-normal leading-[33.6px] text-[#5C5C5B]">
 {descriptionText} 
 
 </p>
