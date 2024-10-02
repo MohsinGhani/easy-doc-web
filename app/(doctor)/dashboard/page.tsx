@@ -12,6 +12,7 @@ import SecondaryUpcomingAppointmentsList from "@/components/doctor/SecondaryUpco
 import MessagesSidebar from "@/components/messages/messages-sidebar";
 import { ContentLayout } from "@/components/layout/content-layout";
 import { Metadata } from "next";
+import HelloText from "@/components/doctor/HelloText";
 
 export const metadata: Metadata = {
   title: "Easy Doc | Doctor Dashboard",
@@ -25,9 +26,8 @@ const DoctorDashboardPage = () => {
         <div className="space-y-4 lg:w-[70%] w-full">
           <Card className="w-full flex gap-5 items-center flex-col lg:flex-row justify-between overflow-hidden">
             <CardContent className="p-5 lg:text-left text-center space-y-4 lg:flex-1">
-              <h1 className="text-3xl font-semibold">
-                Hello <span className="text-primary">John Doe!</span>
-              </h1>
+              <HelloText/>
+              
               <p className="text-muted-foreground">
                 You have got 3 new requests from patient{" "}
               </p>

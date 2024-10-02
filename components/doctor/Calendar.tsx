@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Select,
   SelectContent,
@@ -13,19 +13,47 @@ interface CalendarProps {
   selectedDay: string;
   onDaySelect: (day: string) => void;
   onMonthChange: (month: string) => void;
+  loading: boolean; // Added loading prop to control skeleton rendering
+  numberOfAppointments: number;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
   selectedDay,
   onDaySelect,
   onMonthChange,
+  loading,
+  numberOfAppointments,
 }) => {
-  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const initialMonth = new Date();
 
   const handleSelect = (value: string) => {
     onMonthChange(value);
   };
+
+  if (loading) {
+    return (
+      <div className="w-full">
+        {/* Skeleton for Month Selector */}
+        <div className="w-fit my-6">
+          <div className="h-6 w-40 bg-gray-300 rounded mb-4"></div>
+        </div>
+
+        {/* Skeleton for Days of Week */}
+        <div className="w-full xl:flex lg:hidden flex justify-between items-center">
+          {Array.from({ length: 7 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center p-2 rounded-lg relative animate-pulse"
+            >
+              <div className="h-4 w-8 bg-gray-300 rounded mb-2"></div>
+              <div className="h-6 w-6 bg-gray-300 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -91,6 +119,7 @@ const Calendar: React.FC<CalendarProps> = ({
                 selectedDay === day ? "text-blue-500" : "text-neutral-900"
               )}
             >
+              {/* TODO: Replace with actual number of appointments */}
               {Math.floor(Math.random() * 10) + index * 3}
             </span>
             {selectedDay === day && (

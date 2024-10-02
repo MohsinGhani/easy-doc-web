@@ -30,11 +30,11 @@ export function Notifications() {
   const { allNotifications, loading, lastEvaluatedKey } = useAppSelector(
     (state) => state.notification
   );
-  const { userId } = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    if (userId) dispatch(notificationThunks.fetchAllNotifications());
-  }, [dispatch, userId]);
+    if (user?.userId) dispatch(notificationThunks.fetchAllNotifications());
+  }, [dispatch, user?.userId]);
 
   const handleNotificationClick = (e: Notification) => {
     // Make notification as read

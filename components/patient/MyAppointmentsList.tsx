@@ -20,7 +20,8 @@ const MyAppointmentsList = () => {
     (state) => state.appointment
   );
 
-  const { role, userId } = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
+  const { role, userId } = user;
 
   const handlePreview = (request: Appointment) => {
     setSelectedAppointment(request);
@@ -62,7 +63,10 @@ const MyAppointmentsList = () => {
       <CardContent>
         <DataTable
           columns={columns}
-          data={allAppointments}
+          data={allAppointments.map((appointment) => ({
+            ...appointment,
+            patient: user,
+          }))}
           title="My Appointments"
           onPageChange={handlePageChange}
           lastEvaluatedKey={lastEvaluatedKey}

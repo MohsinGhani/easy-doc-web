@@ -91,7 +91,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
         size={"xl"}
         className="w-full"
         type="submit"
-        disabled={appointmentLoader || loading || loader}
+        disabled={appointmentLoader || loading || loader || !stripe || !elements}
       >
         Complete Checkout
       </Button>

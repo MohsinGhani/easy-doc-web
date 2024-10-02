@@ -3,6 +3,7 @@ export enum ApiServiceName {
   APPOINTMENTS = "appointments",
   PAYMENTS = "payments",
   NOTIFICATIONS = "notifications",
+  MEETINGS = "notifications",
 }
 
 export const getServiceUrl = (serviceName: ApiServiceName) => {
@@ -15,6 +16,8 @@ export const getServiceUrl = (serviceName: ApiServiceName) => {
       return process.env.NEXT_PUBLIC_API_URL_PAYMENTS;
     case ApiServiceName.NOTIFICATIONS:
       return process.env.NEXT_PUBLIC_API_URL_NOTIFICATIONS;
+    case ApiServiceName.MEETINGS:
+      return process.env.NEXT_PUBLIC_API_URL_MEETINGS;
     default:
       throw new Error(`Unknown service: ${serviceName}`);
   }

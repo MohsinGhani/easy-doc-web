@@ -6,10 +6,9 @@ import Calendar from "./Calendar";
 import AppointmentCard from "./AppointmentCard";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
-import { Loader } from "../common/Loader";
 
 const SecondaryUpcomingAppointmentsList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,8 +18,11 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
   );
 
   const { role, userId } = useAppSelector((state) => state.auth.user);
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const [selectedDay, setSelectedDay] = useState<string>("Mon");
+  const today = daysOfWeek[new Date().getDay()];
+
+  const [selectedDay, setSelectedDay] = useState<string>(today);
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
@@ -48,7 +50,7 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
   const filteredAppointments = useMemo(() => {
     const selectedMonthString = format(selectedMonth, "yyyy-MM");
     const selectedDayIndex =
-      ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(selectedDay) +
+      ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(selectedDay) +
       1;
 
     return allAppointments.filter((appointment) => {
@@ -59,9 +61,6 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
       );
     });
   }, [selectedDay, selectedMonth]);
-
-  if (loading) return <Loader />;
-  if (allAppointments.length === 0) return null;
 
   return (
     <Card>
@@ -85,6 +84,8 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
             selectedDay={selectedDay}
             onDaySelect={handleDaySelect}
             onMonthChange={handleMonthChange}
+            loading={loading}
+            numberOfAppointments={filteredAppointments.length}
           />
 
           <>
