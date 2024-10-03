@@ -87,8 +87,8 @@ export const calculateTimeSlots = (
 };
 
 export const parseTime = (time: string) => parse(time, "HH:mm", new Date());
-export const formatTime = (date: Date) => format(date, "hh:mm aa");
 export const formatTimeToHHMM = (date: Date) => format(date, "HH:mm");
+export const formatTime = (date: Date) => format(date, "hh:mm aa");
 export const formatTimeForUI = (time: string | Date) =>
   typeof time === "string"
     ? format(parseTime(time), "hh:mm aa")
@@ -224,7 +224,7 @@ export const notificationsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.NOTIFICATIONS) || ""
 );
 export const meetingsApiClient = createApiClient(
-  getServiceUrl(ApiServiceName.NOTIFICATIONS) || ""
+  getServiceUrl(ApiServiceName.MEETINGS) || ""
 );
 
 /**

@@ -6,6 +6,7 @@ import { DataTable } from "../table/data-table";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
 import { Loader } from "../common/Loader";
+import { useRouter } from "next/navigation";
 
 interface UpcomingAppointmentsListProps {
   headerType?: "primary" | "secondary";
@@ -15,10 +16,12 @@ const UpcomingAppointmentsList = ({
   headerType = "primary",
 }: UpcomingAppointmentsListProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const isPrimaryHeader = headerType === "primary";
 
-  const handleMeetingJoin = (appointment: Appointment) => {
-    console.log("🚀 ~ handleMeetingJoin ~ appointment:", appointment);
+  const handleMeetingJoin = (appointmentId: Appointment["appointmentId"]) => {
+    console.log("🚀 ~ handleMeetingJoin ~ appointmentId:", appointmentId);
+    router.push(`/meeting/${appointmentId}`);
   };
 
   const handleChat = (appointment: Appointment) => {

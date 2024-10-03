@@ -9,9 +9,15 @@ export const doctorRoutes = [
   "/patients-requests",
   "/appointments",
   "/available-timings",
+  "meeting",
 ];
 
-export const patientRoutes = ["/doctors", "my-appointments", "my-payments"];
+export const patientRoutes = [
+  "/doctors",
+  "my-appointments",
+  "my-payments",
+  "meeting",
+];
 
 export const adminRoutes = ["/admin"];
 

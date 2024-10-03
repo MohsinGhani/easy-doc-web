@@ -1,18 +1,18 @@
+"use client";
+
+import { useAppSelector } from "@/lib/hooks";
 import { Card, CardContent } from "./ui/card";
 
 type StatCardProps = {
   type: "appointments" | "pending" | "cancelled" | "completed";
   label: string;
   icon: JSX.Element;
-  loading?: boolean; // Added loading prop
+  loading?: boolean;
 };
 
-export const StatCard = ({
-  label,
-  icon,
-  type,
-  loading = true,
-}: StatCardProps) => {
+export const StatCard = ({ label, icon, type }: StatCardProps) => {
+  const loading = useAppSelector((state) => state.appointment.loading);
+
   if (loading) {
     // Skeleton Loader
     return (

@@ -3,7 +3,7 @@ export enum ApiServiceName {
   APPOINTMENTS = "appointments",
   PAYMENTS = "payments",
   NOTIFICATIONS = "notifications",
-  MEETINGS = "notifications",
+  MEETINGS = "meetings",
 }
 
 export const getServiceUrl = (serviceName: ApiServiceName) => {

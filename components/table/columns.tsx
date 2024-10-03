@@ -37,7 +37,7 @@ interface requestsColumnsProps {
 }
 
 interface upcomingColumnsProps {
-  handleMeetingJoin: (data: Appointment) => void;
+  handleMeetingJoin: (data: Appointment["appointmentId"]) => void;
   handleChat: (data: Appointment) => void;
 }
 interface PatientColumnsProps {
@@ -652,6 +652,7 @@ export const upcomingColumns = ({
       },
       cell: ({ row, getValue }) => {
         const patient = getValue() as User;
+        if (!patient) return null;
         return (
           <div className="flex items-start gap-2">
             <Avatar>
@@ -769,6 +770,8 @@ export const upcomingColumns = ({
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
+        const appointment_data = row.original.appointment_date;
+
         return (
           <div className="flex items-center gap-1.5">
             {/* Hidden on mobile, visible on larger screens */}
@@ -780,7 +783,7 @@ export const upcomingColumns = ({
                       variant="outline"
                       size="icon"
                       className="border-primary bg-primary/20 p-2"
-                      onClick={() => handleMeetingJoin(row.original)}
+                      onClick={() => handleChat(row.original)}
                     >
                       <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
                     </Button>
@@ -794,7 +797,14 @@ export const upcomingColumns = ({
                       variant="outline"
                       size="icon"
                       className="border-primary bg-primary/20 p-2"
-                      onClick={() => handleChat(row.original)}
+                      onClick={() =>
+                        handleMeetingJoin(row.original.appointmentId)
+                      }
+                      disabled={
+                        new Date(appointment_data) < new Date() ||
+                        new Date(appointment_data) >
+                          new Date(new Date().getTime() + 30 * 60 * 1000)
+                      }
                     >
                       <Video className="h-5 w-5 cursor-pointer text-primary" />
                     </Button>
@@ -817,9 +827,11 @@ export const upcomingColumns = ({
                     variant="outline"
                     size="sm"
                     className="w-full justify-start"
-                    onClick={() => handleMeetingJoin(row.original)}
+                    onClick={() =>
+                      handleMeetingJoin(row.original.appointmentId)
+                    }
                   >
-                    <MessageCircle className="h-5 w-5 mr-2" /> Join Meeting
+                    <Video className="h-5 w-5 mr-2" /> Join Meeting
                   </Button>
                   <Button
                     variant="outline"
@@ -827,7 +839,7 @@ export const upcomingColumns = ({
                     className="w-full justify-start"
                     onClick={() => handleChat(row.original)}
                   >
-                    <Video className="h-5 w-5 mr-2" /> Start Chat
+                    <MessageCircle className="h-5 w-5 mr-2" /> Start Chat
                   </Button>
                 </PopoverContent>
               </Popover>
