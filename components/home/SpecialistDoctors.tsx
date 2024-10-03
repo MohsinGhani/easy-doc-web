@@ -30,8 +30,8 @@ const SpecialistDoctors: React.FC<SpecialistDoctorsProps> = ({ profileText, head
 </p>
         </div>
       </div>
-      <Carousel className="w-full mt-8 relative">
-        <div className="absolute right-10 -top-24 w-2">
+      <Carousel className="w-full mt-8 relative flex justify-center    ">
+        <div className="absolute right-10 md:-top-24 w-2 hidden md:block">
         <CarouselPrevious className="text-primary border border-primary -ml-16 text-2xl w-14 h-14 flex items-center justify-center rounded-full " />
         <CarouselNext className="text-primary border-primary  text-2xl w-14 h-14 mr-9   flex items-center justify-center rounded-full " />
         </div>

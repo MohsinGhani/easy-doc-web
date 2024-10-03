@@ -1,6 +1,7 @@
 import React from 'react'
 
-export default function Component() {
+export default function WorkingProcessPage() {
+
   return (
     <div className="bg-gradient-to-br bg-cover bg-center p-8 min-h-auto"
          style={{ backgroundImage: 'url("/assets/images/WorkingprocessRectangle.png")' }}>
@@ -18,31 +19,27 @@ export default function Component() {
   <svg className="absolute  left-0 w-full h-full" viewBox="0 0 1000 300" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M0 150 Q 250 50, 500 150 T 1000 150" stroke="#3B82F6" strokeWidth="4" fill="none" />
 
-  {/* Circle 1 */}
   <g>
-    <rect x="-1" y="120" width="38" height="38" fill="white" rx="10" ry="10" /> {/* White background square with rounded corners */}
-    <circle cx="19" cy="140" r="8" fill="#3B82F6" /> {/* Original circle */}
+    <rect x="-1" y="120" width="38" height="38" fill="white" rx="10" ry="10" /> 
+    <circle cx="19" cy="140" r="8" fill="#3B82F6" /> 
   </g>
 
-  {/* Circle 2 */}
   <g>
-    <rect x="200" y="80" width="38" height="38" fill="white" rx="10" ry="10" /> {/* White background square with rounded corners */}
-    <circle cx="220" cy="100" r="8" fill="#3B82F6" /> {/* Original circle */}
+    <rect x="200" y="80" width="38" height="38" fill="white" rx="10" ry="10" />
+    <circle cx="220" cy="100" r="8" fill="#3B82F6" /> 
   </g>
 
-  {/* Circle 3 */}
   <g>
-    <rect x= "430" y="117" width="38" height="38" fill="white" rx="10" ry="10" /> {/* White background square with rounded corners */}
-    <circle cx="449" cy="135" r="8" fill="#3B82F6" /> {/* Original circle */}
+    <rect x= "430" y="117" width="38" height="38" fill="white" rx="10" ry="10" /> 
+    <circle cx="449" cy="135" r="8" fill="#3B82F6" />
   </g>
   <g>
-    <rect x= "648" y="170" width="38" height="38" fill="white" rx="10" ry="10" /> {/* White background square with rounded corners */}
-    <circle cx="667" cy="190" r="8" fill="#3B82F6" /> {/* Original circle */}
+    <rect x= "648" y="170" width="38" height="38" fill="white" rx="10" ry="10" /> 
+    <circle cx="667" cy="190" r="8" fill="#3B82F6" /> 
   </g>
-  {/* Circle 4 */}
   <g>
-    <rect x="873" y="160" width="44" height="44" fill="white" rx="10" ry="10" /> {/* White background square with rounded corners */}
-    <circle cx="896" cy="182" r="8" fill="#3B82F6" /> {/* Original circle */}
+    <rect x="873" y="160" width="44" height="44" fill="white" rx="10" ry="10" /> 
+    <circle cx="896" cy="182" r="8" fill="#3B82F6" /> 
   </g>
 </svg>
 </svg>
@@ -65,7 +62,7 @@ export default function Component() {
   <ProcessStep
     title="Complete Payment"
     description="From they fine john he give of rich he. They age and draw mrs like. Improving end distrusts may instantly."
-    className="-top-16" 
+    className="md:-top-16" 
     position="top"
   />
   <ProcessStep
@@ -74,9 +71,7 @@ export default function Component() {
     className="transform translate-y-24 lg:translate-y-24" 
     position="bottom"
   />
-  
-  {/* New fifth card placed next to "Book Appointment" */}
-  <ProcessStep
+    <ProcessStep
     title="Get Reports"
     description="From they fine john he give of rich he. They age and draw mrs like. Improving end distrusts may instantly."
     className=""
@@ -100,3 +95,4 @@ function ProcessStep({ title, description, className, position }: { title: strin
     </div>
   )
 }
+

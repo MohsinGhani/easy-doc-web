@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { Navbar } from "../navbar/Navbar";
@@ -23,11 +22,8 @@ import MedicalServices from "./MedicalServices";
 import SpecialistDoctors from "./SpecialistDoctors";
 import PatientsAboutusSection from "./PatientsAboutusSection";
 import BecomeDoctorTemplate from "./BecomeDoctorTemplate";
-import { Accordion, AccordionItem } from "../ui/accordion";
-import { AccordionContent } from "@radix-ui/react-accordion";
 import AccordianSection from "./AccordianSection";
-
-
+import WorkingProcessPage from "./WorkingProcessPage";
 
 const FirstSection = () => {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
@@ -195,6 +191,7 @@ const LandingPage = () => {
       <FirstSection />
       <AboutusPage />
       <MedicalServices/>
+      <WorkingProcessPage/>
       <SpecialistDoctors  
   profileText="FEATURED PROFILE" 
   headingText="OUR SPECIALIST DOCTORS"

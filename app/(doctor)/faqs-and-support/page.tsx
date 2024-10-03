@@ -20,7 +20,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
-import { FAQS } from "@/constants";
+import { FAQS } from "@/constants"; 
 
 export default function FaqsAndSupportPage() {
   const [faqs, setFaqs] = useState(FAQS);
