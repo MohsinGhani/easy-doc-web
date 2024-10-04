@@ -1,4 +1,3 @@
-import React from 'react';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../../components/ui/accordion";
 import Faqs from "../../public/data/FaqsSection.json"; 
 import { cn } from "@/lib/utils";

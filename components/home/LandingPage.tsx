@@ -78,7 +78,7 @@ const HeroImages = () => (
           alt="landingpage-bg"
         />
       </div>
-      <div className="top-0 right-0 z-50">
+      <div className="top-0 right-0 z-50 xl:block lg:hidden">
         <Image
           src="/assets/images/landingpagecircle-bg.png"
           width={500}
@@ -115,7 +115,7 @@ const AppointmentSection = () => (
 
     <Card className="relative w-full md:w-[80%] lg:w-[70%] bg-white  items-center justify-center z-30 -bottom-96 rounded-full hidden md:flex  ">
       <CardContent className="flex items-center justify-between flex-wrap gap-5 w-full ">
-      <div className="flex items-center gap-8  ml-10 ">
+      <div className="flex items-center xl:gap-8  ml-10 ">
   <div className="w-48 pl-4">
     <div className="text-[#909090]">Consultation Type</div>
     <div className="flex items-center gap-2">
@@ -143,9 +143,10 @@ const AppointmentSection = () => (
         <div className="text-[]">Choose Location</div>
       </div>
     </div>
+    
   </div>
 
-  <div className="h-12 w-px bg-gray-300"></div>
+  <div className="h-12 w-px bg-gray-300 hidden md:block"></div>
 
   <div className="flex items-center gap-6">
     <div>

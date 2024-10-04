@@ -30,6 +30,8 @@
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@reduxjs/toolkit": "^2.2.7",
+    "@stripe/react-stripe-js": "^2.8.0",
+    "@stripe/stripe-js": "^4.6.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tanstack/react-table": "^8.20.1",
     "aws-amplify": "^6.5.0",
@@ -56,6 +58,7 @@
     "react-vertical-timeline-component": "^3.6.0",
     "recharts": "^2.12.7",
     "sonner": "^1.5.0",
+    "stripe": "^17.1.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"

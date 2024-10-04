@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import DoctorCard from '../patient/DoctorCard';
 import doctorsData from '../../public/data/specialdoctors.json'; 
 import {
@@ -18,7 +18,7 @@ interface SpecialistDoctorsProps {
 
 const SpecialistDoctors: React.FC<SpecialistDoctorsProps> = ({ profileText, headingText, descriptionText }) => {
   return ( 
-    <div className="h-screen w-full relative">
+    <div className=" w-full relative">
       <div className="pt-32 flex justify-between items-start">
         <div >
           <p className="font-poppins text-lg font-bold leading-[27px] text-primary">{profileText}</p>
@@ -30,14 +30,15 @@ const SpecialistDoctors: React.FC<SpecialistDoctorsProps> = ({ profileText, head
 </p>
         </div>
       </div>
-      <Carousel className="w-full mt-8 relative flex justify-center    ">
-        <div className="absolute right-10 md:-top-24 w-2 hidden md:block">
+      <div  >
+      <Carousel className="w-full mt-8">
+        <div className="absolute right-10 md:-top-24 w-2 hidden md:block ">
         <CarouselPrevious className="text-primary border border-primary -ml-16 text-2xl w-14 h-14 flex items-center justify-center rounded-full " />
         <CarouselNext className="text-primary border-primary  text-2xl w-14 h-14 mr-9   flex items-center justify-center rounded-full " />
         </div>
-        <CarouselContent className="-ml-1 flex"> 
+        <CarouselContent className="xl-ml-1 flex "> 
           {doctorsData.map((doctor) => (
-            <CarouselItem key={doctor.userId} className="p-1 md:basis-1/4 lg:basis-1/4">
+            <CarouselItem key={doctor.userId} className="p-1 md:basis-1/3 lg:basis-1/3 xl:basis-1/4">
               <DoctorCard 
                 doctor={doctor}
                 customImage={doctor.picture}
@@ -46,6 +47,7 @@ const SpecialistDoctors: React.FC<SpecialistDoctorsProps> = ({ profileText, head
           ))}
         </CarouselContent>
       </Carousel>
+      </div>
       </div>
 )
 };

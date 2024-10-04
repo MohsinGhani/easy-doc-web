@@ -1,4 +1,4 @@
-import React from "react";
+
 import Image from "next/image";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
@@ -50,8 +50,8 @@ const AboutusPage = () => {
         <div>
         <Image
     src="/assets/images/aboutpageimg.png"
-    width={1500}  
-    height={1500} 
+    width={1000}  
+    height={1000} 
     alt="man-image"
     className="object-cover w-full h-auto" 
 />

@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import Patientreviewcards from './Patientsreviewcards'
 
 interface SpecialistDoctorsProps {
@@ -9,7 +9,7 @@ interface SpecialistDoctorsProps {
 
 const PatientsAboutusSection: React.FC<SpecialistDoctorsProps> = ({ profileText, headingText, descriptionText }) => {
   return (
-    <div className='w-full h-auto lg:h-screen relative px-4 md:px-8 lg:px-16'>
+    <div className='w-full h-auto  relative px-4 md:px-8 lg:px-16 '>
       <div className="pt-16 md:pt-24 lg:pt-32 flex flex-col lg:flex-row justify-between items-start">
         <div className='lg:w-[50%]'>
           <p className="font-poppins text-base md:text-lg font-bold leading-[22px] md:leading-[27px] text-primary">
