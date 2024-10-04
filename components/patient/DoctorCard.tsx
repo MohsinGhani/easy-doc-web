@@ -11,8 +11,11 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 
 interface DoctorCardProps {
-  doctor: User;
+  // doctor: User;
+  doctor: any;
+  
   isBookingCard?: boolean;
+  
 }
 
 const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {

@@ -1,68 +1,666 @@
-[
+[{
+  "userId": "1",
+  "role": "doctor",
+  "email": "john.doe@example.com",
+  "given_name": "John",
+  "family_name": "Doe",
+  "display_name": "Dr. John Doe",
+  "patient_name": "Jane Smith",
+  "phone_number": "+1234567890",
+        "picture": "/assets/images/Dr-john-dentist.png",
+        "designation": "Cardiologist",
+  "bio": "Experienced cardiologist with a passion for patient care.",
+  "years_of_experience": "10",
+  "city": "New York",
+  "country": "USA",
+  "address": "123 Main St",
+  "state": "NY",
+  "zip_code": "10001",
+  "dob": "1980-01-01",
+  "gender": "Male",
+  "location": "New York, NY",
+  "overallRating": 4.8,
+  "totalReviews": 150,
+  "ratingsBreakdownPercentages": {
+    "1": 5,
+    "2": 10,
+    "3": 15,
+    "4": 30,
+    "5": 40
+  },
+  "available": true,
+  "verified": 1,
+  "average_fee": 150,
+  "languages": ["English", "Spanish"],
+  "experiences": [
     {
-      "userId": "1",
-      "display_name": "Dr. John",
-      "designation": "Dentist",
-      "location": "Florida, USA",
-      "overallRating": 4.5,
-      "average_fee": 400,
-      "years_of_experience": "05",
-      "available": true,
-      "picture": "/assets/images/Dr-john-dentist.png"
+      "title": "Senior Cardiologist",
+      "company": "City Hospital",
+      "duration": "5 years",
+      "description": "Led the cardiology department and treated numerous patients."
     },
     {
-      "userId": "2",
-      "display_name": "Dr. John",
-      "designation": "Dentist",
-      "location": "Florida, USA",
-      "overallRating": 4.5,
-      "average_fee": 400,
-      "years_of_experience": "05",
-      "available": true,
-      "picture": "/assets/images/Dr-john-dentist.png"
-    }, {
-        "userId": "3",
-        "display_name": "Dr. John",
-        "designation": "Dentist",
-        "location": "Florida, USA",
-        "overallRating": 4.5,
-        "average_fee": 400,
-        "years_of_experience": "05",
-        "available": true,
-        "picture": "/assets/images/Dr-john-dentist.png"
-      }
-      ,{
-        "userId": "4",
-        "display_name": "Dr. John",
-        "designation": "Dentist",
-        "location": "Florida, USA",
-        "overallRating": 4.5,
-        "average_fee": 400,
-        "years_of_experience": "05",
-        "available": true,
-        "picture": "/assets/images/Dr-john-dentist.png"
-      },{
-        "userId": "4",
-        "display_name": "Dr. John",
-        "designation": "Dentist",
-        "location": "Florida, USA",
-        "overallRating": 4.5,
-        "average_fee": 400,
-        "years_of_experience": "05",
-        "available": true,
-        "picture": "/assets/images/Dr-john-dentist.png"
-      },{
-        "userId": "4",
-        "display_name": "Dr. John",
-        "designation": "Dentist",
-        "location": "Florida, USA",
-        "overallRating": 4.5,
-        "average_fee": 400,
-        "years_of_experience": "05",
-        "available": true,
-        "picture": "/assets/images/Dr-john-dentist.png"
-      }
-
-  ]
-
-  
+      "title": "Resident Doctor",
+      "company": "General Hospital",
+      "duration": "3 years",
+      "description": "Completed residency in internal medicine with a focus on cardiology."
+    }
+  ],
+  "awards": [
+    {
+      "title": "Best Cardiologist",
+      "year": 2022,
+      "awardedBy": "American Heart Association"
+    }
+  ],
+  "education": [
+    {
+      "degree": "MD",
+      "institution": "Harvard Medical School",
+      "year": 2008
+    },
+    {
+      "degree": "BS in Biology",
+      "institution": "Stanford University",
+      "year": 2004
+    }
+  ],
+  "availableDays": [
+    {
+      "day": "Monday",
+      "available": true
+    },
+    {
+      "day": "Tuesday",
+      "available": true
+    },
+    {
+      "day": "Wednesday",
+      "available": false
+    },
+    {
+      "day": "Thursday",
+      "available": true
+    },
+    {
+      "day": "Friday",
+      "available": true
+    },
+    {
+      "day": "Saturday",
+      "available": false
+    },
+    {
+      "day": "Sunday",
+      "available": true
+    }
+  ],
+  "reviews": [
+    {
+      "reviewerName": "Alice Johnson",
+      "rating": 5,
+      "comment": "Great doctor! Very attentive and knowledgeable.",
+      "date": "2024-01-15"
+    },
+    {
+      "reviewerName": "Bob Brown",
+      "rating": 4,
+      "comment": "Had a good experience, but the wait time was long.",
+      "date": "2024-02-10"
+    }
+  ],
+  "services": [
+    {
+      "serviceType": "Heart Checkup",
+      "description": "Comprehensive heart checkup including ECG and blood tests.",
+      "price": 200
+    },
+    {
+      "serviceType": "Echocardiogram",
+      "description": "Ultrasound test to assess the heart's function and structures.",
+      "price": 300
+    }
+  ],
+  "no_of_appointments": 75,
+  "profile_status": "active",
+  "profile_completion": 90,
+  "createdAt": "2023-01-01T10:00:00Z",
+  "customImage": "/assets/images/Dr-john-dentist.png",
+  "updatedAt": "2024-10-01T12:00:00Z",
+  "licence": "MD123456",
+  "stripeAccountId": "acct_1GqIC8HfGv3bex",
+  "stripe_account_active": true
+}
+, {
+  "userId": "2",
+  "role": "doctor",
+  "email": "john.doe@example.com",
+  "given_name": "John",
+  "family_name": "Doe",
+  "display_name": "Dr. John Doe",
+  "patient_name": "Jane Smith",
+  "phone_number": "+1234567890",
+        "picture": "/assets/images/Dr-john-dentist.png",
+        "designation": "Cardiologist",
+  "bio": "Experienced cardiologist with a passion for patient care.",
+  "years_of_experience": "10",
+  "city": "New York",
+  "country": "USA",
+  "address": "123 Main St",
+  "state": "NY",
+  "zip_code": "10001",
+  "dob": "1980-01-01",
+  "gender": "Male",
+  "location": "New York, NY",
+  "overallRating": 4.8,
+  "totalReviews": 150,
+  "ratingsBreakdownPercentages": {
+    "1": 5,
+    "2": 10,
+    "3": 15,
+    "4": 30,
+    "5": 40
+  },
+  "available": true,
+  "verified": 1,
+  "average_fee": 150,
+  "languages": ["English", "Spanish"],
+  "experiences": [
+    {
+      "title": "Senior Cardiologist",
+      "company": "City Hospital",
+      "duration": "5 years",
+      "description": "Led the cardiology department and treated numerous patients."
+    },
+    {
+      "title": "Resident Doctor",
+      "company": "General Hospital",
+      "duration": "3 years",
+      "description": "Completed residency in internal medicine with a focus on cardiology."
+    }
+  ],
+  "awards": [
+    {
+      "title": "Best Cardiologist",
+      "year": 2022,
+      "awardedBy": "American Heart Association"
+    }
+  ],
+  "education": [
+    {
+      "degree": "MD",
+      "institution": "Harvard Medical School",
+      "year": 2008
+    },
+    {
+      "degree": "BS in Biology",
+      "institution": "Stanford University",
+      "year": 2004
+    }
+  ],
+  "availableDays": [
+    {
+      "day": "Monday",
+      "available": true
+    },
+    {
+      "day": "Tuesday",
+      "available": true
+    },
+    {
+      "day": "Wednesday",
+      "available": false
+    },
+    {
+      "day": "Thursday",
+      "available": true
+    },
+    {
+      "day": "Friday",
+      "available": true
+    },
+    {
+      "day": "Saturday",
+      "available": false
+    },
+    {
+      "day": "Sunday",
+      "available": true
+    }
+  ],
+  "reviews": [
+    {
+      "reviewerName": "Alice Johnson",
+      "rating": 5,
+      "comment": "Great doctor! Very attentive and knowledgeable.",
+      "date": "2024-01-15"
+    },
+    {
+      "reviewerName": "Bob Brown",
+      "rating": 4,
+      "comment": "Had a good experience, but the wait time was long.",
+      "date": "2024-02-10"
+    }
+  ],
+  "services": [
+    {
+      "serviceType": "Heart Checkup",
+      "description": "Comprehensive heart checkup including ECG and blood tests.",
+      "price": 200
+    },
+    {
+      "serviceType": "Echocardiogram",
+      "description": "Ultrasound test to assess the heart's function and structures.",
+      "price": 300
+    }
+  ],
+  "no_of_appointments": 75,
+  "profile_status": "active",
+  "profile_completion": 90,
+  "createdAt": "2023-01-01T10:00:00Z",
+  "customImage": "/assets/images/Dr-john-dentist.png",
+  "updatedAt": "2024-10-01T12:00:00Z",
+  "licence": "MD123456",
+  "stripeAccountId": "acct_1GqIC8HfGv3bex",
+  "stripe_account_active": true
+}
+,
+{
+  "userId": "3",
+  "role": "doctor",
+  "email": "john.doe@example.com",
+  "given_name": "John",
+  "family_name": "Doe",
+  "display_name": "Dr. John Doe",
+  "patient_name": "Jane Smith",
+  "phone_number": "+1234567890",
+        "picture": "/assets/images/Dr-john-dentist.png",
+        "designation": "Cardiologist",
+  "bio": "Experienced cardiologist with a passion for patient care.",
+  "years_of_experience": "10",
+  "city": "New York",
+  "country": "USA",
+  "address": "123 Main St",
+  "state": "NY",
+  "zip_code": "10001",
+  "dob": "1980-01-01",
+  "gender": "Male",
+  "location": "New York, NY",
+  "overallRating": 4.8,
+  "totalReviews": 150,
+  "ratingsBreakdownPercentages": {
+    "1": 5,
+    "2": 10,
+    "3": 15,
+    "4": 30,
+    "5": 40
+  },
+  "available": true,
+  "verified": 1,
+  "average_fee": 150,
+  "languages": ["English", "Spanish"],
+  "experiences": [
+    {
+      "title": "Senior Cardiologist",
+      "company": "City Hospital",
+      "duration": "5 years",
+      "description": "Led the cardiology department and treated numerous patients."
+    },
+    {
+      "title": "Resident Doctor",
+      "company": "General Hospital",
+      "duration": "3 years",
+      "description": "Completed residency in internal medicine with a focus on cardiology."
+    }
+  ],
+  "awards": [
+    {
+      "title": "Best Cardiologist",
+      "year": 2022,
+      "awardedBy": "American Heart Association"
+    }
+  ],
+  "education": [
+    {
+      "degree": "MD",
+      "institution": "Harvard Medical School",
+      "year": 2008
+    },
+    {
+      "degree": "BS in Biology",
+      "institution": "Stanford University",
+      "year": 2004
+    }
+  ],
+  "availableDays": [
+    {
+      "day": "Monday",
+      "available": true
+    },
+    {
+      "day": "Tuesday",
+      "available": true
+    },
+    {
+      "day": "Wednesday",
+      "available": false
+    },
+    {
+      "day": "Thursday",
+      "available": true
+    },
+    {
+      "day": "Friday",
+      "available": true
+    },
+    {
+      "day": "Saturday",
+      "available": false
+    },
+    {
+      "day": "Sunday",
+      "available": true
+    }
+  ],
+  "reviews": [
+    {
+      "reviewerName": "Alice Johnson",
+      "rating": 5,
+      "comment": "Great doctor! Very attentive and knowledgeable.",
+      "date": "2024-01-15"
+    },
+    {
+      "reviewerName": "Bob Brown",
+      "rating": 4,
+      "comment": "Had a good experience, but the wait time was long.",
+      "date": "2024-02-10"
+    }
+  ],
+  "services": [
+    {
+      "serviceType": "Heart Checkup",
+      "description": "Comprehensive heart checkup including ECG and blood tests.",
+      "price": 200
+    },
+    {
+      "serviceType": "Echocardiogram",
+      "description": "Ultrasound test to assess the heart's function and structures.",
+      "price": 300
+    }
+  ],
+  "no_of_appointments": 75,
+  "profile_status": "active",
+  "profile_completion": 90,
+  "createdAt": "2023-01-01T10:00:00Z",
+  "customImage": "/assets/images/Dr-john-dentist.png",
+  "updatedAt": "2024-10-01T12:00:00Z",
+  "licence": "MD123456",
+  "stripeAccountId": "acct_1GqIC8HfGv3bex",
+  "stripe_account_active": true
+},
+{
+  "userId": "4",
+  "role": "doctor",
+  "email": "john.doe@example.com",
+  "given_name": "John",
+  "family_name": "Doe",
+  "display_name": "Dr. John Doe",
+  "patient_name": "Jane Smith",
+  "phone_number": "+1234567890",
+        "picture": "/assets/images/Dr-john-dentist.png",
+        "designation": "Cardiologist",
+  "bio": "Experienced cardiologist with a passion for patient care.",
+  "years_of_experience": "10",
+  "city": "New York",
+  "country": "USA",
+  "address": "123 Main St",
+  "state": "NY",
+  "zip_code": "10001",
+  "dob": "1980-01-01",
+  "gender": "Male",
+  "location": "New York, NY",
+  "overallRating": 4.8,
+  "totalReviews": 150,
+  "ratingsBreakdownPercentages": {
+    "1": 5,
+    "2": 10,
+    "3": 15,
+    "4": 30,
+    "5": 40
+  },
+  "available": true,
+  "verified": 1,
+  "average_fee": 150,
+  "languages": ["English", "Spanish"],
+  "experiences": [
+    {
+      "title": "Senior Cardiologist",
+      "company": "City Hospital",
+      "duration": "5 years",
+      "description": "Led the cardiology department and treated numerous patients."
+    },
+    {
+      "title": "Resident Doctor",
+      "company": "General Hospital",
+      "duration": "3 years",
+      "description": "Completed residency in internal medicine with a focus on cardiology."
+    }
+  ],
+  "awards": [
+    {
+      "title": "Best Cardiologist",
+      "year": 2022,
+      "awardedBy": "American Heart Association"
+    }
+  ],
+  "education": [
+    {
+      "degree": "MD",
+      "institution": "Harvard Medical School",
+      "year": 2008
+    },
+    {
+      "degree": "BS in Biology",
+      "institution": "Stanford University",
+      "year": 2004
+    }
+  ],
+  "availableDays": [
+    {
+      "day": "Monday",
+      "available": true
+    },
+    {
+      "day": "Tuesday",
+      "available": true
+    },
+    {
+      "day": "Wednesday",
+      "available": false
+    },
+    {
+      "day": "Thursday",
+      "available": true
+    },
+    {
+      "day": "Friday",
+      "available": true
+    },
+    {
+      "day": "Saturday",
+      "available": false
+    },
+    {
+      "day": "Sunday",
+      "available": true
+    }
+  ],
+  "reviews": [
+    {
+      "reviewerName": "Alice Johnson",
+      "rating": 5,
+      "comment": "Great doctor! Very attentive and knowledgeable.",
+      "date": "2024-01-15"
+    },
+    {
+      "reviewerName": "Bob Brown",
+      "rating": 4,
+      "comment": "Had a good experience, but the wait time was long.",
+      "date": "2024-02-10"
+    }
+  ],
+  "services": [
+    {
+      "serviceType": "Heart Checkup",
+      "description": "Comprehensive heart checkup including ECG and blood tests.",
+      "price": 200
+    },
+    {
+      "serviceType": "Echocardiogram",
+      "description": "Ultrasound test to assess the heart's function and structures.",
+      "price": 300
+    }
+  ],
+  "no_of_appointments": 75,
+  "profile_status": "active",
+  "profile_completion": 90,
+  "createdAt": "2023-01-01T10:00:00Z",
+  "customImage": "/assets/images/Dr-john-dentist.png",
+  "updatedAt": "2024-10-01T12:00:00Z",
+  "licence": "MD123456",
+  "stripeAccountId": "acct_1GqIC8HfGv3bex",
+  "stripe_account_active": true
+},
+{
+  "userId": "5",
+  "role": "doctor",
+  "email": "john.doe@example.com",
+  "given_name": "John",
+  "family_name": "Doe",
+  "display_name": "Dr. John Doe",
+  "patient_name": "Jane Smith",
+  "phone_number": "+1234567890",
+        "picture": "/assets/images/Dr-john-dentist.png",
+        "designation": "Cardiologist",
+  "bio": "Experienced cardiologist with a passion for patient care.",
+  "years_of_experience": "10",
+  "city": "New York",
+  "country": "USA",
+  "address": "123 Main St",
+  "state": "NY",
+  "zip_code": "10001",
+  "dob": "1980-01-01",
+  "gender": "Male",
+  "location": "New York, NY",
+  "overallRating": 4.8,
+  "totalReviews": 150,
+  "ratingsBreakdownPercentages": {
+    "1": 5,
+    "2": 10,
+    "3": 15,
+    "4": 30,
+    "5": 40
+  },
+  "available": true,
+  "verified": 1,
+  "average_fee": 150,
+  "languages": ["English", "Spanish"],
+  "experiences": [
+    {
+      "title": "Senior Cardiologist",
+      "company": "City Hospital",
+      "duration": "5 years",
+      "description": "Led the cardiology department and treated numerous patients."
+    },
+    {
+      "title": "Resident Doctor",
+      "company": "General Hospital",
+      "duration": "3 years",
+      "description": "Completed residency in internal medicine with a focus on cardiology."
+    }
+  ],
+  "awards": [
+    {
+      "title": "Best Cardiologist",
+      "year": 2022,
+      "awardedBy": "American Heart Association"
+    }
+  ],
+  "education": [
+    {
+      "degree": "MD",
+      "institution": "Harvard Medical School",
+      "year": 2008
+    },
+    {
+      "degree": "BS in Biology",
+      "institution": "Stanford University",
+      "year": 2004
+    }
+  ],
+  "availableDays": [
+    {
+      "day": "Monday",
+      "available": true
+    },
+    {
+      "day": "Tuesday",
+      "available": true
+    },
+    {
+      "day": "Wednesday",
+      "available": false
+    },
+    {
+      "day": "Thursday",
+      "available": true
+    },
+    {
+      "day": "Friday",
+      "available": true
+    },
+    {
+      "day": "Saturday",
+      "available": false
+    },
+    {
+      "day": "Sunday",
+      "available": true
+    }
+  ],
+  "reviews": [
+    {
+      "reviewerName": "Alice Johnson",
+      "rating": 5,
+      "comment": "Great doctor! Very attentive and knowledgeable.",
+      "date": "2024-01-15"
+    },
+    {
+      "reviewerName": "Bob Brown",
+      "rating": 4,
+      "comment": "Had a good experience, but the wait time was long.",
+      "date": "2024-02-10"
+    }
+  ],
+  "services": [
+    {
+      "serviceType": "Heart Checkup",
+      "description": "Comprehensive heart checkup including ECG and blood tests.",
+      "price": 200
+    },
+    {
+      "serviceType": "Echocardiogram",
+      "description": "Ultrasound test to assess the heart's function and structures.",
+      "price": 300
+    }
+  ],
+  "no_of_appointments": 75,
+  "profile_status": "active",
+  "profile_completion": 90,
+  "createdAt": "2023-01-01T10:00:00Z",
+  "customImage": "/assets/images/Dr-john-dentist.png",
+  "updatedAt": "2024-10-01T12:00:00Z",
+  "licence": "MD123456",
+  "stripeAccountId": "acct_1GqIC8HfGv3bex",
+  "stripe_account_active": true
+}]

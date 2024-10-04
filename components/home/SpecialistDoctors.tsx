@@ -1,4 +1,3 @@
-// import React from 'react';
 import DoctorCard from '../patient/DoctorCard';
 import doctorsData from '../../public/data/specialdoctors.json'; 
 import {
@@ -40,16 +39,15 @@ const SpecialistDoctors: React.FC<SpecialistDoctorsProps> = ({ profileText, head
           {doctorsData.map((doctor) => (
             <CarouselItem key={doctor.userId} className="p-1 md:basis-1/3 lg:basis-1/3 xl:basis-1/4">
               <DoctorCard 
-                doctor={doctor}
-                customImage={doctor.picture}
-              />
+              doctor={doctor}                              
+              // customImage={doctor.picture}
+              /> 
             </CarouselItem>
           ))}
         </CarouselContent>
       </Carousel>
       </div>
       </div>
-)
-};
+)}
 
 export default SpecialistDoctors;

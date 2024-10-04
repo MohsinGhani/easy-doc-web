@@ -109,6 +109,8 @@ declare type User = {
   state: string;
   zip_code: string;
   dob: string;
+  age: number;
+  blood_group: string;
   gender: Gender;
   location: string;
   overallRating: number;
@@ -168,6 +170,7 @@ declare type Appointment = {
   note: string;
   speciality: string;
   consultation_type: string;
+  consulting_for: string;
   scheduled_date: DateRange;
   appointment_date: string;
   visible_date: string;
@@ -189,14 +192,33 @@ declare type Payment = {
   paymentMethod: string;
   status: PAYMENT_STATUS;
   created: number;
+  doctorId: string;
+  patientId: string;
 };
 
 declare type Attachment = {
-  id: string;
-  url: string;
   name: string;
+  url: string;
   mimeType: string;
+  size: string;
 };
+
+declare interface Chat {
+  chatId: string;
+  messages: Message[];
+  avatar: string;
+  name: string;
+}
+
+declare interface Message {
+  senderId: string;
+  messageId: string;
+  text?: string;
+  recipientUserId: string;
+  timestamp: number;
+  attachments: Attachment[];
+  isRead: boolean;
+}
 
 declare interface authState {
   user: User;
@@ -212,9 +234,40 @@ declare interface doctorState {
   error: string | null | undefined;
 }
 
+declare interface paymentState {
+  allPayments: Payment[];
+  fetchedPayment: Payment | null;
+  loading: boolean;
+  error: string | null | undefined;
+}
+
 declare interface appointmentState {
   allAppointments: Appointment[];
   fetchedAppointment: Appointment | null;
   loading: boolean;
   error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+
+declare interface notificationState {
+  allNotifications: Notification[];
+  fetchedNotification: Notification | null;
+  loading: boolean;
+  error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+declare interface chatState {
+  allChats: Chat[];
+  loading: boolean;
+  error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+
+declare interface Notification {
+  notificationId: string;
+  userId: string;
+  message: string;
+  status: "unread" | "read";
+  timestamp: number;
+  link?: string;
 }
