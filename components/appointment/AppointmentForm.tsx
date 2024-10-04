@@ -98,7 +98,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
   const onSubmit = async (data: AppointmentCreationType) => {
     try {
       // Step 1: Upload files to S3 using the helper function
-      const uploadedFiles = await uploadFilesToS3(selectedFiles);
+      const
+        uploadedFiles = await uploadFilesToS3(selectedFiles);
 
       // Step 2: Add uploaded files to form data
       data.attachments = uploadedFiles;

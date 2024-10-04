@@ -40,6 +40,7 @@ interface UploadedFile {
   name: string;
   url: string;
   mimeType: string;
+  size: number;
 }
 
 const typedCities: Cities = cities as Cities;
@@ -263,6 +264,7 @@ export const uploadFilesToS3 = async (
         name: file.name,
         url: presignedUrl.split("?")[0], // Remove query parameters from URL
         mimeType: file.type,
+        size: file.size,
       });
     } catch (error) {
       console.error(`Failed to upload file: ${file.name}`, error);

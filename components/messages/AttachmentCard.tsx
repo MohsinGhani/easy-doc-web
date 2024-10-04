@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Attachment } from "@/types/chat";
 import Image from "next/image";
 
 const AttachmentCard = ({ attachment }: { attachment: Attachment }) => {

@@ -161,9 +161,35 @@ export function DataTable<TData, TValue>({
       {!isPrimaryHeader && <Separator />}
 
       {loading ? (
-        <Loader className="w-full h-full flex items-center justify-center" />
+        <div className="w-full h-full flex items-center justify-center min-h-96 animate-pulse">
+          {/* Skeleton loader for the table */}
+          <Table className="min-h-96">
+            <TableHeader>
+              <TableRow>
+                {/* Skeleton header row */}
+                {columns.map((_, i) => (
+                  <TableHead key={i}>
+                    <div className="h-6 bg-gray-300 rounded w-32 mx-auto"></div>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {[...Array(7)].map((_, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {/* Skeleton rows */}
+                  {columns.map((_, colIndex) => (
+                    <TableCell key={colIndex}>
+                      <div className="h-4 bg-gray-300 rounded w-full mx-auto"></div>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       ) : (
-        <Table>
+        <Table className="min-h-96">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup, i) => (
               <TableRow key={i}>

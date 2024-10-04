@@ -197,11 +197,28 @@ declare type Payment = {
 };
 
 declare type Attachment = {
-  id: string;
-  url: string;
   name: string;
+  url: string;
   mimeType: string;
+  size: string;
 };
+
+declare interface Chat {
+  chatId: string;
+  messages: Message[];
+  avatar: string;
+  name: string;
+}
+
+declare interface Message {
+  senderId: string;
+  messageId: string;
+  text?: string;
+  recipientUserId: string;
+  timestamp: number;
+  attachments: Attachment[];
+  isRead: boolean;
+}
 
 declare interface authState {
   user: User;
@@ -235,6 +252,12 @@ declare interface appointmentState {
 declare interface notificationState {
   allNotifications: Notification[];
   fetchedNotification: Notification | null;
+  loading: boolean;
+  error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+declare interface chatState {
+  allChats: Chat[];
   loading: boolean;
   error: string | null | undefined;
   lastEvaluatedKey: string | null;

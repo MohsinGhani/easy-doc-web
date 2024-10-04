@@ -43,9 +43,7 @@ const CarousalsSlidder: React.FC<CarousalsSlidderProps> = ({ className }) => {
       <CarouselContent>
         {contentData.map((item, index) => (
           <CarouselItem key={index} className="w-full">
-            {" "}
-            {/* Change to w-full to ensure it takes the full width */}
-            <div className="p-4     ">
+            <div className="p-4">
               <Card>
                 <CardContent className="flex flex-col  p-6">
                   <Image

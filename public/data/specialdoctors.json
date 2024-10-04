@@ -1,0 +1,662 @@
+[
+  {
+    "userId": "doc1",
+    "role": "Doctor",
+    "email": "alice.smith@example.com",
+    "given_name": "Alice",
+    "family_name": "Smith",
+    "display_name": "Dr. Alice Smith",
+    "patient_name": "",
+    "phone_number": "+19876543210",
+    "picture": "https://example.com/pictures/alice_smith.jpg",
+    "designation": "Cardiologist",
+    "bio": "Experienced in treating heart conditions with a focus on preventive cardiology.",
+    "years_of_experience": "12",
+    "city": "New York",
+    "country": "USA",
+    "address": "456 Heart St, New York, NY",
+    "state": "NY",
+    "zip_code": "10001",
+    "dob": "1980-04-10",
+    "age": 44,
+    "blood_group": "A+",
+    "gender": "female",
+    "location": "New York, USA",
+    "overallRating": 4.9,
+    "totalReviews": 120,
+    "ratingsBreakdownPercentages": { "5": 85, "4": 10, "3": 3, "2": 1, "1": 1 },
+    "available": true,
+    "verified": 1,
+    "average_fee": 200,
+    "languages": ["English", "Spanish"],
+    "experiences": [
+      {
+        "title": "Lead Cardiologist",
+        "description": "Managed the cardiology department.",
+        "employment_type": "Full Time",
+        "hospital_name": "New York Heart Institute",
+        "city": "New York",
+        "country": "USA",
+        "currently_working": true,
+        "start_date": "2010-01-01",
+        "end_date": ""
+      }
+    ],
+    "awards": [
+      {
+        "award_name": "Top Cardiologist Award",
+        "description": "Award for excellence in cardiology.",
+        "institute": "American Heart Association",
+        "year": "2020"
+      }
+    ],
+    "education": [
+      {
+        "degree_name": "MD",
+        "field": "Cardiology",
+        "description": "Specialization in cardiology.",
+        "institute": "Harvard Medical School",
+        "start_date": "2004-09-01",
+        "end_date": "2008-06-30",
+        "currently_studying": false,
+        "grade": "A"
+      }
+    ],
+    "availableDays": [
+      {
+        "day": "monday",
+        "slots": [
+          { "start_time": "09:00", "end_time": "12:00" },
+          { "start_time": "14:00", "end_time": "17:00" }
+        ]
+      },
+      {
+        "day": "wednesday",
+        "slots": [
+          { "start_time": "10:00", "end_time": "13:00" },
+          { "start_time": "15:00", "end_time": "18:00" }
+        ]
+      }
+    ],
+    "reviews": [
+      {
+        "name": "Jane Doe",
+        "createdAt": "2023-05-20",
+        "rating": 5,
+        "comment": "Excellent care and very attentive!",
+        "picture": "https://example.com/pictures/janedoe.jpg",
+        "city": "New York",
+        "country": "USA",
+        "patientId": "pat1",
+        "doctorId": "doc1",
+        "reviewId": "rev1"
+      }
+    ],
+    "services": [
+      {
+        "service": "Cardiac Consultation",
+        "speciality": "Cardiology",
+        "description": "Comprehensive heart health checkup.",
+        "fee": "200"
+      }
+    ],
+    "no_of_appointments": 500,
+    "profile_status": "COMPLETED",
+    "profile_completion": 100,
+    "createdAt": "2019-01-01T12:00:00Z",
+    "updatedAt": "2023-09-01T12:00:00Z",
+    "licence": "NY12345",
+    "stripeAccountId": "acct_12345ABCDE",
+    "stripe_account_active": true
+  },
+  {
+    "userId": "doc2",
+    "role": "Doctor",
+    "email": "bob.johnson@example.com",
+    "given_name": "Bob",
+    "family_name": "Johnson",
+    "display_name": "Dr. Bob Johnson",
+    "patient_name": "",
+    "phone_number": "+19876543211",
+    "picture": "https://example.com/pictures/bob_johnson.jpg",
+    "designation": "Dermatologist",
+    "bio": "Specialist in skin diseases and cosmetic treatments.",
+    "years_of_experience": "8",
+    "city": "Los Angeles",
+    "country": "USA",
+    "address": "123 Skin St, Los Angeles, CA",
+    "state": "CA",
+    "zip_code": "90001",
+    "dob": "1985-05-18",
+    "age": 39,
+    "blood_group": "O+",
+    "gender": "male",
+    "location": "Los Angeles, USA",
+    "overallRating": 4.7,
+    "totalReviews": 85,
+    "ratingsBreakdownPercentages": { "5": 75, "4": 15, "3": 7, "2": 2, "1": 1 },
+    "available": true,
+    "verified": 1,
+    "average_fee": 150,
+    "languages": ["English", "French"],
+    "experiences": [
+      {
+        "title": "Consultant Dermatologist",
+        "description": "Focused on cosmetic skin treatments.",
+        "employment_type": "Contract",
+        "hospital_name": "LA Skin Clinic",
+        "city": "Los Angeles",
+        "country": "USA",
+        "currently_working": true,
+        "start_date": "2015-02-01",
+        "end_date": ""
+      }
+    ],
+    "awards": [
+      {
+        "award_name": "Best Skin Doctor",
+        "description": "Recognized for excellence in dermatology.",
+        "institute": "California Dermatology Society",
+        "year": "2019"
+      }
+    ],
+    "education": [
+      {
+        "degree_name": "MD",
+        "field": "Dermatology",
+        "description": "Specialized in dermatology.",
+        "institute": "Stanford University",
+        "start_date": "2007-09-01",
+        "end_date": "2011-06-30",
+        "currently_studying": false,
+        "grade": "A"
+      }
+    ],
+    "availableDays": [
+      {
+        "day": "tuesday",
+        "slots": [
+          { "start_time": "09:00", "end_time": "13:00" },
+          { "start_time": "14:00", "end_time": "16:00" }
+        ]
+      },
+      {
+        "day": "thursday",
+        "slots": [
+          { "start_time": "10:00", "end_time": "12:00" },
+          { "start_time": "14:00", "end_time": "17:00" }
+        ]
+      }
+    ],
+    "reviews": [
+      {
+        "name": "Samantha Green",
+        "createdAt": "2023-06-15",
+        "rating": 4,
+        "comment": "Professional and helpful!",
+        "picture": "https://example.com/pictures/samanthagreen.jpg",
+        "city": "Los Angeles",
+        "country": "USA",
+        "patientId": "pat2",
+        "doctorId": "doc2",
+        "reviewId": "rev2"
+      }
+    ],
+    "services": [
+      {
+        "service": "Skin Consultation",
+        "speciality": "Dermatology",
+        "description": "Comprehensive skin health checkup.",
+        "fee": "150"
+      }
+    ],
+    "no_of_appointments": 320,
+    "profile_status": "COMPLETED",
+    "profile_completion": 100,
+    "createdAt": "2020-02-20T12:00:00Z",
+    "updatedAt": "2023-09-15T12:00:00Z",
+    "licence": "CA98765",
+    "stripeAccountId": "acct_ABCDE54321",
+    "stripe_account_active": true
+  },
+  {
+    "userId": "doc3",
+    "role": "Doctor",
+    "email": "carol.white@example.com",
+    "given_name": "Carol",
+    "family_name": "White",
+    "display_name": "Dr. Carol White",
+    "patient_name": "",
+    "phone_number": "+19876543212",
+    "picture": "https://example.com/pictures/carol_white.jpg",
+    "designation": "Orthopedic Surgeon",
+    "bio": "Specializing in sports injuries and joint replacements.",
+    "years_of_experience": "15",
+    "city": "Chicago",
+    "country": "USA",
+    "address": "789 Bone St, Chicago, IL",
+    "state": "IL",
+    "zip_code": "60601",
+    "dob": "1978-08-10",
+    "age": 46,
+    "blood_group": "B+",
+    "gender": "female",
+    "location": "Chicago, USA",
+    "overallRating": 4.8,
+    "totalReviews": 150,
+    "ratingsBreakdownPercentages": { "5": 80, "4": 12, "3": 5, "2": 2, "1": 1 },
+    "available": true,
+    "verified": 1,
+    "average_fee": 300,
+    "languages": ["English"],
+    "experiences": [
+      {
+        "title": "Senior Orthopedic Surgeon",
+        "description": "Specialized in knee replacements.",
+        "employment_type": "Full Time",
+        "hospital_name": "Chicago Ortho Clinic",
+        "city": "Chicago",
+        "country": "USA",
+        "currently_working": true,
+        "start_date": "2008-05-01",
+        "end_date": ""
+      }
+    ],
+    "awards": [
+      {
+        "award_name": "Orthopedic Excellence",
+        "description": "Award for best surgeon.",
+        "institute": "Illinois Medical Board",
+        "year": "2021"
+      }
+    ],
+    "education": [
+      {
+        "degree_name": "MD",
+        "field": "Orthopedic Surgery",
+        "description": "Specialized in orthopedic surgeries.",
+        "institute": "University of Chicago",
+        "start_date": "1998-09-01",
+        "end_date": "2002-06-30",
+        "currently_studying": false,
+        "grade": "A"
+      }
+    ],
+    "availableDays": [
+      {
+        "day": "wednesday",
+        "slots": [
+          { "start_time": "08:00", "end_time": "12:00" },
+          { "start_time": "14:00", "end_time": "17:00" }
+        ]
+      },
+      {
+        "day": "friday",
+        "slots": [
+          { "start_time": "09:00", "end_time": "13:00" },
+          { "start_time": "14:00", "end_time": "16:00" }
+        ]
+      }
+    ],
+    "reviews": [
+      {
+        "name": "Evan Turner",
+        "createdAt": "2023-07-22",
+        "rating": 5,
+        "comment": "Amazing surgeon with great skills!",
+        "picture": "https://example.com/pictures/evanturner.jpg",
+        "city": "Chicago",
+        "country": "USA",
+        "patientId": "pat3",
+        "doctorId": "doc3",
+        "reviewId": "rev3"
+      }
+    ],
+    "services": [
+      {
+        "service": "Knee Replacement Surgery",
+        "speciality": "Orthopedic Surgery",
+        "description": "Advanced knee replacement surgery.",
+        "fee": "300"
+      }
+    ],
+    "no_of_appointments": 600,
+    "profile_status": "COMPLETED",
+    "profile_completion": 100,
+    "createdAt": "2018-01-15T12:00:00Z",
+    "updatedAt": "2023-09-10T12:00:00Z",
+    "licence": "IL12345",
+    "stripeAccountId": "acct_56789EDCBA",
+    "stripe_account_active": true
+  },
+  {
+    "userId": "doc4",
+    "role": "Doctor",
+    "email": "david.hall@example.com",
+    "given_name": "David",
+    "family_name": "Hall",
+    "display_name": "Dr. David Hall",
+    "patient_name": "",
+    "phone_number": "+19876543213",
+    "picture": "https://example.com/pictures/david_hall.jpg",
+    "designation": "Pediatrician",
+    "bio": "Caring pediatrician with a focus on early childhood development.",
+    "years_of_experience": "10",
+    "city": "Boston",
+    "country": "USA",
+    "address": "123 Kid St, Boston, MA",
+    "state": "MA",
+    "zip_code": "02101",
+    "dob": "1983-11-12",
+    "age": 41,
+    "blood_group": "AB+",
+    "gender": "male",
+    "location": "Boston, USA",
+    "overallRating": 4.7,
+    "totalReviews": 95,
+    "ratingsBreakdownPercentages": { "5": 78, "4": 15, "3": 5, "2": 1, "1": 1 },
+    "available": true,
+    "verified": 1,
+    "average_fee": 180,
+    "languages": ["English", "Spanish"],
+    "experiences": [
+      {
+        "title": "Pediatric Consultant",
+        "description": "Specialized in childhood diseases.",
+        "employment_type": "Part Time",
+        "hospital_name": "Boston Children's Hospital",
+        "city": "Boston",
+        "country": "USA",
+        "currently_working": true,
+        "start_date": "2014-08-01",
+        "end_date": ""
+      }
+    ],
+    "awards": [
+      {
+        "award_name": "Best Pediatrician",
+        "description": "Recognized for excellent pediatric care.",
+        "institute": "Massachusetts Medical Association",
+        "year": "2020"
+      }
+    ],
+    "education": [
+      {
+        "degree_name": "MD",
+        "field": "Pediatrics",
+        "description": "Specialized in pediatrics.",
+        "institute": "Boston University",
+        "start_date": "2002-09-01",
+        "end_date": "2006-06-30",
+        "currently_studying": false,
+        "grade": "A"
+      }
+    ],
+    "availableDays": [
+      {
+        "day": "monday",
+        "slots": [
+          { "start_time": "08:00", "end_time": "12:00" },
+          { "start_time": "14:00", "end_time": "16:00" }
+        ]
+      },
+      {
+        "day": "friday",
+        "slots": [
+          { "start_time": "09:00", "end_time": "13:00" },
+          { "start_time": "14:00", "end_time": "17:00" }
+        ]
+      }
+    ],
+    "reviews": [
+      {
+        "name": "Lucas Parker",
+        "createdAt": "2023-05-18",
+        "rating": 5,
+        "comment": "Amazing with children, very caring!",
+        "picture": "https://example.com/pictures/lucasparker.jpg",
+        "city": "Boston",
+        "country": "USA",
+        "patientId": "pat4",
+        "doctorId": "doc4",
+        "reviewId": "rev4"
+      }
+    ],
+    "services": [
+      {
+        "service": "Child Health Checkup",
+        "speciality": "Pediatrics",
+        "description": "Comprehensive health checkup for children.",
+        "fee": "180"
+      }
+    ],
+    "no_of_appointments": 400,
+    "profile_status": "COMPLETED",
+    "profile_completion": 100,
+    "createdAt": "2020-06-01T12:00:00Z",
+    "updatedAt": "2023-08-25T12:00:00Z",
+    "licence": "MA12345",
+    "stripeAccountId": "acct_12345XYZ",
+    "stripe_account_active": true
+  },
+  {
+    "userId": "doc5",
+    "role": "Doctor",
+    "email": "emma.davis@example.com",
+    "given_name": "Emma",
+    "family_name": "Davis",
+    "display_name": "Dr. Emma Davis",
+    "patient_name": "",
+    "phone_number": "+19876543214",
+    "picture": "https://example.com/pictures/emma_davis.jpg",
+    "designation": "Neurologist",
+    "bio": "Specialist in brain health and neurological disorders.",
+    "years_of_experience": "20",
+    "city": "San Francisco",
+    "country": "USA",
+    "address": "456 Brain St, San Francisco, CA",
+    "state": "CA",
+    "zip_code": "94101",
+    "dob": "1976-09-25",
+    "age": 48,
+    "blood_group": "O-",
+    "gender": "female",
+    "location": "San Francisco, USA",
+    "overallRating": 4.9,
+    "totalReviews": 110,
+    "ratingsBreakdownPercentages": { "5": 85, "4": 10, "3": 3, "2": 1, "1": 1 },
+    "available": true,
+    "verified": 1,
+    "average_fee": 250,
+    "languages": ["English", "Mandarin"],
+    "experiences": [
+      {
+        "title": "Head of Neurology",
+        "description": "Led the neurology department.",
+        "employment_type": "Full Time",
+        "hospital_name": "SF Brain Clinic",
+        "city": "San Francisco",
+        "country": "USA",
+        "currently_working": true,
+        "start_date": "2012-07-01",
+        "end_date": ""
+      }
+    ],
+    "awards": [
+      {
+        "award_name": "Neurology Excellence",
+        "description": "Recognized for excellence in brain health.",
+        "institute": "California Medical Society",
+        "year": "2019"
+      }
+    ],
+    "education": [
+      {
+        "degree_name": "MD",
+        "field": "Neurology",
+        "description": "Specialized in neurological disorders.",
+        "institute": "Stanford University",
+        "start_date": "1996-09-01",
+        "end_date": "2000-06-30",
+        "currently_studying": false,
+        "grade": "A"
+      }
+    ],
+    "availableDays": [
+      {
+        "day": "tuesday",
+        "slots": [
+          { "start_time": "09:00", "end_time": "12:00" },
+          { "start_time": "13:00", "end_time": "17:00" }
+        ]
+      },
+      {
+        "day": "thursday",
+        "slots": [
+          { "start_time": "10:00", "end_time": "13:00" },
+          { "start_time": "14:00", "end_time": "17:00" }
+        ]
+      }
+    ],
+    "reviews": [
+      {
+        "name": "John Peterson",
+        "createdAt": "2023-04-22",
+        "rating": 5,
+        "comment": "Outstanding neurologist, very professional.",
+        "picture": "https://example.com/pictures/johnpeterson.jpg",
+        "city": "San Francisco",
+        "country": "USA",
+        "patientId": "pat5",
+        "doctorId": "doc5",
+        "reviewId": "rev5"
+      }
+    ],
+    "services": [
+      {
+        "service": "Neurological Consultation",
+        "speciality": "Neurology",
+        "description": "Comprehensive neurological checkup.",
+        "fee": "250"
+      }
+    ],
+    "no_of_appointments": 600,
+    "profile_status": "COMPLETED",
+    "profile_completion": 100,
+    "createdAt": "2015-05-10T12:00:00Z",
+    "updatedAt": "2023-07-20T12:00:00Z",
+    "licence": "CA54321",
+    "stripeAccountId": "acct_54321LMNOP",
+    "stripe_account_active": true
+  },
+  {
+    "userId": "doc6",
+    "role": "Doctor",
+    "email": "frank.miller@example.com",
+    "given_name": "Frank",
+    "family_name": "Miller",
+    "display_name": "Dr. Frank Miller",
+    "patient_name": "",
+    "phone_number": "+19876543215",
+    "picture": "https://example.com/pictures/frank_miller.jpg",
+    "designation": "Gynecologist",
+    "bio": "Specialist in women's health, with a focus on prenatal care.",
+    "years_of_experience": "18",
+    "city": "Houston",
+    "country": "USA",
+    "address": "789 Women St, Houston, TX",
+    "state": "TX",
+    "zip_code": "77001",
+    "dob": "1975-11-30",
+    "age": 48,
+    "blood_group": "B-",
+    "gender": "male",
+    "location": "Houston, USA",
+    "overallRating": 4.8,
+    "totalReviews": 100,
+    "ratingsBreakdownPercentages": { "5": 80, "4": 12, "3": 5, "2": 2, "1": 1 },
+    "available": true,
+    "verified": 1,
+    "average_fee": 180,
+    "languages": ["English", "Spanish"],
+    "experiences": [
+      {
+        "title": "Senior Gynecologist",
+        "description": "Specialist in prenatal care.",
+        "employment_type": "Full Time",
+        "hospital_name": "Houston Women's Clinic",
+        "city": "Houston",
+        "country": "USA",
+        "currently_working": true,
+        "start_date": "2010-03-01",
+        "end_date": ""
+      }
+    ],
+    "awards": [
+      {
+        "award_name": "Best Gynecologist",
+        "description": "Recognized for excellence in women's health.",
+        "institute": "Texas Medical Association",
+        "year": "2018"
+      }
+    ],
+    "education": [
+      {
+        "degree_name": "MD",
+        "field": "Gynecology",
+        "description": "Specialized in women's health.",
+        "institute": "University of Texas",
+        "start_date": "1995-09-01",
+        "end_date": "1999-06-30",
+        "currently_studying": false,
+        "grade": "A"
+      }
+    ],
+    "availableDays": [
+      {
+        "day": "wednesday",
+        "slots": [
+          { "start_time": "08:00", "end_time": "12:00" },
+          { "start_time": "14:00", "end_time": "17:00" }
+        ]
+      },
+      {
+        "day": "friday",
+        "slots": [
+          { "start_time": "09:00", "end_time": "13:00" },
+          { "start_time": "14:00", "end_time": "16:00" }
+        ]
+      }
+    ],
+    "reviews": [
+      {
+        "name": "Lily Thompson",
+        "createdAt": "2023-05-30",
+        "rating": 5,
+        "comment": "Very knowledgeable and kind.",
+        "picture": "https://example.com/pictures/lilythompson.jpg",
+        "city": "Houston",
+        "country": "USA",
+        "patientId": "pat6",
+        "doctorId": "doc6",
+        "reviewId": "rev6"
+      }
+    ],
+    "services": [
+      {
+        "service": "Prenatal Consultation",
+        "speciality": "Gynecology",
+        "description": "Consultation for prenatal care.",
+        "fee": "180"
+      }
+    ],
+    "no_of_appointments": 550,
+    "profile_status": "COMPLETED",
+    "profile_completion": 100,
+    "createdAt": "2017-07-01T12:00:00Z",
+    "updatedAt": "2023-08-15T12:00:00Z",
+    "licence": "TX54321",
+    "stripeAccountId": "acct_98765QWERT",
+    "stripe_account_active": true
+  }
+]

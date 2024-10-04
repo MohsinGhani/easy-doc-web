@@ -24,11 +24,12 @@ const SendMessageButton = ({
     console.log(message);
 
     currentChat?.messages.push({
-      author: {
-        userId,
-      },
+      senderId:userId,
+      isRead: false,
+      messageId: "",
+      recipientUserId: "asda",
+      timestamp: 0,
       text: message,
-      replies: [],
       attachments: [],
     });
 

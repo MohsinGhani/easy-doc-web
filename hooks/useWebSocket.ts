@@ -1,38 +1,48 @@
-import { useEffect, useState } from "react";
+"use client";
 
-interface WebSocketMessage {
-  [key: string]: any; // TODO:Adjust this to match the structure of your WebSocket messages
+import { Message } from "@/types/chat";
+import { useEffect, useState, useRef } from "react";
+
+interface WebSocketMessage extends Partial<Message> {
+  [key: string]: any; // Allow any other properties
 }
 
 const useWebSocket = (webSocketUrl: string) => {
-  const [connectionStatus, setConnectionStatus] =
-    useState<string>("Disconnected");
+  const [connectionStatus, setConnectionStatus] = useState("Disconnected");
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
+  const ws = useRef<WebSocket | null>(null); // WebSocket reference
+
+  // Function to send data to the backend
+  const sendMessage = (message: WebSocketMessage) => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      ws.current.send(JSON.stringify(message));
+    } else {
+      console.error("WebSocket is not open. Unable to send message.");
+    }
+  };
 
   useEffect(() => {
-    let ws: WebSocket;
-
     const connect = () => {
-      ws = new WebSocket(webSocketUrl);
+      ws.current = new WebSocket(webSocketUrl);
 
-      ws.onopen = () => {
+      ws.current.onopen = () => {
         setConnectionStatus("Connected");
         console.log("WebSocket connected");
       };
 
-      ws.onmessage = (event: MessageEvent) => {
+      ws.current.onmessage = (event: MessageEvent) => {
         const data: WebSocketMessage = JSON.parse(event.data);
         setMessages((prevMessages) => [...prevMessages, data]);
         console.log("Received message:", data);
       };
 
-      ws.onclose = () => {
+      ws.current.onclose = () => {
         setConnectionStatus("Disconnected");
         console.log("WebSocket disconnected. Attempting to reconnect...");
         setTimeout(connect, 5000); // Reconnect after 5 seconds
       };
 
-      ws.onerror = (error: Event) => {
+      ws.current.onerror = (error: Event) => {
         console.error("WebSocket error:", error);
       };
     };
@@ -40,13 +50,13 @@ const useWebSocket = (webSocketUrl: string) => {
     connect();
 
     return () => {
-      if (ws) {
-        ws.close();
+      if (ws.current) {
+        ws.current.close();
       }
     };
   }, [webSocketUrl]);
 
-  return { connectionStatus, messages };
+  return { connectionStatus, messages, sendMessage };
 };
 
 export default useWebSocket;

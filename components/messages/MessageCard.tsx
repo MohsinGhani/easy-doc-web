@@ -4,14 +4,9 @@ import AttachmentCard from "./AttachmentCard";
 import { Message } from "@/types/chat";
 
 const MessageCard = ({ message }: { message: Message }) => {
-  const {
-    attachments,
-    author: { userId },
-    text,
-    replies,
-  } = message;
+  const { attachments, senderId, text } = message;
   const user = useAppSelector((state) => state.auth.user);
-  const isMine = user.userId === userId;
+  const isMine = user.userId === senderId;
 
   return (
     <div
@@ -26,7 +21,7 @@ const MessageCard = ({ message }: { message: Message }) => {
     >
       <div className="space-y-2 relative">
         {attachments.map((attachment) => (
-          <AttachmentCard attachment={attachment} key={attachment.name} />  
+          <AttachmentCard attachment={attachment} key={attachment.name} />
         ))}
         <p className="text-base font-normal px-2">{text}</p>
       </div>
