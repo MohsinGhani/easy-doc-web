@@ -23,8 +23,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
     (state) => state.appointment
   );
 
-  if (appointmentLoader || loading) return <Loader />;
-
   const stripe = useStripe();
   const elements = useElements();
 
@@ -55,6 +53,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
     }
   };
 
+  if (appointmentLoader || loading) return <Loader />;
+
   return (
     <form className="grid lg:grid-cols-3 gap-8" onSubmit={handleSubmit}>
       <div className="lg:col-span-2">
@@ -81,7 +81,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
               },
             },
             business: {
-              name: fetchedAppointment?.doctor.display_name, // Display business name in the Payment Element
+              name: fetchedAppointment?.doctor.display_name || "Doctor", // Display business name in the Payment Element
             },
           }}
         />
@@ -91,9 +91,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
         size={"xl"}
         className="w-full"
         type="submit"
-        disabled={appointmentLoader || loading || loader}
+        disabled={appointmentLoader || loading || loader || !stripe || !elements}
       >
-        Proceed to Checkout
+        Complete Checkout
       </Button>
     </form>
   );
