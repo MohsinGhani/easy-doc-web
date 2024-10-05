@@ -26,7 +26,7 @@ import {
   GENDERS,
   MEDICATIONS,
 } from "@/constants";
-import { uploadFilesToS3 } from "@/lib/utils";
+import { cn, uploadFilesToS3 } from "@/lib/utils";
 import FileUploadComponent, { FileItem } from "./FileUploadComponent";
 import { Loader } from "../common/Loader";
 import DoctorCard from "../patient/DoctorCard";
@@ -35,6 +35,9 @@ import { format } from "date-fns";
 import AvailableTimingsTabs from "./AvailableTimingsTabs";
 import { useRouter } from "next/navigation";
 import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
+import { toast } from "sonner";
+import { Button, buttonVariants } from "../ui/button";
+import Link from "next/link";
 
 interface AppointmentFormProps {
   doctorId: string;
@@ -43,24 +46,17 @@ interface AppointmentFormProps {
 const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const { user, loading } = useAppSelector((state) => state.auth);
   const { fetchedDoctor, loading: doctorLoader } = useAppSelector(
     (state) => state.doctor
   );
-
   const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
-
-  useEffect(() => {
-    if (doctorId) {
-      dispatch(doctorThunks.fetchDoctorById(doctorId));
-    }
-  }, [dispatch, doctorId]);
-
   const form = useForm<AppointmentCreationType>({
     resolver: zodResolver(appointmentCreationSchema),
     defaultValues: {
-      consulting_for: "self" as ConsultingFor,
-      patient_name: `${user?.given_name} ${user.family_name}` || "",
+      consulting_for: ConsultingFor.SELF,
+      display_name: `${user?.given_name} ${user.family_name}` || "",
       gender: GENDERS[0].value,
       dob: user?.dob || "",
       blood_group: BLOOD_GROUPS[0].value,
@@ -74,59 +70,91 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       appointment_date: format(new Date(), "d MMM yyyy"),
       speciality: "",
       attachments: [],
-      status: "PENDING",
     },
   });
-
   const { control, handleSubmit, watch } = form;
   const speciality = watch("speciality");
   const consultation_type = watch("consultation_type");
+  const consulting_for = watch("consulting_for");
+
+  useEffect(() => {
+    if (doctorId) {
+      dispatch(doctorThunks.fetchDoctorById(doctorId));
+    }
+  }, [dispatch, doctorId]);
+
+  useEffect(() => {
+    if (consulting_for === ConsultingFor.SELF) {
+      toast.custom(() => (
+        <div className="flex items-center justify-center w-[70%]">
+          <div className="flex items-center justify-between w-[90%] sm:w-2/3">
+            <span>
+              Before booking an appointment, make sure you have updated you
+              profile Info:
+            </span>
+
+            <Link
+              href={`/my-settings`}
+              className={cn(
+                buttonVariants({ variant: "secondary", size: "lg" })
+              )}
+            >
+              Add Info
+            </Link>
+          </div>
+        </div>
+      ));
+    }
+  }, [consulting_for]);
 
   const uniqueSpecialities = useMemo(
     () => new Set(fetchedDoctor?.services.map((service) => service.speciality)),
     [fetchedDoctor?.services]
   );
-
   const consultingFee = useMemo(() => {
     const service = fetchedDoctor?.services.find(
       (s) => s.service === consultation_type
     );
 
     return +(service?.fee || 0);
-  }, [consultation_type]);
+  }, [consultation_type, fetchedDoctor?.services]);
 
   const onSubmit = async (data: AppointmentCreationType) => {
     try {
       // Step 1: Upload files to S3 using the helper function
-      const
-        uploadedFiles = await uploadFilesToS3(selectedFiles);
+      const uploadedFiles =
+        selectedFiles.length > 0 ? await uploadFilesToS3(selectedFiles) : [];
 
       // Step 2: Add uploaded files to form data
       data.attachments = uploadedFiles;
 
-      const patientData = {
-        patient_name: data.patient_name,
-        gender: data.gender,
-        dob: data.dob,
-        blood_group: data.blood_group,
-        phone_number: data.phone_number,
-        email: data.email,
-        age:
-          new Date().getFullYear() -
-          new Date(new Date(data.dob).toISOString()).getFullYear(),
-      };
+      let patientData = {};
+
+      // Step 3: If the appointment is for somone else add its data
+      if (data.consulting_for === ConsultingFor.OTHER) {
+        patientData = {
+          display_name: data.display_name,
+          gender: data.gender,
+          dob: data.dob,
+          blood_group: data.blood_group,
+          phone_number: data.phone_number,
+          email: data.email,
+          age:
+            new Date().getFullYear() -
+            new Date(new Date(data.dob as string)).getFullYear(),
+        };
+      }
 
       const newAppointment = {
         ...data,
+        ...(data.consulting_for === ConsultingFor.OTHER && { patientData }),
         doctorId: doctorId,
         patientId: user.userId,
         visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
         amount: consultingFee,
-        status: "PAYMENT_PENDING",
-        patientData,
       };
 
-      // Step 3: Submit form data to the backend
+      // Step 4: Submit form data to the backend
       const { payload, type } = await dispatch(
         appointmentThunks.createAppointment(
           newAppointment as unknown as Partial<
@@ -135,6 +163,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         )
       );
 
+      // Step 5: Handle the backend's response effectively
       if (type === "appointment/createAppointment/fulfilled") {
         const createdAppointment = payload as Appointment;
         const appointmentId = createdAppointment?.appointmentId;
@@ -172,40 +201,60 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                       control={control}
                     />
 
-                    {/* Patient Name */}
-                    <CustomFormField
-                      name="patient_name"
-                      label="Patient full name"
-                      fieldType={FormFieldType.INPUT}
-                      control={control}
-                    />
+                    {consulting_for == ConsultingFor.OTHER && (
+                      <>
+                        {/* Display Name */}
+                        <CustomFormField
+                          name="display_name"
+                          label="Patient full name"
+                          fieldType={FormFieldType.INPUT}
+                          control={control}
+                        />
 
-                    {/* Gender */}
-                    <CustomFormField
-                      name="gender"
-                      label="Gender"
-                      placeholder="Select"
-                      fieldType={FormFieldType.SELECT}
-                      items={GENDERS}
-                      control={control}
-                    />
+                        {/* Gender */}
+                        <CustomFormField
+                          name="gender"
+                          label="Gender"
+                          placeholder="Select"
+                          fieldType={FormFieldType.SELECT}
+                          items={GENDERS}
+                          control={control}
+                        />
 
-                    {/* Date of Birth */}
-                    <CustomFormField
-                      name="dob"
-                      label="Date of Birth"
-                      fieldType={FormFieldType.DATE_PICKER}
-                      control={control}
-                    />
+                        {/* Date of Birth */}
+                        <CustomFormField
+                          name="dob"
+                          label="Date of Birth"
+                          fieldType={FormFieldType.DATE_PICKER}
+                          control={control}
+                        />
 
-                    {/* Blood Group */}
-                    <CustomFormField
-                      name="blood_group"
-                      label="Blood Group"
-                      fieldType={FormFieldType.SELECT}
-                      items={BLOOD_GROUPS}
-                      control={control}
-                    />
+                        {/* Blood Group */}
+                        <CustomFormField
+                          name="blood_group"
+                          label="Blood Group"
+                          fieldType={FormFieldType.SELECT}
+                          items={BLOOD_GROUPS}
+                          control={control}
+                        />
+
+                        {/* Phone Number */}
+                        <CustomFormField
+                          name="phone_number"
+                          label="Contact no:"
+                          fieldType={FormFieldType.PHONE_INPUT}
+                          control={control}
+                        />
+
+                        {/* Email */}
+                        <CustomFormField
+                          name="email"
+                          label="Email"
+                          fieldType={FormFieldType.EMAIL}
+                          control={control}
+                        />
+                      </>
+                    )}
 
                     {/* Speciality */}
                     <CustomFormField
@@ -234,22 +283,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
                           label: s?.service,
                           value: s?.service,
                         }))}
-                      control={control}
-                    />
-
-                    {/* Phone Number */}
-                    <CustomFormField
-                      name="phone_number"
-                      label="Contact no:"
-                      fieldType={FormFieldType.PHONE_INPUT}
-                      control={control}
-                    />
-
-                    {/* Email */}
-                    <CustomFormField
-                      name="email"
-                      label="Email"
-                      fieldType={FormFieldType.EMAIL}
                       control={control}
                     />
 

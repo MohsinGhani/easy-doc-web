@@ -97,7 +97,6 @@ declare type User = {
   given_name: string;
   family_name: string;
   display_name: string;
-  patient_name: string;
   phone_number: string;
   picture: string;
   designation: string;
@@ -182,6 +181,7 @@ declare type Appointment = {
   amount: number;
   status: APPOINTMENT_STATUS;
   payment: Payment;
+  patientData?: User;
 };
 
 declare type Payment = {

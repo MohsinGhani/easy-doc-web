@@ -170,8 +170,8 @@ const reviewSchema = z.object({
   comment: z.string().optional(),
 });
 
-// Define User Schema
-const userSchema = z.object({
+// Define Doctor Schema
+const doctorSchema = z.object({
   email: z.string().email("Invalid email address").optional(),
   given_name: z.string().min(1, "Given name is required").optional(),
   family_name: z.string().min(1, "Family name is required").optional(),
@@ -237,6 +237,47 @@ const serviceSchema = z.object({
   description: z.string(),
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Define Patient Schema
+const patientSchema = z.object({
+  email: z.string().email("Invalid email address").optional(),
+  given_name: z.string().min(1, "Given name is required").optional(),
+  family_name: z.string().min(1, "Family name is required").optional(),
+  display_name: z.string().min(1, "Display name is required").optional(),
+
+  phone_number: z
+    .string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
+    .optional(),
+  picture: z.string().url("Invalid URL").optional(),
+  bio: z
+    .string()
+    .max(500, "Bio cannot be longer than 500 characters")
+    .optional(),
+  city: z.string().min(1, "City is required").optional(),
+  country: z.string().min(1, "Country is required").optional(),
+  dob: z
+    .string()
+    .refine((val) => new Date(val) <= new Date(), {
+      message: "Date of birth cannot be in the future",
+    })
+    .refine((val) => new Date(val) >= new Date("1900-01-01"), {
+      message: "Date of birth cannot be before 1900",
+    })
+    .refine(
+      (val) => new Date().getFullYear() - new Date(val).getFullYear() >= 18,
+      {
+        message: "User must be at least 18 years old",
+      }
+    )
+    .optional(),
+  blood_group: z.string({
+    required_error: "Blood group is required",
+  }),
+  gender: genderEnum.optional(),
+});
+
 export type experienceSchemaType = z.infer<typeof experienceSchema>;
 export type awardSchemaType = z.infer<typeof awardSchema>;
 export type educationSchemaType = z.infer<typeof educationSchema>;
@@ -253,11 +294,12 @@ export type weekDayEnum =
   | "Friday"
   | "Saturday";
 export type availableSlotSchemaType = z.infer<typeof availableSlotSchema>;
-export type userSchemaType = z.infer<typeof userSchema>;
+export type doctorSchemaType = z.infer<typeof doctorSchema>;
+export type patientSchemaType = z.infer<typeof patientSchema>;
 export type serviceSchemaType = z.infer<typeof serviceSchema>;
 
 export {
-  userSchema,
+  doctorSchema,
   genderEnum,
   weekDayEnum,
   availableSlotSchema,
@@ -267,5 +309,6 @@ export {
   reviewSchema,
   availableDaySchema,
   employmentTypeEnum,
+  patientSchema,
   serviceSchema,
 };

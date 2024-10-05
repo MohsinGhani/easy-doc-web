@@ -40,9 +40,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     const fetchMeetingDetails = async () => {
       try {
         const response = await meetingsApiClient.get(
-          `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${
-            user.role === "patient" ? user.patient_name : user.display_name
-          }`
+          `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${user.display_name}`
         );
         const data = response.data.data;
 

@@ -17,21 +17,20 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
 import { Loader } from "../common/Loader";
 import { authThunks } from "@/lib/features/auth/authThunks";
-import { COUNTRIES, GENDERS, LANGUAGES } from "@/constants";
+import { BLOOD_GROUPS, COUNTRIES, GENDERS } from "@/constants";
 import { getCitiesByCountry, getCityNameById } from "@/lib/utils";
-import { doctorSchema, doctorSchemaType } from "@/models/validationSchemas";
+import { patientSchema, patientSchemaType } from "@/models/validationSchemas";
 import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
 
-const ManageProfile = () => {
+const PatientSettings = () => {
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const form = useForm<doctorSchemaType>({
-    resolver: zodResolver(doctorSchema),
+  const form = useForm<patientSchemaType>({
+    resolver: zodResolver(patientSchema),
   });
-
   const {
     handleSubmit,
     getValues,
@@ -64,11 +63,11 @@ const ManageProfile = () => {
       toast.error("Image must be less than 4MB.");
     }
   };
-  const onSubmit = async (data: doctorSchemaType) => {
+  const onSubmit = async (data: patientSchemaType) => {
     const updateExpression: Record<string, any> = {};
 
     Object.keys(dirtyFields).forEach((field) => {
-      const value = data[field as keyof doctorSchemaType];
+      const value = data[field as keyof patientSchemaType];
       updateExpression[field] = Array.isArray(value)
         ? { value, replace: true }
         : value;
@@ -124,7 +123,7 @@ const ManageProfile = () => {
   };
   useEffect(() => {
     if (user) {
-      form.reset(user as unknown as doctorSchemaType);
+      form.reset(user as unknown as patientSchemaType);
     }
   }, [user, form]);
 
@@ -246,6 +245,15 @@ const ManageProfile = () => {
                   label="Date of Birth"
                 />
 
+                {/* blood_group */}
+                <CustomFormField
+                  name="blood_group"
+                  label="Blood Group"
+                  fieldType={FormFieldType.SELECT}
+                  items={BLOOD_GROUPS}
+                  control={control}
+                />
+
                 {/* gender */}
                 <CustomFormField
                   fieldType={FormFieldType.SELECT}
@@ -253,15 +261,6 @@ const ManageProfile = () => {
                   items={GENDERS}
                   name={`gender`}
                   label="Gender"
-                />
-
-                {/* designation */}
-                <CustomFormField
-                  fieldType={FormFieldType.INPUT}
-                  control={control}
-                  name="designation"
-                  label="Designation"
-                  placeholder="Enter your designation"
                 />
 
                 {/* email */}
@@ -307,26 +306,6 @@ const ManageProfile = () => {
                   placeholder={"Select city..."}
                   enableCreation={false}
                 />
-
-                {/* languages */}
-                <CustomFormField
-                  fieldType={FormFieldType.MULTI_SELECT_WITH_SEARCH}
-                  control={control}
-                  items={LANGUAGES}
-                  name={`languages`}
-                  label="Known Languages"
-                  placeholder={"Select languages..."}
-                  enableCreation={false}
-                />
-
-                {/* years_of_experience */}
-                <CustomFormField
-                  fieldType={FormFieldType.NUMBER}
-                  control={control}
-                  name={`years_of_experience`}
-                  label="Years of Experience"
-                  placeholder={"ex: 2"}
-                />
               </div>
 
               {/* bio */}
@@ -354,4 +333,4 @@ const ManageProfile = () => {
   );
 };
 
-export default ManageProfile;
+export default PatientSettings;

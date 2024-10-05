@@ -61,7 +61,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
               {appointment?.scheduled_date?.start_time}
             </p>
             <p className="text-sm text-gray-600">
-              {appointment?.patient?.patient_name}
+              {appointment?.patient?.display_name}
             </p>
             <p className="text-xs text-primary">{appointment?.reason}</p>
           </div>

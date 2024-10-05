@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-
 import { cn } from "@/lib/utils";
 import StoreProvider from "@/lib/StoreProvider";
 import WebSocketInitializer from "@/lib/webSocketInitializer";
+import React from "react";
 
 const outfit = Outfit({
   subsets: ["latin"],

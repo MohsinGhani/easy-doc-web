@@ -28,8 +28,11 @@ const RequestReviewSheet = ({
     setOpen(false);
   };
 
-  if (!selectedRequest) return null;
-  console.log("🚀 ~ selectedRequest:", selectedRequest);
+  if (!selectedRequest || !selectedRequest?.patient) return null;
+
+  let patient = selectedRequest?.patient;
+
+  if (!patient) return null;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -45,23 +48,21 @@ const RequestReviewSheet = ({
               <div className="flex items-center gap-2">
                 <Avatar>
                   <AvatarImage
-                    src={selectedRequest?.patient?.picture}
+                    src={patient.picture}
                     alt="Avatar"
                     width={50}
                     height={50}
                     className="object-cover rounded-full object-top"
                   />
                   <AvatarFallback>
-                    {selectedRequest?.patient?.patient_name
-                      .charAt(0)
-                      .toUpperCase() +
-                      selectedRequest?.patient?.patient_name.slice(1)}
+                    {patient.display_name.charAt(0).toUpperCase() +
+                      patient.display_name.slice(1)}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="flex flex-col gap-1">
                   <h2 className="font-medium sm:text-2xl text-lg leading-none">
-                    {selectedRequest?.patient?.patient_name}
+                    {patient.display_name}
                   </h2>
                   <p className="text-muted-foreground text-sm">
                     {selectedRequest?.speciality}
@@ -83,32 +84,26 @@ const RequestReviewSheet = ({
 
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Patient name:</p>
-                  <p className="font-medium">
-                    {selectedRequest?.patient?.patient_name}
-                  </p>
+                  <p className="font-medium">{patient.display_name}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Gender:</p>
-                  <p className="font-medium">
-                    {selectedRequest?.patient?.gender}
-                  </p>
+                  <p className="font-medium">{patient.gender}</p>
                 </div>
 
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Age:</p>
-                  <p className="font-medium">{selectedRequest?.patient?.age}</p>
+                  <p className="font-medium">{patient.age}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Blood Group:</p>
-                  <p className="font-medium">
-                    {selectedRequest?.patient?.blood_group}
-                  </p>
+                  <p className="font-medium">{patient.blood_group}</p>
                 </div>
 
                 <div className="space-y-1">
@@ -141,14 +136,12 @@ const RequestReviewSheet = ({
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Contact no:</p>
-                <p className="font-medium">
-                  {selectedRequest?.patient?.phone_number}
-                </p>
+                <p className="font-medium">{patient.phone_number}</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Email:</p>
-                <p className="font-medium">{selectedRequest?.patient?.email}</p>
+                <p className="font-medium">{patient.email}</p>
               </div>
 
               <div />
@@ -223,7 +216,7 @@ const RequestReviewSheet = ({
 
           <SheetFooter className="items-center justify-center gap-4 flex-row">
             <RejectRequestDialog
-              name={selectedRequest?.patient?.patient_name}
+              name={patient.display_name}
               onReject={() =>
                 console.log("rejected", selectedRequest?.patientId)
               }
