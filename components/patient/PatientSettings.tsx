@@ -225,7 +225,7 @@ const PatientSettings = () => {
                   label="Display Name"
                   renderSkeleton={(field) => (
                     <div className="flex h-10 items-center border border-input rounded-md px-3 py-[15px]">
-                      <span className="mr-2">Dr.</span>
+                      <span className="mr-2">Pa.</span>
                       <input
                         {...field}
                         id="display_name"

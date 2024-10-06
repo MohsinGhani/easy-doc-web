@@ -203,11 +203,22 @@ declare type Attachment = {
   size: string;
 };
 
-declare interface Chat {
-  chatId: string;
+declare type ConversationMetaData = {
+  doctorName: string;
+  patientName: string;
+  doctorProfilePicture: string;
+  patientProfilePicture: string;
+};
+
+declare interface Conversation {
+  conversationId: string;
+  doctorId: string;
+  patientId: string;
+  patappointmentId: string;
+  lastMessageAt: string;
+  ttl: string;
   messages: Message[];
-  avatar: string;
-  name: string;
+  metaData: ConversationMetaData;
 }
 
 declare interface Message {
@@ -256,8 +267,9 @@ declare interface notificationState {
   error: string | null | undefined;
   lastEvaluatedKey: string | null;
 }
-declare interface chatState {
-  allChats: Chat[];
+declare interface conversationState {
+  allConversations: Conversation[];
+  fetchedConversation: Conversation | null;
   loading: boolean;
   error: string | null | undefined;
   lastEvaluatedKey: string | null;

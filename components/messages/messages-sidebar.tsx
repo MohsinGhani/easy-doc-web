@@ -8,30 +8,50 @@ import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Chat, chats } from "@/types/chat";
-import ChatSheet from "../doctor/ChatSheet";
+import ConversationSheet from "@/components/doctor/ConversationSheet";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
+import { format } from "date-fns";
 
 const MessagesSidebar = ({
   className,
   navigate = true,
-  loading = false, // Added loading prop
 }: {
   className?: string;
   navigate?: boolean;
-  loading?: boolean;
 }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [filteredChats, setFilteredChats] = useState(chats);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [selectedConversation, setSelectedConversation] =
+    useState<Conversation | null>(null);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const { allConversations, loading } = useAppSelector(
+    (state) => state.conversation
+  );
+  const userId = useAppSelector((state) => state.auth.user?.userId);
+
+  const [filteredConversations, setFilteredConversations] =
+    useState(allConversations);
 
   useEffect(() => {
-    const filtered = chats.filter((chat) =>
-      chat.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setFilteredChats(filtered);
-  }, [searchValue]);
+    userId && dispatch(conversationThunks.fetchAllConversations());
+  }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (allConversations && allConversations.length) {
+      const filtered = allConversations.filter(
+        (conv) =>
+          conv.metaData.patientName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          conv.metaData.doctorName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase())
+      );
+      setFilteredConversations(filtered);
+    }
+  }, [searchValue, allConversations]);
 
   if (loading) {
     // Skeleton Loader while chats are loading
@@ -41,7 +61,7 @@ const MessagesSidebar = ({
           {/* Skeleton for Search Input */}
           <div className="h-10 bg-gray-300 rounded-md w-full"></div>
 
-          {/* Skeleton for Chat List */}
+          {/* Skeleton for Conversation List */}
           {[...Array(4)].map((_, index) => (
             <div key={index} className="space-y-4 animate-pulse">
               <div className="flex items-center justify-between">
@@ -75,123 +95,129 @@ const MessagesSidebar = ({
           <SearchInput
             value={searchValue}
             setValue={setSearchValue}
-            searchKey="chats"
+            searchKey="conversations"
             autoComplete="off"
           />
 
-          {filteredChats.map((chat, i) => {
-            const active = pathname.includes(chat.chatId);
+          {filteredConversations &&
+            filteredConversations.length > 0 &&
+            filteredConversations.map((conv, i) => {
+              const active = pathname.includes(conv.conversationId);
 
-            return (
-              <>
-                {navigate ? (
-                  <Link key={i} href={`/messages/${chat.chatId}`}>
-                    <div
-                      className={cn("space-y-4 cursor-pointer", {
-                        "bg-slate-50 rounded-xl px-3 py-1": active,
-                      })}
-                    >
-                      {!active && (
-                        <span className="text-zinc-600 text-xs font-normal leading-none">
-                          Today, 08:30 am - 10:30 am
-                        </span>
-                      )}
+              return (
+                <>
+                  {navigate ? (
+                    <Link key={i} href={`/messages/${conv.conversationId}`}>
+                      <div
+                        className={cn("space-y-4 cursor-pointer", {
+                          "bg-slate-50 rounded-xl px-3 py-1": active,
+                        })}
+                      >
+                        {!active && (
+                          <span className="text-zinc-600 text-xs font-normal leading-none">
+                            {format(conv.lastMessageAt, "hh:mm a")}
+                          </span>
+                        )}
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-2">
-                          <div className="rounded-full w-10 h-10">
-                            <Image
-                              src={chat.avatar}
-                              alt="chat avatar"
-                              className="rounded-full w-full h-full object-cover"
-                              width={40}
-                              height={40}
-                            />
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-2">
+                            <div className="rounded-full w-10 h-10">
+                              <Image
+                                src={conv.metaData.patientProfilePicture}
+                                alt="conv avatar"
+                                className="rounded-full w-full h-full object-cover"
+                                width={40}
+                                height={40}
+                              />
+                            </div>
 
-                          <div className="space-y-1">
-                            <h2 className="text-base font-medium">
-                              {chat.name}
-                            </h2>
+                            <div className="space-y-1">
+                              <h2 className="text-base font-medium">
+                                {conv.metaData.patientName}
+                              </h2>
 
-                            <div className="text-muted-foreground text-xs">
-                              Sent a picture
+                              <div className="text-muted-foreground text-xs">
+                                Sent a picture
+                              </div>
                             </div>
                           </div>
+
+                          {!active && (
+                            <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                              3
+                            </div>
+                          )}
                         </div>
-
-                        {!active && (
-                          <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                            3
-                          </div>
-                        )}
                       </div>
-                    </div>
 
-                    {i !== filteredChats.length - 1 && (
-                      <Separator className="mt-3 w-[90%] mx-auto" />
-                    )}
-                  </Link>
-                ) : (
-                  <>
-                    <div
-                      className={cn("space-y-4 cursor-pointer", {
-                        "bg-slate-50 rounded-xl px-3 py-1": active,
-                      })}
-                      onClick={() => {
-                        setSelectedChat(chat);
-                        setOpen(true);
-                      }}
-                    >
-                      {!active && (
-                        <span className="text-zinc-600 text-xs font-normal leading-none">
-                          Today, 08:30 am - 10:30 am
-                        </span>
+                      {i !== filteredConversations.length - 1 && (
+                        <Separator className="mt-3 w-[90%] mx-auto" />
                       )}
+                    </Link>
+                  ) : (
+                    <>
+                      <div
+                        className={cn("space-y-4 cursor-pointer", {
+                          "bg-slate-50 rounded-xl px-3 py-1": active,
+                        })}
+                        onClick={() => {
+                          setSelectedConversation(conv);
+                          setOpen(true);
+                        }}
+                      >
+                        {!active && (
+                          <span className="text-zinc-600 text-xs font-normal leading-none">
+                            {format(conv.lastMessageAt, "hh:mm a")}
+                          </span>
+                        )}
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-2">
-                          <div className="rounded-full w-10 h-10">
-                            <Image
-                              src={chat.avatar}
-                              alt="chat avatar"
-                              className="rounded-full w-full h-full object-cover"
-                              width={40}
-                              height={40}
-                            />
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-2">
+                            <div className="rounded-full w-10 h-10">
+                              <Image
+                                src={conv.metaData.patientProfilePicture}
+                                alt="conv avatar"
+                                className="rounded-full w-full h-full object-cover"
+                                width={40}
+                                height={40}
+                              />
+                            </div>
 
-                          <div className="space-y-1">
-                            <h2 className="text-base font-medium">
-                              {chat.name}
-                            </h2>
+                            <div className="space-y-1">
+                              <h2 className="text-base font-medium">
+                                {conv.metaData.patientName}
+                              </h2>
 
-                            <div className="text-muted-foreground text-xs">
-                              Sent a picture
+                              <div className="text-muted-foreground text-xs">
+                                Sent a picture
+                              </div>
                             </div>
                           </div>
+
+                          {!active && (
+                            <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
+                              3
+                            </div>
+                          )}
                         </div>
-
-                        {!active && (
-                          <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                            3
-                          </div>
-                        )}
                       </div>
-                    </div>
 
-                    {i !== filteredChats.length - 1 && (
-                      <Separator className="w-[90%] mx-auto" />
-                    )}
-                  </>
-                )}
-              </>
-            );
-          })}
+                      {i !== filteredConversations.length - 1 && (
+                        <Separator className="w-[90%] mx-auto" />
+                      )}
+                    </>
+                  )}
+                </>
+              );
+            })}
         </CardContent>
       </Card>
 
-      <ChatSheet chat={selectedChat} open={open} setOpen={setOpen} />
+      <ConversationSheet
+        selectedConversation={selectedConversation}
+        open={open}
+        setOpen={setOpen}
+      />
     </>
   );
 };

@@ -1,6 +1,7 @@
 export enum ApiServiceName {
   FUNCTIONS = "functions",
   APPOINTMENTS = "appointments",
+  CONVERSATIONS = "conversationsApiClient",
   PAYMENTS = "payments",
   NOTIFICATIONS = "notifications",
   MEETINGS = "meetings",
@@ -12,6 +13,8 @@ export const getServiceUrl = (serviceName: ApiServiceName) => {
       return process.env.NEXT_PUBLIC_API_URL_FUNCTIONS;
     case ApiServiceName.APPOINTMENTS:
       return process.env.NEXT_PUBLIC_API_URL_APPOINTMENTS;
+    case ApiServiceName.CONVERSATIONS:
+      return process.env.NEXT_PUBLIC_API_URL_CONVERSATIONS;
     case ApiServiceName.PAYMENTS:
       return process.env.NEXT_PUBLIC_API_URL_PAYMENTS;
     case ApiServiceName.NOTIFICATIONS:

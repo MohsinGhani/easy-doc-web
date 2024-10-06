@@ -2,19 +2,24 @@
 
 import React from "react";
 import { SheetContent, Sheet } from "@/components/ui/sheet";
-import { Chat } from "@/types/chat";
-import MessageContainer from "../messages/MessageContainer";
+import MessageContainer from "@/components/messages/MessageContainer";
 
 interface ChatSheetProps {
-  chat: Chat | null;
+  selectedConversation: Conversation | null;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-const ChatSheet = ({ chat, open, setOpen }: ChatSheetProps) => {
+const ConversationSheet = ({
+  selectedConversation,
+  open,
+  setOpen,
+}: ChatSheetProps) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  if (!selectedConversation) return null;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -23,7 +28,7 @@ const ChatSheet = ({ chat, open, setOpen }: ChatSheetProps) => {
         showClose={false}
       >
         <MessageContainer
-          chatId={chat?.chatId || ""}
+          selectedConversation={selectedConversation}
           href="dashboard"
           handleClose={handleClose}
         />
@@ -32,4 +37,4 @@ const ChatSheet = ({ chat, open, setOpen }: ChatSheetProps) => {
   );
 };
 
-export default ChatSheet;
+export default ConversationSheet;

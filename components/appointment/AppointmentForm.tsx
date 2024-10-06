@@ -38,6 +38,7 @@ import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks"
 import { toast } from "sonner";
 import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
+import { Card } from "../ui/card";
 
 interface AppointmentFormProps {
   doctorId: string;
@@ -56,13 +57,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     resolver: zodResolver(appointmentCreationSchema),
     defaultValues: {
       consulting_for: ConsultingFor.SELF,
-      display_name: `${user?.given_name} ${user.family_name}` || "",
-      gender: GENDERS[0].value,
-      dob: user?.dob || "",
-      blood_group: BLOOD_GROUPS[0].value,
       consultation_type: "online",
-      phone_number: user?.phone_number || "",
-      email: user?.email || "",
       reason: APPOINTMENTS_REASONS[0].value,
       allergies: [],
       current_medication: [],
@@ -70,9 +65,21 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       appointment_date: format(new Date(), "d MMM yyyy"),
       speciality: "",
       attachments: [],
+      // display_name: `${user?.given_name} ${user.family_name}` || "",
+      // gender: GENDERS[0].value,
+      // dob: user?.dob || "",
+      // blood_group: BLOOD_GROUPS[0].value,
+      // phone_number: user?.phone_number || "",
+      // email: user?.email || "",
     },
   });
-  const { control, handleSubmit, watch } = form;
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = form;
+  console.log("🚀 ~ errors:", errors);
   const speciality = watch("speciality");
   const consultation_type = watch("consultation_type");
   const consulting_for = watch("consulting_for");
@@ -86,8 +93,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
   useEffect(() => {
     if (consulting_for === ConsultingFor.SELF) {
       toast.custom(() => (
-        <div className="flex items-center justify-center w-[70%]">
-          <div className="flex items-center justify-between w-[90%] sm:w-2/3">
+        <Card className="flex items-center justify-center w-full p-6 rounded-lg">
+          <div className="flex items-center justify-between gap-6">
             <span>
               Before booking an appointment, make sure you have updated you
               profile Info:
@@ -95,17 +102,55 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
             <Link
               href={`/my-settings`}
-              className={cn(
-                buttonVariants({ variant: "secondary", size: "lg" })
-              )}
+              className={cn(buttonVariants({ variant: "default", size: "sm" }))}
             >
               Add Info
             </Link>
           </div>
-        </div>
+        </Card>
       ));
+
+      [
+        "display_name",
+        "gender",
+        "dob",
+        "blood_group",
+        "phone_number",
+        "email",
+      ].map((f) =>
+        form.resetField(
+          f as
+            | "display_name"
+            | "gender"
+            | "dob"
+            | "blood_group"
+            | "phone_number"
+            | "email",
+          {
+            keepDirty: false,
+            keepError: false,
+            keepTouched: false,
+          }
+        )
+      );
+
+      // form.resetField("display_name",{keepDirty:false, keepError:false, keepTouched:false})
+      // form.resetField("gender",{keepDirty:false, keepError:false, keepTouched:false})
+      // form.resetField("dob",{keepDirty:false, keepError:false, keepTouched:false})
+      // form.resetField("blood_group",{keepDirty:false, keepError:false, keepTouched:false})
+      // form.resetField("phone_number",{keepDirty:false, keepError:false, keepTouched:false})
+      // form.resetField("email",{keepDirty:false, keepError:false, keepTouched:false})
     }
-  }, [consulting_for]);
+
+    if (user && consulting_for === ConsultingFor.OTHER) {
+      form.setValue("display_name", `${user?.given_name} ${user.family_name}`);
+      form.setValue("gender", user?.gender || GENDERS[0].value);
+      form.setValue("dob", user?.dob);
+      form.setValue("blood_group", user?.blood_group || BLOOD_GROUPS[0].value);
+      form.setValue("phone_number", user?.phone_number);
+      form.setValue("email", user?.email);
+    }
+  }, [consulting_for, form, user]);
 
   const uniqueSpecialities = useMemo(
     () => new Set(fetchedDoctor?.services.map((service) => service.speciality)),
@@ -145,13 +190,25 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         };
       }
 
+      const patientProfilePicture =
+        data.consulting_for === "Other"
+          ? "https://avatar-placeholder.iran.liara.run/male/2"
+          : user.picture ?? "https://avatar-placeholder.iran.liara.run/male/32";
+
       const newAppointment = {
         ...data,
         ...(data.consulting_for === ConsultingFor.OTHER && { patientData }),
-        doctorId: doctorId,
+        doctorId,
         patientId: user.userId,
         visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
         amount: consultingFee,
+        doctorName: `Dr. ${fetchedDoctor?.display_name}`,
+        patientName:
+          data.consulting_for === "Other"
+            ? data.display_name
+            : user.display_name,
+        doctorProfilePicture: fetchedDoctor?.picture,
+        patientProfilePicture,
       };
 
       // Step 4: Submit form data to the backend

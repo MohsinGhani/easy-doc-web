@@ -5,6 +5,7 @@ export interface Chat {
   name: string;
 }
 
+
 export interface Message {
   senderId: string;
   messageId: string;

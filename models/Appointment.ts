@@ -15,6 +15,18 @@ export enum APPOINTMENT_STATUS {
   CANCELLED = "CANCELLED",
 }
 
+export const paymentSchema = z.object({
+  method: z.string({
+    required_error: "Payment method is required",
+  }),
+  amount: z.string({
+    required_error: "Amount is required",
+  }),
+  payment_date: z.string({
+    required_error: "Payment date is required",
+  }),
+});
+
 export const appointmentCreationSchema = z.object({
   consulting_for: z.nativeEnum(ConsultingFor, {
     required_error: "Consulting for is required",
@@ -86,17 +98,6 @@ export const appointmentCreationSchema = z.object({
   }),
 });
 
-export const paymentSchema = z.object({
-  method: z.string({
-    required_error: "Payment method is required",
-  }),
-  amount: z.string({
-    required_error: "Amount is required",
-  }),
-  payment_date: z.string({
-    required_error: "Payment date is required",
-  }),
-});
-
 export type AppointmentCreationType = z.infer<typeof appointmentCreationSchema>;
+
 export type PaymentType = z.infer<typeof paymentSchema>;

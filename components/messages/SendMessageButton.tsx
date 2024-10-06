@@ -4,34 +4,29 @@ import React, { KeyboardEvent, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Paperclip, Image as ImageIcon, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Chat } from "@/types/chat";
 import { Send, Write } from "../icons";
 import { cn } from "@/lib/utils";
+import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
+import useConversation from "@/hooks/useConversation";
 
-const SendMessageButton = ({
-  currentChat,
-  nonSticky = false,
-}: {
-  currentChat: Chat;
-  nonSticky: boolean;
-}) => {
+const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
+  const dispatch = useAppDispatch();
+
   const [message, setMessage] = useState("");
-  const userId = useAppSelector((state) => state.auth.user.userId);
+  const { conversationId } = useConversation();
 
   const handleSend = () => {
     if (!message.trim()) return;
     console.log(message);
 
-    currentChat?.messages.push({
-      senderId:userId,
-      isRead: false,
-      messageId: "",
-      recipientUserId: "asda",
-      timestamp: 0,
-      text: message,
-      attachments: [],
-    });
+    dispatch(
+      conversationThunks.sendMessage({
+        text: message,
+        conversationId,
+      })
+    );
 
     setMessage("");
   };

@@ -1,6 +1,7 @@
 "use client";
 
 import MessagesSidebar from "@/components/messages/messages-sidebar";
+import React from "react";
 
 export default function PatientsReviewaPage() {
   return (
