@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
-import MessageCard from "@/components/messages/MessageCard";
+import MessageCard from "@/components/conversations/MessageCard";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "../ui/scroll-area";
 import AddANote from "./AddANote";
@@ -17,6 +17,11 @@ import SendMessageButton from "./SendMessageButton";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import React, { useEffect } from "react";
 import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
+import EmptyState from "@/components/common/EmptyState";
+import {
+  ConversationSkeletonOne,
+  ConversationSkeletonTwo,
+} from "@/components/skeletons/conversations";
 
 interface MessageContainerProps {
   conversationId?: string;
@@ -27,18 +32,31 @@ interface MessageContainerProps {
 
 const MessageContainer = ({
   conversationId,
-  href = "messages",
+  href = "conversations",
   handleClose,
   className,
 }: MessageContainerProps) => {
   const dispatch = useAppDispatch();
-  const { fetchedConversation } = useAppSelector((state) => state.conversation);
+  const { fetchedConversation, Cloading } = useAppSelector(
+    (state) => state.conversation
+  );
+  const { userId, role } = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    conversationId && conversationId.length && dispatch(conversationThunks.fetchConversationById(conversationId));
-  }, [conversationId]);
+    userId &&
+      role &&
+      conversationId &&
+      dispatch(conversationThunks.fetchConversationById(conversationId));
+  }, [conversationId, userId, role]);
 
-  if (!fetchedConversation) return null;
+  if (Cloading) return <ConversationSkeletonTwo />;
+  if (!fetchedConversation && !Cloading && userId && role)
+    return (
+      <EmptyState
+        title="No conversation found"
+        buttonText="Back to Conversations"
+      />
+    );
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block relative w-full h-full">
@@ -102,7 +120,7 @@ const MessageContainer = ({
 
       <AddANote />
 
-      <div className="lg:py-6 md:py-4 py-2 lg:px-12 md:px-6 px-4">
+      <div className="lg:py-6 md:py-4 py-2 lg:px-12 md:px-6 px-4 max-h-[calc(100vh-56px-32px-20px-24px-150px)] overflow-y-auto">
         <p className="text-black text-sm font-normal text-center mb-[30px]">
           Yesterday
         </p>
@@ -113,7 +131,9 @@ const MessageContainer = ({
           ))}
         </div>
 
-        <SendMessageButton nonSticky={href === "messages"} />
+        <SendMessageButton
+          nonSticky={href === "conversations" || href === "my-conversations"}
+        />
       </div>
     </ScrollArea>
   );

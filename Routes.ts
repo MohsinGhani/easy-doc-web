@@ -2,7 +2,7 @@ export const doctorRoutes = [
   "/dashboard",
   "/specialities-and-services",
   "/patients-reviews",
-  "/messages",
+  "/conversations",
   "/settings",
   "/faqs-and-support",
   "/payout-settings",
@@ -15,6 +15,7 @@ export const doctorRoutes = [
 export const patientRoutes = [
   "/doctors",
   "my-appointments",
+  "my-conversations",
   "my-payments",
   "my-settings",
   "meeting",

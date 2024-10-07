@@ -123,14 +123,14 @@ export const conversationSlice = createSlice({
         conversationThunks.sendMessage.fulfilled,
         (state, action: PayloadAction<Message>) => {
           state.Mloading = false;
-          // state.fetchedConversation?.messages.push(action.payload);
-          // state.allConversations = state.allConversations.map((conv) => {
-          //   if (
-          //     conv.conversationId === state.fetchedConversation?.conversationId
-          //   )
-          //     return state.fetchedConversation;
-          //   return conv;
-          // });
+          state.fetchedConversation?.messages.push(action.payload);
+          state.allConversations = state.allConversations.map((conv) => {
+            if (
+              conv.conversationId === state.fetchedConversation?.conversationId
+            )
+              return state.fetchedConversation;
+            return conv;
+          });
         }
       )
       .addCase(
@@ -166,7 +166,7 @@ export const conversationSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           state.error = action.payload;
           state.Mloading = false;
-          toast.error(action.payload || "Failed to mark message as read");
+          // toast.error(action.payload || "Failed to mark message as read");
         }
       )
 

@@ -12,6 +12,7 @@ import { conversationThunks } from "@/lib/features/conversation/conversationThun
 const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
   const dispatch = useAppDispatch();
   const { fetchedConversation } = useAppSelector((state) => state.conversation);
+  const { role, userId } = useAppSelector((state) => state.auth.user);
 
   const [message, setMessage] = useState("");
 
@@ -23,7 +24,9 @@ const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
       conversationThunks.sendMessage({
         text: message,
         conversationId: fetchedConversation?.conversationId,
-        recipientUserId: fetchedConversation?.patientId,
+        recipientUserId:
+          role === "doctor" ? fetchedConversation?.patientId : fetchedConversation?.doctorId,
+        senderId: userId,
       })
     );
 

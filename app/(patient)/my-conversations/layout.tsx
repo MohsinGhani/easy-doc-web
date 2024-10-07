@@ -1,7 +1,7 @@
 "use client";
 
-import { ContentLayout } from "@/components/layout/content-layout";
-import MssagesSidebar from "@/components/messages/messages-sidebar";
+import { PatientLayout } from "@/components/layout/patient-layout";
+import MssagesSidebar from "@/components/conversations/conversations-sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ContentLayout title="Dashboard | Messages" className="pb-2">
+    <PatientLayout>
       <h2 className="text-2xl font-medium mb-5">Messages</h2>
 
       <main className="grid lg:grid-cols-3 grid-cols-1 gap-6 h-[calc(100vh-56px-32px-20px-24px-24px)]">
@@ -33,6 +33,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </CardContent>
         </Card>
       </main>
-    </ContentLayout>
+    </PatientLayout>
   );
 }

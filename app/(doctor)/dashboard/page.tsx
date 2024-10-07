@@ -9,7 +9,7 @@ import DoctorChart from "@/components/doctor/DoctorChart";
 import PatientsRequestList from "@/components/doctor/PatientsRequestList";
 import PatientsReviewsList from "@/components/doctor/PatientsReviewsList";
 import SecondaryUpcomingAppointmentsList from "@/components/doctor/SecondaryUpcomingAppointmentList";
-import MessagesSidebar from "@/components/messages/messages-sidebar";
+import MessagesSidebar from "@/components/conversations/conversations-sidebar";
 import { ContentLayout } from "@/components/layout/content-layout";
 import { Metadata } from "next";
 import HelloText from "@/components/doctor/HelloText";

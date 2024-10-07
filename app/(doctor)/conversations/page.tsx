@@ -1,9 +1,9 @@
 "use client";
 
-import MessagesSidebar from "@/components/messages/messages-sidebar";
+import MessagesSidebar from "@/components/conversations/conversations-sidebar";
 import React from "react";
 
-export default function PatientsReviewaPage() {
+export default function DoctorConversationsPage() {
   return (
     <>
       <MessagesSidebar className="lg:hidden h-full" />
