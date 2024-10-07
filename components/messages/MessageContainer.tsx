@@ -14,21 +14,29 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "../ui/scroll-area";
 import AddANote from "./AddANote";
 import SendMessageButton from "./SendMessageButton";
-import { useAppSelector } from "@/lib/hooks";
-import React from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import React, { useEffect } from "react";
+import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 
 interface MessageContainerProps {
+  conversationId?: string;
   href?: string;
   handleClose?: () => void;
   className?: string;
 }
 
 const MessageContainer = ({
+  conversationId,
   href = "messages",
   handleClose,
   className,
 }: MessageContainerProps) => {
+  const dispatch = useAppDispatch();
   const { fetchedConversation } = useAppSelector((state) => state.conversation);
+
+  useEffect(() => {
+    conversationId && conversationId.length && dispatch(conversationThunks.fetchConversationById(conversationId));
+  }, [conversationId]);
 
   if (!fetchedConversation) return null;
 

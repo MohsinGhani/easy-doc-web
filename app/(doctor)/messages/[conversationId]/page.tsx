@@ -3,13 +3,13 @@
 import MessageContainer from "@/components/messages/MessageContainer";
 
 export default function ChatDetailsPage({
-  params: { chatId },
+  params: { conversationId },
 }: {
-  params: { chatId: string };
+  params: { conversationId: string };
 }) {
   return (
     <>
-      <MessageContainer chatId={chatId} className="w-full h-full" />
+      <MessageContainer conversationId={conversationId} className="w-full h-full" />
     </>
   );
 }
