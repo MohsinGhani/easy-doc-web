@@ -62,7 +62,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
           options={{
             defaultValues: {
               billingDetails: {
-                name: fetchedAppointment?.patient?.patient_name || "", // Prefill if available
+                name: fetchedAppointment?.patient?.display_name || "", // Prefill if available
                 email: fetchedAppointment?.patient?.email || "",
                 address: {
                   line1: fetchedAppointment?.patient?.address || "",

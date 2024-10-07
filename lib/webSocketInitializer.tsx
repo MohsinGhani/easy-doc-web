@@ -9,28 +9,18 @@ import Cookies from "js-cookie";
 const WebSocketInitializer = () => {
   const userId = Cookies.get("userId");
 
-  const { connectionStatus, messages } = useWebSocket(
-    `${webSocketUrl}?userId=${userId}`
-  );
+  const { messages } = useWebSocket(`${webSocketUrl}?userId=${userId}`);
 
   useEffect(() => {
     if (messages.length > 0) {
       const latestMessage = messages[messages.length - 1];
-      toast.info(`New notification: ${latestMessage.message}`);
+      toast.info(
+        `New notification: ${latestMessage.message ?? latestMessage.title}`
+      );
     }
   }, [messages]);
 
-  return (
-    <div>
-      <h1>WebSocket Notifications</h1>
-      <p>WebSocket Status: {connectionStatus}</p>
-      <ul>
-        {messages.map((message, index) => (
-          <li key={index}>{message.message}</li>
-        ))}
-      </ul>
-    </div>
-  );
+  return <div />;
 };
 
 export default WebSocketInitializer;

@@ -4,34 +4,28 @@ import React, { KeyboardEvent, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Paperclip, Image as ImageIcon, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/lib/hooks";
-import { Chat } from "@/types/chat";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Send, Write } from "../icons";
 import { cn } from "@/lib/utils";
+import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 
-const SendMessageButton = ({
-  currentChat,
-  nonSticky = false,
-}: {
-  currentChat: Chat;
-  nonSticky: boolean;
-}) => {
+const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
+  const dispatch = useAppDispatch();
+  const { fetchedConversation } = useAppSelector((state) => state.conversation);
+
   const [message, setMessage] = useState("");
-  const userId = useAppSelector((state) => state.auth.user.userId);
 
   const handleSend = () => {
     if (!message.trim()) return;
     console.log(message);
 
-    currentChat?.messages.push({
-      senderId:userId,
-      isRead: false,
-      messageId: "",
-      recipientUserId: "asda",
-      timestamp: 0,
-      text: message,
-      attachments: [],
-    });
+    dispatch(
+      conversationThunks.sendMessage({
+        text: message,
+        conversationId: fetchedConversation?.conversationId,
+        recipientUserId: fetchedConversation?.patientId,
+      })
+    );
 
     setMessage("");
   };
@@ -45,8 +39,7 @@ const SendMessageButton = ({
   return (
     <div
       className={cn("bg-white", {
-        "fixed bottom-0 z-50 right-0 w-full sm:w-3/4 sm:max-w-[600px]":
-          !nonSticky,
+        "fixed bottom-0 z-50 right-0 w-full sm:max-w-[600px]": !nonSticky,
         "absolute bottom-0 z-50 right-0 w-full": nonSticky,
       })}
     >

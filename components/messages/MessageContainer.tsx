@@ -1,6 +1,5 @@
 "use client";
 
-import { chats } from "@/types/chat";
 import { ArrowLeft, Phone, Video } from "lucide-react";
 import Image from "next/image";
 import {
@@ -15,23 +14,23 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "../ui/scroll-area";
 import AddANote from "./AddANote";
 import SendMessageButton from "./SendMessageButton";
+import { useAppSelector } from "@/lib/hooks";
+import React from "react";
 
 interface MessageContainerProps {
-  chatId: string;
   href?: string;
   handleClose?: () => void;
   className?: string;
 }
 
 const MessageContainer = ({
-  chatId,
   href = "messages",
   handleClose,
   className,
 }: MessageContainerProps) => {
-  const currentChat = chats.find((c) => c.chatId === chatId);
+  const { fetchedConversation } = useAppSelector((state) => state.conversation);
 
-  if (!currentChat) return null;
+  if (!fetchedConversation) return null;
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block relative w-full h-full">
@@ -65,14 +64,17 @@ const MessageContainer = ({
         <div className="justify-start items-center sm:gap-2 gap-1 flex flex-1">
           <Image
             className="sm:w-12 w-8 sm:h-12 h-8 rounded-full"
-            src={currentChat?.avatar || "https://via.placeholder.com/50x50"}
+            src={
+              fetchedConversation?.metaData.patientProfilePicture ||
+              "https://via.placeholder.com/50x50"
+            }
             alt="avatar"
             width={50}
             height={50}
           />
           <div className="flex-col justify-center items-start gap-1 inline-flex">
             <div className="text-zinc-900 sm:text-2xl text-sm sm:font-medium font-bold">
-              {currentChat?.name || "Annette Black"}
+              {fetchedConversation?.metaData.patientName || "Annette Black"}
             </div>
             <div className="text-muted-foreground md:text-base text-sm font-normal sm:block leading-none hidden">
               {/* TODO: this is not a good way */}
@@ -81,10 +83,10 @@ const MessageContainer = ({
           </div>
         </div>
         <div className="justify-start items-center sm:gap-4 gap-1 flex">
-          <div className="md:w-12 w-10 md:h-12 h-10 bg-secondary flex items-center justify-center rounded-full">
+          <div className="md:w-12 w-10 md:h-12 h-10 bg-secondary flex items-center justify-center rounded-full cursor-pointer">
             <Video className="w-6 h-6 text-muted-foreground" />
           </div>
-          <div className="md:w-12 w-10 md:h-12 h-10 bg-secondary flex items-center justify-center rounded-full">
+          <div className="md:w-12 w-10 md:h-12 h-10 bg-secondary flex items-center justify-center rounded-full cursor-pointer">
             <Phone className="w-6 h-6 text-muted-foreground" />
           </div>
         </div>
@@ -98,15 +100,12 @@ const MessageContainer = ({
         </p>
 
         <div className="relative flex flex-col gap-4 grow mb-20">
-          {currentChat?.messages.map((message, i) => (
+          {fetchedConversation?.messages?.map((message, i) => (
             <MessageCard key={i} message={message} />
           ))}
         </div>
 
-        <SendMessageButton
-          currentChat={currentChat}
-          nonSticky={href === "messages"}
-        />
+        <SendMessageButton nonSticky={href === "messages"} />
       </div>
     </ScrollArea>
   );

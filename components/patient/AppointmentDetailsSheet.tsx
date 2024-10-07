@@ -1,18 +1,17 @@
+"use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetClose,
   Sheet,
   SheetFooter,
 } from "@/components/ui/sheet";
-import { ArrowLeft, ExternalLink, X } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import RejectRequestDialog from "../RejectRequestDialog";
-import { formatTimeForUI } from "@/lib/utils";
 import RejectAppointmentDialog from "./CancelAppointmentDialog";
 
 interface AppointmentDetailsSheetProps {
@@ -31,6 +30,8 @@ const AppointmentDetailsSheet = ({
   };
 
   if (!selectedAppointment) return null;
+  let patient = selectedAppointment?.patient;
+  if (!patient) return null;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -46,23 +47,21 @@ const AppointmentDetailsSheet = ({
               <div className="flex items-center gap-2">
                 <Avatar>
                   <AvatarImage
-                    src={selectedAppointment?.patient?.picture}
+                    src={patient.picture}
                     alt="Avatar"
                     width={50}
                     height={50}
                     className="object-cover rounded-full object-top"
                   />
                   <AvatarFallback>
-                    {selectedAppointment?.patient?.patient_name
-                      .charAt(0)
-                      .toUpperCase() +
-                      selectedAppointment?.patient?.patient_name.slice(1)}
+                    {patient.display_name.charAt(0).toUpperCase() +
+                      patient.display_name.slice(1)}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="flex flex-col gap-1">
                   <h2 className="font-medium sm:text-2xl text-lg leading-none">
-                    {selectedAppointment?.patient?.patient_name}
+                    {patient.display_name}
                   </h2>
                   <p className="text-muted-foreground text-sm">
                     {selectedAppointment?.speciality}
@@ -82,34 +81,26 @@ const AppointmentDetailsSheet = ({
 
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Patient name:</p>
-                  <p className="font-medium">
-                    {selectedAppointment?.patient?.email}
-                  </p>
+                  <p className="font-medium">{patient.email}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Gender:</p>
-                  <p className="font-medium">
-                    {selectedAppointment?.patient?.gender}
-                  </p>
+                  <p className="font-medium">{patient.gender}</p>
                 </div>
 
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Age:</p>
-                  <p className="font-medium">
-                    {selectedAppointment?.patient?.age}
-                  </p>
+                  <p className="font-medium">{patient.age}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Blood Group:</p>
-                  <p className="font-medium">
-                    {selectedAppointment?.patient?.blood_group}-
-                  </p>
+                  <p className="font-medium">{patient.blood_group}-</p>
                 </div>
 
                 <div className="space-y-1">
@@ -140,16 +131,12 @@ const AppointmentDetailsSheet = ({
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Contact no:</p>
-                <p className="font-medium">
-                  {selectedAppointment?.patient?.phone_number}
-                </p>
+                <p className="font-medium">{patient.phone_number}</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Email:</p>
-                <p className="font-medium">
-                  {selectedAppointment?.patient?.email}
-                </p>
+                <p className="font-medium">{patient.email}</p>
               </div>
 
               <div />
@@ -237,7 +224,7 @@ const AppointmentDetailsSheet = ({
               }
               trigger={
                 <Button variant="destructive" size="lg">
-                  Cancel
+                  Cancel Appointment
                 </Button>
               }
             />

@@ -110,7 +110,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         />
         <div className="flex-1">
           <h2 className="text-primary text-sm font-semibold flex items-center gap-1">
-            {appointment?.patient?.patient_name}{" "}
+            {appointment?.patient?.display_name}{" "}
             <GenderMale className="w-4 h-4 fill-white" />
           </h2>
           <div className="flex items-center gap-2 justify-between">

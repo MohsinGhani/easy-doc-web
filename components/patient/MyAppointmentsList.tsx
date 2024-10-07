@@ -63,10 +63,7 @@ const MyAppointmentsList = () => {
       <CardContent>
         <DataTable
           columns={columns}
-          data={allAppointments.map((appointment) => ({
-            ...appointment,
-            patient: user,
-          }))}
+          data={allAppointments}
           title="My Appointments"
           onPageChange={handlePageChange}
           lastEvaluatedKey={lastEvaluatedKey}

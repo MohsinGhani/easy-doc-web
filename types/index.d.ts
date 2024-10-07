@@ -97,7 +97,6 @@ declare type User = {
   given_name: string;
   family_name: string;
   display_name: string;
-  patient_name: string;
   phone_number: string;
   picture: string;
   designation: string;
@@ -182,6 +181,7 @@ declare type Appointment = {
   amount: number;
   status: APPOINTMENT_STATUS;
   payment: Payment;
+  patientData?: User;
 };
 
 declare type Payment = {
@@ -203,21 +203,39 @@ declare type Attachment = {
   size: string;
 };
 
-declare interface Chat {
-  chatId: string;
+declare type ConversationMetaData = {
+  doctorName: string;
+  patientName: string;
+  doctorProfilePicture: string;
+  patientProfilePicture: string;
+};
+
+declare interface Conversation {
+  conversationId: string;
+  doctorId: string;
+  patientId: string;
+  patappointmentId: string;
+  lastMessageAt: string;
+  lastMessage: string;
+  lastMessageRead: boolean;
+  lastMessageId: string;
+  ttl: string;
+  note: string;
   messages: Message[];
-  avatar: string;
-  name: string;
+  metaData: ConversationMetaData;
 }
 
 declare interface Message {
   senderId: string;
+  conversationId: string;
+  senderRole: string;
   messageId: string;
   text?: string;
   recipientUserId: string;
-  timestamp: number;
+  sentAt: number;
   attachments: Attachment[];
   isRead: boolean;
+  ttl: string;
 }
 
 declare interface authState {
@@ -256,11 +274,14 @@ declare interface notificationState {
   error: string | null | undefined;
   lastEvaluatedKey: string | null;
 }
-declare interface chatState {
-  allChats: Chat[];
-  loading: boolean;
+declare interface conversationState {
+  allConversations: Conversation[];
+  fetchedConversation: Conversation | null;
+  Cloading: boolean;
+  Mloading: boolean;
   error: string | null | undefined;
-  lastEvaluatedKey: string | null;
+  ClastEvaluatedKey: string | null;
+  MlastEvaluatedKey: string | null;
 }
 
 declare interface Notification {

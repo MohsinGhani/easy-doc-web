@@ -788,7 +788,7 @@ export const upcomingColumns = ({
                       <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="top">Start Chat</TooltipContent>
+                  <TooltipContent side="top">Start Conversation</TooltipContent>
                 </Tooltip>
 
                 <Tooltip>
@@ -839,7 +839,7 @@ export const upcomingColumns = ({
                     className="w-full justify-start"
                     onClick={() => handleChat(row.original)}
                   >
-                    <MessageCircle className="h-5 w-5 mr-2" /> Start Chat
+                    <MessageCircle className="h-5 w-5 mr-2" /> Start Conversation
                   </Button>
                 </PopoverContent>
               </Popover>

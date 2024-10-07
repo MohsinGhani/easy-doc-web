@@ -310,11 +310,13 @@ export const authThunks = {
           updateData: Record<string, any>;
           userId: string;
           doctorId?: string;
+          role?: string;
         };
 
         const params: params = {
           updateData,
           userId,
+          role,
         };
 
         if (role === "doctor") {

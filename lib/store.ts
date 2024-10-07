@@ -5,6 +5,7 @@ import doctorReducer from "./features/doctor/doctorSlice";
 import appointmentReducer from "./features/appointment/appointmentSlice";
 import paymentReducer from "./features/payment/paymentSlice";
 import notificationReducer from "./features/notification/notificationSlice";
+import conversationReducer from "./features/conversation/conversationSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -15,6 +16,7 @@ export const makeStore = () => {
       appointment: appointmentReducer,
       payment: paymentReducer,
       notification: notificationReducer,
+      conversation: conversationReducer,
     },
   });
 };

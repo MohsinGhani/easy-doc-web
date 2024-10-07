@@ -51,7 +51,7 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ appointmentId }) => {
         setClientSecret(res.payload.clientSecret);
       }
     });
-  }, [dispatch, fetchedAppointment]);
+  }, [dispatch, fetchedAppointment, appointmentId, router]);
 
   const options = {
     clientSecret,

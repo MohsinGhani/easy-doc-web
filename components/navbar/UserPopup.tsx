@@ -26,22 +26,16 @@ export function UserPopup() {
 
   const links = [
     {
-      label: "Profile",
-      location: "/profile",
-    },
-    {
       label: "Settings",
-      location: "/profile/settings",
+      location: "/my-settings",
     },
     {
       label: "Support",
-      location: "/profile/support",
+      location: "/faqs-and-support",
     },
   ];
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

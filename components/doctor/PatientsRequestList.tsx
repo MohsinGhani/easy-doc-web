@@ -90,7 +90,8 @@ const PatientsRequestList = ({
       <CardContent>
         <DataTable
           columns={columns}
-          data={allAppointments.filter(e => e.status === "PENDING_APPROVAL")}
+          /* TODO: add a good logic here */
+          data={allAppointments.filter((e) => e.status === "PENDING_APPROVAL")}
           isPrimaryHeader={isPrimaryHeader}
           title="Patient's Requests"
           onPageChange={handlePageChange}

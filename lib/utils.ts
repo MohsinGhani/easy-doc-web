@@ -221,6 +221,9 @@ export const paymentsApiClient = createApiClient(
 export const appointmentsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.APPOINTMENTS) || ""
 );
+export const conversationsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.CONVERSATIONS) || ""
+);
 export const notificationsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.NOTIFICATIONS) || ""
 );

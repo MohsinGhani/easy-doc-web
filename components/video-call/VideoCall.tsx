@@ -40,9 +40,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     const fetchMeetingDetails = async () => {
       try {
         const response = await meetingsApiClient.get(
-          `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${
-            user.role === "patient" ? user.patient_name : user.display_name
-          }`
+          `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${user.display_name}`
         );
         const data = response.data.data;
 
@@ -287,7 +285,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
         </div>
       </footer>
       <div className="bg-white shadow-sm p-4">
-        <h2 className="text-xl font-semibold mb-4">Chat</h2>
+        <h2 className="text-xl font-semibold mb-4">Conversation</h2>
         <div className="h-40 overflow-y-auto mb-4 bg-gray-100 p-2 rounded">
           {chatLog.map((msg, idx) => (
             <p key={idx} className="mb-1">

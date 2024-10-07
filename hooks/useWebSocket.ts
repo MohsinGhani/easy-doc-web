@@ -1,6 +1,7 @@
 "use client";
 
-import { Message } from "@/types/chat";
+import { updateMessages } from "@/lib/features/conversation/conversationSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import { useEffect, useState, useRef } from "react";
 
 interface WebSocketMessage extends Partial<Message> {
@@ -11,15 +12,7 @@ const useWebSocket = (webSocketUrl: string) => {
   const [connectionStatus, setConnectionStatus] = useState("Disconnected");
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
   const ws = useRef<WebSocket | null>(null); // WebSocket reference
-
-  // Function to send data to the backend
-  const sendMessage = (message: WebSocketMessage) => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify(message));
-    } else {
-      console.error("WebSocket is not open. Unable to send message.");
-    }
-  };
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const connect = () => {
@@ -32,7 +25,12 @@ const useWebSocket = (webSocketUrl: string) => {
 
       ws.current.onmessage = (event: MessageEvent) => {
         const data: WebSocketMessage = JSON.parse(event.data);
-        setMessages((prevMessages) => [...prevMessages, data]);
+        if (data?.type && data?.type === "NEW_MESSAGE") {
+          dispatch(updateMessages(data.message as Message));
+          setMessages((prevMessages) => [...prevMessages, data.title]);
+        } else {
+          setMessages((prevMessages) => [...prevMessages, data]);
+        }
         console.log("Received message:", data);
       };
 
@@ -54,9 +52,10 @@ const useWebSocket = (webSocketUrl: string) => {
         ws.current.close();
       }
     };
-  }, [webSocketUrl]);
+    /* TODO: check if this not causes an error */
+  }, [webSocketUrl, dispatch]);
 
-  return { connectionStatus, messages, sendMessage };
+  return { connectionStatus, messages };
 };
 
 export default useWebSocket;

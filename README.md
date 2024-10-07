@@ -46,7 +46,7 @@ Easy Doc is licensed under the MIT license. See the [LICENSE](LICENSE) file for 
 ![Home Page](public/screenshots/home-page.png)
 ![Doctors Page](public/screenshots/doctors-page.png)
 ![Patients Page](public/screenshots/patients-page.png)
-![Chat Page](public/screenshots/chat-page.png)
+![Conversation Page](public/screenshots/chat-page.png)
 
 ## How to Run
 
