@@ -9,7 +9,7 @@ export default function PatientsReviewaPage() {
       <MessagesSidebar className="lg:hidden h-full" />
       <div className="w-full h-full lg:flex hidden items-center justify-center">
         <h1 className="text-xl text-muted-foreground text-center">
-          Select a Chat to view
+          Select a Conversation to view
         </h1>
       </div>
     </>

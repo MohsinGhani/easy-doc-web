@@ -21,12 +21,10 @@ const MessagesSidebar = ({
   navigate?: boolean;
 }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedConversation, setSelectedConversation] =
-    useState<Conversation | null>(null);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const dispatch = useAppDispatch();
-  const { allConversations, loading } = useAppSelector(
+  const { allConversations, Cloading } = useAppSelector(
     (state) => state.conversation
   );
   const userId = useAppSelector((state) => state.auth.user?.userId);
@@ -53,7 +51,12 @@ const MessagesSidebar = ({
     }
   }, [searchValue, allConversations]);
 
-  if (loading) {
+  const handleSheetOpen = (conversationId: string) => {
+    setOpen(true);
+    dispatch(conversationThunks.fetchConversationById(conversationId));
+  };
+
+  if (Cloading) {
     // Skeleton Loader while chats are loading
     return (
       <Card className={cn("w-full flex", className)}>
@@ -137,15 +140,13 @@ const MessagesSidebar = ({
                               </h2>
 
                               <div className="text-muted-foreground text-xs">
-                                Sent a picture
+                                {conv.lastMessage ?? "Started a conversation"}
                               </div>
                             </div>
                           </div>
 
-                          {!active && (
-                            <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                              3
-                            </div>
+                          {conv.lastMessageRead && !active && (
+                            <div className="w-3 h-3 bg-primary rounded-full flex items-center justify-center" />
                           )}
                         </div>
                       </div>
@@ -161,8 +162,7 @@ const MessagesSidebar = ({
                           "bg-slate-50 rounded-xl px-3 py-1": active,
                         })}
                         onClick={() => {
-                          setSelectedConversation(conv);
-                          setOpen(true);
+                          handleSheetOpen(conv.conversationId);
                         }}
                       >
                         {!active && (
@@ -189,15 +189,13 @@ const MessagesSidebar = ({
                               </h2>
 
                               <div className="text-muted-foreground text-xs">
-                                Sent a picture
+                                {conv.lastMessage ?? "Started a conversation"}
                               </div>
                             </div>
                           </div>
 
-                          {!active && (
-                            <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                              3
-                            </div>
+                          {conv.lastMessageRead && !active && (
+                            <div className="w-3 h-3 bg-primary rounded-full flex items-center justify-center" />
                           )}
                         </div>
                       </div>
@@ -213,11 +211,7 @@ const MessagesSidebar = ({
         </CardContent>
       </Card>
 
-      <ConversationSheet
-        selectedConversation={selectedConversation}
-        open={open}
-        setOpen={setOpen}
-      />
+      <ConversationSheet open={open} setOpen={setOpen} />
     </>
   );
 };

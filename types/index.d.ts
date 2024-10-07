@@ -216,19 +216,26 @@ declare interface Conversation {
   patientId: string;
   patappointmentId: string;
   lastMessageAt: string;
+  lastMessage: string;
+  lastMessageRead: boolean;
+  lastMessageId: string;
   ttl: string;
+  note: string;
   messages: Message[];
   metaData: ConversationMetaData;
 }
 
 declare interface Message {
   senderId: string;
+  conversationId: string;
+  senderRole: string;
   messageId: string;
   text?: string;
   recipientUserId: string;
-  timestamp: number;
+  sentAt: number;
   attachments: Attachment[];
   isRead: boolean;
+  ttl: string;
 }
 
 declare interface authState {
@@ -270,9 +277,11 @@ declare interface notificationState {
 declare interface conversationState {
   allConversations: Conversation[];
   fetchedConversation: Conversation | null;
-  loading: boolean;
+  Cloading: boolean;
+  Mloading: boolean;
   error: string | null | undefined;
-  lastEvaluatedKey: string | null;
+  ClastEvaluatedKey: string | null;
+  MlastEvaluatedKey: string | null;
 }
 
 declare interface Notification {

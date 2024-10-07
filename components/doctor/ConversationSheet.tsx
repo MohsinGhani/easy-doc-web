@@ -1,25 +1,35 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { SheetContent, Sheet } from "@/components/ui/sheet";
 import MessageContainer from "@/components/messages/MessageContainer";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 
 interface ChatSheetProps {
-  selectedConversation: Conversation | null;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-const ConversationSheet = ({
-  selectedConversation,
-  open,
-  setOpen,
-}: ChatSheetProps) => {
+const ConversationSheet = ({ open, setOpen }: ChatSheetProps) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const dispatch = useAppDispatch();
+  const { fetchedConversation } = useAppSelector((state) => state.conversation);
 
-  if (!selectedConversation) return null;
+  useEffect(() => {
+    fetchedConversation &&
+      !fetchedConversation.lastMessageRead &&
+      dispatch(
+        conversationThunks.seenMessage({
+          conversationId: fetchedConversation.conversationId,
+          messageId: fetchedConversation.lastMessageId,
+        })
+      );
+  }, [dispatch, fetchedConversation]);
+
+  if (!fetchedConversation) return null;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -27,11 +37,7 @@ const ConversationSheet = ({
         className="sm:max-w-[600px] w-full overflow-y-scroll p-0"
         showClose={false}
       >
-        <MessageContainer
-          selectedConversation={selectedConversation}
-          href="dashboard"
-          handleClose={handleClose}
-        />
+        <MessageContainer href="dashboard" handleClose={handleClose} />
       </SheetContent>
     </Sheet>
   );

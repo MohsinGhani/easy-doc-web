@@ -5,17 +5,15 @@ import { Separator } from "@/components/ui/separator";
 import { Paperclip, Image as ImageIcon, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Chat } from "@/types/chat";
 import { Send, Write } from "../icons";
 import { cn } from "@/lib/utils";
 import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
-import useConversation from "@/hooks/useConversation";
 
 const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
   const dispatch = useAppDispatch();
+  const { fetchedConversation } = useAppSelector((state) => state.conversation);
 
   const [message, setMessage] = useState("");
-  const { conversationId } = useConversation();
 
   const handleSend = () => {
     if (!message.trim()) return;
@@ -24,7 +22,8 @@ const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
     dispatch(
       conversationThunks.sendMessage({
         text: message,
-        conversationId,
+        conversationId: fetchedConversation?.conversationId,
+        recipientUserId: fetchedConversation?.patientId,
       })
     );
 
@@ -40,8 +39,7 @@ const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
   return (
     <div
       className={cn("bg-white", {
-        "fixed bottom-0 z-50 right-0 w-full sm:w-3/4 sm:max-w-[600px]":
-          !nonSticky,
+        "fixed bottom-0 z-50 right-0 w-full sm:max-w-[600px]": !nonSticky,
         "absolute bottom-0 z-50 right-0 w-full": nonSticky,
       })}
     >

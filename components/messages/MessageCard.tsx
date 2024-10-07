@@ -1,10 +1,10 @@
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import AttachmentCard from "./AttachmentCard";
-import { Message } from "@/types/chat";
+import { format } from "date-fns";
 
 const MessageCard = ({ message }: { message: Message }) => {
-  const { attachments, senderId, text } = message;
+  const { attachments, senderId, text, sentAt } = message;
   const user = useAppSelector((state) => state.auth.user);
   const isMine = user.userId === senderId;
 
@@ -23,7 +23,12 @@ const MessageCard = ({ message }: { message: Message }) => {
         {attachments.map((attachment) => (
           <AttachmentCard attachment={attachment} key={attachment.name} />
         ))}
-        <p className="text-base font-normal px-2">{text}</p>
+        <p className="text-base font-normal px-2">
+          {text}{" "}
+          <span className="text-zinc-600 text-xs font-normal italic leading-none ml-2">
+            {format(sentAt, "hh:mm a")}
+          </span>
+        </p>
       </div>
     </div>
   );
