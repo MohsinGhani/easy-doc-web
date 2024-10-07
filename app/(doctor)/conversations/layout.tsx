@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <ContentLayout title="Dashboard | Messages" className="pb-2">
       <h2 className="text-2xl font-medium mb-5">Messages</h2>
 
-      <main className="grid lg:grid-cols-3 grid-cols-1 gap-6 max-h-[calc(100vh-56px-32px-20px-24px-24px)] h-full">
+      <main className="grid lg:grid-cols-3 grid-cols-1 gap-6 max-h-[calc(100vh-56px-32px-20px-24px-24px)]">
         {!isMobile && <MssagesSidebar />}
 
         <Card className="lg:col-span-2 w-full h-full">
