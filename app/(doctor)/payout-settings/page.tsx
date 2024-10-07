@@ -1,5 +1,4 @@
 "use client";
-
 import { Loader } from "@/components/common/Loader";
 import ConnectStripeButton from "@/components/doctor/ConnectStripeButton";
 import EditPaymentMethodForm from "@/components/EditPaymentMethodForm";
