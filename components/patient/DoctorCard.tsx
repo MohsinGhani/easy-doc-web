@@ -7,6 +7,9 @@ import Link from "next/link";
 import { Crown } from "../icons";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "../ui/button";
+import React from "react";
 
 interface DoctorCardProps {
   doctor: User;
@@ -110,14 +113,16 @@ const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
             </div>
           </>
         ) : (
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-4 w-full">
             <Link
               href={`/doctors/${doctor.userId}`}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              className={cn("flex-1", buttonVariants({ variant: "outline" }))}
             >
               View details
             </Link>
-            <span className="text-gray-900 font-semibold">
+            <span
+              className={cn("flex-1", buttonVariants({ variant: "default" }))}
+            >
               Fee: ${doctor.average_fee.toFixed(0)}
             </span>
           </div>

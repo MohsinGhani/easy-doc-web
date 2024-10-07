@@ -1,9 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import { Separator } from "../ui/separator";
 import { CalendarCheck2, Clock3, MapPin } from "lucide-react";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatTimeForUI } from "@/lib/utils";
 import { GenderMale } from "../icons";
+import { useAppSelector } from "@/lib/hooks";
 
 interface AppointmentCardProps {
   className?: string;
@@ -14,6 +17,81 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   className,
   appointment,
 }) => {
+  const loading = useAppSelector((state) => state.appointment.loading);
+
+  if (loading || !appointment) {
+    return (
+      <div
+        className={cn(
+          "w-full bg-[#f5f8ff] rounded-lg p-4 flex flex-col justify-between h-fit min-h-[200px] animate-pulse",
+          className
+        )}
+      >
+        {/* Top Section Skeleton */}
+        <div className="flex items-start flex-wrap gap-2">
+          <div className="rounded-lg bg-gray-300 w-12 h-12"></div>
+          <div className="flex-1">
+            <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
+            <div className="flex items-center gap-2 justify-between">
+              <div className="h-4 bg-gray-300 rounded w-16"></div>
+              <Separator
+                orientation="vertical"
+                className="h-4 w-px bg-gray-300"
+              />
+              <div className="flex gap-1">
+                <div className="h-4 bg-gray-300 rounded w-20"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Middle Section Skeleton */}
+        <div className="flex items-center flex-wrap justify-between mt-4">
+          <div className="flex flex-col gap-1">
+            <div className="h-3 bg-gray-300 rounded w-10 mb-1"></div>
+            <div className="h-5 bg-gray-300 rounded w-8"></div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="h-3 bg-gray-300 rounded w-10 mb-1"></div>
+            <div className="h-5 bg-gray-300 rounded w-8"></div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="h-3 bg-gray-300 rounded w-10 mb-1"></div>
+            <div className="h-5 bg-gray-300 rounded w-8"></div>
+          </div>
+        </div>
+
+        {/* Bottom Section Skeleton */}
+        <div className="mt-4">
+          <div className="h-3 bg-gray-300 rounded w-24 mb-2"></div>
+          <div className="flex items-center gap-2 justify-between">
+            <div className="h-4 bg-gray-300 rounded w-16"></div>
+            <Separator
+              orientation="vertical"
+              className="h-4 w-px bg-gray-300"
+            />
+            <div className="h-4 bg-gray-300 rounded w-16"></div>
+          </div>
+        </div>
+
+        {/* Allergies Skeleton */}
+        <div className="mt-4 space-y-2">
+          <div className="h-3 bg-gray-300 rounded w-16"></div>
+          <div className="flex gap-2">
+            <div className="h-6 bg-gray-300 rounded w-24"></div>
+            <div className="h-6 bg-gray-300 rounded w-24"></div>
+          </div>
+        </div>
+
+        {/* Buttons Skeleton */}
+        <div className="mt-4 flex items-center gap-3">
+          <div className="h-10 bg-gray-300 rounded w-full"></div>
+          <div className="h-10 bg-gray-300 rounded w-full"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
@@ -24,24 +102,21 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Top Section: Name, Gender, Age, Location */}
       <div className="flex items-start flex-wrap gap-2">
         <Image
-          src={appointment.patient.picture}
+          src={appointment?.patient?.picture}
           alt="doctor"
           width={50}
           height={50}
           className="rounded-lg"
         />
-
         <div className="flex-1">
-          <h2
-            className={cn(
-              "text-primary text-sm font-semibold flex items-center gap-1"
-            )}
-          >
-            {appointment.patient.patient_name}{" "}
+          <h2 className="text-primary text-sm font-semibold flex items-center gap-1">
+            {appointment?.patient?.display_name}{" "}
             <GenderMale className="w-4 h-4 fill-white" />
           </h2>
           <div className="flex items-center gap-2 justify-between">
-            <p className="text-sm font-semibold">{appointment.patient.age} years old</p>
+            <p className="text-sm font-semibold">
+              {appointment?.patient?.age} years old
+            </p>
             <Separator
               orientation="vertical"
               className="h-4 w-px bg-[#e2e8f0]"
@@ -49,7 +124,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <div className="flex gap-1">
               <MapPin className="w-4 h-4" />
               <p className="text-xs font-normal leading-tight">
-                {appointment.patient.location}
+                {appointment?.patient?.location}
               </p>
             </div>
           </div>
@@ -60,16 +135,18 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <div className="flex items-center flex-wrap justify-between mt-4">
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Blood</p>
-          <span className="text-base font-bold">{appointment.patient.blood_group}</span>
+          <span className="text-base font-bold">
+            {appointment?.patient?.blood_group}
+          </span>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Height</p>
-          {/* <span className="text-base font-bold">{appointment.height}</span> */}
+          {/* <span className="text-base font-bold">{appointment?.height}</span> */}
           <span className="text-base font-bold">10</span>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-xs font-normal">Weight</p>
-          {/* <span className="text-base font-bold">{appointment.weight}</span> */}
+          {/* <span className="text-base font-bold">{appointment?.weight}</span> */}
           <span className="text-base font-bold">10</span>
         </div>
       </div>
@@ -79,12 +156,12 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <div className="flex items-center flex-wrap justify-between gap-2">
           <div className="flex flex-col gap-1">
             <p className="text-xs font-normal">Speciality</p>
-            <span className="text-xs font-bold">{appointment.speciality}</span>
+            <span className="text-xs font-bold">{appointment?.speciality}</span>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs font-normal">Consultation Type</p>
             <span className="text-xs font-bold">
-              {appointment.consultation_type}
+              {appointment?.consultation_type}
             </span>
           </div>
         </div>
@@ -94,7 +171,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <div className="flex items-center flex-wrap justify-between gap-2">
             <span className="text-xs font-bold inline-flex items-center gap-1">
               <CalendarCheck2 className="w-4 h-4 relative" />{" "}
-              {appointment.appointment_date}
+              {appointment?.appointment_date}
             </span>
             <Separator
               orientation="vertical"
@@ -102,16 +179,17 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             />
             <span className="text-xs font-bold inline-flex items-center gap-1">
               <Clock3 className="w-4 h-4 relative" />{" "}
-              {appointment.scheduled_date.start_time} -{" "} {appointment.scheduled_date.end_time}
+              {formatTimeForUI(appointment?.scheduled_date.start_time)} -{" "}
+              {formatTimeForUI(appointment?.scheduled_date.end_time)}
             </span>
           </div>
         </div>
 
-        {appointment.allergies && appointment.allergies.length > 0 && (
+        {appointment?.allergies && appointment?.allergies.length > 0 && (
           <div className="mt-4 space-y-2">
             <p className="text-xs font-normal">Allergies:</p>
             <div className="flex flex-wrap gap-2">
-              {appointment.allergies.map((allergy, index) => (
+              {appointment?.allergies.map((allergy, index) => (
                 <div
                   key={index}
                   className="bg-primary/10 rounded text-primary sm:text-sm text-[12px] text-center font-medium p-1.5"

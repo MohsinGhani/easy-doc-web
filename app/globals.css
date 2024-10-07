@@ -119,3 +119,4 @@ body {
 .shad-otp-slot {
   @apply font-bold sm:text-3xl text-lg justify-center flex border rounded-lg size-8 sm:size-16 gap-4 !important;
 }
+

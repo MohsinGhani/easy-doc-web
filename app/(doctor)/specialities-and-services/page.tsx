@@ -1,8 +1,12 @@
-"use client";
-
 import AddServiceDialog from "@/components/doctor/AddServiceDialog";
 import ManageServices from "@/components/doctor/ManageServices";
 import { ContentLayout } from "@/components/layout/content-layout";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Specialties & Services",
+  description: "Here you can view all the specialties and services",
+};
 
 export default function SpecialitiesAndServicesPage() {
   return (

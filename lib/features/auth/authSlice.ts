@@ -46,7 +46,6 @@ const initialState: authState = {
     address: "",
     state: "",
     zip_code: "",
-    patient_name: "",
     age: 0,
     blood_group: "",
   },
@@ -222,8 +221,8 @@ export const authSlice = createSlice({
         authThunks.initializeAuth.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.error = action.payload;
-          toast.error(action.payload);
+          state.error = action.payload ?? "Failed to initialize auth";
+          action.payload && toast.error(action.payload);
         }
       )
 

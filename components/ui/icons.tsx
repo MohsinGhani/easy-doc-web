@@ -8,7 +8,7 @@ export const GoogleIcon = (props: IconProps) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_2066_512)">
+    <g clipPath="url(#clip0_2066_512)">
       <path
         d="M28.227 14.3225C28.227 13.3709 28.1499 12.414 27.9853 11.4778H14.78V16.8689H22.342C22.0283 18.6077 21.02 20.1458 19.5436 21.1232V24.6213H24.0551C26.7044 22.1829 28.227 18.582 28.227 14.3225Z"
         fill="#4285F4"

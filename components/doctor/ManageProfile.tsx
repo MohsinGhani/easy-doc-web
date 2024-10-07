@@ -12,14 +12,14 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
 import { Loader } from "../common/Loader";
 import { authThunks } from "@/lib/features/auth/authThunks";
 import { COUNTRIES, GENDERS, LANGUAGES } from "@/constants";
 import { getCitiesByCountry, getCityNameById } from "@/lib/utils";
-import { userSchema, userSchemaType } from "@/models/validationSchemas";
+import { doctorSchema, doctorSchemaType } from "@/models/validationSchemas";
 import { Form } from "../ui/form";
 import { CustomFormField } from "../auth";
 import { FormFieldType } from "../auth/CustomFormField";
@@ -28,8 +28,8 @@ const ManageProfile = () => {
   const { user, loading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const form = useForm<userSchemaType>({
-    resolver: zodResolver(userSchema),
+  const form = useForm<doctorSchemaType>({
+    resolver: zodResolver(doctorSchema),
   });
 
   const {
@@ -64,11 +64,11 @@ const ManageProfile = () => {
       toast.error("Image must be less than 4MB.");
     }
   };
-  const onSubmit = async (data: userSchemaType) => {
+  const onSubmit = async (data: doctorSchemaType) => {
     const updateExpression: Record<string, any> = {};
 
     Object.keys(dirtyFields).forEach((field) => {
-      const value = data[field as keyof userSchemaType];
+      const value = data[field as keyof doctorSchemaType];
       updateExpression[field] = Array.isArray(value)
         ? { value, replace: true }
         : value;
@@ -124,7 +124,7 @@ const ManageProfile = () => {
   };
   useEffect(() => {
     if (user) {
-      form.reset(user as unknown as userSchemaType);
+      form.reset(user as unknown as doctorSchemaType);
     }
   }, [user, form]);
 

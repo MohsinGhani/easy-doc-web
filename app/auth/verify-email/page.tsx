@@ -1,4 +1,10 @@
 import VerifyEmailForm from "@/components/auth/VerifyEmailForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Verify Email",
+  description: "Verify your email to complete the registration process",
+};
 
 export default function VerifyEmailPage() {
   return (

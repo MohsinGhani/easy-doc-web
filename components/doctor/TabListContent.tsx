@@ -1,3 +1,5 @@
+"use client";
+
 import { useAppSelector } from "@/lib/hooks";
 import { AddTimeSlotDialog } from "@/components/doctor/AddTimeSlotDialog";
 import TimeSlot from "@/components/doctor/TimeSlot";

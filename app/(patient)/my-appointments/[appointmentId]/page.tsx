@@ -1,6 +1,12 @@
 import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Appointment Details",
+  description: "View details of your appointment",
+};
 
 interface AppointmentDetailsPageProps {
   params: {
@@ -33,4 +39,3 @@ const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({
 };
 
 export default AppointmentDetailsPage;
-  

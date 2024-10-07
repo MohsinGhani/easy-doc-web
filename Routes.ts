@@ -2,16 +2,24 @@ export const doctorRoutes = [
   "/dashboard",
   "/specialities-and-services",
   "/patients-reviews",
-  "/messages",
+  "/conversations",
   "/settings",
   "/faqs-and-support",
   "/payout-settings",
   "/patients-requests",
   "/appointments",
   "/available-timings",
+  "meeting",
 ];
 
-export const patientRoutes = ["/doctors", "my-appointments", "my-payments"];
+export const patientRoutes = [
+  "/doctors",
+  "my-appointments",
+  "my-conversations",
+  "my-payments",
+  "my-settings",
+  "meeting",
+];
 
 export const adminRoutes = ["/admin"];
 

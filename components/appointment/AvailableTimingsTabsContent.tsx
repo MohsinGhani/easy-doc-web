@@ -19,7 +19,13 @@ const AvailableTimingsTabsContent = ({
   const { loading } = useAppSelector((state) => state.auth);
   const { value, onChange } = field;
 
-  const handleTimeSlotChange = (start_time: string, end_time: string) => {
+  const handleTimeSlotChange = (
+    start_time: string,
+    end_time: string,
+    reserved: boolean
+  ) => {
+    if (reserved) return;
+
     onChange({
       start_time,
       end_time,
@@ -50,8 +56,11 @@ const AvailableTimingsTabsContent = ({
                     "cursor-not-allowed bg-gray-100": reserved,
                   }
                 )}
-                onClick={() => handleTimeSlotChange(start_time, end_time)}
+                onClick={() =>
+                  handleTimeSlotChange(start_time, end_time, reserved)
+                }
                 key={slotIndex}
+                aria-disabled={reserved}
               >
                 <div className="flex items-center gap-2 min-w-40 max-w-[320px]">
                   <p className="text-sm whitespace-nowrap">

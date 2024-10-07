@@ -1,5 +1,11 @@
 import PatientsReviewsList from "@/components/doctor/PatientsReviewsList";
 import { ContentLayout } from "@/components/layout/content-layout";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Patient's Reviews",
+  description: "Here you can view all the patient's reviews",
+};
 
 export default function PatientsReviewaPage() {
   return (

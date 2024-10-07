@@ -1,8 +1,6 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { Navbar } from "../navbar/Navbar";
 import CarousalsSlider from "../CarousalsSlider";
 import AboutusPage from "./AboutusPage";
 import {
@@ -12,14 +10,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {  Car , TitleEmphasizer   } from "../icons";
-import { buttonVariants , Button } from "../ui/button";
+import { Car, TitleEmphasizer } from "../icons";
+import { buttonVariants, Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/lib/hooks";
 import { Card, CardContent } from "../ui/card";
 import SvgLocation from "../icons/Location";
 import SvgCalendar from "../icons/Calendar";
 import MedicalServices from "./MedicalServices";
+import SpecialistDoctors from "./SpecialistDoctors";
+import PatientsAboutusSection from "./PatientsAboutusSection";
+import BecomeDoctorTemplate from "./BecomeDoctorTemplate";
+import AccordianSection from "./AccordianSection";
+import WorkingProcessPage from "./WorkingProcessPage";
+import { Navbar } from "../navbar/Navbar";
 
 const FirstSection = () => {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
@@ -74,7 +78,7 @@ const HeroImages = () => (
           alt="landingpage-bg"
         />
       </div>
-      <div className="top-0 right-0 z-50">
+      <div className="top-0 right-0 z-50 xl:block lg:hidden">
         <Image
           src="/assets/images/landingpagecircle-bg.png"
           width={500}
@@ -88,7 +92,6 @@ const HeroImages = () => (
 
 const AppointmentSection = () => (
   <div className="absolute inset-0 left-1/2 -translate-x-1/2 top-0 flex flex-col items-center justify-center w-full min-h-[500px] md:min-h-[700px]">
-    {/* Blue Half Circle */}
     <div className="absolute overflow-hidden w-[90%] sm:w-[70%] h-[30%] sm:h-[60%] -bottom-24 left-1/2 transform 
     -translate-x-1/2 bg-primary rounded-tl-full rounded-tr-full -z-[1] md:bottom-0  " />
 <div className=" md:hidden pt-96">
@@ -100,7 +103,6 @@ const AppointmentSection = () => (
         />
 </div>
 
-    {/* Image Overlay */}
     <div className="absolute hidden md:flex items-center justify-center w-1/2 bottom-4">
       <Image
         src="/assets/images/landingpagemain-img.png"
@@ -111,11 +113,9 @@ const AppointmentSection = () => (
       />
     </div>
 
-    {/* Information Section */}
     <Card className="relative w-full md:w-[80%] lg:w-[70%] bg-white  items-center justify-center z-30 -bottom-96 rounded-full hidden md:flex  ">
       <CardContent className="flex items-center justify-between flex-wrap gap-5 w-full ">
-      <div className="flex items-center gap-8  ml-10 ">
-  {/* Consultation Type */}
+      <div className="flex items-center xl:gap-8  ml-10 ">
   <div className="w-48 pl-4">
     <div className="text-[#909090]">Consultation Type</div>
     <div className="flex items-center gap-2">
@@ -133,7 +133,6 @@ const AppointmentSection = () => (
     </div>
   </div>
 
-  {/* Location */}
   <div className="w-40 ">
     <div className="text-[#909090] pb-2">
       Location
@@ -144,12 +143,11 @@ const AppointmentSection = () => (
         <div className="text-[]">Choose Location</div>
       </div>
     </div>
+    
   </div>
 
-  {/* Vertical Line */}
-  <div className="h-12 w-px bg-gray-300"></div>
+  <div className="h-12 w-px bg-gray-300 hidden md:block"></div>
 
-  {/* Appointment Date */}
   <div className="flex items-center gap-6">
     <div>
       <div className="text-[#909090]">Appointment date</div>
@@ -168,7 +166,6 @@ const AppointmentSection = () => (
       </div>
     </div>
 
-    {/* Search Button */}
     <div>
       <Button
         className={cn(
@@ -191,13 +188,29 @@ const LandingPage = () => {
   return (
     <div>
       <Navbar className="relative" />
-      <HeroImages /> {/* Behind FirstSection */}
+      <HeroImages /> 
       <FirstSection />
       <AboutusPage />
       <MedicalServices/>
+      <WorkingProcessPage/>
+      <SpecialistDoctors  
+  profileText="FEATURED PROFILE" 
+  headingText="OUR SPECIALIST DOCTORS"
+  descriptionText={
+  <>
+  You only have to know one thing that you can learn anything <br /> anywhere to discover yourself.
+  </>}/>
+<PatientsAboutusSection
+ profileText="TESTIMONIAL" 
+ headingText="What Our Patient Says About Us"
+ descriptionText={
+ <>
+You only have to know one thing that you can learn anything <br /> anywhere to discover yourself.
+</>} />
+<BecomeDoctorTemplate/>
+<AccordianSection/>
     </div>
   );
 };
-
 
 export default LandingPage;

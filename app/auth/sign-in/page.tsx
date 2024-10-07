@@ -1,4 +1,10 @@
 import SignInForm from "@/components/auth/SignInForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Sign In",
+  description: "Sign in to Easy Doc",
+};
 
 export default function SignInPage() {
   return (

@@ -1,0 +1,22 @@
+[
+    {
+        "id":1,
+        "question":"What is Webflow and why is it the best website builder?",
+        "answer":"Webflow is a visual web development platform that allows you to design, build, and launch responsive websites without writing code. It's the best website builder because it gives users complete control over their design and functionality, blending a designer-friendly interface with the flexibility of custom coding when needed."
+    },    
+    {
+        "id":2,
+        "question":"What is your favorite template from BRIX Templates?",
+        "answer":"One of our favorite templates from BRIX is Flexi.It's an all-purpose, fully customizable template that fits well for agencies, startups, and freelancers. The clean, modern design and responsive layout make it a great starting point for a wide variety of projects."
+    },   
+     {
+        "id":3,
+        "question":"How do you clone a Webflow Template from the Showcase?",
+        "answer":"To clone a Webflow template, you simply need to go to the Webflow Showcase, find the template you want, and click the Clone button. This will create a duplicate of the template in your own Webflow dashboard, where you can modify it as needed."
+    },  
+      {
+        "id":4,
+        "question":"Why is BRIX Templates the best Webflow agency out there?",
+        "answer":"BRIX Templates is considered one of the best Webflow agencies because of their diverse range of high-quality, customizable templates. They offer exceptional support, regular updates, and focus on performance and SEO optimization, which makes their templates a solid choice for Webflow users."
+    }
+]

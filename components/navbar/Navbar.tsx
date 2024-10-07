@@ -9,6 +9,7 @@ import NavLinks from "./NavLinks";
 import Hamburber from "./Hamburber";
 import { buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { Notifications } from "../common/notification";
 
 export const Navbar = ({ className }: { className?: string }) => {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
@@ -32,7 +33,10 @@ export const Navbar = ({ className }: { className?: string }) => {
 
         <div className="hidden @3xl:flex items-center gap-5">
           {isLoggedIn ? (
-            <UserPopup />
+            <>
+              <Notifications />
+              <UserPopup />
+            </>
           ) : (
             <>
               <Link

@@ -2,6 +2,12 @@ import { PatientLayout } from "@/components/layout/patient-layout";
 import Banner from "@/components/patient/Banner";
 import MyAppointmentsList from "@/components/patient/MyAppointmentsList";
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | My Appointments",
+  description: "Here you can view & manage all your appointments",
+};
 
 const BannerData = {
   title: "My Appointments",

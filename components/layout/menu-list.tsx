@@ -56,9 +56,9 @@ export function getMenuList(pathname: string) {
       icon: <PatientReview className="size-4 stroke-black stroke-2" />,
     },
     {
-      href: "/messages",
-      label: "Messages",
-      active: pathname === "/messages",
+      href: "/conversations",
+      label: "Conversations",
+      active: pathname === "/conversations",
       icon: <MessageCircleMore size={18} />,
     },
     {

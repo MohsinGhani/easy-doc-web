@@ -271,22 +271,17 @@ export const authThunks = {
         const userId = Cookies.get("userId");
         const auth = Cookies.get("auth");
 
-        // TODO: instead of using userId, get the userId from cognito Cookie
-        if (!userId && !auth) {
-          // console.log("No user ID or auth found");
-
-          await signOut();
-          dispatch(signoutAction());
-
-          // return toast.error("No user ID or auth found");
-        }
-
         if (auth) {
           const parsedAuth = JSON.parse(auth) as User;
           return parsedAuth;
         } else if (userId) {
           const response = await functionsApiClient.get(`/auth/${userId}`);
           return response.data.data;
+        } else {
+          await signOut();
+          dispatch(signoutAction());
+
+          window.location.href = "/auth/sign-in";
         }
       } catch (error) {
         await signOut();
@@ -315,11 +310,13 @@ export const authThunks = {
           updateData: Record<string, any>;
           userId: string;
           doctorId?: string;
+          role?: string;
         };
 
         const params: params = {
           updateData,
           userId,
+          role,
         };
 
         if (role === "doctor") {

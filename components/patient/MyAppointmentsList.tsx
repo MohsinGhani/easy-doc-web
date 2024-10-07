@@ -16,24 +16,45 @@ const MyAppointmentsList = () => {
   const [selectedAppointment, setSelectedAppointment] =
     React.useState<Appointment | null>(null);
 
-  const { allAppointments, loading } = useAppSelector(
+  const { allAppointments, lastEvaluatedKey, loading } = useAppSelector(
     (state) => state.appointment
   );
 
-  const { role, userId } = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
+  const { role, userId } = user;
 
   const handlePreview = (request: Appointment) => {
     setSelectedAppointment(request);
     setIsPreviewOpen(true);
   };
 
-  const columns = React.useMemo(() => patientColumns({ handlePreview }), []);
+  const handleCancel = async (request: Appointment) => {
+    await dispatch(
+      appointmentThunks.updateAppointmentStatus({
+        appointmentId: request.appointmentId,
+        status: "CANCELLED",
+      })
+    );
+  };
+
+  const columns = React.useMemo(
+    () => patientColumns({ handlePreview, handleCancel }),
+    []
+  );
 
   React.useEffect(() => {
     if (userId && role) {
-      dispatch(appointmentThunks.fetchAllAppointments());
+      dispatch(appointmentThunks.fetchAllAppointments({ status: "UPCOMING" }));
     }
   }, [dispatch, userId, role]);
+
+  const handlePageChange = () => {
+    dispatch(
+      appointmentThunks.fetchAppointmentsByPagination({
+        startKey: lastEvaluatedKey,
+      })
+    );
+  };
 
   if (loading) return <Loader />;
 
@@ -44,6 +65,8 @@ const MyAppointmentsList = () => {
           columns={columns}
           data={allAppointments}
           title="My Appointments"
+          onPageChange={handlePageChange}
+          lastEvaluatedKey={lastEvaluatedKey}
         />
       </CardContent>
 

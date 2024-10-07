@@ -45,6 +45,7 @@ import {
 } from "../ui/dropdown-menu";
 
 import { Separator } from "../ui/separator";
+import { Loader } from "../common/Loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,6 +53,9 @@ interface DataTableProps<TData, TValue> {
   isPrimaryHeader?: boolean;
   title: string;
   searchKey?: string;
+  lastEvaluatedKey?: string | null;
+  onPageChange?: () => void;
+  loading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -59,7 +63,10 @@ export function DataTable<TData, TValue>({
   data,
   isPrimaryHeader = true,
   searchKey = "patient.email",
+  lastEvaluatedKey = undefined,
+  onPageChange,
   title,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -152,62 +159,102 @@ export function DataTable<TData, TValue>({
       </CardHeader>
 
       {!isPrimaryHeader && <Separator />}
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup, i) => (
-            <TableRow key={i}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead
-                    key={header.id}
-                    className={cn(header.column.columnDef.meta?.className)}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+
+      {loading ? (
+        <div className="w-full h-full flex items-center justify-center min-h-96 animate-pulse">
+          {/* Skeleton loader for the table */}
+          <Table className="min-h-96">
+            <TableHeader>
+              <TableRow>
+                {/* Skeleton header row */}
+                {columns.map((_, i) => (
+                  <TableHead key={i}>
+                    <div className="h-6 bg-gray-300 rounded w-32 mx-auto"></div>
                   </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, i) => (
-              <TableRow key={i} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={cn(cell.column.columnDef.meta?.className)}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {[...Array(7)].map((_, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {/* Skeleton rows */}
+                  {columns.map((_, colIndex) => (
+                    <TableCell key={colIndex}>
+                      <div className="h-4 bg-gray-300 rounded w-full mx-auto"></div>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <Table className="min-h-96">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup, i) => (
+              <TableRow key={i}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className={cn(header.column.columnDef.meta?.className)}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row, i) => (
+                <TableRow
+                  key={i}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(cell.column.columnDef.meta?.className)}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
 
       <Pagination className="mt-4">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => table.getCanPreviousPage() && table.previousPage()}
-              className={cn(
-                table.getCanPreviousPage()
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed"
-              )}
+              onClick={() => {
+                if (table.getCanPreviousPage()) {
+                  table.previousPage();
+                }
+              }}
             >
               Previous
             </PaginationPrevious>
@@ -215,9 +262,9 @@ export function DataTable<TData, TValue>({
           {[...Array(table.getPageCount())].map((_, index) => (
             <PaginationItem key={index}>
               <PaginationLink
-                onClick={() => table.setPageIndex(index)}
-                isActive={table.getState().pagination.pageIndex === index}
-                className="cursor-pointer"
+                onClick={() => {
+                  table.setPageIndex(index);
+                }}
               >
                 {index + 1}
               </PaginationLink>
@@ -225,10 +272,12 @@ export function DataTable<TData, TValue>({
           ))}
           <PaginationItem>
             <PaginationNext
-              onClick={() => table.getCanNextPage() && table.nextPage()}
-              className={cn(
-                table.getCanNextPage() ? "cursor-pointer" : "cursor-not-allowed"
-              )}
+              onClick={() => {
+                if (table.getCanNextPage()) {
+                  table.nextPage();
+                  lastEvaluatedKey && onPageChange?.();
+                }
+              }}
             >
               Next
             </PaginationNext>

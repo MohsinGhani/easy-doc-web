@@ -97,7 +97,6 @@ declare type User = {
   given_name: string;
   family_name: string;
   display_name: string;
-  patient_name: string;
   phone_number: string;
   picture: string;
   designation: string;
@@ -110,7 +109,7 @@ declare type User = {
   zip_code: string;
   dob: string;
   age: number;
-  blood_group: string
+  blood_group: string;
   gender: Gender;
   location: string;
   overallRating: number;
@@ -182,6 +181,7 @@ declare type Appointment = {
   amount: number;
   status: APPOINTMENT_STATUS;
   payment: Payment;
+  patientData?: User;
 };
 
 declare type Payment = {
@@ -192,14 +192,51 @@ declare type Payment = {
   paymentMethod: string;
   status: PAYMENT_STATUS;
   created: number;
+  doctorId: string;
+  patientId: string;
 };
 
 declare type Attachment = {
-  id: string;
-  url: string;
   name: string;
+  url: string;
   mimeType: string;
+  size: string;
 };
+
+declare type ConversationMetaData = {
+  doctorName: string;
+  patientName: string;
+  doctorProfilePicture: string;
+  patientProfilePicture: string;
+};
+
+declare interface Conversation {
+  conversationId: string;
+  doctorId: string;
+  patientId: string;
+  patappointmentId: string;
+  lastMessageAt: string;
+  lastMessage: string;
+  lastMessageRead: boolean;
+  lastMessageId: string;
+  ttl: string;
+  note: string;
+  messages: Message[];
+  metaData: ConversationMetaData;
+}
+
+declare interface Message {
+  senderId: string;
+  conversationId: string;
+  senderRole: string;
+  messageId: string;
+  text?: string;
+  recipientUserId: string;
+  sentAt: number;
+  attachments: Attachment[];
+  isRead: boolean;
+  ttl: string;
+}
 
 declare interface authState {
   user: User;
@@ -227,4 +264,31 @@ declare interface appointmentState {
   fetchedAppointment: Appointment | null;
   loading: boolean;
   error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+
+declare interface notificationState {
+  allNotifications: Notification[];
+  fetchedNotification: Notification | null;
+  loading: boolean;
+  error: string | null | undefined;
+  lastEvaluatedKey: string | null;
+}
+declare interface conversationState {
+  allConversations: Conversation[];
+  fetchedConversation: Conversation | null;
+  Cloading: boolean;
+  Mloading: boolean;
+  error: string | null | undefined;
+  ClastEvaluatedKey: string | null;
+  MlastEvaluatedKey: string | null;
+}
+
+declare interface Notification {
+  notificationId: string;
+  userId: string;
+  message: string;
+  status: "unread" | "read";
+  timestamp: number;
+  link?: string;
 }

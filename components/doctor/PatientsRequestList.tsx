@@ -24,7 +24,7 @@ const PatientsRequestList = ({
   const isPrimaryHeader = headerType === "primary";
 
   const dispatch = useAppDispatch();
-  const { allAppointments, loading } = useAppSelector(
+  const { allAppointments, lastEvaluatedKey, loading } = useAppSelector(
     (state) => state.appointment
   );
   const { role, userId } = useAppSelector((state) => state.auth.user);
@@ -34,8 +34,24 @@ const PatientsRequestList = ({
     setIsPreviewOpen(true);
   };
 
-  const handleAcceptRequest = (request: Appointment) => {
-    setIsSuccessOpen(true);
+  const handleAcceptRequest = async (request: Appointment) => {
+    const res = await dispatch(
+      appointmentThunks.updateAppointmentStatus({
+        appointmentId: request.appointmentId,
+        status: "UPCOMING",
+      })
+    );
+
+    if (res.type.includes("fulfilled")) setIsSuccessOpen(true);
+  };
+
+  const handleRejectRequest = async (request: Appointment) => {
+    await dispatch(
+      appointmentThunks.updateAppointmentStatus({
+        appointmentId: request.appointmentId,
+        status: "REJECTED",
+      })
+    );
   };
 
   const columns = React.useMemo(
@@ -43,16 +59,29 @@ const PatientsRequestList = ({
       requestsColumns({
         handleAcceptRequest,
         handlePreview,
+        handleRejectRequest,
       }),
     []
   );
 
   React.useEffect(() => {
-    // Fetch all appointments
     if (userId && role) {
-      dispatch(appointmentThunks.fetchAllAppointments());
+      dispatch(
+        appointmentThunks.fetchAllAppointments({
+          status: "PENDING_APPROVAL",
+        })
+      );
     }
   }, [dispatch, userId, role]);
+
+  const handlePageChange = () => {
+    dispatch(
+      appointmentThunks.fetchAppointmentsByPagination({
+        startKey: lastEvaluatedKey,
+        status: "PENDING_APPROVAL",
+      })
+    );
+  };
 
   if (loading) <Loader />;
 
@@ -61,9 +90,13 @@ const PatientsRequestList = ({
       <CardContent>
         <DataTable
           columns={columns}
-          data={allAppointments}
+          /* TODO: add a good logic here */
+          data={allAppointments.filter((e) => e.status === "PENDING_APPROVAL")}
           isPrimaryHeader={isPrimaryHeader}
           title="Patient's Requests"
+          onPageChange={handlePageChange}
+          lastEvaluatedKey={lastEvaluatedKey}
+          loading={loading}
         />
       </CardContent>
 

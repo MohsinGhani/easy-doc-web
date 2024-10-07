@@ -40,6 +40,7 @@ interface UploadedFile {
   name: string;
   url: string;
   mimeType: string;
+  size: number;
 }
 
 const typedCities: Cities = cities as Cities;
@@ -87,8 +88,8 @@ export const calculateTimeSlots = (
 };
 
 export const parseTime = (time: string) => parse(time, "HH:mm", new Date());
-export const formatTime = (date: Date) => format(date, "hh:mm aa");
 export const formatTimeToHHMM = (date: Date) => format(date, "HH:mm");
+export const formatTime = (date: Date) => format(date, "hh:mm aa");
 export const formatTimeForUI = (time: string | Date) =>
   typeof time === "string"
     ? format(parseTime(time), "hh:mm aa")
@@ -214,13 +215,20 @@ export const calculateAverageFee = (services: Service[]): number => {
 export const functionsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.FUNCTIONS) || ""
 );
-
 export const paymentsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.PAYMENTS) || ""
 );
-
 export const appointmentsApiClient = createApiClient(
   getServiceUrl(ApiServiceName.APPOINTMENTS) || ""
+);
+export const conversationsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.CONVERSATIONS) || ""
+);
+export const notificationsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.NOTIFICATIONS) || ""
+);
+export const meetingsApiClient = createApiClient(
+  getServiceUrl(ApiServiceName.MEETINGS) || ""
 );
 
 /**
@@ -259,6 +267,7 @@ export const uploadFilesToS3 = async (
         name: file.name,
         url: presignedUrl.split("?")[0], // Remove query parameters from URL
         mimeType: file.type,
+        size: file.size,
       });
     } catch (error) {
       console.error(`Failed to upload file: ${file.name}`, error);

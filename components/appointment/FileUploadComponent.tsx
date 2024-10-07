@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import Image from "next/image";
 import { File, Trash2, UploadCloud } from "lucide-react";
 import PreviewDialog from "./PreviewDialog";
@@ -42,14 +42,15 @@ export default function FileUploadComponent({
           ? URL.createObjectURL(file)
           : undefined,
       }));
-      setFiles((prevFiles) => {
-        const allFiles = [...prevFiles, ...updatedFiles];
-        onFilesUploaded(allFiles); // Trigger the callback with the updated file list
-        return allFiles;
-      });
+
+      setFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
     },
-    [onFilesUploaded, files.length]
+    [files.length]
   );
+
+  useEffect(() => {
+    onFilesUploaded(files);
+  }, [files, onFilesUploaded]);
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -91,16 +92,12 @@ export default function FileUploadComponent({
     filesInputRef.current?.click();
   }, []);
 
-  const handleFileRemove = useCallback(
-    (index: number) => {
-      setFiles((prevFiles) => {
-        const updatedFiles = prevFiles.filter((_, i) => i !== index);
-        onFilesUploaded(updatedFiles);
-        return updatedFiles;
-      });
-    },
-    [onFilesUploaded]
-  );
+  const handleFileRemove = useCallback((index: number) => {
+    setFiles((prevFiles) => {
+      const updatedFiles = prevFiles.filter((_, i) => i !== index);
+      return updatedFiles;
+    });
+  }, []);
 
   return (
     <div>

@@ -2,7 +2,7 @@
 
 import { UserNav } from "@/components/layout/user-nav";
 import { SheetMenu } from "@/components/layout/sheet-menu";
-import { Bell } from "lucide-react";
+import { Notifications } from "../common/notification";
 
 interface NavbarProps {
   title: string;
@@ -16,10 +16,8 @@ export function Navbar({ title }: NavbarProps) {
           <SheetMenu />
           <h1 className="font-bold">{title}</h1>
         </div>
-        <div className="flex flex-1 items-center space-x-2 justify-end">
-          <div className="w-10 h-10 flex items-center justify-center bg-stone-100 rounded-3xl cursor-pointer">
-            <Bell className="w-5 h-5" />
-          </div>
+        <div className="flex flex-1 items-center gap-2 justify-end">
+          <Notifications />
           <UserNav />
         </div>
       </div>

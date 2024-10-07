@@ -5,13 +5,16 @@ import allergies from "@/public/data/allergies.json";
 import medications from "@/public/data/medications.json";
 
 export const identityPoolId =
-  process.env.COGNITO_IDENTITY_POOL_ID || "";
+  process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || "";
 
 export const userPoolClientId =
-  process.env.COGNITO_USER_POOL_CLIENT_ID || "";
+  process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID || "";
 
-export const userPoolId = process.env.COGNITO_USER_POOL_ID || "";
+export const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || "";
 export const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || "";
+export const webSocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_API_URL || "";
+export const stripePubKey =
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
 
 // Navbar Links
 export const NAV_LINKS = [
@@ -47,34 +50,38 @@ export const NAV_LINKS_FOR_AUTH = [
     label: "Home",
     location: "/",
   },
+  // {
+  //   label: "Notifications",
+  //   location: "/notifications",
+  // },
   {
-    label: "Notifications",
-    location: "/notifications",
+    label: "My Appointments",
+    location: "/my-appointments",
   },
   {
-    label: "Profile",
-    location: "/profile",
+    label: "My Settings",
+    location: "/my-settings",
   },
   {
-    label: "Appointments",
-    location: "/appointments",
+    label: "My Payments",
+    location: "/my-payments",
   },
   {
-    label: "Settings",
-    location: "/settings",
+    label: "My Conversations",
+    location: "/my-conversations",
   },
   {
     label: "FAQ’s & Support",
-    location: "/faqs",
+    location: "/faqs-and-support",
   },
   {
     label: "Doctors",
     location: "/doctors",
   },
-  {
-    label: "Specialists",
-    location: "/specialists",
-  },
+  // {
+  //   label: "Specialists",
+  //   location: "/specialists",
+  // },
 ];
 
 export const FAQS = [

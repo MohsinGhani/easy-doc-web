@@ -22,7 +22,7 @@ Easy Doc is an online appointment booking platform for patients. Doctors, patien
 
 To get started with Easy Doc, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/easy-doc.git`
+1. Clone the repository: `git clone https://github.com/MohsinGhani/easy-doc.git`
 2. Install dependencies: `npm install`
 3. Start the development server: `npm run dev`
 
@@ -46,7 +46,7 @@ Easy Doc is licensed under the MIT license. See the [LICENSE](LICENSE) file for 
 ![Home Page](public/screenshots/home-page.png)
 ![Doctors Page](public/screenshots/doctors-page.png)
 ![Patients Page](public/screenshots/patients-page.png)
-![Chat Page](public/screenshots/chat-page.png)
+![Conversation Page](public/screenshots/chat-page.png)
 
 ## How to Run
 

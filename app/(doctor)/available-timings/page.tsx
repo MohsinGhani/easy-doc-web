@@ -1,5 +1,3 @@
-"use client";
-
 import { ContentLayout } from "@/components/layout/content-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,6 +11,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { WEEK_DAYS } from "@/constants";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Available Timings",
+  description: "Set your available timings",
+};
 
 const AvailableTimingsPage = () => {
   return (
