@@ -10,12 +10,10 @@ import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import React from "react";
-import dummyData from "@/public/data/specialdoctors.json";
 
 interface DoctorCardProps {
   doctor: User;
-    isBookingCard?: boolean;
-  
+  isBookingCard?: boolean;
 }
 
 const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
@@ -77,7 +75,7 @@ const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
                 Known Languages
               </h2>
               <div className="flex flex-wrap gap-2 mt-2">
-                {dummyData[0].languages.map((language) => (
+                {doctor.languages.map((language) => (
                   <Badge
                     key={language}
                     className="flex items-center gap-2 capitalize flex-wrap"
