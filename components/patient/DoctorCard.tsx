@@ -11,10 +11,8 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 
 interface DoctorCardProps {
-  // doctor: User;
-  doctor: any;
-  
-  isBookingCard?: boolean;
+  doctor: User;
+    isBookingCard?: boolean;
   
 }
 

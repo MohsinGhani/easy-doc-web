@@ -27,7 +27,7 @@ export default function WorkingProcessPage() {
 
 function MobileView() {
   return (
-    <div className="bg-blue-50 p-4 md:p-8 lg:p-12">
+    <div className="bg-blue-50 p-4 md:p-8 lg:p-12 pt-10 mt-10 ">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-blue-600 font-semibold mb-2">HOW WE WORK</h2>
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Our Working Process</h1>

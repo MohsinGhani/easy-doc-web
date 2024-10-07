@@ -36,14 +36,11 @@ const SpecialistDoctors: React.FC<SpecialistDoctorsProps> = ({ profileText, head
         <CarouselNext className="text-primary border-primary  text-2xl w-14 h-14 mr-9   flex items-center justify-center rounded-full " />
         </div>
         <CarouselContent className="xl-ml-1 flex "> 
-          {doctorsData.map((doctor) => (
-            <CarouselItem key={doctor.userId} className="p-1 md:basis-1/3 lg:basis-1/3 xl:basis-1/4">
-              <DoctorCard 
-              doctor={doctor}                              
-              // customImage={doctor.picture}
-              /> 
-            </CarouselItem>
-          ))}
+        {doctorsData.map((doctor) => (
+  <CarouselItem key={doctor.userId} className="p-1 md:basis-1/3 lg:basis-1/3 xl:basis-1/4">
+    <DoctorCard doctor={doctor as unknown as User} />
+  </CarouselItem>
+))}
         </CarouselContent>
       </Carousel>
       </div>
