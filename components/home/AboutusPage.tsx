@@ -5,9 +5,9 @@ import { BlueCircle } from "../icons";
 
 const AboutusPage = () => {
   return (
-    <div className="w-full flex justify-center items-center h-full lg:mt-72">
-      <div className="w-[90%] lg:flex justify-between gap-6">
-      <div className="pt-80 lg:pt-[6rem]">
+<div className="w-full flex justify-center items-center h-full lg:mt-72  ">
+<div className="w-[90%] lg:flex justify-between gap-6">
+      <div className="pt-80 lg:pt-[8rem] ">
       <div className="text-primary text-[18px] font-medium leading-[27px]">
             ABOUT US
           </div>
@@ -46,7 +46,7 @@ const AboutusPage = () => {
           </Button>
         </div>
 
-        <div>
+        <div className="lg:hidden xl:block">
         <Image
     src="/assets/images/aboutpageimg.png"
     width={1000}  

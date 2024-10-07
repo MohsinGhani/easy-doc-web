@@ -93,7 +93,7 @@ const HeroImages = () => (
 const AppointmentSection = () => (
   <div className="absolute inset-0 left-1/2 -translate-x-1/2 top-0 flex flex-col items-center justify-center w-full min-h-[500px] md:min-h-[700px]">
     <div className="absolute overflow-hidden w-[90%] sm:w-[70%] h-[30%] sm:h-[60%] -bottom-24 left-1/2 transform 
-    -translate-x-1/2 bg-primary rounded-tl-full rounded-tr-full -z-[1] md:bottom-0  " />
+    -translate-x-1/2 bg-primary rounded-tl-full rounded-tr-full -z-[1] md:bottom-0 " />
 <div className=" md:hidden pt-96">
 <Image
           src="/assets/images/doctorimg.png"
@@ -113,7 +113,7 @@ const AppointmentSection = () => (
       />
     </div>
 
-    <Card className="relative w-full md:w-[80%] lg:w-[70%] bg-white  items-center justify-center z-30 -bottom-96 rounded-full hidden md:flex  ">
+    <Card className="relative w-full md:w-[80%] xl:w-[70%] lg:w-[70%] bg-white  items-center justify-center z-30 -bottom-96 rounded-full hidden md:flex  ">
       <CardContent className="flex items-center justify-between flex-wrap gap-5 w-full ">
       <div className="flex items-center xl:gap-8  ml-10 ">
   <div className="w-48 pl-4">
@@ -186,7 +186,7 @@ const AppointmentSection = () => (
 const LandingPage = () => {
   return (
     <div>
-      <Navbar className="relative"/>
+      <Navbar className="relative" />
       <HeroImages /> 
       <FirstSection />
       <AboutusPage />
