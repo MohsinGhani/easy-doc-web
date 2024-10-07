@@ -34,23 +34,20 @@ const SpecialistDoctors: React.FC<SpecialistDoctorsProps> = ({
           </p>
         </div>
       </div>
-      <div>
-        <Carousel className="w-full mt-8">
-          <div className="absolute right-10 md:-top-24 w-2 hidden md:block ">
-            <CarouselPrevious className="text-primary border border-primary -ml-16 text-2xl w-14 h-14 flex items-center justify-center rounded-full " />
-            <CarouselNext className="text-primary border-primary  text-2xl w-14 h-14 mr-9   flex items-center justify-center rounded-full " />
-          </div>
-          <CarouselContent className="xl-ml-1 flex ">
-            {doctorsData.map((doctor) => (
-              <CarouselItem
-                key={doctor.userId}
-                className="p-1 md:basis-1/3 lg:basis-1/3 xl:basis-1/4"
-              >
-                <DoctorCard doctor={doctor as unknown as User} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+      <div  >
+      <Carousel className="w-full mt-8">
+        <div className="absolute right-10 md:-top-24 w-2 hidden md:block ">
+        <CarouselPrevious className="text-primary border border-primary -ml-16 text-2xl w-14 h-14 flex items-center justify-center rounded-full " />
+        <CarouselNext className="text-primary border-primary  text-2xl w-14 h-14 mr-9   flex items-center justify-center rounded-full " />
+        </div>
+        <CarouselContent className="xl-ml-1 flex "> 
+        {doctorsData.map((doctor) => (
+  <CarouselItem key={doctor.userId} className="p-1 md:basis-1/3 xl:basis-1/4">
+    <DoctorCard doctor={doctor as unknown as User} />
+  </CarouselItem>
+))}
+        </CarouselContent>
+      </Carousel>
       </div>
     </div>
   );
