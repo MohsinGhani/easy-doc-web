@@ -1,7 +1,11 @@
-"use client";
-
 import MessagesSidebar from "@/components/conversations/conversations-sidebar";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Easy Doc | Doctor Conversations",
+  description: "Here you can view all your conversations",
+};
 
 export default function DoctorConversationsPage() {
   return (
