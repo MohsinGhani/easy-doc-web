@@ -14,7 +14,8 @@ import dummyData from "@/public/data/specialdoctors.json";
 
 interface DoctorCardProps {
   doctor: User;
-  isBookingCard?: boolean;
+    isBookingCard?: boolean;
+  
 }
 
 const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
