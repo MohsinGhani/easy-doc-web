@@ -63,7 +63,7 @@ const FirstSection = () => {
 
       <CarousalsSlider className={"hidden lg:block"} />
     </div>
-  );
+  )
 };
 
 const HeroImages = () => (
@@ -107,7 +107,7 @@ const AppointmentSection = () => (
       <Image
         src="/assets/images/landingpagemain-img.png"
         width={1000}
-        height={1000}
+        height={1000} 
         alt="man-image"
         className="w-full h-full object-contain"
       />
@@ -178,8 +178,7 @@ const AppointmentSection = () => (
     </div>
   </div>
 </div>
- 
-      </CardContent>
+ </CardContent>
     </Card>
   </div>
 );
@@ -187,7 +186,7 @@ const AppointmentSection = () => (
 const LandingPage = () => {
   return (
     <div>
-      <Navbar className="relative" />
+      <Navbar className="relative"/>
       <HeroImages /> 
       <FirstSection />
       <AboutusPage />
@@ -210,7 +209,7 @@ You only have to know one thing that you can learn anything <br /> anywhere to d
 <BecomeDoctorTemplate/>
 <AccordianSection/>
     </div>
-  );
+)
 };
 
 export default LandingPage;

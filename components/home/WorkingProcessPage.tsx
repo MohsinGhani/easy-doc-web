@@ -85,7 +85,7 @@ function DesktopView() {
   return (
     <div
       className="bg-gradient-to-br bg-cover bg-center p-8 min-h-auto"
-      style={{ backgroundImage: 'url("/assets/images/WorkingprocessRectangle.png")' }}
+      style={{ backgroundImage: 'url("/assets/images/WorkingprocessRectangle.png")' }} 
     >
       <div className="bg-opacity-80 max-w-6xl mx-auto p-8 rounded-lg">
         <h2 className="text-blue-600 font-semibold mb-2">HOW WE WORK</h2>
