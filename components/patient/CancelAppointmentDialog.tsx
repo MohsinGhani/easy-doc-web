@@ -43,7 +43,7 @@ const RejectAppointmentDialog: React.FC<CancelAppointmentProps> = ({
           <div className="grid flex-1 gap-2">
             <Label className="sr-only">Note</Label>
             <Input
-              placeholder="Provide a reason for the doctor's rejection (required)"
+              placeholder="Provide a reason for the appointment's cancellation (required)"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />

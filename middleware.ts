@@ -24,10 +24,10 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   try {
     const { pathname } = req.nextUrl;
 
-    const isPublicRoute = publicRoutes.includes(pathname);
-    const isPatientRoute = patientRoutes.includes(pathname);
-    const isDoctorRoute = doctorRoutes.includes(pathname);
-    const isAdminRoute = adminRoutes.includes(pathname);
+    const isPublicRoute = publicRoutes.some((route) => route === pathname);
+    const isPatientRoute = patientRoutes.some((route) => route === pathname);
+    const isDoctorRoute = doctorRoutes.some((route) => route === pathname);
+    const isAdminRoute = adminRoutes.some((route) => route === pathname);
 
     const cookies = req.cookies;
 
@@ -35,16 +35,16 @@ export async function middleware(req: NextRequest, res: NextResponse) {
       key.name.includes(".idToken")
     )?.value;
 
-    if (
-      (!token && isAdminRoute) ||
-      (!token && isDoctorRoute) ||
-      (!token && isPatientRoute)
-    ) {
+    // Redirect if trying to access protected routes without token
+    if (!token && (isAdminRoute || isDoctorRoute || isPatientRoute)) {
       return NextResponse.redirect(new URL("/auth/sign-in", req.url));
     }
 
+    if (!token) return NextResponse.next(); // For public routes, continue
+
     const { "custom:role": role } = decodeJWT(token as string).payload;
 
+    // Handle role-based redirection
     if ((isPublicRoute && role) || (role && pathname === "/")) {
       return NextResponse.redirect(
         new URL(
@@ -60,6 +60,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
     if (!role) return NextResponse.redirect(new URL("/auth/sign-in", req.url));
 
+    // Role-based access control
     if (isDoctorRoute && role !== "doctor") {
       return NextResponse.redirect(
         new URL(role === "patient" ? "/doctors" : "/admin", req.url)

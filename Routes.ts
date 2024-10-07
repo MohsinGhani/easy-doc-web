@@ -9,16 +9,16 @@ export const doctorRoutes = [
   "/patients-requests",
   "/appointments",
   "/available-timings",
-  "meeting",
+  "/meeting",
 ];
 
 export const patientRoutes = [
   "/doctors",
-  "my-appointments",
-  "my-conversations",
-  "my-payments",
-  "my-settings",
-  "meeting",
+  "/my-appointments",
+  "/my-conversations",
+  "/my-payments",
+  "/my-settings",
+  "/meeting",
 ];
 
 export const adminRoutes = ["/admin"];

@@ -118,7 +118,7 @@ const MessageContainer = ({
         </div>
       </div>
 
-      <AddANote />
+      {role === "doctor" && <AddANote />}
 
       <div className="lg:py-6 md:py-4 py-2 lg:px-12 md:px-6 px-4 max-h-[calc(100vh-56px-32px-20px-24px-200px)] overflow-y-auto">
         <p className="text-black text-sm font-normal text-center mb-[30px]">
