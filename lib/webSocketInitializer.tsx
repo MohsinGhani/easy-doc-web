@@ -14,9 +14,7 @@ const WebSocketInitializer = () => {
   useEffect(() => {
     if (messages.length > 0) {
       const latestMessage = messages[messages.length - 1];
-      toast.info(
-        `New notification: ${latestMessage.message ?? latestMessage.title}`
-      );
+      toast.info(latestMessage.message);
     }
   }, [messages]);
 

@@ -22,7 +22,7 @@ const AppointmentSuccesspage: React.FC<AppointmentSuccessPageProps> = ({
       <SuccessPage
         heading="Appointment Booked Successfully!"
         subHeading="Your appointment has been successfully booked. You can view the details of your appointment below."
-        linkHref={`/my-appointments/${params.appointmentId}`}
+        linkHref={`/my-appointments?selectedAppointment=${params.appointmentId}`}
         linkText="Go to Appointment"
         open
       />

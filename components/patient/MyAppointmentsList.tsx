@@ -5,20 +5,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { patientColumns } from "../table/columns";
 import { DataTable } from "../table/data-table";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Loader } from "../common/Loader";
 import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
 import AppointmentDetailsSheet from "./AppointmentDetailsSheet";
+import { useSearchParams } from "next/navigation";
 
 const MyAppointmentsList = () => {
   const dispatch = useAppDispatch();
 
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+  const searchParams = useSearchParams();
+
   const [selectedAppointment, setSelectedAppointment] =
     React.useState<Appointment | null>(null);
-
-  const { allAppointments, lastEvaluatedKey, loading } = useAppSelector(
-    (state) => state.appointment
-  );
+  const { allAppointments, lastEvaluatedKey, loading, fetchedAppointment } =
+    useAppSelector((state) => state.appointment);
 
   const user = useAppSelector((state) => state.auth.user);
   const { role, userId } = user;
@@ -48,6 +48,20 @@ const MyAppointmentsList = () => {
     }
   }, [dispatch, userId, role]);
 
+  React.useEffect(() => {
+    const selectedAppointmentId = searchParams.get("selectedAppointment");
+
+    if (selectedAppointmentId) {
+      dispatch(appointmentThunks.fetchAppointmentById(selectedAppointmentId));
+    }
+
+    setIsPreviewOpen(true);
+  }, [searchParams, dispatch]);
+
+  React.useEffect(() => {
+    setSelectedAppointment(fetchedAppointment);
+  }, [fetchedAppointment]);
+
   const handlePageChange = () => {
     dispatch(
       appointmentThunks.fetchAppointmentsByPagination({
@@ -55,8 +69,6 @@ const MyAppointmentsList = () => {
       })
     );
   };
-
-  if (loading) return <Loader />;
 
   return (
     <Card>
@@ -67,6 +79,7 @@ const MyAppointmentsList = () => {
           title="My Appointments"
           onPageChange={handlePageChange}
           lastEvaluatedKey={lastEvaluatedKey}
+          loading={loading}
         />
       </CardContent>
 

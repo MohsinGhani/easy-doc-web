@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { SheetContent, Sheet } from "@/components/ui/sheet";
-import MessageContainer from "@/components/messages/MessageContainer";
+import MessageContainer from "@/components/conversations/MessageContainer";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 
@@ -20,7 +20,9 @@ const ConversationSheet = ({ open, setOpen }: ChatSheetProps) => {
 
   useEffect(() => {
     fetchedConversation &&
-      !fetchedConversation.lastMessageRead &&
+      fetchedConversation.lastMessageRead === false &&
+      fetchedConversation.lastMessageId &&
+      fetchedConversation.lastMessage &&
       dispatch(
         conversationThunks.seenMessage({
           conversationId: fetchedConversation.conversationId,

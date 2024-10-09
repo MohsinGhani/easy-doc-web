@@ -115,7 +115,7 @@ const fetchAppointmentById = createAsyncThunk<Appointment, string>(
   async (appointmentId, { rejectWithValue }) => {
     try {
       const response = await appointmentsApiClient.get(
-        `/appointments/${appointmentId}?status=PAYMENT_PENDING`
+        `/appointments/${appointmentId}`
       );
       return response.data.data as Appointment;
     } catch (error: any) {

@@ -27,7 +27,10 @@ const useWebSocket = (webSocketUrl: string) => {
         const data: WebSocketMessage = JSON.parse(event.data);
         if (data?.type && data?.type === "NEW_MESSAGE") {
           dispatch(updateMessages(data.message as Message));
-          setMessages((prevMessages) => [...prevMessages, data.title]);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { message: data.title, type: "NEW_MESSAGE" },
+          ]);
         } else {
           setMessages((prevMessages) => [...prevMessages, data]);
         }

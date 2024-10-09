@@ -1,31 +1,40 @@
 "use client";
 
-import React, { KeyboardEvent, useState } from "react";
+import React, { KeyboardEvent, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Edit } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 
 const AddANote = () => {
+  const { fetchedConversation } = useAppSelector((state) => state.conversation);
+
   const [open, setOpen] = useState(false);
-  const [note, setNote] = useState("");
   const [noteAdded, setNoteAdded] = useState(false);
+  const dispatch = useAppDispatch();
+  const [note, setNote] = useState(fetchedConversation?.note || "");
+
+  useEffect(() => {
+    setNoteAdded(!!fetchedConversation?.note);
+    setNote(fetchedConversation?.note || "");
+  }, [fetchedConversation]);
+  if (!fetchedConversation) return null;
 
   const handleAddNote = () => {
     if (!note.trim()) return;
 
-    console.log(note);
+    dispatch(
+      conversationThunks.addNote({
+        note,
+        conversationId: fetchedConversation?.conversationId,
+      })
+    );
+
     setNoteAdded(true);
     setOpen(false);
-  };
-
-  const handleEdit = () => {
-    if (!note.trim()) return;
-
-    console.log(note);
-    setOpen(true);
-    setNoteAdded(false);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
@@ -89,7 +98,7 @@ const AddANote = () => {
           </p>
           <Edit
             className="w-4 h-4 text-primary cursor-pointer"
-            onClick={handleEdit}
+            onClick={() => setOpen(true)}
           />
         </div>
       )}

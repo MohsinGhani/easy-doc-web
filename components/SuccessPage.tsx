@@ -32,7 +32,7 @@ const SuccessPage = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
         className={cn(
-          "sm:max-w-[425px] p-10 min-h-[320px] flex flex-col items-center justify-center gap-6 text-center"
+          "sm:max-w-[425px] w-[90%] p-10 min-h-[320px] flex flex-col items-center justify-center gap-6 text-center"
         )}
       >
         <Image

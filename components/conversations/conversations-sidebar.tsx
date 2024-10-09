@@ -27,7 +27,7 @@ const MessagesSidebar = ({
   const { allConversations, Cloading } = useAppSelector(
     (state) => state.conversation
   );
-  const userId = useAppSelector((state) => state.auth.user?.userId);
+  const { userId, role } = useAppSelector((state) => state.auth.user);
 
   const [filteredConversations, setFilteredConversations] =
     useState(allConversations);
@@ -52,6 +52,9 @@ const MessagesSidebar = ({
   }, [searchValue, allConversations]);
 
   const handleSheetOpen = (conversationId: string) => {
+    if (!userId && !role) return;
+    debugger;
+
     setOpen(true);
     dispatch(conversationThunks.fetchConversationById(conversationId));
   };
@@ -110,7 +113,12 @@ const MessagesSidebar = ({
               return (
                 <>
                   {navigate ? (
-                    <Link key={i} href={`/messages/${conv.conversationId}`}>
+                    <Link
+                      key={i}
+                      href={`/${role === "patient" ? "my-" : ""}conversations/${
+                        conv.conversationId
+                      }`}
+                    >
                       <div
                         className={cn("space-y-4 cursor-pointer", {
                           "bg-slate-50 rounded-xl px-3 py-1": active,
@@ -118,7 +126,8 @@ const MessagesSidebar = ({
                       >
                         {!active && (
                           <span className="text-zinc-600 text-xs font-normal leading-none">
-                            {format(conv.lastMessageAt, "hh:mm a")}
+                            {conv.lastMessageAt &&
+                              format(conv.lastMessageAt, "hh:mm a")}
                           </span>
                         )}
 
@@ -167,7 +176,8 @@ const MessagesSidebar = ({
                       >
                         {!active && (
                           <span className="text-zinc-600 text-xs font-normal leading-none">
-                            {format(conv.lastMessageAt, "hh:mm a")}
+                            {conv.lastMessageAt &&
+                              format(conv.lastMessageAt, "hh:mm a")}
                           </span>
                         )}
 

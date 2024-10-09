@@ -50,34 +50,38 @@ export const NAV_LINKS_FOR_AUTH = [
     label: "Home",
     location: "/",
   },
+  // {
+  //   label: "Notifications",
+  //   location: "/notifications",
+  // },
   {
-    label: "Notifications",
-    location: "/notifications",
+    label: "My Appointments",
+    location: "/my-appointments",
   },
   {
-    label: "Profile",
-    location: "/profile",
+    label: "My Settings",
+    location: "/my-settings",
   },
   {
-    label: "Appointments",
-    location: "/appointments",
+    label: "My Payments",
+    location: "/my-payments",
   },
   {
-    label: "Settings",
-    location: "/settings",
+    label: "My Conversations",
+    location: "/my-conversations",
   },
   {
     label: "FAQ’s & Support",
-    location: "/faqs",
+    location: "/faqs-and-support",
   },
   {
     label: "Doctors",
     location: "/doctors",
   },
-  {
-    label: "Specialists",
-    location: "/specialists",
-  },
+  // {
+  //   label: "Specialists",
+  //   location: "/specialists",
+  // },
 ];
 
 export const FAQS = [

@@ -13,14 +13,6 @@ const fetchAllConversations = createAsyncThunk<{
       const state = getState() as RootState;
       const { role, userId } = state.auth.user;
 
-      if (!userId) {
-        return rejectWithValue("User not found");
-      }
-
-      if (!role) {
-        return rejectWithValue("Role not found");
-      }
-
       const response = await conversationsApiClient.get(
         `/conversations/${userId}?role=${role}`
       );
