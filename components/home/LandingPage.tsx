@@ -117,7 +117,7 @@ const AppointmentSection = () => (
       />
     </div>
 
-    <Card className="relative w-full lg:w-[70%] xl:w-[70%] bg-white items-center justify-center hidden md:block z-30 md:-bottom-96 xl:-bottom-96 rounded-full md:flex">
+    <Card className="relative w-full lg:w-[70%] xl:w-[70%] bg-white items-center justify-center hidden z-30 md:-bottom-96 xl:-bottom-96 rounded-full md:flex">
       <CardContent className="flex items-center justify-between flex-wrap gap-5 w-full">
         <div className="flex items-center xl:gap-8 lg:ml-12">
           <div className="w-48 pl-4">
