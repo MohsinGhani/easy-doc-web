@@ -13,14 +13,14 @@ const Patientsreviewcards = () => {
   return (
     <div className="w-full md:mt-8  relative">
       <Carousel className="w-full relative">
-        <div className="absolute right-10 md:-top-24 hidden md:block "> 
-          <CarouselPrevious className="text-primary border border-primary -ml-16 text-2xl w-14 h-14 flex items-center justify-center rounded-full" />
-          <CarouselNext className="text-primary border border-primary text-2xl w-14 h-14 mr-9 flex items-center justify-center rounded-full" />
+      <div className="absolute -right-6 md:-top-24 w-2 hidden md:block ">
+        <CarouselPrevious className="text-primary border border-primary -ml-16 text-2xl w-14 h-14 flex items-center justify-center rounded-full " />
+        <CarouselNext className="text-primary border-primary  text-2xl w-14 h-14 mr-9   flex items-center justify-center rounded-full " />
         </div>
-        <CarouselContent className="-ml-1 flex xl:gap-20   md:w-full">
+        <CarouselContent className="-ml-1 flex xl:gap-10 md:w-[50%] xl:w-full">
           {reviewsData.map((review, index) => (
-          <CarouselItem key={index} className="p-1 md:basis-6/12 xl:basis-1/4 lg:basis-1/4 flex gap-36 ">
-              <div className="bg-white p-8 w-[160%] rounded-lg border border-[#E4E4E7]">
+          <CarouselItem key={index} className="p-1  xl:basis-1/3 flex gap-36  ">
+              <div className="bg-white p-8  rounded-lg border border-[#E4E4E7]">
                 <p className="text-lg text-gray-700 mb-4">{review.description}</p>
 
                 <div className="flex items-center mb-4">

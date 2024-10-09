@@ -20,7 +20,7 @@ export default function WorkingProcessPage() {
 
   return (
     <div>
-      {isMobile ? <MobileView /> : <DesktopView />}
+      {isMobile ? <MobileView /> : <TabletOrDesktopView />}
     </div>
   );
 }
@@ -81,7 +81,7 @@ function ProcessStepmobile({ number, title, description }: { number: number; tit
   );
 }
 
-function DesktopView() {
+function TabletOrDesktopView() {
   return (
     <div
       className="bg-gradient-to-br bg-cover bg-center p-8 min-h-auto"
@@ -95,41 +95,39 @@ function DesktopView() {
         </p>
 
         <div className="relative">
-  <svg
-    className="absolute top-8 w-full h-[300px]"
-    viewBox="0 0 1000 300"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M0 150 Q 250 50, 500 150 T 1000 150"
-      stroke="#3B82F6"
-      strokeWidth="4"
-      fill="none"
-    />
+          <svg
+            className="hidden lg:block absolute top-8 w-full h-[300px]" 
+            viewBox="0 0 1000 300"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 150 Q 250 50, 500 150 T 1000 150"
+              stroke="#3B82F6"
+              strokeWidth="4"
+              fill="none"
+            />
 
-    <g>
-      <rect x="-1" y="120" width="38" height="38" fill="white" rx="10" ry="10" />
-      <circle cx="19" cy="140" r="8" fill="#3B82F6" />
-      
-      <rect x="200" y="80" width="38" height="38" fill="white" rx="10" ry="10" />
-      <circle cx="220" cy="100" r="8" fill="#3B82F6" />
-      
-      <rect x="430" y="117" width="38" height="38" fill="white" rx="10" ry="10" />
-      <circle cx="449" cy="135" r="8" fill="#3B82F6" />
-      
-      <rect x="648" y="170" width="38" height="38" fill="white" rx="10" ry="10" />
-      <circle cx="667" cy="190" r="8" fill="#3B82F6" />
-      
-      <rect x="873" y="160" width="44" height="44" fill="white" rx="10" ry="10" />
-      <circle cx="896" cy="182" r="8" fill="#3B82F6" />
-    </g>
-  </svg>
-</div>
+            <g>
+              <rect x="-1" y="120" width="38" height="38" fill="white" rx="10" ry="10" />
+              <circle cx="19" cy="140" r="8" fill="#3B82F6" />
+              
+              <rect x="200" y="80" width="38" height="38" fill="white" rx="10" ry="10" />
+              <circle cx="220" cy="100" r="8" fill="#3B82F6" />
+              
+              <rect x="430" y="117" width="38" height="38" fill="white" rx="10" ry="10" />
+              <circle cx="449" cy="135" r="8" fill="#3B82F6" />
+              
+              <rect x="648" y="170" width="38" height="38" fill="white" rx="10" ry="10" />
+              <circle cx="667" cy="190" r="8" fill="#3B82F6" />
+              
+              <rect x="873" y="160" width="44" height="44" fill="white" rx="10" ry="10" />
+              <circle cx="896" cy="182" r="8" fill="#3B82F6" />
+            </g>
+          </svg>
+        </div>
 
-
-
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-5 gap-8 relative z-10">
           <ProcessStep
             title="Select Service"
             description="Party we years to order allow asked of. We so opinion friends me message as delight."
@@ -177,12 +175,12 @@ function DesktopView() {
     position: 'top' | 'bottom';
   }) {
     return (
-      <div className={`${position === 'bottom' ? 'md:mt-32' : ''} mb-8`}>
-        <div className={`${className} p-6 rounded-lg md:w-[150%]`}>
+      <div className={`${position === 'bottom' ? 'lg:mt-32' : ''} mb-8`}>
+        <div className={`${className} p-6 rounded-lg md:w-[100%] lg:w-[145%]`}>
           <div className="text-[#000000] font-bold text-xl mb-2">{title}</div>
           <p className="text-gray-600 text-sm">{description}</p>
         </div>
       </div>
-    )
+    );
   }
-};
+}
