@@ -43,7 +43,6 @@ const initialState: authState = {
     stripeAccountId: "",
     stripe_account_active: false,
     no_of_appointments: 0,
-    address: "",
     state: "",
     zip_code: "",
     age: 0,

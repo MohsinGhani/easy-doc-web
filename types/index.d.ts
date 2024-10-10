@@ -104,7 +104,6 @@ declare type User = {
   years_of_experience: string;
   city: string;
   country: string;
-  address: string;
   state: string;
   zip_code: string;
   dob: string;

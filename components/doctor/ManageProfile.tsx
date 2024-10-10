@@ -95,9 +95,6 @@ const ManageProfile = () => {
           updateExpression.country
         }`;
       }
-
-      const address = `${cityName}, ${updateExpression.country}`;
-      updateExpression.address = address;
     }
     if (updateExpression.dob) {
       const formattedDOB = new Date(updateExpression.dob);
