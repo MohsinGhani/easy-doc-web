@@ -126,6 +126,11 @@ declare type User = {
   reviews: Review[];
   services: Service[];
   no_of_appointments: number;
+  total_earnings: number;
+  no_of_PENDING_APPROVAL_appointments: number;
+  no_of_UPCOMING_appointments: number;
+  no_of_CANCELLED_appointments: number;
+  no_of_COMPLETED_appointments: number;
   profile_status: PROFILE_STATUS;
   profile_completion: number;
   createdAt: string;
@@ -214,8 +219,8 @@ declare interface Conversation {
   conversationId: string;
   doctorId: string;
   patientId: string;
-  patappointmentId: string;
-  lastMessageAt: string;
+  appointmentId: string;
+  lastMessageAt: number;
   lastMessage: string;
   lastMessageRead: boolean;
   lastMessageId: string;

@@ -26,8 +26,8 @@ const DoctorDashboardPage = () => {
         <div className="space-y-4 lg:w-[70%] w-full">
           <Card className="w-full flex gap-5 items-center flex-col lg:flex-row justify-between overflow-hidden">
             <CardContent className="p-5 lg:text-left text-center space-y-4 lg:flex-1">
-              <HelloText/>
-              
+              <HelloText />
+
               <p className="text-muted-foreground">
                 You have got 3 new requests from patient{" "}
               </p>
@@ -53,22 +53,22 @@ const DoctorDashboardPage = () => {
 
           <section className="grid grid-cols-1 gap-4 lg:grid-cols-4 sm:grid-cols-2">
             <StatCard
-              type="appointments"
+              type={"UPCOMING" as APPOINTMENT_STATUS & "TOTAL_EARNINGS"}
               label="Total earnings"
               icon={<DoctorCap className="w-10 h-10 fill-white" />}
             />
             <StatCard
-              type="pending"
+              type={"PENDING_APPROVAL" as APPOINTMENT_STATUS & "TOTAL_EARNINGS"}
               label="Total Patient"
               icon={<Calendar className="w-8 h-10 fill-white" />}
             />
             <StatCard
-              type="cancelled"
+              type={"COMPLETED" as APPOINTMENT_STATUS & "TOTAL_EARNINGS"}
               label="Total Appointments"
               icon={<People className="w-8 h-10 fill-white" />}
             />
             <StatCard
-              type="completed"
+              type={"CANCELLED" as APPOINTMENT_STATUS & "TOTAL_EARNINGS"}
               label="Total Requests"
               icon={<Calendar className="w-8 h-10 fill-white" />}
             />
