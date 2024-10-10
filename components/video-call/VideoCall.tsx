@@ -9,12 +9,26 @@ import {
   ConsoleLogger,
   DataMessage,
 } from "amazon-chime-sdk-js";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { meetingsApiClient } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mic, MicOff, Video, VideoOff, Send, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { appointmentThunks } from "@/lib/features/appointment/appointmentThunks";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface VideoCallProps {
   meetingId: string;
@@ -22,124 +36,132 @@ interface VideoCallProps {
 
 export default function VideoCall({ meetingId }: VideoCallProps) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { user, loading } = useAppSelector((state) => state.auth);
+  const { fetchedAppointment, loading: Aloader } = useAppSelector(
+    (state) => state.appointment
+  );
+
   const [meetingSession, setMeetingSession] =
     useState<DefaultMeetingSession | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [participants, setParticipants] = useState<
-    { id: string; name: string }[]
-  >([]);
   const [message, setMessage] = useState<string>("");
   const [chatLog, setChatLog] = useState<{ sender: string; message: string }[]>(
     []
   );
+  const [loader, setLoader] = useState(false);
+
+  // Timer-related states
+  const [timeRemaining, setTimeRemaining] = useState<string>("");
+  const [isAppointmentActive, setIsAppointmentActive] =
+    useState<boolean>(false);
+  const [redirectTimeout, setRedirectTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  const fetchMeetingDetails = async () => {
+    try {
+      // Get user's timezone using the Intl API
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "Europe/London"
+      console.log(`User's Time Zone: ${userTimeZone}`);
+
+      // Example of sending the user's timezone as a query string parameter
+      const apiUrl = `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${user.display_name}&timezone=${userTimeZone}`;
+
+      // Then send this API call with the user's time zone to the backend
+
+      const response = await meetingsApiClient.get(apiUrl);
+      const data = response.data.data;
+
+      const Meeting = {
+        meetingId: data.Meeting.MeetingId,
+        MediaPlacement: data.Meeting.MediaPlacement,
+      };
+
+      return {
+        Meeting,
+        Attendee: data.Attendee,
+      };
+    } catch (err) {
+      console.error("Error fetching meeting details", err);
+      setError("Failed to retrieve meeting details.");
+    }
+  };
+
+  const joinMeeting = async () => {
+    try {
+      setLoader(true); // Show loading spinner
+      const meetingData = await fetchMeetingDetails();
+      if (!meetingData || !meetingData.Meeting || !meetingData.Attendee) {
+        setError("Invalid meeting or attendee data.");
+        return;
+      }
+
+      const meetingSessionConfiguration = new MeetingSessionConfiguration(
+        meetingData.Meeting,
+        meetingData.Attendee
+      );
+      const logger = new ConsoleLogger("SDK", LogLevel.INFO);
+      const deviceController = new DefaultDeviceController(logger);
+      const session = new DefaultMeetingSession(
+        meetingSessionConfiguration,
+        logger,
+        deviceController
+      );
+      setMeetingSession(session);
+
+      const audioVideo = session.audioVideo;
+
+      audioVideo.bindAudioElement(
+        document.getElementById("meeting-audio") as HTMLAudioElement
+      );
+
+      const audioInputDevices = await audioVideo.listAudioInputDevices();
+      if (audioInputDevices.length > 0) {
+        await audioVideo.chooseAudioOutput(audioInputDevices[0].deviceId);
+      }
+
+      const videoInputDevices = await audioVideo.listVideoInputDevices();
+      if (videoInputDevices.length > 0) {
+        await audioVideo.chooseAudioOutput(videoInputDevices[0].deviceId);
+        const videoElement = document.getElementById(
+          "video-container"
+        ) as HTMLVideoElement;
+        audioVideo.bindVideoElement(1, videoElement);
+      }
+
+      audioVideo.start();
+
+      const topic = "Conversation";
+      audioVideo.realtimeSubscribeToReceiveDataMessage(
+        topic,
+        (dataMessage: DataMessage) => {
+          const text = dataMessage.text();
+          setChatLog((prev) => [
+            ...prev,
+            {
+              sender:
+                dataMessage.senderExternalUserId.split("#")[0] ??
+                `${user.role === "patient" ? "Patient" : "Doctor"}`,
+              message: text,
+            },
+          ]);
+        }
+      );
+    } catch (err) {
+      console.error("Error joining the meeting", err);
+      setError("Failed to join the meeting.");
+    } finally {
+      setLoader(false); // Hide loading spinner
+    }
+  };
 
   useEffect(() => {
-    const fetchMeetingDetails = async () => {
-      try {
-        const response = await meetingsApiClient.get(
-          `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${user.display_name}`
-        );
-        const data = response.data.data;
-
-        const Meeting = {
-          meetingId: data.Meeting.MeetingId,
-          MediaPlacement: data.Meeting.MediaPlacement,
-        };
-
-        return {
-          Meeting,
-          Attendee: data.Attendee,
-        };
-      } catch (err) {
-        console.error("Error fetching meeting details", err);
-        setError("Failed to retrieve meeting details.");
-      }
-    };
-
-    const joinMeeting = async () => {
-      try {
-        const meetingData = await fetchMeetingDetails();
-        if (!meetingData || !meetingData.Meeting || !meetingData.Attendee) {
-          setError("Invalid meeting or attendee data.");
-          return;
-        }
-
-        const meetingSessionConfiguration = new MeetingSessionConfiguration(
-          meetingData.Meeting,
-          meetingData.Attendee
-        );
-        const logger = new ConsoleLogger("SDK", LogLevel.INFO);
-        const deviceController = new DefaultDeviceController(logger);
-        const session = new DefaultMeetingSession(
-          meetingSessionConfiguration,
-          logger,
-          deviceController
-        );
-        setMeetingSession(session);
-
-        const audioVideo = session.audioVideo;
-
-        audioVideo.bindAudioElement(
-          document.getElementById("meeting-audio") as HTMLAudioElement
-        );
-
-        const audioInputDevices = await audioVideo.listAudioInputDevices();
-        if (audioInputDevices.length > 0) {
-          await audioVideo.chooseAudioOutput(audioInputDevices[0].deviceId);
-        }
-
-        const videoInputDevices = await audioVideo.listVideoInputDevices();
-        if (videoInputDevices.length > 0) {
-          await audioVideo.chooseAudioOutput(videoInputDevices[0].deviceId);
-          const videoElement = document.getElementById(
-            "video-container"
-          ) as HTMLVideoElement;
-          audioVideo.bindVideoElement(1, videoElement);
-        }
-
-        audioVideo.start();
-
-        // Subscribe to attendee presence and update the participants with names
-        audioVideo.realtimeSubscribeToAttendeeIdPresence(
-          (attendeeId: string, present: boolean, externalUserId?: string) => {
-            const attendeeName = externalUserId
-              ? externalUserId.split("#")[0]
-              : "Unknown"; // Get the name from ExternalUserId
-            setParticipants((prev) =>
-              present
-                ? [...prev, { id: attendeeId, name: attendeeName }]
-                : prev.filter((participant) => participant.id !== attendeeId)
-            );
-          }
-        );
-
-        const topic = "Conversation";
-        audioVideo.realtimeSubscribeToReceiveDataMessage(
-          topic,
-          (dataMessage: DataMessage) => {
-            const text = dataMessage.text();
-            setChatLog((prev) => [
-              ...prev,
-              {
-                sender:
-                  dataMessage.senderExternalUserId.split("#")[0] ??
-                  `${user.role === "patient" ? "Patient" : "Doctor"}`,
-                message: text,
-              },
-            ]);
-          }
-        );
-      } catch (err) {
-        console.error("Error joining the meeting", err);
-        setError("Failed to join the meeting.");
-      }
-    };
-
     if (meetingId && user.userId) {
       joinMeeting();
+      dispatch(appointmentThunks.fetchAppointmentById(meetingId));
     }
 
     return () => {
@@ -148,6 +170,114 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       }
     };
   }, [meetingId, user.userId]);
+
+  // Timer logic and redirect handling
+  useEffect(() => {
+    if (fetchedAppointment) {
+      const { scheduled_date } = fetchedAppointment;
+      const startTime = new Date(scheduled_date.start_time);
+      const endTime = new Date(scheduled_date.end_time);
+      const now = new Date();
+
+      // Update timer and check meeting status on every fetch
+      if (now < startTime) {
+        // Appointment hasn't started yet
+        setIsAppointmentActive(false);
+        setTimeRemaining(formatTimeDiff(startTime.getTime() - now.getTime()));
+      } else if (now >= startTime && now <= endTime) {
+        // Appointment is ongoing
+        setIsAppointmentActive(true);
+        setTimeRemaining(formatTimeDiff(endTime.getTime() - now.getTime()));
+      } else {
+        // Appointment has ended
+        setIsAppointmentActive(false);
+        setTimeRemaining("Appointment has ended.");
+        handleMeetingEnd(endTime);
+      }
+
+      // Timer updates every second
+      const interval = setInterval(() => {
+        const currentTime = new Date();
+        if (currentTime >= startTime && currentTime <= endTime) {
+          // Appointment ongoing
+          setIsAppointmentActive(true);
+          setTimeRemaining(
+            formatTimeDiff(endTime.getTime() - currentTime.getTime())
+          );
+        } else if (currentTime < startTime) {
+          // Appointment hasn't started yet
+          setTimeRemaining(
+            formatTimeDiff(startTime.getTime() - currentTime.getTime())
+          );
+        } else {
+          // Appointment has ended
+          setIsAppointmentActive(false);
+          setTimeRemaining("Appointment has ended.");
+          handleMeetingEnd(endTime);
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [fetchedAppointment]);
+
+  // Logic to handle the meeting end and redirection after 10 minutes
+  const handleMeetingEnd = (endTime: Date) => {
+    const now = new Date();
+    const timePassed = Math.floor((now.getTime() - endTime.getTime()) / 1000);
+
+    // If the meeting ended more than 10 minutes ago, redirect immediately
+    if (timePassed >= 600) {
+      router.push(
+        user.role === "doctor"
+          ? "/appointments?activeTab=completed"
+          : "/my-appointments"
+      );
+    } else {
+      // If the meeting ended less than 10 minutes ago, start a 10-minute countdown
+      const remainingTime = 600 - timePassed; // Remaining seconds
+      const timeout = setTimeout(() => {
+        router.push(
+          user.role === "doctor"
+            ? "/appointments?activeTab=completed"
+            : "/my-appointments"
+        );
+      }, remainingTime * 1000);
+
+      // Clear previous timeout if any
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout);
+      }
+
+      // Set the new timeout
+      setRedirectTimeout(timeout);
+    }
+  };
+
+  // Utility function to format the time difference
+  const formatTimeDiff = (timeDiff: number): string => {
+    const totalSeconds = Math.floor(timeDiff / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
+
+  // Prevent reload logic
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = ""; // Trigger confirmation dialog
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   const toggleMute = () => {
     if (meetingSession) {
@@ -167,7 +297,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       if (isVideoOn) {
         audioVideo.stopLocalVideoTile();
       } else {
-        await audioVideo.startLocalVideoTile();
+        audioVideo.startLocalVideoTile();
       }
       setIsVideoOn(!isVideoOn);
     }
@@ -182,11 +312,9 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       audioVideo.stop();
       setMeetingSession(null);
       router.push(
-        `/${
-          user.role === "doctor"
-            ? "appointments?activeTab=completed"
-            : "my-appointments"
-        }`
+        user.role === "doctor"
+          ? "/appointments?activeTab=completed"
+          : "/my-appointments"
       );
     }
   };
@@ -205,7 +333,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     }
   };
 
-  if (loading) {
+  if (loading || loader || Aloader) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
@@ -228,86 +356,130 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-white shadow-sm p-4">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Meeting ID: {meetingId}
-        </h1>
-      </header>
+    <Card className="flex flex-col h-screen">
+      <CardHeader className="flex sm:flex-row items-center justify-between w-full gap-4">
+        <CardTitle className="text-2xl font-bold text-gray-800">
+          Appointment for {fetchedAppointment?.patient?.display_name} with Dr.{" "}
+          {fetchedAppointment?.doctor?.display_name}
+        </CardTitle>
+
+        <div className="flex justify-between items-center gap-4">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  onClick={toggleMute}
+                  size={"icon"}
+                  variant={isMuted ? "destructive" : "default"}
+                >
+                  {isMuted ? (
+                    <MicOff className="h-4 w-4" />
+                  ) : (
+                    <Mic className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isMuted ? "Unmute" : "Mute"}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  onClick={toggleVideo}
+                  size={"icon"}
+                  variant={isVideoOn ? "destructive" : "default"}
+                >
+                  {isVideoOn ? (
+                    <VideoOff className="h-4 w-4" />
+                  ) : (
+                    <Video className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isVideoOn ? "Stop Video" : "Start Video"}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  onClick={leaveMeeting}
+                  size={"icon"}
+                  variant="destructive"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="bg-destructive">
+                <p>Leave Meeting</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </CardHeader>
+
       <audio id="meeting-audio" className="hidden" />
-      <main className="flex-grow flex">
-        <div className="flex-grow flex flex-col md:flex-row">
-          <div className="md:w-3/4 bg-black">
-            <div id="video-container" className="h-full w-full bg-gray-900" />
+
+      <CardContent className="flex-grow flex rounded-xl">
+        <div className="flex-grow flex flex-col md:flex-row max-w-7xl mx-auto w-full p-4 gap-4">
+          {/* Video Section */}
+          <div className="md:w-3/4 bg-black relative rounded-lg max-h-[700px] flex items-center justify-center">
+            <div
+              id="video-container"
+              className="h-full w-full bg-gray-900 rounded-lg shadow-lg overflow-hidden flex items-center justify-center text-white text-center"
+            >
+              {/* Show Timer instead of Video Placeholder */}
+              {isAppointmentActive ? (
+                <p>Time Remaining: {timeRemaining}</p>
+              ) : (
+                <p>
+                  {timeRemaining === "Appointment has ended."
+                    ? "Appointment has ended."
+                    : `Appointment starts in: ${timeRemaining}`}
+                </p>
+              )}
+            </div>
           </div>
-          <div className="md:w-1/4 bg-white p-4 overflow-y-auto">
-            <h2 className="text-xl font-semibold mb-4">Participants</h2>
-            <ul className="space-y-2">
-              {participants.map((participant) => (
-                <li key={participant.id} className="bg-gray-100 p-2 rounded">
-                  {participant.name} {/* Display name instead of ID */}
-                </li>
+
+          {/* Conversation Section */}
+          <Card className="h-full flex flex-col md:w-1/4">
+            <CardHeader>
+              <CardTitle className="text-2xl font-semibold">
+                Conversation
+              </CardTitle>
+            </CardHeader>
+
+            {/* Chat Log */}
+            <CardContent className="overflow-y-auto flex-grow bg-gray-100 mb-4 max-h-64 md:max-h-full">
+              {chatLog.map((msg, idx) => (
+                <p key={idx} className="mb-2 text-gray-800">
+                  <span className="font-semibold text-gray-700">
+                    {msg.sender}:
+                  </span>{" "}
+                  {msg.message}
+                </p>
               ))}
-            </ul>
-          </div>
+            </CardContent>
+
+            {/* Input and Send Button */}
+            <CardFooter className="flex items-center gap-3">
+              <Input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter a message"
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              />
+              <Button onClick={sendMessage} size={"icon"}>
+                <Send className="h-4 w-4" />
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
-      </main>
-      <footer className="bg-white shadow-sm p-4">
-        <div className="flex justify-between items-center">
-          <div className="space-x-2">
-            <Button
-              onClick={toggleMute}
-              variant={isMuted ? "destructive" : "default"}
-            >
-              {isMuted ? (
-                <MicOff className="mr-2 h-4 w-4" />
-              ) : (
-                <Mic className="mr-2 h-4 w-4" />
-              )}
-              {isMuted ? "Unmute" : "Mute"}
-            </Button>
-            <Button
-              onClick={toggleVideo}
-              variant={isVideoOn ? "destructive" : "default"}
-            >
-              {isVideoOn ? (
-                <VideoOff className="mr-2 h-4 w-4" />
-              ) : (
-                <Video className="mr-2 h-4 w-4" />
-              )}
-              {isVideoOn ? "Stop Video" : "Start Video"}
-            </Button>
-          </div>
-          <Button onClick={leaveMeeting} variant="destructive">
-            <LogOut className="mr-2 h-4 w-4" />
-            Leave Meeting
-          </Button>
-        </div>
-      </footer>
-      <div className="bg-white shadow-sm p-4">
-        <h2 className="text-xl font-semibold mb-4">Conversation</h2>
-        <div className="h-40 overflow-y-auto mb-4 bg-gray-100 p-2 rounded">
-          {chatLog.map((msg, idx) => (
-            <p key={idx} className="mb-1">
-              <span className="font-semibold">{msg.sender}: </span>
-              {msg.message}
-            </p>
-          ))}
-        </div>
-        <div className="flex">
-          <Input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Enter a message"
-            className="flex-grow mr-2"
-          />
-          <Button onClick={sendMessage}>
-            <Send className="mr-2 h-4 w-4" />
-            Send
-          </Button>
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
