@@ -9,12 +9,8 @@ export const metadata: Metadata = {
   description: "Here you can view & manage your profile settings",
 };
 
-interface BookAppointmentPageProps {
-  searchParams: {};
-}
-
 const BannerData = {
-  title: "Book Appointment",
+  title: "Change Your Profile Settings Here",
   description: "",
   location: [
     { name: "Home", path: "/" },
@@ -22,7 +18,7 @@ const BannerData = {
   ],
 };
 
-const MySettingsPage = ({ searchParams }: BookAppointmentPageProps) => {
+const MySettingsPage = () => {
   return (
     <div className="w-full h-full">
       <Banner data={BannerData} />

@@ -65,12 +65,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       appointment_date: format(new Date(), "d MMM yyyy"),
       speciality: "",
       attachments: [],
-      // display_name: `${user?.given_name} ${user.family_name}` || "",
-      // gender: GENDERS[0].value,
-      // dob: user?.dob || "",
-      // blood_group: BLOOD_GROUPS[0].value,
-      // phone_number: user?.phone_number || "",
-      // email: user?.email || "",
     },
   });
   const {
@@ -133,13 +127,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
           }
         )
       );
-
-      // form.resetField("display_name",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("gender",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("dob",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("blood_group",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("phone_number",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("email",{keepDirty:false, keepError:false, keepTouched:false})
     }
 
     if (user && consulting_for === ConsultingFor.OTHER) {
@@ -166,6 +153,18 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
   const onSubmit = async (data: AppointmentCreationType) => {
     try {
+      // Step 0: Check if the patient's profile is complete if not then show toast error and then redirect to settings page
+      if (
+        consulting_for === ConsultingFor.SELF &&
+        user?.profile_status !== "COMPLETED"
+      ) {
+        toast.error(
+          "Please complete your profile info before booking an appointment"
+        );
+        router.push("/my-settings");
+        return;
+      }
+
       // Step 1: Upload files to S3 using the helper function
       const uploadedFiles =
         selectedFiles.length > 0 ? await uploadFilesToS3(selectedFiles) : [];
