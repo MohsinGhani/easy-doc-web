@@ -219,8 +219,8 @@ declare interface Conversation {
   conversationId: string;
   doctorId: string;
   patientId: string;
-  patappointmentId: string;
-  lastMessageAt: string;
+  appointmentId: string;
+  lastMessageAt: number;
   lastMessage: string;
   lastMessageRead: boolean;
   lastMessageId: string;

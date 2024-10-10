@@ -70,7 +70,11 @@ export function Notifications() {
         </Tooltip>
       </TooltipProvider>
 
-      <DropdownMenuContent className="w-56 mt-1.5" align="end" forceMount>
+      <DropdownMenuContent
+        className="w-56 mt-1.5 max-h-96 overflow-y-auto"
+        align="end"
+        forceMount
+      >
         <DropdownMenuLabel className="font-normal flex items-center justify-between gap-3">
           My notifications
         </DropdownMenuLabel>
@@ -99,7 +103,14 @@ export function Notifications() {
           </DropdownMenuGroup>
         )}
         {lastEvaluatedKey && (
-          <Button onClick={handleLoadMore}>Load More</Button>
+          <Button
+            onClick={handleLoadMore}
+            className="w-full"
+            size={"lg"}
+            variant={"secondary"}
+          >
+            Load More
+          </Button>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

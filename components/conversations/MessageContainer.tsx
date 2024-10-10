@@ -15,7 +15,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import AddANote from "./AddANote";
 import SendMessageButton from "./SendMessageButton";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 import EmptyState from "@/components/common/EmptyState";
 import {
@@ -37,10 +37,39 @@ const MessageContainer = ({
   className,
 }: MessageContainerProps) => {
   const dispatch = useAppDispatch();
-  const { fetchedConversation, Cloading } = useAppSelector(
+  const { fetchedConversation, Cloading, MlastEvaluatedKey } = useAppSelector(
     (state) => state.conversation
   );
   const { userId, role } = useAppSelector((state) => state.auth.user);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
+
+  // Function to handle the scroll event
+  const handleScroll = useCallback(() => {
+    const scrollTop = messageContainerRef.current?.scrollTop;
+    if (scrollTop === 0 && MlastEvaluatedKey) {
+      // Dispatch action to load more messages when scroll reaches the top
+      dispatch(
+        conversationThunks.fetchMoreMessages({
+          conversationId,
+          MlastEvaluatedKey,
+        })
+      );
+      console.log("feteching more messages");
+    }
+  }, [conversationId, dispatch, MlastEvaluatedKey]);
+
+  useEffect(() => {
+    const messageContainer = messageContainerRef.current;
+    if (messageContainer) {
+      messageContainer.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (messageContainer) {
+        messageContainer.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [handleScroll]);
 
   useEffect(() => {
     userId &&
@@ -50,13 +79,15 @@ const MessageContainer = ({
   }, [conversationId, userId, role]);
 
   if (Cloading) return <ConversationSkeletonTwo />;
-  if (!fetchedConversation && !Cloading && userId && role)
+
+  if (!fetchedConversation && !Cloading && userId && role) {
     return (
       <EmptyState
         title="No conversation found"
         buttonText="Back to Conversations"
       />
     );
+  }
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block relative w-full h-full">
@@ -125,7 +156,10 @@ const MessageContainer = ({
           Yesterday
         </p>
 
-        <div className="relative flex flex-col gap-4 grow mb-20">
+        <div
+          className="relative flex flex-col gap-4 grow mb-20"
+          ref={messageContainerRef}
+        >
           {fetchedConversation?.messages?.map((message, i) => (
             <MessageCard key={i} message={message} />
           ))}

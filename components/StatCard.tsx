@@ -52,13 +52,13 @@ export const StatCard = ({ label, icon, type }: StatCardProps) => {
 const getCount = (user: User, type: StatCardProps["type"]): string | number => {
   switch (type) {
     case "PENDING_APPROVAL":
-      return user.no_of_PENDING_APPROVAL_appointments;
+      return user.no_of_PENDING_APPROVAL_appointments ?? 0;
     case "UPCOMING":
-      return user.no_of_UPCOMING_appointments;
+      return user.no_of_UPCOMING_appointments ?? 0;
     case "TOTAL_EARNINGS":
-      return `${user.total_earnings}$`;
+      return `${user.total_earnings ?? 0}$`;
     case "COMPLETED":
-      return user.no_of_COMPLETED_appointments;
+      return user.no_of_COMPLETED_appointments ?? 0;
 
     default:
       return `${Math.floor(Math.random() * 1000)}`;

@@ -3,24 +3,24 @@
 import React, { KeyboardEvent, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { Input } from "../ui/input";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { Edit } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 
 const AddANote = () => {
+  const dispatch = useAppDispatch();
   const { fetchedConversation } = useAppSelector((state) => state.conversation);
 
   const [open, setOpen] = useState(false);
   const [noteAdded, setNoteAdded] = useState(false);
-  const dispatch = useAppDispatch();
   const [note, setNote] = useState(fetchedConversation?.note || "");
 
   useEffect(() => {
     setNoteAdded(!!fetchedConversation?.note);
     setNote(fetchedConversation?.note || "");
   }, [fetchedConversation]);
+
   if (!fetchedConversation) return null;
 
   const handleAddNote = () => {
@@ -34,6 +34,17 @@ const AddANote = () => {
     );
 
     setNoteAdded(true);
+    setOpen(false);
+  };
+
+  const handleNoteDelete = () => {
+    dispatch(
+      conversationThunks.deleteNote({
+        conversationId: fetchedConversation?.conversationId,
+      })
+    );
+
+    setNoteAdded(false);
     setOpen(false);
   };
 
@@ -73,13 +84,25 @@ const AddANote = () => {
 
             <div className="flex items-center justify-start flex-col gap-2">
               <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Enter note for patient"
-                  value={note}
-                  autoFocus
-                  onChange={(e) => setNote(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
+                <div className="relative flex items-center flex-1">
+                  <div className="absolute right-3">
+                    {noteAdded && (
+                      <Trash2
+                        className="h-4 w-4 text-destructive cursor-pointer"
+                        onClick={handleNoteDelete}
+                      />
+                    )}
+                  </div>
+                  <input
+                    placeholder="Enter note for patient"
+                    onKeyDown={handleKeyDown}
+                    autoFocus
+                    className="w-full pl-4 pr-11 py-2.5 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-transparent placeholder-gray-400 text-sm shadow-sm flex-1"
+                    autoComplete="off"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                  />
+                </div>
                 <Button onClick={handleAddNote}>Add note</Button>
               </div>
               <p className="text-sm text-muted-foreground">

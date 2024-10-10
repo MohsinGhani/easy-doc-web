@@ -149,6 +149,38 @@ const seenMessage = createAsyncThunk<
   }
 );
 
+// Fetch more messages for a conversation
+const fetchMoreMessages = createAsyncThunk<
+  { messages: Message[]; lastEvaluatedKey: string | null },
+  { conversationId: string; startKey: string }
+>(
+  "conversation/fetchMoreMessages",
+  async ({ conversationId, startKey }, { getState, rejectWithValue }) => {
+    try {
+      if (!startKey) {
+        return rejectWithValue("Missing Required Fields");
+      }
+
+      const state = getState() as RootState;
+      const { role } = state.auth.user;
+
+      let url = `/conversation/${conversationId}/load-more?role=${role}&startKey=${encodeURIComponent(
+        startKey
+      )}`;
+
+      const response = await conversationsApiClient.get(url);
+
+      return response.data.data;
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error updating message, Pease try again!";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 // Add a note
 const addNote = createAsyncThunk<
   string,
@@ -202,6 +234,7 @@ export const conversationThunks = {
   fetchConversationById,
   sendMessage,
   seenMessage,
+  fetchMoreMessages,
   addNote,
   deleteNote,
 };
