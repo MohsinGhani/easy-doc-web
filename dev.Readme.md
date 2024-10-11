@@ -8,3 +8,6 @@ check and test the complete meeting module,
 add the max meeting time functionality somehow,
 signup form not validates realtime,
 check that if we can validate that we do not send code on reload of page again HINT: add a field to enter email instead of sending code as the page loads,
+UI in patient's my-appointment page  to join meeting.
+fix that the join meeting link cant be disabled.
+add the feature such that meeting, notification, messages, conversations, else automatically deletes after the time

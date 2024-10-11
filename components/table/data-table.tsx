@@ -189,7 +189,7 @@ export function DataTable<TData, TValue>({
           </Table>
         </div>
       ) : (
-        <Table className="min-h-96">
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup, i) => (
               <TableRow key={i}>

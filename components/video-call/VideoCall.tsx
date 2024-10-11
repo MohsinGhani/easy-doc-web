@@ -55,11 +55,13 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
 
   // Timer-related states
   const [timeRemaining, setTimeRemaining] = useState<string>("");
+  console.log("🚀 ~ VideoCall ~ timeRemaining:", timeRemaining)
   const [isAppointmentActive, setIsAppointmentActive] =
     useState<boolean>(false);
   const [redirectTimeout, setRedirectTimeout] = useState<NodeJS.Timeout | null>(
     null
   );
+  const audioElementRef = React.useRef<HTMLAudioElement | null>(null);
 
   const fetchMeetingDetails = async () => {
     try {
@@ -103,7 +105,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
         meetingData.Meeting,
         meetingData.Attendee
       );
-      const logger = new ConsoleLogger("SDK", LogLevel.INFO);
+      const logger = new ConsoleLogger("SDK", LogLevel.OFF);
       const deviceController = new DefaultDeviceController(logger);
       const session = new DefaultMeetingSession(
         meetingSessionConfiguration,
@@ -114,9 +116,9 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
 
       const audioVideo = session.audioVideo;
 
-      audioVideo.bindAudioElement(
-        document.getElementById("meeting-audio") as HTMLAudioElement
-      );
+      if (audioElementRef.current) {
+        audioVideo.bindAudioElement(audioElementRef.current);
+      }
 
       const audioInputDevices = await audioVideo.listAudioInputDevices();
       if (audioInputDevices.length > 0) {
@@ -175,45 +177,74 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
   useEffect(() => {
     if (fetchedAppointment) {
       const { scheduled_date } = fetchedAppointment;
-      const startTime = new Date(scheduled_date.start_time);
-      const endTime = new Date(scheduled_date.end_time);
-      const now = new Date();
+
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      // Convert appointment times to user's local timezone
+      const startTime = new Date(scheduled_date.start_time.replace(' ', 'T')).toLocaleString(
+        "en-US",
+        { timeZone: timezone }
+      );
+      const endTime = new Date(scheduled_date.end_time.replace(' ', 'T')).toLocaleString(
+        "en-US",
+        { timeZone: timezone }
+      );
+      const now = new Date().toLocaleString("en-US", {
+        timeZone: timezone,
+      });
+
+      console.log("Current Time:", now);
+      console.log("Start Time:", startTime);
+      console.log("End Time:", endTime);
 
       // Update timer and check meeting status on every fetch
       if (now < startTime) {
         // Appointment hasn't started yet
         setIsAppointmentActive(false);
-        setTimeRemaining(formatTimeDiff(startTime.getTime() - now.getTime()));
+        setTimeRemaining(
+          formatTimeDiff(
+            new Date(startTime).getTime() - new Date(now).getTime()
+          )
+        );
       } else if (now >= startTime && now <= endTime) {
         // Appointment is ongoing
         setIsAppointmentActive(true);
-        setTimeRemaining(formatTimeDiff(endTime.getTime() - now.getTime()));
+        setTimeRemaining(
+          formatTimeDiff(new Date(endTime).getTime() - new Date(now).getTime())
+        );
       } else {
         // Appointment has ended
         setIsAppointmentActive(false);
         setTimeRemaining("Appointment has ended.");
-        handleMeetingEnd(endTime);
+        handleMeetingEnd(new Date(endTime));
       }
 
       // Timer updates every second
       const interval = setInterval(() => {
-        const currentTime = new Date();
+        const currentTime = new Date().toLocaleString("en-US", {
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        });
+
         if (currentTime >= startTime && currentTime <= endTime) {
           // Appointment ongoing
           setIsAppointmentActive(true);
           setTimeRemaining(
-            formatTimeDiff(endTime.getTime() - currentTime.getTime())
+            formatTimeDiff(
+              new Date(endTime).getTime() - new Date(currentTime).getTime()
+            )
           );
         } else if (currentTime < startTime) {
           // Appointment hasn't started yet
           setTimeRemaining(
-            formatTimeDiff(startTime.getTime() - currentTime.getTime())
+            formatTimeDiff(
+              new Date(startTime).getTime() - new Date(currentTime).getTime()
+            )
           );
         } else {
           // Appointment has ended
           setIsAppointmentActive(false);
           setTimeRemaining("Appointment has ended.");
-          handleMeetingEnd(endTime);
+          handleMeetingEnd(new Date(endTime));
           clearInterval(interval);
         }
       }, 1000);
@@ -253,16 +284,6 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       // Set the new timeout
       setRedirectTimeout(timeout);
     }
-  };
-
-  // Utility function to format the time difference
-  const formatTimeDiff = (timeDiff: number): string => {
-    const totalSeconds = Math.floor(timeDiff / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    return `${hours}h ${minutes}m ${seconds}s`;
   };
 
   // Prevent reload logic
@@ -421,7 +442,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
         </div>
       </CardHeader>
 
-      <audio id="meeting-audio" className="hidden" />
+      <audio ref={audioElementRef} id="meeting-audio" className="hidden" />
 
       <CardContent className="flex-grow flex rounded-xl">
         <div className="flex-grow flex flex-col md:flex-row max-w-7xl mx-auto w-full p-4 gap-4">
@@ -483,3 +504,13 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     </Card>
   );
 }
+
+// Utility function to format the time difference
+const formatTimeDiff = (timeDiff: number): string => {
+  const totalSeconds = Math.floor(timeDiff / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${hours}h ${minutes}m ${seconds}s`;
+};
