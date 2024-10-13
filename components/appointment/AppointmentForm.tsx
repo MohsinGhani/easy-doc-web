@@ -71,9 +71,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
     control,
     handleSubmit,
     watch,
-    formState: { errors },
+    // formState: { errors },
   } = form;
-  console.log("🚀 ~ errors:", errors);
+  // console.log("🚀 ~ errors:", errors);
   const speciality = watch("speciality");
   const consultation_type = watch("consultation_type");
   const consulting_for = watch("consulting_for");

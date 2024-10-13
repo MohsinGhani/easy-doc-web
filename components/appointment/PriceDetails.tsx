@@ -2,15 +2,24 @@ import React from "react";
 import { CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { useAppSelector } from "@/lib/hooks";
+import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 
 interface PriceDetailsProps {
   consultingFee: number;
 }
 
 const PriceDetails: React.FC<PriceDetailsProps> = ({ consultingFee }) => {
-  const { loading: appointmentLoading } = useAppSelector(
-    (state) => state.appointment
-  );
+  const { loading } = useAppSelector((state) => state.appointment);
+  const {
+    formState: { errors },
+  } = useFormContext();
+
+  const handleClick = () => {
+    if (Object.keys(errors).length > 0) {
+      toast.error("Please fix the errors before proceeding.");
+    }
+  };
 
   return (
     <div className="max-w-sm">
@@ -34,7 +43,8 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({ consultingFee }) => {
               size={"xl"}
               className="w-full"
               type="submit"
-              disabled={appointmentLoading}
+              disabled={loading}
+              onClick={handleClick}
             >
               Proceed to Checkout
             </Button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import {
   ArrowUpDown,
   EllipsisVertical,
@@ -28,7 +28,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import RejectAppointmentDialog from "../patient/CancelAppointmentDialog";
-import { formatTimeForUI } from "@/lib/utils";
+import { cn, formatTimeForUI } from "@/lib/utils";
+import Link from "next/link";
 
 interface requestsColumnsProps {
   handlePreview: (data: Appointment) => void;
@@ -37,8 +38,7 @@ interface requestsColumnsProps {
 }
 
 interface upcomingColumnsProps {
-  handleMeetingJoin: (data: Appointment["appointmentId"]) => void;
-  handleChat: (data: Appointment) => void;
+  role: string;
 }
 interface PatientColumnsProps {
   handlePreview: (data: Appointment) => void;
@@ -632,8 +632,7 @@ export const patientColumns = ({
 };
 
 export const upcomingColumns = ({
-  handleMeetingJoin,
-  handleChat,
+  role,
 }: upcomingColumnsProps): ColumnDef<Appointment>[] => {
   return [
     {
@@ -770,7 +769,7 @@ export const upcomingColumns = ({
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const appointment_data = row.original.appointment_date;
+        const appointment_date = row.original.appointment_date;
 
         return (
           <div className="flex items-center gap-1.5">
@@ -779,35 +778,37 @@ export const upcomingColumns = ({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="border-primary bg-primary/20 p-2"
-                      onClick={() => handleChat(row.original)}
+                    <Link
+                      href={`/${role === "patient" && "my-"}conversations/${
+                        row.original.appointmentId
+                      }`}
+                      className={cn(
+                        buttonVariants({ size: "icon", variant: "outline" }), "p-2"
+                      )}
                     >
                       <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
-                    </Button>
+                    </Link>
                   </TooltipTrigger>
                   <TooltipContent side="top">Start Conversation</TooltipContent>
                 </Tooltip>
 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="border-primary bg-primary/20 p-2"
-                      onClick={() =>
-                        handleMeetingJoin(row.original.appointmentId)
-                      }
-                      disabled={
-                        new Date(appointment_data) < new Date() ||
-                        new Date(appointment_data) >
-                          new Date(new Date().getTime() + 30 * 60 * 1000)
-                      }
+                    <Link
+                      className={cn(
+                        buttonVariants({ size: "icon", variant: "outline" }),
+                        "w-full justify-start p-2",
+                        {
+                          "pointer-events-none cursor-not-allowed":
+                            new Date(appointment_date) < new Date() ||
+                            new Date(appointment_date) >
+                              new Date(new Date().getTime() + 30 * 60 * 1000),
+                        }
+                      )}
+                      href={`/meeting/${row.original.appointmentId}`}
                     >
                       <Video className="h-5 w-5 cursor-pointer text-primary" />
-                    </Button>
+                    </Link>
                   </TooltipTrigger>
                   <TooltipContent side="top">Join Meeting</TooltipContent>
                 </Tooltip>
@@ -823,24 +824,33 @@ export const upcomingColumns = ({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="flex flex-col items-start gap-2 w-40">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() =>
-                      handleMeetingJoin(row.original.appointmentId)
-                    }
+                  <Link
+                    className={cn(
+                      buttonVariants({ size: "sm", variant: "outline" }),
+                      "w-full justify-start",
+                      {
+                        "pointer-events-none cursor-not-allowed":
+                          new Date(appointment_date) < new Date() ||
+                          new Date(appointment_date) >
+                            new Date(new Date().getTime() + 30 * 60 * 1000),
+                      }
+                    )}
+                    href={`/meeting/${row.original.appointmentId}`}
                   >
                     <Video className="h-5 w-5 mr-2" /> Join Meeting
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() => handleChat(row.original)}
+                  </Link>
+                  <Link
+                    href={`/${role === "patient" && "my-"}conversations/${
+                      row.original.appointmentId
+                    }`}
+                    className={cn(
+                      buttonVariants({ size: "sm", variant: "outline" }),
+                      "w-full justify-start"
+                    )}
                   >
-                    <MessageCircle className="h-5 w-5 mr-2" /> Start Conversation
-                  </Button>
+                    <MessageCircle className="h-5 w-5 mr-2" /> Start
+                    Conversation
+                  </Link>
                 </PopoverContent>
               </Popover>
             </div>
