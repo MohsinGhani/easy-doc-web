@@ -229,6 +229,12 @@ declare interface Conversation {
   metaData: ConversationMetaData;
 }
 
+declare type Meeting = {
+  doctorUserId: string;
+  patientUserId: string;
+  appointmentId: string;
+};
+
 declare interface Message {
   senderId: string;
   conversationId: string;

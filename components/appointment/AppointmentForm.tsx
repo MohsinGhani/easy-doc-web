@@ -186,13 +186,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
           age:
             new Date().getFullYear() -
             new Date(new Date(data.dob as string)).getFullYear(),
+          picture:
+            data.gender === "Male"
+              ? "https://cdn-icons-png.freepik.com/512/2869/2869791.png?ga=GA1.1.1652342059.1728802380"
+              : data.gender === "Female"
+              ? "https://cdn-icons-png.freepik.com/512/4310/4310226.png?ga=GA1.1.1652342059.1728802380"
+              : "https://cdn-icons-png.freepik.com/512/10835/10835597.png?ga=GA1.1.1652342059.1728802380",
         };
       }
-
-      const patientProfilePicture =
-        data.consulting_for === "Other"
-          ? "https://avatar-placeholder.iran.liara.run/male/2"
-          : user.picture ?? "https://avatar-placeholder.iran.liara.run/male/32";
 
       const newAppointment = {
         ...data,
@@ -201,13 +202,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         patientId: user.userId,
         visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
         amount: consultingFee,
-        doctorName: `Dr. ${fetchedDoctor?.display_name}`,
-        patientName:
-          data.consulting_for === "Other"
-            ? data.display_name
-            : user.display_name,
-        doctorProfilePicture: fetchedDoctor?.picture,
-        patientProfilePicture,
       };
 
       // Step 4: Submit form data to the backend

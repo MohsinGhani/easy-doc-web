@@ -10,15 +10,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import CancelledAppointmentsList from "./CancelledAppointmentsList";
 import CompletedAppointmentsList from "./CompletedAppointmentsList";
+import { useAppSelector } from "@/lib/hooks";
+
+type IValue = "upcoming" | "cancelled" | "completed";
 
 const AllAppointments = () => {
-  const [activeTab, setActiveTab] = useState("upcoming");
+  const { user, loading } = useAppSelector((state) => state.auth);
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  const [activeTab, setActiveTab] = useState("upcoming");
 
   useEffect(() => {
     setActiveTab(searchParams.get("activeTab") || "upcoming");
@@ -50,9 +55,13 @@ const AllAppointments = () => {
                       onClick={() => navigateToTab(value)}
                     >
                       {value}
-                      <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
-                        {Math.floor(Math.random() * 100) + 1}
-                      </span>
+                      {loading ? (
+                        <span className="rounded bg-stone-50 w-5 h-5 ml-2 animate-pulse" />
+                      ) : (
+                        <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
+                          {getCount(user, value as IValue)}
+                        </span>
+                      )}
                     </TabsTrigger>
                   </CarouselItem>
                 ))}
@@ -74,9 +83,13 @@ const AllAppointments = () => {
                 onClick={() => navigateToTab(value)}
               >
                 {value}
-                <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
-                  {Math.floor(Math.random() * 100) + 1}
-                </span>
+                {loading ? (
+                  <span className="rounded bg-stone-50 w-5 h-5 ml-2 animate-pulse" />
+                ) : (
+                  <span className="text-xs rounded-lg bg-stone-50 px-2 py-1 text-[#71717a] ml-2">
+                    {getCount(user, value as IValue)}
+                  </span>
+                )}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -97,3 +110,17 @@ const AllAppointments = () => {
 };
 
 export default AllAppointments;
+
+const getCount = (user: User, type: IValue): React.ReactNode => {
+  switch (type) {
+    case "upcoming":
+      return user.no_of_UPCOMING_appointments ?? 0;
+    case "cancelled":
+      user.no_of_CANCELLED_appointments ?? 0;
+    case "completed":
+      user.no_of_COMPLETED_appointments ?? 0;
+
+    default:
+      return `${Math.floor(Math.random() * 100)}`;
+  }
+};

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Separator } from "../ui/separator";
 import { CalendarCheck2, Clock3, MapPin } from "lucide-react";
-import { buttonVariants } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { cn, formatTimeForUI } from "@/lib/utils";
 import { GenderMale } from "../icons";
 import { useAppSelector } from "@/lib/hooks";
@@ -24,7 +24,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     loading: Uloading,
   } = useAppSelector((state) => state.auth);
 
-  if (loading || Uloading || !appointment) {
+  if (loading || Uloading) {
     return (
       <div
         className={cn(
@@ -96,6 +96,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       </div>
     );
   }
+
+  if (!appointment) return null;
 
   return (
     <div
@@ -220,21 +222,19 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             Message
           </Link>
 
-          <Link
-            className={cn(
-              buttonVariants({ size: "sm", variant: "default" }),
-              "w-full",
-              {
-                "pointer-events-none cursor-not-allowed":
-                  new Date(appointment.appointment_date) < new Date() ||
-                  new Date(appointment.appointment_date) >
-                    new Date(new Date().getTime() + 30 * 60 * 1000),
-              }
-            )}
-            href={`/meeting/${appointment.appointmentId}`}
+          <Button
+            size="sm"
+            className="w-full"
+            disabled={
+              new Date(appointment.appointment_date) < new Date() ||
+              new Date(appointment.appointment_date) >
+                new Date(new Date().getTime() + 30 * 60 * 1000)
+            }
           >
-            Join Meeting
-          </Link>
+            <Link href={`/meeting/${appointment.appointmentId}`}>
+              Join Meeting
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

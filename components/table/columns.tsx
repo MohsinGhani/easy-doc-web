@@ -783,7 +783,8 @@ export const upcomingColumns = ({
                         row.original.appointmentId
                       }`}
                       className={cn(
-                        buttonVariants({ size: "icon", variant: "outline" }), "p-2"
+                        buttonVariants({ size: "icon", variant: "outline" }),
+                        "p-2"
                       )}
                     >
                       <MessageCircle className="h-5 w-5 cursor-pointer text-primary" />
@@ -793,17 +794,18 @@ export const upcomingColumns = ({
                 </Tooltip>
 
                 <Tooltip>
-                  <TooltipTrigger asChild>
+                  <TooltipTrigger
+                    asChild
+                    disabled={
+                      new Date(appointment_date) < new Date() ||
+                      new Date(appointment_date) >
+                        new Date(new Date().getTime() + 30 * 60 * 1000)
+                    }
+                  >
                     <Link
                       className={cn(
                         buttonVariants({ size: "icon", variant: "outline" }),
-                        "w-full justify-start p-2",
-                        {
-                          "pointer-events-none cursor-not-allowed":
-                            new Date(appointment_date) < new Date() ||
-                            new Date(appointment_date) >
-                              new Date(new Date().getTime() + 30 * 60 * 1000),
-                        }
+                        "w-full justify-start p-2"
                       )}
                       href={`/meeting/${row.original.appointmentId}`}
                     >
@@ -824,21 +826,23 @@ export const upcomingColumns = ({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="flex flex-col items-start gap-2 w-40">
-                  <Link
-                    className={cn(
-                      buttonVariants({ size: "sm", variant: "outline" }),
-                      "w-full justify-start",
-                      {
-                        "pointer-events-none cursor-not-allowed":
-                          new Date(appointment_date) < new Date() ||
-                          new Date(appointment_date) >
-                            new Date(new Date().getTime() + 30 * 60 * 1000),
-                      }
-                    )}
-                    href={`/meeting/${row.original.appointmentId}`}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full justify-start"
+                    disabled={
+                      new Date(appointment_date) < new Date() ||
+                      new Date(appointment_date) >
+                        new Date(new Date().getTime() + 30 * 60 * 1000)
+                    }
                   >
-                    <Video className="h-5 w-5 mr-2" /> Join Meeting
-                  </Link>
+                    <Link
+                      href={`/meeting/${row.original.appointmentId}`}
+                      className="flex items-center"
+                    >
+                      <Video className="h-5 w-5 mr-2" /> Join Meeting
+                    </Link>
+                  </Button>
                   <Link
                     href={`/${role === "patient" && "my-"}conversations/${
                       row.original.appointmentId
