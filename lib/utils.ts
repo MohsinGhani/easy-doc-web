@@ -326,8 +326,8 @@ export const calculateUpdatedRatings = (
   };
 };
 
+// Utility function to format the time difference
 export const formatTimeDiff = (timeDiff: number): string => {
-  console.log("🚀 ~ formatTimeDiff ~ timeDiff:", timeDiff)
   const totalSeconds = Math.floor(timeDiff / 1000);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);

@@ -41,7 +41,7 @@ const UpcomingAppointmentsList = ({
     );
   };
 
-  const columns = React.useMemo(() => upcomingColumns({ role }), []);
+  const columns = React.useMemo(() => upcomingColumns({}), []);
 
   return (
     <>

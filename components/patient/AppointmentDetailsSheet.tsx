@@ -12,7 +12,7 @@ import {
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import RejectAppointmentDialog from "./CancelAppointmentDialog";
+import RejectAppointmentDialog from "./RejectAppointmentDialog";
 
 interface AppointmentDetailsSheetProps {
   selectedAppointment: Appointment | null;

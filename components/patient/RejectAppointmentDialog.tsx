@@ -13,14 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
 
-interface CancelAppointmentProps {
+interface RejectAppointmentDialogProps {
   reason: string;
   onReject: () => void;
   getNote?: boolean;
   trigger: React.ReactNode;
 }
 
-const RejectAppointmentDialog: React.FC<CancelAppointmentProps> = ({
+const RejectAppointmentDialog: React.FC<RejectAppointmentDialogProps> = ({
   reason,
   onReject,
   getNote = true,
@@ -30,7 +30,8 @@ const RejectAppointmentDialog: React.FC<CancelAppointmentProps> = ({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>{" "}
+      {/* Ensure trigger supports refs */}
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
@@ -41,7 +42,7 @@ const RejectAppointmentDialog: React.FC<CancelAppointmentProps> = ({
 
         {getNote && (
           <div className="grid flex-1 gap-2">
-            <Label className="sr-only">Note</Label>
+            <Label className="sr-only">Note</Label> {/* Ensure label is hidden */}
             <Input
               placeholder="Provide a reason for the appointment's cancellation (required)"
               value={note}

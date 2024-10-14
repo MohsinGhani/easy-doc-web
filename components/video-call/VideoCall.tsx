@@ -8,10 +8,11 @@ import {
   LogLevel,
   ConsoleLogger,
   DataMessage,
+  AudioVideoFacade,
 } from "amazon-chime-sdk-js";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { formatTimeDiff, meetingsApiClient } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn, formatTimeDiff, meetingsApiClient } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mic, MicOff, Video, VideoOff, Send, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { formatInTimeZone } from "date-fns-tz";
+import EmptyState from "../common/EmptyState";
 
 interface VideoCallProps {
   meetingId: string;
@@ -42,7 +44,6 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
   const { fetchedAppointment, loading: Aloader } = useAppSelector(
     (state) => state.appointment
   );
-
   const [meetingSession, setMeetingSession] =
     useState<DefaultMeetingSession | null>(null);
   const [isMuted, setIsMuted] = useState(false);
@@ -53,10 +54,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     []
   );
   const [loader, setLoader] = useState(false);
-
-  // Timer-related states
   const [timeRemaining, setTimeRemaining] = useState<string>("");
-  console.log("🚀 ~ VideoCall ~ timeRemaining:", timeRemaining);
   const [isAppointmentActive, setIsAppointmentActive] =
     useState<boolean>(false);
   const [redirectTimeout, setRedirectTimeout] = useState<NodeJS.Timeout | null>(
@@ -65,17 +63,79 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
   const audioElementRef = React.useRef<HTMLAudioElement | null>(null);
   const videoElementRef = React.useRef<HTMLVideoElement | null>(null);
 
+  // Function to check and request audio/video permissions
+  async function requestMediaPermissions() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      console.log("Permissions granted for audio and video");
+      return stream;
+    } catch (error) {
+      handleMediaPermissionError(error);
+      throw error;
+    }
+  }
+
+  function handleMediaPermissionError(error: any) {
+    if (error instanceof Error && error.name === "NotAllowedError") {
+      alert(
+        "You need to grant camera and microphone access to join the video call."
+      );
+    } else if (error instanceof Error && error.name === "NotFoundError") {
+      alert(
+        "No camera or microphone found. Please check your device settings."
+      );
+    } else {
+      console.error("Error accessing media devices:", error);
+    }
+  }
+
+  // Check permissions and start audio/video devices after getting permission
+  const initializeDevices = async (audioVideo: AudioVideoFacade) => {
+    try {
+      const audioInputDevices = await audioVideo.listAudioInputDevices();
+      const audioOutputDevices = await audioVideo.listAudioOutputDevices();
+      const videoInputDevices = await audioVideo.listVideoInputDevices();
+
+      if (audioInputDevices.length === 0 || videoInputDevices.length === 0) {
+        throw new Error("No audio or video input devices available.");
+      }
+
+      const audioInputDeviceInfo = audioInputDevices[0];
+      const audioOutputDeviceInfo = audioOutputDevices[0];
+      const videoInputDeviceInfo = videoInputDevices[0];
+
+      await audioVideo.startAudioInput(audioInputDeviceInfo.deviceId);
+      await audioVideo.chooseAudioOutput(audioOutputDeviceInfo.deviceId);
+      await audioVideo.startVideoInput(videoInputDeviceInfo.deviceId);
+
+      console.log("🚀 ~ initializeDevices ~ audioElementRef:", audioElementRef)
+      console.log("🚀 ~ initializeDevices ~ videoElementRef:", videoElementRef)
+      
+      if (audioElementRef.current) {
+        audioVideo.bindAudioElement(audioElementRef.current);
+      }
+      if (videoElementRef.current) {
+        audioVideo.bindVideoElement(1, videoElementRef.current);
+      }
+
+      audioVideo.start();
+      console.log("Audio and video devices initialized successfully.");
+    } catch (err) {
+      console.error("Error initializing devices", err);
+      setError(
+        "Failed to initialize audio or video devices. Please ensure permissions are granted."
+      );
+    }
+  };
+
+  // Fetch meeting details
   const fetchMeetingDetails = async () => {
     try {
-      // Get user's timezone using the Intl API
-      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "Europe/London"
-      console.log(`User's Time Zone: ${userTimeZone}`);
-
-      // Example of sending the user's timezone as a query string parameter
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const apiUrl = `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${user.display_name}&timezone=${userTimeZone}`;
-
-      // Then send this API call with the user's time zone to the backend
-
       const response = await meetingsApiClient.get(apiUrl);
       const data = response.data.data;
 
@@ -94,9 +154,26 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     }
   };
 
+  // Join the meeting when the refs are ready
+  const joinMeetingWhenRefsReady = async () => {
+    const tryJoinMeeting = () => {
+      if (!audioElementRef.current || !videoElementRef.current) {
+        console.log("Waiting for refs to be initialized...");
+        return setTimeout(tryJoinMeeting, 100); // Check every 100ms
+      }
+
+      joinMeeting(); // Proceed once refs are ready
+    };
+
+    tryJoinMeeting();
+  };
+
+  // Join the meeting and initialize the session
   const joinMeeting = async () => {
     try {
-      setLoader(true); // Show loading spinner
+      setLoader(true);
+      await requestMediaPermissions();
+
       const meetingData = await fetchMeetingDetails();
       if (!meetingData || !meetingData.Meeting || !meetingData.Attendee) {
         setError("Invalid meeting or attendee data.");
@@ -116,39 +193,16 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       );
       setMeetingSession(session);
 
-      const audioVideo = session.audioVideo;
-      console.error("🚀 ~ joinMeeting ~ audioVideo:", audioVideo);
+      await initializeDevices(session.audioVideo);
 
-      if (audioElementRef.current) {
-        audioVideo.bindAudioElement(audioElementRef.current);
-      }
-
-      if (videoElementRef.current) {
-        audioVideo.bindVideoElement(1, videoElementRef.current);
-      }
-
-      const audioInputDevices = await audioVideo.listAudioInputDevices();
-      if (audioInputDevices.length > 0) {
-        await audioVideo.chooseAudioOutput(audioInputDevices[0].deviceId);
-      }
-
-      // const videoInputDevices = await audioVideo.listVideoInputDevices();
-      // if (videoInputDevices.length > 0) {
-      // }
-
-      audioVideo.start();
-
-      const topic = "Conversation";
-      audioVideo.realtimeSubscribeToReceiveDataMessage(
-        topic,
+      session.audioVideo.realtimeSubscribeToReceiveDataMessage(
+        "Conversation",
         (dataMessage: DataMessage) => {
           const text = dataMessage.text();
           setChatLog((prev) => [
             ...prev,
             {
-              sender:
-                dataMessage.senderExternalUserId.split("#")[0] ??
-                `${user.role === "patient" ? "Patient" : "Doctor"}`,
+              sender: dataMessage.senderExternalUserId.split("#")[0],
               message: text,
             },
           ]);
@@ -158,13 +212,13 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       console.error("Error joining the meeting", err);
       setError("Failed to join the meeting.");
     } finally {
-      setLoader(false); // Hide loading spinner
+      setLoader(false);
     }
   };
 
   useEffect(() => {
     if (meetingId && user.userId) {
-      joinMeeting();
+      joinMeetingWhenRefsReady();
       dispatch(appointmentThunks.fetchAppointmentById(meetingId));
     }
 
@@ -174,6 +228,42 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       }
     };
   }, [meetingId, user.userId]);
+
+  const toggleMute = () => {
+    if (meetingSession) {
+      const audioVideo = meetingSession.audioVideo;
+      isMuted
+        ? audioVideo.realtimeUnmuteLocalAudio()
+        : audioVideo.realtimeMuteLocalAudio();
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const toggleVideo = async () => {
+    if (meetingSession) {
+      const audioVideo = meetingSession.audioVideo;
+      isVideoOn
+        ? audioVideo.stopLocalVideoTile()
+        : audioVideo.startLocalVideoTile();
+      setIsVideoOn(!isVideoOn);
+    }
+  };
+
+  const leaveMeeting = () => {
+    if (meetingSession) {
+      const audioVideo = meetingSession.audioVideo;
+      audioVideo.realtimeUnsubscribeFromReceiveDataMessage("Conversation");
+      audioVideo.realtimeUnmuteLocalAudio();
+      audioVideo.stopLocalVideoTile();
+      audioVideo.stop();
+      setMeetingSession(null);
+      router.push(
+        user.role === "doctor"
+          ? "/appointments?activeTab=completed"
+          : "/my-appointments"
+      );
+    }
+  };
 
   // Timer logic and redirect handling
   useEffect(() => {
@@ -317,47 +407,6 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     };
   }, []);
 
-  const toggleMute = () => {
-    if (meetingSession) {
-      const audioVideo = meetingSession.audioVideo;
-      if (isMuted) {
-        audioVideo.realtimeUnmuteLocalAudio();
-      } else {
-        audioVideo.realtimeMuteLocalAudio();
-      }
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const toggleVideo = async () => {
-    if (meetingSession) {
-      const audioVideo = meetingSession.audioVideo;
-      console.log("🚀 ~ toggleVideo ~ audioVideo:", audioVideo);
-      if (isVideoOn) {
-        audioVideo.stopLocalVideoTile();
-      } else {
-        audioVideo.startLocalVideoTile();
-      }
-      setIsVideoOn(!isVideoOn);
-    }
-  };
-
-  const leaveMeeting = () => {
-    if (meetingSession) {
-      const audioVideo = meetingSession.audioVideo;
-      audioVideo.realtimeUnsubscribeFromReceiveDataMessage("Conversation");
-      audioVideo.realtimeUnmuteLocalAudio();
-      audioVideo.stopLocalVideoTile();
-      audioVideo.stop();
-      setMeetingSession(null);
-      router.push(
-        user.role === "doctor"
-          ? "/appointments?activeTab=completed"
-          : "/my-appointments"
-      );
-    }
-  };
-
   const sendMessage = () => {
     if (meetingSession && message.trim() !== "") {
       const audioVideo = meetingSession.audioVideo;
@@ -382,15 +431,12 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-          role="alert"
-        >
-          <strong className="font-bold">Error: </strong>
-          <span className="block sm:inline">{error}</span>
-        </div>
-      </div>
+      <EmptyState
+        buttonText="Go Back"
+        onButtonClick={() => router.back()}
+        title="Something went wrong"
+        subtitle={error}
+      />
     );
   }
 
@@ -405,18 +451,20 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
         <div className="flex justify-between items-center gap-4">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  onClick={toggleMute}
-                  size={"icon"}
-                  variant={isMuted ? "destructive" : "default"}
-                >
-                  {isMuted ? (
-                    <MicOff className="h-4 w-4" />
-                  ) : (
-                    <Mic className="h-4 w-4" />
-                  )}
-                </Button>
+              <TooltipTrigger
+                onClick={toggleMute}
+                className={cn(
+                  buttonVariants({
+                    size: "icon",
+                    variant: isMuted ? "destructive" : "default",
+                  })
+                )}
+              >
+                {isMuted ? (
+                  <MicOff className="h-4 w-4" />
+                ) : (
+                  <Mic className="h-4 w-4" />
+                )}
               </TooltipTrigger>
               <TooltipContent>
                 <p>{isMuted ? "Unmute" : "Mute"}</p>
@@ -424,18 +472,20 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
             </Tooltip>
 
             <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  onClick={toggleVideo}
-                  size={"icon"}
-                  variant={isVideoOn ? "destructive" : "default"}
-                >
-                  {isVideoOn ? (
-                    <VideoOff className="h-4 w-4" />
-                  ) : (
-                    <Video className="h-4 w-4" />
-                  )}
-                </Button>
+              <TooltipTrigger
+                onClick={toggleVideo}
+                className={cn(
+                  buttonVariants({
+                    size: "icon",
+                    variant: isVideoOn ? "destructive" : "default",
+                  })
+                )}
+              >
+                {isVideoOn ? (
+                  <VideoOff className="h-4 w-4" />
+                ) : (
+                  <Video className="h-4 w-4" />
+                )}
               </TooltipTrigger>
               <TooltipContent>
                 <p>{isVideoOn ? "Stop Video" : "Start Video"}</p>
@@ -443,14 +493,16 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
             </Tooltip>
 
             <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  onClick={leaveMeeting}
-                  size={"icon"}
-                  variant="destructive"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
+              <TooltipTrigger
+                onClick={leaveMeeting}
+                className={cn(
+                  buttonVariants({
+                    size: "icon",
+                    variant: "destructive",
+                  })
+                )}
+              >
+                <LogOut className="h-4 w-4" />
               </TooltipTrigger>
               <TooltipContent className="bg-destructive">
                 <p>Leave Meeting</p>
@@ -460,7 +512,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
         </div>
       </CardHeader>
 
-      <audio ref={audioElementRef} id="meeting-audio" className="hidden" />
+      <audio ref={audioElementRef} className="hidden" />
 
       <CardContent className="flex-grow flex rounded-xl">
         <div className="flex-grow flex flex-col md:flex-row max-w-7xl mx-auto w-full p-4 gap-4">
@@ -468,19 +520,27 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
           <div className="md:w-3/4 bg-black relative rounded-lg max-h-[700px] flex items-center justify-center">
             <div
               id="video-container"
-              ref={videoElementRef}
-              className="h-full w-full bg-gray-900 rounded-lg shadow-lg overflow-hidden flex items-center justify-center text-white text-center"
+              className="h-full w-full bg-gray-900 rounded-lg shadow-lg overflow-hidden flex items-center justify-center text-white text-center relative"
             >
+              <video
+                ref={videoElementRef}
+                className="w-full h-full"
+                autoPlay
+                playsInline
+              />
+
               {/* Show Timer instead of Video Placeholder */}
-              {isAppointmentActive ? (
-                <p>Time Remaining: {timeRemaining}</p>
-              ) : (
-                <p>
-                  {timeRemaining === "Appointment has ended."
-                    ? "Appointment has ended."
-                    : `Appointment starts in: ${timeRemaining}`}
-                </p>
-              )}
+              <div className="absolute left-0 right-0 top-5">
+                {isAppointmentActive ? (
+                  <p>Time Remaining: {timeRemaining}</p>
+                ) : (
+                  <p>
+                    {timeRemaining === "Appointment has ended."
+                      ? "Appointment has ended."
+                      : `Appointment starts in: ${timeRemaining}`}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
