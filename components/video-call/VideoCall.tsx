@@ -9,6 +9,7 @@ import {
   ConsoleLogger,
   DataMessage,
   AudioVideoFacade,
+  VideoTileState,
 } from "amazon-chime-sdk-js";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn, formatTimeDiff, meetingsApiClient } from "@/lib/utils";
@@ -44,6 +45,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
   const { fetchedAppointment, loading: Aloader } = useAppSelector(
     (state) => state.appointment
   );
+
   const [meetingSession, setMeetingSession] =
     useState<DefaultMeetingSession | null>(null);
   const [isMuted, setIsMuted] = useState(false);
@@ -54,6 +56,8 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     []
   );
   const [loader, setLoader] = useState(false);
+
+  // Timer-related states
   const [timeRemaining, setTimeRemaining] = useState<string>("");
   const [isAppointmentActive, setIsAppointmentActive] =
     useState<boolean>(false);
@@ -66,6 +70,7 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
   // Function to check and request audio/video permissions
   async function requestMediaPermissions() {
     try {
+      // Request access to audio and video
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
@@ -73,54 +78,79 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       console.log("Permissions granted for audio and video");
       return stream;
     } catch (error) {
-      handleMediaPermissionError(error);
+      if (error instanceof Error && error.name === "NotAllowedError") {
+        console.error("Permission denied by the user.");
+        alert(
+          "You need to grant camera and microphone access to join the video call."
+        );
+      } else if (error instanceof Error && error.name === "NotFoundError") {
+        console.error("No camera or microphone device found.");
+        alert(
+          "No camera or microphone found. Please check your device settings."
+        );
+      } else {
+        console.error("Error accessing media devices:", error);
+      }
       throw error;
     }
   }
 
-  function handleMediaPermissionError(error: any) {
-    if (error instanceof Error && error.name === "NotAllowedError") {
-      alert(
-        "You need to grant camera and microphone access to join the video call."
-      );
-    } else if (error instanceof Error && error.name === "NotFoundError") {
-      alert(
-        "No camera or microphone found. Please check your device settings."
-      );
-    } else {
-      console.error("Error accessing media devices:", error);
-    }
-  }
-
   // Check permissions and start audio/video devices after getting permission
-  const initializeDevices = async (audioVideo: AudioVideoFacade) => {
+  const checkPermissionsAndInitializeDevices = async (
+    audioVideo: AudioVideoFacade
+  ) => {
     try {
+      // Get available audio and video devices
       const audioInputDevices = await audioVideo.listAudioInputDevices();
       const audioOutputDevices = await audioVideo.listAudioOutputDevices();
       const videoInputDevices = await audioVideo.listVideoInputDevices();
 
+      // Ensure devices are available
       if (audioInputDevices.length === 0 || videoInputDevices.length === 0) {
         throw new Error("No audio or video input devices available.");
       }
 
-      const audioInputDeviceInfo = audioInputDevices[0];
-      const audioOutputDeviceInfo = audioOutputDevices[0];
-      const videoInputDeviceInfo = videoInputDevices[0];
+      const audioInputDeviceInfo = audioInputDevices[0]; // Select first audio input device
+      const audioOutputDeviceInfo = audioOutputDevices[0]; // Select first audio output device
+      const videoInputDeviceInfo = videoInputDevices[0]; // Select first video input device
 
+      // Start audio and video input
       await audioVideo.startAudioInput(audioInputDeviceInfo.deviceId);
       await audioVideo.chooseAudioOutput(audioOutputDeviceInfo.deviceId);
       await audioVideo.startVideoInput(videoInputDeviceInfo.deviceId);
 
-      console.log("🚀 ~ initializeDevices ~ audioElementRef:", audioElementRef)
-      console.log("🚀 ~ initializeDevices ~ videoElementRef:", videoElementRef)
-      
+      console.log("🚀 ~ initializeDevices ~ audioElementRef:", audioElementRef);
+      console.log("🚀 ~ initializeDevices ~ videoElementRef:", videoElementRef);
+
+      // Observer to update the video tile when a change occurs
+      const observer = {
+        videoTileDidUpdate: (tileState: VideoTileState) => {
+          // Ignore tiles that are not for the local user
+          if (!tileState.boundAttendeeId || !tileState.localTile) {
+            return;
+          }
+
+          // Bind the video tile to the video element in the DOM
+          if (tileState.tileId !== null && videoElementRef.current) {
+            audioVideo.bindVideoElement(
+              tileState.tileId,
+              videoElementRef.current
+            );
+            console.log("Video tile updated and bound to the video element.");
+          }
+        },
+      };
+
+      // Add the observer and start local video tile
+      audioVideo.addObserver(observer);
+      audioVideo.startLocalVideoTile(); // Start local video stream
+
+      // Bind the audio element to the meeting's audio if it exists
       if (audioElementRef.current) {
         audioVideo.bindAudioElement(audioElementRef.current);
       }
-      if (videoElementRef.current) {
-        audioVideo.bindVideoElement(1, videoElementRef.current);
-      }
 
+      // Start audio and video processing
       audioVideo.start();
       console.log("Audio and video devices initialized successfully.");
     } catch (err) {
@@ -131,11 +161,17 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     }
   };
 
-  // Fetch meeting details
   const fetchMeetingDetails = async () => {
     try {
-      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // Get user's timezone using the Intl API
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "Europe/London"
+      console.log(`User's Time Zone: ${userTimeZone}`);
+
+      // Example of sending the user's timezone as a query string parameter
       const apiUrl = `/meeting/${meetingId}?role=${user.role}&userId=${user.userId}&name=${user.display_name}&timezone=${userTimeZone}`;
+
+      // Then send this API call with the user's time zone to the backend
+
       const response = await meetingsApiClient.get(apiUrl);
       const data = response.data.data;
 
@@ -154,32 +190,21 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     }
   };
 
-  // Join the meeting when the refs are ready
-  const joinMeetingWhenRefsReady = async () => {
-    const tryJoinMeeting = () => {
-      if (!audioElementRef.current || !videoElementRef.current) {
-        console.log("Waiting for refs to be initialized...");
-        return setTimeout(tryJoinMeeting, 100); // Check every 100ms
-      }
-
-      joinMeeting(); // Proceed once refs are ready
-    };
-
-    tryJoinMeeting();
-  };
-
-  // Join the meeting and initialize the session
   const joinMeeting = async () => {
     try {
-      setLoader(true);
+      setLoader(true); // Show loading spinner
+
+      // Step 1: Request camera and microphone access
       await requestMediaPermissions();
 
+      // Step 2: Fetch meeting details (from your server)
       const meetingData = await fetchMeetingDetails();
       if (!meetingData || !meetingData.Meeting || !meetingData.Attendee) {
         setError("Invalid meeting or attendee data.");
         return;
       }
 
+      // Step 3: Initialize Chime session and devices after permissions are granted
       const meetingSessionConfiguration = new MeetingSessionConfiguration(
         meetingData.Meeting,
         meetingData.Attendee
@@ -193,16 +218,21 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       );
       setMeetingSession(session);
 
-      await initializeDevices(session.audioVideo);
+      const audioVideo = session.audioVideo;
 
-      session.audioVideo.realtimeSubscribeToReceiveDataMessage(
+      // Request permissions and initialize devices
+      await checkPermissionsAndInitializeDevices(session.audioVideo);
+
+      audioVideo.realtimeSubscribeToReceiveDataMessage(
         "Conversation",
         (dataMessage: DataMessage) => {
           const text = dataMessage.text();
           setChatLog((prev) => [
             ...prev,
             {
-              sender: dataMessage.senderExternalUserId.split("#")[0],
+              sender:
+                dataMessage.senderExternalUserId.split("#")[0] ??
+                `${user.role === "patient" ? "Patient" : "Doctor"}`,
               message: text,
             },
           ]);
@@ -212,13 +242,13 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       console.error("Error joining the meeting", err);
       setError("Failed to join the meeting.");
     } finally {
-      setLoader(false);
+      setLoader(false); // Hide loading spinner
     }
   };
 
   useEffect(() => {
     if (meetingId && user.userId) {
-      joinMeetingWhenRefsReady();
+      joinMeeting();
       dispatch(appointmentThunks.fetchAppointmentById(meetingId));
     }
 
@@ -228,42 +258,6 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
       }
     };
   }, [meetingId, user.userId]);
-
-  const toggleMute = () => {
-    if (meetingSession) {
-      const audioVideo = meetingSession.audioVideo;
-      isMuted
-        ? audioVideo.realtimeUnmuteLocalAudio()
-        : audioVideo.realtimeMuteLocalAudio();
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const toggleVideo = async () => {
-    if (meetingSession) {
-      const audioVideo = meetingSession.audioVideo;
-      isVideoOn
-        ? audioVideo.stopLocalVideoTile()
-        : audioVideo.startLocalVideoTile();
-      setIsVideoOn(!isVideoOn);
-    }
-  };
-
-  const leaveMeeting = () => {
-    if (meetingSession) {
-      const audioVideo = meetingSession.audioVideo;
-      audioVideo.realtimeUnsubscribeFromReceiveDataMessage("Conversation");
-      audioVideo.realtimeUnmuteLocalAudio();
-      audioVideo.stopLocalVideoTile();
-      audioVideo.stop();
-      setMeetingSession(null);
-      router.push(
-        user.role === "doctor"
-          ? "/appointments?activeTab=completed"
-          : "/my-appointments"
-      );
-    }
-  };
 
   // Timer logic and redirect handling
   useEffect(() => {
@@ -407,6 +401,46 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
     };
   }, []);
 
+  const toggleMute = () => {
+    if (meetingSession) {
+      const audioVideo = meetingSession.audioVideo;
+      if (isMuted) {
+        audioVideo.realtimeUnmuteLocalAudio();
+      } else {
+        audioVideo.realtimeMuteLocalAudio();
+      }
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const toggleVideo = async () => {
+    if (meetingSession) {
+      const audioVideo = meetingSession.audioVideo;
+      if (isVideoOn) {
+        audioVideo.stopLocalVideoTile();
+      } else {
+        audioVideo.startLocalVideoTile();
+      }
+      setIsVideoOn(!isVideoOn);
+    }
+  };
+
+  const leaveMeeting = () => {
+    if (meetingSession) {
+      const audioVideo = meetingSession.audioVideo;
+      audioVideo.realtimeUnsubscribeFromReceiveDataMessage("Conversation");
+      audioVideo.realtimeUnmuteLocalAudio();
+      audioVideo.stopLocalVideoTile();
+      audioVideo.stop();
+      setMeetingSession(null);
+      router.push(
+        user.role === "doctor"
+          ? "/appointments?activeTab=completed"
+          : "/my-appointments"
+      );
+    }
+  };
+
   const sendMessage = () => {
     if (meetingSession && message.trim() !== "") {
       const audioVideo = meetingSession.audioVideo;
@@ -518,29 +552,29 @@ export default function VideoCall({ meetingId }: VideoCallProps) {
         <div className="flex-grow flex flex-col md:flex-row max-w-7xl mx-auto w-full p-4 gap-4">
           {/* Video Section */}
           <div className="md:w-3/4 bg-black relative rounded-lg max-h-[700px] flex items-center justify-center">
-            <div
+            {/* <div
               id="video-container"
-              className="h-full w-full bg-gray-900 rounded-lg shadow-lg overflow-hidden flex items-center justify-center text-white text-center relative"
-            >
-              <video
-                ref={videoElementRef}
-                className="w-full h-full"
-                autoPlay
-                playsInline
-              />
+              className="h-full w-full bg-gray-900 rounded-lg shadow-lg overflow-hidden flex items-center justify-center text-white text-center"
+            ></div> */}
 
-              {/* Show Timer instead of Video Placeholder */}
-              <div className="absolute left-0 right-0 top-5">
-                {isAppointmentActive ? (
-                  <p>Time Remaining: {timeRemaining}</p>
-                ) : (
-                  <p>
-                    {timeRemaining === "Appointment has ended."
-                      ? "Appointment has ended."
-                      : `Appointment starts in: ${timeRemaining}`}
-                  </p>
-                )}
-              </div>
+            <video
+              ref={videoElementRef}
+              className="w-full h-full"
+              autoPlay
+              playsInline
+            />
+
+            {/* Show Timer instead of Video Placeholder */}
+            <div className="absolute w-full text-center top-5 text-white">
+              {isAppointmentActive ? (
+                <p>Time Remaining: {timeRemaining}</p>
+              ) : (
+                <p>
+                  {timeRemaining === "Appointment has ended."
+                    ? "Appointment has ended."
+                    : `Appointment starts in: ${timeRemaining}`}
+                </p>
+              )}
             </div>
           </div>
 
