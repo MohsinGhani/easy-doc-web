@@ -46,12 +46,12 @@ const MessageContainer = ({
   // Function to handle the scroll event
   const handleScroll = useCallback(() => {
     const scrollTop = messageContainerRef.current?.scrollTop;
-    if (scrollTop === 0 && MlastEvaluatedKey) {
+    if (scrollTop === 0 && MlastEvaluatedKey && conversationId) {
       // Dispatch action to load more messages when scroll reaches the top
       dispatch(
         conversationThunks.fetchMoreMessages({
           conversationId,
-          MlastEvaluatedKey,
+          startKey: MlastEvaluatedKey,
         })
       );
       console.log("feteching more messages");
