@@ -18,10 +18,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import React, { useCallback, useEffect, useRef } from "react";
 import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 import EmptyState from "@/components/common/EmptyState";
-import {
-  ConversationSkeletonOne,
-  ConversationSkeletonTwo,
-} from "@/components/skeletons/conversations";
+import { ConversationSkeletonTwo } from "@/components/skeletons/conversations";
 
 interface MessageContainerProps {
   conversationId?: string;
@@ -160,9 +157,16 @@ const MessageContainer = ({
           className="relative flex flex-col gap-4 grow mb-20"
           ref={messageContainerRef}
         >
-          {fetchedConversation?.messages?.map((message, i) => (
-            <MessageCard key={i} message={message} />
-          ))}
+          {fetchedConversation?.messages &&
+          fetchedConversation.messages.length > 0 ? (
+            fetchedConversation?.messages?.map((message) => (
+              <MessageCard key={message.messageId} message={message} />
+            ))
+          ) : (
+            <div className="text-center w-full h-full p-5">
+              {fetchedConversation?.lastMessage ?? "Started a Conversation."}
+            </div>
+          )}
         </div>
 
         <SendMessageButton
