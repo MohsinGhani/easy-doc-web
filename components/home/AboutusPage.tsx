@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
@@ -6,17 +5,17 @@ import { BlueCircle } from "../icons";
 
 const AboutusPage = () => {
   return (
-    <div className="w-full flex justify-center items-center h-full lg:mt-72 ">
-      <div className="w-[90%] lg:flex justify-between gap-6">
-        <div className=" pt-12 ">
-          <div className="text-primary text-[18px] font-medium leading-[27px] ">
+<div className="w-full flex justify-center items-center h-full lg:mt-72  ">
+<div className="w-[90%] lg:flex justify-between gap-6">
+      <div className="pt-80 lg:pt-[8rem] ">
+      <div className="text-primary text-[18px] font-medium leading-[27px]">
             ABOUT US
           </div>
           <div className="text-[#121212] mt-5 text-2xl md:text-[32px] font-semibold leading-[40px] tracking-[0.015em]   w-[86%] ">
             Find the right doctor according to your complaint
           </div>
           <div className="text-[#5C5C5B] mt-8 text-[16px] leading-[20px] tracking-[0.02em] text-left">
-            EasyDoc is a free, health app that goes beyond matching you with{" "}
+            EasyDoc is a free, health app that goes beyond matching you with{" "} 
             <br /> doctors. It actively helps you find the right doctor based on
             your medical <br /> and personal needs and connects you with your
             EasyDoc community for <br /> ongoing support throughout your journey
@@ -47,7 +46,7 @@ const AboutusPage = () => {
           </Button>
         </div>
 
-        <div>
+        <div className="lg:hidden xl:block">
         <Image
     src="/assets/images/aboutpageimg.png"
     width={1000}  

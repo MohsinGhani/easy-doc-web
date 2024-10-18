@@ -20,7 +20,7 @@ interface RequestReviewSheetProps {
 }
 
 const RequestReviewSheet = ({
-  selectedRequest,
+  selectedRequest, 
   open,
   setOpen,
 }: RequestReviewSheetProps) => {

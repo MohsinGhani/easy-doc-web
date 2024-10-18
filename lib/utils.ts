@@ -325,3 +325,22 @@ export const calculateUpdatedRatings = (
     ratingsBreakdownPercentages,
   };
 };
+
+// Utility function to format the time difference
+export const formatTimeDiff = (timeDiff: number): string => {
+  const totalSeconds = Math.floor(timeDiff / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${hours}h ${minutes}m ${seconds}s`;
+};
+
+export const playNotificationSound = () => {
+  // Create a new audio object and play it
+  const audio = new Audio("/sounds/sad.mp3");
+  audio.play().catch((error) => {
+    // Handle any error related to playback restriction or issue
+    console.error("Error playing notification sound: ", error);
+  });
+};

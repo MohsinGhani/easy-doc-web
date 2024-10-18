@@ -2,6 +2,7 @@
 
 import { updateMessages } from "@/lib/features/conversation/conversationSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import { playNotificationSound } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 
 interface WebSocketMessage extends Partial<Message> {
@@ -25,6 +26,9 @@ const useWebSocket = (webSocketUrl: string) => {
 
       ws.current.onmessage = (event: MessageEvent) => {
         const data: WebSocketMessage = JSON.parse(event.data);
+        // Play notification sound
+        playNotificationSound();
+
         if (data?.type && data?.type === "NEW_MESSAGE") {
           dispatch(updateMessages(data.message as Message));
           setMessages((prevMessages) => [

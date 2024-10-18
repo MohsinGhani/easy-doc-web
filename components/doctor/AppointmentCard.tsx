@@ -3,10 +3,11 @@
 import Image from "next/image";
 import { Separator } from "../ui/separator";
 import { CalendarCheck2, Clock3, MapPin } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { cn, formatTimeForUI } from "@/lib/utils";
 import { GenderMale } from "../icons";
 import { useAppSelector } from "@/lib/hooks";
+import Link from "next/link";
 
 interface AppointmentCardProps {
   className?: string;
@@ -18,8 +19,12 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   appointment,
 }) => {
   const loading = useAppSelector((state) => state.appointment.loading);
+  const {
+    user: { role },
+    loading: Uloading,
+  } = useAppSelector((state) => state.auth);
 
-  if (loading || !appointment) {
+  if (loading || Uloading) {
     return (
       <div
         className={cn(
@@ -91,6 +96,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
       </div>
     );
   }
+
+  if (!appointment) return null;
 
   return (
     <div
@@ -203,10 +210,31 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
         {/* Message and Join Now Buttons */}
         <div className="mt-4 flex items-center flex-wrap xl:flex-nowrap justify-between gap-3">
-          <Button className="w-full" variant={"outline"}>
+          <Link
+            href={`/${role === "patient" && "my-"}conversations/${
+              appointment.appointmentId
+            }`}
+            className={cn(
+              buttonVariants({ size: "sm", variant: "outline" }),
+              "w-full"
+            )}
+          >
             Message
+          </Link>
+
+          <Button
+            size="sm"
+            className="w-full"
+            disabled={
+              new Date(appointment.appointment_date) < new Date() ||
+              new Date(appointment.appointment_date) >
+                new Date(new Date().getTime() + 30 * 60 * 1000)
+            }
+          >
+            <Link href={`/meeting/${appointment.appointmentId}`}>
+              Join Meeting
+            </Link>
           </Button>
-          <Button className="w-full">Join Now</Button>
         </div>
       </div>
     </div>

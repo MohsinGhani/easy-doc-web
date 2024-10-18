@@ -18,12 +18,29 @@ export const conversationSlice = createSlice({
   reducers: {
     // update the fetched conversation messages and all conversations messages list by pushing the newly sent message to it
     updateMessages: (state, action: PayloadAction<Message>) => {
-      state.fetchedConversation?.messages.push(action.payload);
-      state.allConversations = state.allConversations.map((conv) => {
-        if (conv.conversationId === state.fetchedConversation?.conversationId)
-          return state.fetchedConversation;
-        return conv;
-      });
+      if (state.fetchedConversation) {
+        state.fetchedConversation?.messages.push(action.payload);
+        state.fetchedConversation.lastMessage =
+          action.payload.text ?? "Sent an attachment";
+        state.fetchedConversation.lastMessageAt = action.payload.sentAt;
+        state.fetchedConversation.lastMessageRead = false;
+        state.allConversations = state.allConversations.map((conv) => {
+          if (conv.conversationId === state.fetchedConversation?.conversationId)
+            return { ...state.fetchedConversation, lastMessageRead: false };
+          return conv;
+        });
+      } else {
+        state.allConversations = state.allConversations.map((conv) => {
+          if (conv.conversationId === action.payload.conversationId) {
+            conv.messages.push(action.payload);
+            conv.lastMessage = action.payload.text ?? "Sent an attachment";
+            conv.lastMessageAt = action.payload.sentAt;
+            conv.lastMessageRead = false;
+            return conv;
+          }
+          return conv;
+        });
+      }
     },
   },
   extraReducers: (builder) => {
@@ -117,20 +134,41 @@ export const conversationSlice = createSlice({
       // sendMessage in the conversation
       .addCase(conversationThunks.sendMessage.pending, (state) => {
         state.Mloading = true;
+        state.Cloading = true;
         state.error = null;
       })
       .addCase(
         conversationThunks.sendMessage.fulfilled,
         (state, action: PayloadAction<Message>) => {
+          if (state.fetchedConversation) {
+            state.fetchedConversation?.messages.push(action.payload);
+            state.fetchedConversation.lastMessage =
+              action.payload.text ?? "Sent an attachment";
+            state.fetchedConversation.lastMessageAt = action.payload.sentAt;
+            state.fetchedConversation.lastMessageRead = false;
+            state.allConversations = state.allConversations.map((conv) => {
+              if (
+                conv.conversationId ===
+                state.fetchedConversation?.conversationId
+              )
+                return { ...state.fetchedConversation, lastMessageRead: false };
+              return conv;
+            });
+          } else {
+            state.allConversations = state.allConversations.map((conv) => {
+              if (conv.conversationId === action.payload.conversationId) {
+                conv.messages.push(action.payload);
+                conv.lastMessage = action.payload.text ?? "Sent an attachment";
+                conv.lastMessageAt = action.payload.sentAt;
+                conv.lastMessageRead = false;
+                return conv;
+              }
+              return conv;
+            });
+          }
+
           state.Mloading = false;
-          state.fetchedConversation?.messages.push(action.payload);
-          state.allConversations = state.allConversations.map((conv) => {
-            if (
-              conv.conversationId === state.fetchedConversation?.conversationId
-            )
-              return state.fetchedConversation;
-            return conv;
-          });
+          state.Cloading = false;
         }
       )
       .addCase(
@@ -170,6 +208,35 @@ export const conversationSlice = createSlice({
         }
       )
 
+      // Handle more messages fetching
+      .addCase(conversationThunks.fetchMoreMessages.pending, (state) => {
+        state.Mloading = true;
+        state.error = null;
+      })
+      .addCase(
+        conversationThunks.fetchMoreMessages.fulfilled,
+        (state, action) => {
+          state.Mloading = false;
+          const { messages, lastEvaluatedKey } = action.payload;
+
+          if (state.fetchedConversation) {
+            state.fetchedConversation.messages = [
+              ...messages,
+              ...state.fetchedConversation.messages,
+            ];
+          }
+          state.MlastEvaluatedKey = lastEvaluatedKey;
+        }
+      )
+      .addCase(
+        conversationThunks.fetchMoreMessages.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.Mloading = false;
+          state.error = action.payload;
+          toast.error(action.payload || "Failed to load more messages");
+        }
+      )
+
       // Add a note
       .addCase(conversationThunks.addNote.pending, (state) => {
         state.Cloading = true;
@@ -186,7 +253,7 @@ export const conversationSlice = createSlice({
           state.Cloading = false;
           toast.error(action.payload || "Failed to add note");
         }
-      )
+      )  
 
       // Delete a note
       .addCase(conversationThunks.deleteNote.pending, (state) => {

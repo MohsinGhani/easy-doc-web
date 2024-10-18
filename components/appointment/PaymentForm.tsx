@@ -65,7 +65,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
                 name: fetchedAppointment?.patient?.display_name || "", // Prefill if available
                 email: fetchedAppointment?.patient?.email || "",
                 address: {
-                  line1: fetchedAppointment?.patient?.address || "",
+                  line1: fetchedAppointment?.patient?.location || "",
                   city: fetchedAppointment?.patient?.city || "",
                   state: fetchedAppointment?.patient?.state || "",
                   postal_code: fetchedAppointment?.patient?.zip_code || "",
@@ -91,7 +91,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ appointmentId, amount }) => {
         size={"xl"}
         className="w-full"
         type="submit"
-        disabled={appointmentLoader || loading || loader || !stripe || !elements}
+        disabled={
+          appointmentLoader || loading || loader || !stripe || !elements
+        }
       >
         Complete Checkout
       </Button>

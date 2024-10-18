@@ -65,21 +65,15 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       appointment_date: format(new Date(), "d MMM yyyy"),
       speciality: "",
       attachments: [],
-      // display_name: `${user?.given_name} ${user.family_name}` || "",
-      // gender: GENDERS[0].value,
-      // dob: user?.dob || "",
-      // blood_group: BLOOD_GROUPS[0].value,
-      // phone_number: user?.phone_number || "",
-      // email: user?.email || "",
     },
   });
   const {
     control,
     handleSubmit,
     watch,
-    formState: { errors },
+    // formState: { errors },
   } = form;
-  console.log("🚀 ~ errors:", errors);
+  // console.log("🚀 ~ errors:", errors);
   const speciality = watch("speciality");
   const consultation_type = watch("consultation_type");
   const consulting_for = watch("consulting_for");
@@ -133,13 +127,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
           }
         )
       );
-
-      // form.resetField("display_name",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("gender",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("dob",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("blood_group",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("phone_number",{keepDirty:false, keepError:false, keepTouched:false})
-      // form.resetField("email",{keepDirty:false, keepError:false, keepTouched:false})
     }
 
     if (user && consulting_for === ConsultingFor.OTHER) {
@@ -166,6 +153,18 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
 
   const onSubmit = async (data: AppointmentCreationType) => {
     try {
+      // Step 0: Check if the patient's profile is complete if not then show toast error and then redirect to settings page
+      if (
+        consulting_for === ConsultingFor.SELF &&
+        user?.profile_status !== "COMPLETED"
+      ) {
+        toast.error(
+          "Please complete your profile info before booking an appointment"
+        );
+        router.push("/my-settings");
+        return;
+      }
+
       // Step 1: Upload files to S3 using the helper function
       const uploadedFiles =
         selectedFiles.length > 0 ? await uploadFilesToS3(selectedFiles) : [];
@@ -187,13 +186,14 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
           age:
             new Date().getFullYear() -
             new Date(new Date(data.dob as string)).getFullYear(),
+          picture:
+            data.gender === "Male"
+              ? "https://cdn-icons-png.freepik.com/512/2869/2869791.png?ga=GA1.1.1652342059.1728802380"
+              : data.gender === "Female"
+              ? "https://cdn-icons-png.freepik.com/512/4310/4310226.png?ga=GA1.1.1652342059.1728802380"
+              : "https://cdn-icons-png.freepik.com/512/10835/10835597.png?ga=GA1.1.1652342059.1728802380",
         };
       }
-
-      const patientProfilePicture =
-        data.consulting_for === "Other"
-          ? "https://avatar-placeholder.iran.liara.run/male/2"
-          : user.picture ?? "https://avatar-placeholder.iran.liara.run/male/32";
 
       const newAppointment = {
         ...data,
@@ -202,13 +202,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         patientId: user.userId,
         visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
         amount: consultingFee,
-        doctorName: `Dr. ${fetchedDoctor?.display_name}`,
-        patientName:
-          data.consulting_for === "Other"
-            ? data.display_name
-            : user.display_name,
-        doctorProfilePicture: fetchedDoctor?.picture,
-        patientProfilePicture,
       };
 
       // Step 4: Submit form data to the backend

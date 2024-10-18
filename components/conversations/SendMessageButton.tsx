@@ -18,14 +18,15 @@ const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
 
   const handleSend = () => {
     if (!message.trim()) return;
-    console.log(message);
 
     dispatch(
       conversationThunks.sendMessage({
         text: message,
         conversationId: fetchedConversation?.conversationId,
         recipientUserId:
-          role === "doctor" ? fetchedConversation?.patientId : fetchedConversation?.doctorId,
+          role === "doctor"
+            ? fetchedConversation?.patientId
+            : fetchedConversation?.doctorId,
         senderId: userId,
       })
     );

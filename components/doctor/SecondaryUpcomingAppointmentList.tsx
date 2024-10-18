@@ -60,7 +60,7 @@ const SecondaryUpcomingAppointmentsList: React.FC = () => {
         appointmentDate.getDay() === selectedDayIndex
       );
     });
-  }, [selectedDay, selectedMonth]);
+  }, [allAppointments, selectedDay, selectedMonth]);
 
   return (
     <Card>

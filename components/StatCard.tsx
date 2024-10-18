@@ -4,7 +4,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { Card, CardContent } from "./ui/card";
 
 type StatCardProps = {
-  type: "appointments" | "pending" | "cancelled" | "completed";
+  type: APPOINTMENT_STATUS & "TOTAL_EARNINGS";
   label: string;
   icon: JSX.Element;
   loading?: boolean;
@@ -12,8 +12,9 @@ type StatCardProps = {
 
 export const StatCard = ({ label, icon, type }: StatCardProps) => {
   const loading = useAppSelector((state) => state.appointment.loading);
+  const { user, loading: userLoader } = useAppSelector((state) => state.auth);
 
-  if (loading) {
+  if (loading || userLoader) {
     // Skeleton Loader
     return (
       <Card className="w-full h-full">
@@ -33,17 +34,33 @@ export const StatCard = ({ label, icon, type }: StatCardProps) => {
     );
   }
 
+  let count: number | string = getCount(user, type);
+
   return (
     <Card className="w-full h-full">
       <CardContent className="flex w-full items-start flex-col gap-3 min-h-24 h-full xl:p-6 lg:p-4 md:p-3 p-2">
         <h4 className="lg:text-sm text-[12px]">{label}</h4>
         <div className="flex w-full items-center justify-between mt-auto gap-2">
-          <h4 className="font-semibold sm:text-lg text-sm">
-            ${Math.floor(Math.random() * 1000)}
-          </h4>
+          <h4 className="font-semibold sm:text-lg text-sm">{count}</h4>
           {icon}
         </div>
       </CardContent>
     </Card>
   );
+};
+
+const getCount = (user: User, type: StatCardProps["type"]): string | number => {
+  switch (type) {
+    case "PENDING_APPROVAL":
+      return user.no_of_PENDING_APPROVAL_appointments ?? 0;
+    case "UPCOMING":
+      return user.no_of_UPCOMING_appointments ?? 0;
+    case "TOTAL_EARNINGS":
+      return `${user.total_earnings ?? 0}$`;
+    case "COMPLETED":
+      return user.no_of_COMPLETED_appointments ?? 0;
+
+    default:
+      return `${Math.floor(Math.random() * 1000)}`;
+  }
 };
