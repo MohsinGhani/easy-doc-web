@@ -6,7 +6,6 @@ import {
   ArrowUpDown,
   EllipsisVertical,
   EyeIcon,
-  Filter,
   LucideCheck,
   Mail,
   MapPin,
