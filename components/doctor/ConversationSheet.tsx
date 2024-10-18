@@ -19,7 +19,8 @@ const ConversationSheet = ({ open, setOpen }: ChatSheetProps) => {
   const { fetchedConversation } = useAppSelector((state) => state.conversation);
 
   useEffect(() => {
-    fetchedConversation &&
+    open &&
+      fetchedConversation &&
       fetchedConversation.lastMessageRead === false &&
       fetchedConversation.lastMessageId &&
       fetchedConversation.lastMessage &&
