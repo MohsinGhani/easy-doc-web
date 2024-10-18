@@ -163,7 +163,7 @@ const MessageContainer = ({
               <MessageCard key={message.messageId} message={message} />
             ))
           ) : (
-            <div className="text-center w-full h-full p-5">
+            <div className="text-center w-full h-full">
               {fetchedConversation?.lastMessage ?? "Started a Conversation."}
             </div>
           )}

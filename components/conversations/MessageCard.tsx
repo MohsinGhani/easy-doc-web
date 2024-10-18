@@ -20,9 +20,11 @@ const MessageCard = ({ message }: { message: Message }) => {
       )}
     >
       <div className="space-y-2 relative">
-        {attachments.map((attachment) => (
-          <AttachmentCard attachment={attachment} key={attachment.name} />
-        ))}
+        {attachments && attachments.length > 0
+          ? attachments.map((attachment) => (
+              <AttachmentCard attachment={attachment} key={attachment.name} />
+            ))
+          : ""}
         <p className="text-base font-normal px-2">
           {text}{" "}
           <span className="text-zinc-600 text-xs font-normal italic leading-none ml-2">
