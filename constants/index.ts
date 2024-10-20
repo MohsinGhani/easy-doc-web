@@ -72,16 +72,12 @@ export const NAV_LINKS_FOR_AUTH = [
   },
   {
     label: "FAQ’s & Support",
-    location: "/faqs-and-support",
+    location: "/faqs",
   },
   {
     label: "Doctors",
     location: "/doctors",
   },
-  // {
-  //   label: "Specialists",
-  //   location: "/specialists",
-  // },
 ];
 
 export const FAQS = [

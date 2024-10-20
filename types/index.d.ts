@@ -302,3 +302,37 @@ declare interface Notification {
   timestamp: number;
   link?: string;
 }
+
+declare interface SignupPayload {
+  given_name: string;
+  family_name: string;
+  email: string;
+  password: string;
+  role: string;
+  licence?: string;
+}
+
+declare interface SigninPayload {
+  email: string;
+  password: string;
+}
+
+declare interface ConfirmCodePayload {
+  confirmationCode: string;
+  email: string;
+  password?: string;
+}
+
+declare interface ResendConfirmationCodePayload {
+  email: string;
+}
+
+declare interface ResetPasswordPayload {
+  email: string;
+}
+
+declare interface ConfirmResetPasswordPayload {
+  code: string;
+  email: string;
+  newPassword: string;
+}

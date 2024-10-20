@@ -16,8 +16,6 @@ export default function robots(): MetadataRoute.Robots {
         "/sitemap.xml",
         "/robots.txt",
         "/payout-settings",
-        "/settings",
-        "/dashboard",
         "/my-payments",
       ],
     },

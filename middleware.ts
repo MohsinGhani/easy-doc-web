@@ -13,9 +13,9 @@ import {
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolId: userPoolId!,
-      identityPoolId: identityPoolId!,
-      userPoolClientId: userPoolClientId!,
+      userPoolId: userPoolId,
+      identityPoolId: identityPoolId,
+      userPoolClientId: userPoolClientId,
     },
   },
 });
@@ -37,46 +37,29 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
     // Redirect if trying to access protected routes without token
     if (!token && (isAdminRoute || isDoctorRoute || isPatientRoute)) {
-      return NextResponse.redirect(new URL("/auth/sign-in", req.url));
+      return NextResponse.redirect(new URL(getUrl(""), req.url));
     }
-
-    if (!token) return NextResponse.next(); // For public routes, continue
 
     const { "custom:role": role } = decodeJWT(token as string).payload;
 
     // Handle role-based redirection
     if ((isPublicRoute && role) || (role && pathname === "/")) {
-      return NextResponse.redirect(
-        new URL(
-          role === "doctor"
-            ? "/dashboard"
-            : role === "admin"
-            ? "/admin"
-            : "/doctors",
-          req.url
-        )
-      );
+      return NextResponse.redirect(new URL(getUrl(role as string), req.url));
     }
 
-    if (!role) return NextResponse.redirect(new URL("/auth/sign-in", req.url));
+    if (!role) return NextResponse.redirect(new URL(getUrl(""), req.url));
 
     // Role-based access control
     if (isDoctorRoute && role !== "doctor") {
-      return NextResponse.redirect(
-        new URL(role === "patient" ? "/doctors" : "/admin", req.url)
-      );
+      return NextResponse.redirect(new URL(getUrl(role as string), req.url));
     }
 
     if (isAdminRoute && role !== "admin") {
-      return NextResponse.redirect(
-        new URL(role === "patient" ? "/doctors" : "/dashboard", req.url)
-      );
+      return NextResponse.redirect(new URL(getUrl(role as string), req.url));
     }
 
     if (isPatientRoute && role !== "patient") {
-      return NextResponse.redirect(
-        new URL(role === "admin" ? "/admin" : "/dashboard", req.url)
-      );
+      return NextResponse.redirect(new URL(getUrl(role as string), req.url));
     }
 
     return NextResponse.next();
@@ -88,4 +71,18 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+
+const getUrl = (role?: string): string => {
+  if (!role) {
+    return "/auth/sign-in";
+  } else if (role === "admin") {
+    return "/admin";
+  } else if (role === "patient") {
+    return "/patient";
+  } else if (role === "doctor") {
+    return "/dashboard";
+  } else {
+    return "/auth/sign-up";
+  }
 };

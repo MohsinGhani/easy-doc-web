@@ -1,14 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/hooks";
 import { authThunks } from "@/lib/features/auth/authThunks";
-import {
-  ConfirmCodePayload,
-  ConfirmResetPasswordPayload,
-  ResendConfirmationCodePayload,
-  ResetPasswordPayload,
-  SigninPayload,
-  SignupPayload,
-} from "@/types/auth";
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
