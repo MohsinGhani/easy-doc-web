@@ -41,13 +41,13 @@ export const useAppointmentTimer = (
       formatInTimeZone(endDateTimeString, timezone, "yyyy-MM-dd'T'HH:mm:ssXXX")
     );
 
-    const currentTime = new Date().toLocaleString("en-US", {
-      timeZone: timezone,
-    });
-
-    const now = new Date(currentTime);
-
     const interval = setInterval(() => {
+      const currentTime = new Date().toLocaleString("en-US", {
+        timeZone: timezone,
+      });
+
+      const now = new Date(currentTime);
+
       if (now >= startTime && now <= endTime) {
         setIsAppointmentActive(true);
         setTimeRemaining(formatTimeDiff(endTime.getTime() - now.getTime()));
@@ -61,7 +61,12 @@ export const useAppointmentTimer = (
       }
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout); // Clear timeout on unmount or rerun
+      }
+    };
   }, [start_time, end_time]);
 
   const handleMeetingEnd = (endTime: Date) => {

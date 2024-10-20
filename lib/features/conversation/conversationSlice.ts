@@ -253,7 +253,7 @@ export const conversationSlice = createSlice({
           state.Cloading = false;
           toast.error(action.payload || "Failed to add note");
         }
-      )  
+      )
 
       // Delete a note
       .addCase(conversationThunks.deleteNote.pending, (state) => {

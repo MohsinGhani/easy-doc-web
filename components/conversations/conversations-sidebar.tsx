@@ -122,7 +122,7 @@ const MessagesSidebar = ({
                               </div>
                             </div>
 
-                            {conv.lastMessageRead && !active && (
+                            {!conv.lastMessageRead && !active && (
                               <div className="w-3 h-3 bg-primary rounded-full flex items-center justify-center" />
                             )}
                           </div>
@@ -172,7 +172,7 @@ const MessagesSidebar = ({
                               </div>
                             </div>
 
-                            {conv.lastMessageRead && !active && (
+                            {!conv.lastMessageRead && !active && (
                               <div className="w-3 h-3 bg-primary rounded-full flex items-center justify-center" />
                             )}
                           </div>
