@@ -37,6 +37,11 @@ const nextConfig = {
         hostname: "easy-doc-profile-images-dev.s3.amazonaws.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "easy-doc-profile-images-prod.s3.amazonaws.com",
+        port: "",
+      },
     ],
   },
   webpack(config) {
