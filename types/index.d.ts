@@ -301,6 +301,7 @@ declare interface Notification {
   status: "unread" | "read";
   timestamp: number;
   link?: string;
+  expirationTime: number;
 }
 
 declare interface SignupPayload {

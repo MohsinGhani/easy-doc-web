@@ -13,6 +13,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectAppointmentDialog from "./RejectAppointmentDialog";
+import { useRouter } from "next/navigation";
 
 interface AppointmentDetailsSheetProps {
   selectedAppointment: Appointment | null;
@@ -28,10 +29,16 @@ const AppointmentDetailsSheet = ({
   const handleClose = () => {
     setOpen(false);
   };
+  const router = useRouter();
 
   if (!selectedAppointment) return null;
   let patient = selectedAppointment?.patient;
   if (!patient) return null;
+
+  if (selectedAppointment?.status === "PAYMENT_PENDING")
+    router.push(
+      `/my-appointments/${selectedAppointment.appointmentId}/checkout?appointmentReason=${selectedAppointment?.reason}`
+    );
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -216,7 +223,7 @@ const AppointmentDetailsSheet = ({
             </div>
           </SheetHeader>
 
-          <SheetFooter className="items-center justify-center gap-4 flex-row">
+          <SheetFooter className="items-center justify-center gap-4 sm:flex-row pb-8">
             <RejectAppointmentDialog
               reason={selectedAppointment?.reason}
               onReject={() =>

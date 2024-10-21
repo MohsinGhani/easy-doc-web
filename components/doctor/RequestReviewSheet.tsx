@@ -20,7 +20,7 @@ interface RequestReviewSheetProps {
 }
 
 const RequestReviewSheet = ({
-  selectedRequest, 
+  selectedRequest,
   open,
   setOpen,
 }: RequestReviewSheetProps) => {
@@ -214,7 +214,7 @@ const RequestReviewSheet = ({
             </div>
           </SheetHeader>
 
-          <SheetFooter className="items-center justify-center gap-4 flex-row">
+          <SheetFooter className="items-center justify-center gap-4 sm:flex-row pb-8">
             <RejectRequestDialog
               name={patient.display_name}
               onReject={() =>

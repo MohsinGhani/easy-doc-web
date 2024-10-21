@@ -553,12 +553,28 @@ export const patientColumns = ({
       cell: ({ row }) => {
         const appointment_date = row.original.appointment_date;
         const appointmentId = row.original.appointmentId;
+        const reason = row.original.reason;
 
         return (
           <div className="flex items-center gap-1.5 text-muted-foreground">
             {/* Hidden on mobile, visible on larger screens */}
             <div className="hidden sm:flex items-center gap-1.5">
               <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={`/my-appointments/${appointmentId}/checkout?appointmentReason=${reason}`}
+                      className={cn(
+                        buttonVariants({ size: "icon", variant: "default" }),
+                        "p-2"
+                      )}
+                    >
+                      <LucideCheck className="h-5 w-5 cursor-pointer text-primary" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Complete Payment</TooltipContent>
+                </Tooltip>
+
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -625,6 +641,23 @@ export const patientColumns = ({
 
             {/* Visible on mobile, hidden on larger screens */}
             <div className="sm:hidden">
+              <TooltipTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={`/my-appointments/${appointmentId}/checkout?appointmentReason=${reason}`}
+                      className={cn(
+                        buttonVariants({ size: "icon", variant: "outline" }),
+                        "p-2"
+                      )}
+                    >
+                      <LucideCheck className="h-5 w-5 cursor-pointer text-primary" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Complete Payment</TooltipContent>
+                </Tooltip>
+              </TooltipTrigger>
+
               <Popover>
                 <PopoverTrigger
                   asChild
