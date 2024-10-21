@@ -79,7 +79,7 @@ const getUrl = (role?: string): string => {
   } else if (role === "admin") {
     return "/admin";
   } else if (role === "patient") {
-    return "/patient";
+    return "/doctors";
   } else if (role === "doctor") {
     return "/dashboard";
   } else {

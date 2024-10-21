@@ -281,6 +281,7 @@ const RenderInput = ({
               placeholder={props.placeholder}
               maxSelected={props.maxSelection || 10}
               maxSelectedMessage={props.maxSelectionText}
+              enableCreation={props.enableCreation}
             />
           </FormControl>
         </>
