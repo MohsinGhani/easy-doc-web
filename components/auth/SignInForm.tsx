@@ -72,8 +72,8 @@ const SignInForm = () => {
             disabled={loading}
             type="submit"
             className="w-full"
+            loading={loading}
           >
-            {loading && <SpinnerIcon className="w-4 h-4 mr-2 animate-spin" />}
             {loading ? "Loading..." : "Login"}
           </Button>
 
@@ -93,13 +93,9 @@ const SignInForm = () => {
             variant="outline"
             type="button"
             disabled={loading}
+            loading={loading}
           >
-            {loading ? (
-              <SpinnerIcon className="h-4 w-4 animate-spin" />
-            ) : (
-              <GoogleIcon className="h-4 w-4" />
-            )}
-            {"    "}
+            <GoogleIcon className="h-4 w-4" />
             <span className="ml-4">Sign in with Google</span>
           </Button>
 

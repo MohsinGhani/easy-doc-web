@@ -21,7 +21,7 @@ const SignUpForm = () => {
   const { signup, confirmCode } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [status, setStatus] = useState<Status>("process");
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
   const destinationRef = useRef("");
 
   const form = useForm<UserSignup>({
@@ -110,7 +110,9 @@ const SignUpForm = () => {
           setActiveStep={setActiveStep}
           status={status}
         />
+
         {getSignupFormContent(activeStep, destinationRef.current)}
+
         <>
           {activeStep === 2 ? (
             <Button
@@ -140,6 +142,7 @@ const SignUpForm = () => {
             </Button>
           )}
         </>
+
         <CardDescription className="text-center">
           Already have an account?{" "}
           <Link className="font-semibold text-blue-500" href={"/auth/sign-in"}>

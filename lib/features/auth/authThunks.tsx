@@ -11,14 +11,6 @@ import {
   confirmResetPassword,
   fetchAuthSession,
 } from "aws-amplify/auth";
-import {
-  ConfirmCodePayload,
-  ConfirmResetPasswordPayload,
-  ResendConfirmationCodePayload,
-  ResetPasswordPayload,
-  SigninPayload,
-  SignupPayload,
-} from "@/types/auth";
 import Cookies from "js-cookie";
 import { functionsApiClient } from "@/lib/utils";
 import { RootState } from "@/lib/store";

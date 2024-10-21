@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { CardDescription } from "@/components/ui/card";
-import { SpinnerIcon } from "@/components/ui/icons";
 import { Form } from "@/components/ui/form";
 import LogoText from "../LogoText";
 import { Button } from "../ui/button";
@@ -80,15 +79,9 @@ const ResetPasswordForm = () => {
               disabled={loading}
               type="submit"
               className="w-full"
+              loading={loading}
             >
-              {loading ? (
-                <>
-                  <SpinnerIcon className="w-4 h-4 mr-2 animate-spin" />{" "}
-                  Resetting...
-                </>
-              ) : (
-                <>Reset Password</>
-              )}
+              {loading ? <>Resetting...</> : <>Reset Password</>}
             </Button>
           ) : (
             <Button
@@ -96,9 +89,9 @@ const ResetPasswordForm = () => {
               disabled={loading}
               type="button"
               size={"xl"}
+              loading={loading}
             >
-              {loading && <SpinnerIcon className="w-4 h-4 mr-2 animate-spin" />}
-              {loading ? "Loading..." : "Next"}
+              {loading ? <>Loading...</> : <>Next</>}
             </Button>
           )}
 

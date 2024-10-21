@@ -14,6 +14,7 @@ export const doctorRoutes = [
 
 export const patientRoutes = [
   "/doctors",
+  "/faqs",
   "/my-appointments",
   "/my-conversations",
   "/my-payments",

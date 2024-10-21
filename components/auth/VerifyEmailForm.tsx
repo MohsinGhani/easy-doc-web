@@ -5,15 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { CardDescription } from "@/components/ui/card";
-import { SpinnerIcon } from "@/components/ui/icons";
-import CustomFormField, { FormFieldType } from "./CustomFormField";
+import CustomFormField, { FormFieldType } from "@/components/auth/CustomFormField";
 import { Form } from "@/components/ui/form";
-import LogoText from "../LogoText";
-import { Button } from "../ui/button";
+import LogoText from "@/components/LogoText";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useAppSelector } from "@/lib/hooks";
 import { useSearchParams } from "next/navigation";
-import DelayedResendButton from "./DelayedResendButton";
+import DelayedResendButton from "@/components/auth/DelayedResendButton";
 
 const VerifyEmailForm = () => {
   const { loading } = useAppSelector((state) => state.auth);
@@ -67,8 +66,8 @@ const VerifyEmailForm = () => {
             disabled={loading}
             type="submit"
             className="w-full"
+            loading={loading}
           >
-            {loading && <SpinnerIcon className="w-4 h-4 mr-2 animate-spin" />}
             {loading ? "Verifying..." : "Verify Email"}
           </Button>
 

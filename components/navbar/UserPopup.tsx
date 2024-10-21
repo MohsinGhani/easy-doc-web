@@ -16,6 +16,7 @@ import { authThunks } from "@/lib/features/auth/authThunks";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { NAV_LINKS_FOR_AUTH } from "@/constants";
 
 export function UserPopup() {
   const [open, setOpen] = useState(false);
@@ -24,16 +25,12 @@ export function UserPopup() {
 
   const dispatch = useAppDispatch();
 
-  const links = [
-    {
-      label: "Settings",
-      location: "/my-settings",
-    },
-    {
-      label: "Support",
-      location: "/faqs-and-support",
-    },
-  ];
+  if (loading)
+    return (
+      <div className="overflow-hidden rounded-full w-8 h-8 animate-pulse">
+        <div className="bg-gray-300 rounded-full" />
+      </div>
+    );
 
   if (!user) return null;
 
@@ -58,7 +55,7 @@ export function UserPopup() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {links.map((link: any) => {
+        {NAV_LINKS_FOR_AUTH.map((link: any) => {
           const { label, location } = link;
           return (
             <DropdownMenuLabel onClick={() => setOpen(false)} key={label}>
