@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import StoreProvider from "@/lib/StoreProvider";
 import WebSocketInitializer from "@/lib/webSocketInitializer";
 import React from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -35,7 +36,8 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://easy-doc-web-silk.vercel.app",
     title: "Easy Doc",
-    description: "Easy Doc is an online appointment booking, consulting platform for doctors and patients. Patients can book, manage their appointments and can track their payment history.",
+    description:
+      "Easy Doc is an online appointment booking, consulting platform for doctors and patients. Patients can book, manage their appointments and can track their payment history.",
     siteName: "Easy Doc",
     images: [
       {
@@ -60,6 +62,7 @@ export default function Layout({
       >
         <StoreProvider>
           {children}
+          <Analytics />
 
           <Toaster
             position="top-center"
