@@ -268,16 +268,13 @@ export const authThunks = {
           return parsedAuth;
         } else if (userId) {
           const response = await functionsApiClient.get(`/auth/${userId}`);
-          return response.data.data;
-        } else {
-          await signOut();
-          dispatch(signoutAction());
-
-          // window.location.href = "/auth/sign-in";
+          return response.data.data as User;
         }
       } catch (error) {
         await signOut();
         dispatch(signoutAction());
+
+        window.location.href = "/auth/sign-in";
 
         return rejectWithValue(
           "Error in confirming your identity, Pease signin again!"
