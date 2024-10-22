@@ -19,8 +19,8 @@ interface DoctorCardProps {
 const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
   if (!doctor) return null;
   return (
-    <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0 space-y-4 max-w-sm">
-      <div className="relative">
+    <CardContent className="rounded-lg shadow-md overflow-hidden sm:p-4 p-0 flex flex-col gap-4 max-w-sm">
+      <div className="relative grow">
         <div className="w-full min-h-56 rounded-lg p-2">
           <Image
             src={doctor.picture}
@@ -30,13 +30,15 @@ const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
             className="w-full h-full object-cover bg-no-repeat rounded-lg"
           />
         </div>
-        <div className="absolute top-2 left-2 bg-yellow-400 text-white px-2 py-1 rounded-md text-sm font-semibold flex items-center">
-          <Star className="w-4 h-4 mr-1 fill-current" />
-          {doctor.overallRating}/5
+        <div className="absolute top-2 left-0 right-0 overflow-hidden w-full flex items-center justify-between px-5 py-2">
+          <div className="bg-yellow-400 text-white px-2 py-1 rounded-md text-sm font-semibold flex items-center">
+            <Star className="w-4 h-4 mr-1 fill-current" />
+            {doctor.overallRating}/5
+          </div>
+          <button className="text-red-200 hover:text-red-300 transition-colors">
+            <Heart className="w-6 h-6 fill-white hover:fill-slate-200" />
+          </button>
         </div>
-        <button className="absolute top-2 right-2 text-white hover:text-red-500 transition-colors">
-          <Heart className="w-6 h-6" />
-        </button>
       </div>
       <div className="sm:p-0 p-4 space-y-4">
         <div className="flex justify-between items-start">

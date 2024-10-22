@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "../ui/card";
-import { formatTimeForUI } from "@/lib/utils";
+import { formatInTimeZone } from "date-fns-tz";
 
 export default function AvailableTimings({
   availableDays,
@@ -11,9 +11,11 @@ export default function AvailableTimings({
 }) {
   // State to keep track of the selected day
   const [activeDay, setActiveDay] = useState(availableDays[0]?.day);
+  // const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // The timezone of the user
+  const timezone = "Asia/Shanghai";
 
   // Find the active day's slots based on selected day
-  const activeSlots =
+  const activeSlotsForSelectedDay =
     availableDays.find((day) => day.day === activeDay)?.slots || [];
 
   return (
@@ -44,15 +46,40 @@ export default function AvailableTimings({
           </h2>
           <Separator className="my-4" />
           {/* TODO: Fix lg, sm, md grid cols */}
-          {activeSlots.length > 0 ? (
+          {activeSlotsForSelectedDay.length > 0 ? (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {activeSlots.map((slot, index) => (
-                <TimeSlot
-                  key={index}
-                  startTime={slot.start_time}
-                  endTime={slot.end_time}
-                />
-              ))}
+              {activeSlotsForSelectedDay
+                .map((slot) => {
+                  const currentDate = formatInTimeZone(
+                    new Date(),
+                    timezone,
+                    "yyyy-MM-dd"
+                  );
+                  const startDateTimeString = `${currentDate}T${slot.start_time}:00`;
+                  const endDateTimeString = `${currentDate}T${slot.end_time}:00`;
+
+                  const startTime = formatInTimeZone(
+                    startDateTimeString,
+                    timezone,
+                    "hh:mm aa"
+                  );
+                  const endTime = formatInTimeZone(
+                    endDateTimeString,
+                    timezone,
+                    "hh:mm aa"
+                  );
+                  return { ...slot, start_time: startTime, end_time: endTime };
+                })
+                .map((slot, index) => {
+                  console.log("🚀 ~ slot:", slot);
+                  return (
+                    <TimeSlot
+                      key={index}
+                      startTime={slot.start_time}
+                      endTime={slot.end_time}
+                    />
+                  );
+                })}
             </div>
           ) : (
             <p className="text-muted-foreground">
@@ -74,7 +101,7 @@ const TimeSlot = ({
 }) => (
   <div className="bg-white shadow-md rounded-md p-3 text-center">
     <p>
-      {formatTimeForUI(startTime)} - {formatTimeForUI(endTime)}
+      {startTime} - {endTime}
     </p>
   </div>
 );

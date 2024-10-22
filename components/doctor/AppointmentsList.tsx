@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { AlarmCheck } from "lucide-react";
 import { useAppSelector } from "@/lib/hooks";
+import { formatTimeForUI } from "@/lib/utils";
 
 interface AppointmentsListProps {
   appointments: Appointment[];
@@ -54,11 +55,11 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({
         >
           <div>
             <p className="text-zinc-600 text-xs font-normal leading-none mb-4">
-              Today, {appointment?.scheduled_date?.start_time} -{" "}
-              {appointment?.scheduled_date?.end_time}
+              Today, {formatTimeForUI(appointment?.scheduled_date?.start_time)}{" "}
+              - {formatTimeForUI(appointment?.scheduled_date?.end_time)}
             </p>
             <p className="text-sm font-semibold">
-              {appointment?.scheduled_date?.start_time}
+              {formatTimeForUI(appointment?.scheduled_date?.start_time)}
             </p>
             <p className="text-sm text-gray-600">
               {appointment?.patient?.display_name}

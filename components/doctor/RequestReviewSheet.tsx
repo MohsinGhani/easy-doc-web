@@ -124,13 +124,7 @@ const RequestReviewSheet = ({
                   <p className="text-muted-foreground">
                     Appointment date & time:
                   </p>
-                  <p className="font-medium">
-                    {`${selectedRequest?.appointment_date} - ${formatTimeForUI(
-                      selectedRequest?.scheduled_date.start_time
-                    )} - ${formatTimeForUI(
-                      selectedRequest?.scheduled_date.end_time
-                    )}`}
-                  </p>
+                  <p className="font-medium">{selectedRequest?.visible_date}</p>
                 </div>
               </div>
 

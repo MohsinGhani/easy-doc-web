@@ -202,18 +202,16 @@ export function AddTimeSlotDialog({ day, dayIndex }: AddTimeSlotDialogProps) {
                           : ` We will add ${
                               nonOverlappingSlots.length
                             } new time slot
-                        ${
-                          nonOverlappingSlots.length > 1 ? "s" : ""
-                        } for the remaining non-overlapping time.`}
+                          ${
+                            nonOverlappingSlots.length > 1 ? "s" : ""
+                          } for the remaining non-overlapping time.`}
                       </>
                     )}
                     {overlappingSlots.length === 0 && (
                       <>
                         {" "}
                         This will create {nonOverlappingSlots.length} new time
-                        slot
-                        {nonOverlappingSlots.length > 1 ? "s" : ""} of 30
-                        minutes each.
+                        slot(s) of 30 minutes each.
                       </>
                     )}
                   </DialogDescription>

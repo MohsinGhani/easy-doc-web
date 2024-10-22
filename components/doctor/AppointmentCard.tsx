@@ -211,7 +211,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
         {/* Message and Join Now Buttons */}
         <div className="mt-4 flex items-center flex-wrap xl:flex-nowrap justify-between gap-3">
           <Link
-            href={`/${role === "patient" && "my-"}conversations/${
+            href={`/${role === "patient" ? "my-" : ""}conversations/${
               appointment.appointmentId
             }`}
             className={cn(

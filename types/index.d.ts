@@ -21,9 +21,7 @@ declare type AvailableDay = {
 declare type PROFILE_STATUS = "COMPLETED" | "INCOMPLETE";
 declare type PAYMENT_STATUS = "PENDING" | "FAILED" | "COMPLETED";
 
-declare type AvailableSlot = {
-  start_time: string;
-  end_time: string;
+declare type AvailableSlot = DateRange & {
   reserved?: boolean;
 };
 

@@ -111,7 +111,7 @@ const AllAppointments = () => {
 
 export default AllAppointments;
 
-const getCount = (user: User, type: IValue): React.ReactNode => {
+const getCount = (user: User, type: IValue): number => {
   switch (type) {
     case "upcoming":
       return user.no_of_UPCOMING_appointments ?? 0;
@@ -119,8 +119,7 @@ const getCount = (user: User, type: IValue): React.ReactNode => {
       user.no_of_CANCELLED_appointments ?? 0;
     case "completed":
       user.no_of_COMPLETED_appointments ?? 0;
-
     default:
-      return `${Math.floor(Math.random() * 100)}`;
+      return 0;
   }
 };

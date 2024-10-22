@@ -273,7 +273,7 @@ export const authThunks = {
           await signOut();
           dispatch(signoutAction());
 
-          window.location.href = "/auth/sign-in";
+          // window.location.href = "/auth/sign-in";
         }
       } catch (error) {
         await signOut();

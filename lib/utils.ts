@@ -344,3 +344,16 @@ export const playNotificationSound = () => {
     console.error("Error playing notification sound: ", error);
   });
 };
+
+// Convert start_time and end_time to UTC
+export const convertSlotTimeToUTC = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  const now = new Date();
+  now.setHours(hours, minutes, 0, 0);
+
+  // Convert to UTC time
+  const utcHours = now.getUTCHours().toString().padStart(2, "0");
+  const utcMinutes = now.getUTCMinutes().toString().padStart(2, "0");
+
+  return `${utcHours}:${utcMinutes}`;
+};

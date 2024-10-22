@@ -14,6 +14,7 @@ import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectAppointmentDialog from "./RejectAppointmentDialog";
 import { useRouter } from "next/navigation";
+import { formatTimeForUI } from "@/lib/utils";
 
 interface AppointmentDetailsSheetProps {
   selectedAppointment: Appointment | null;
@@ -131,7 +132,7 @@ const AppointmentDetailsSheet = ({
                     Appointment date & time:
                   </p>
                   <p className="font-medium">
-                    {`${selectedAppointment?.appointment_date} - ${selectedAppointment?.scheduled_date.start_time} - ${selectedAppointment?.scheduled_date.end_time}`}
+                    {selectedAppointment?.visible_date}
                   </p>
                 </div>
               </div>

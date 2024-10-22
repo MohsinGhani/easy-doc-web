@@ -26,7 +26,7 @@ import {
   GENDERS,
   MEDICATIONS,
 } from "@/constants";
-import { cn, uploadFilesToS3 } from "@/lib/utils";
+import { cn, formatTimeForUI, uploadFilesToS3 } from "@/lib/utils";
 import FileUploadComponent, { FileItem } from "./FileUploadComponent";
 import { Loader } from "../common/Loader";
 import DoctorCard from "../patient/DoctorCard";
@@ -200,7 +200,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         ...(data.consulting_for === ConsultingFor.OTHER && { patientData }),
         doctorId,
         patientId: user.userId,
-        visible_date: `${data.appointment_date} - ${data.scheduled_date.start_time} to ${data.scheduled_date.end_time}`,
+        visible_date: `${data.appointment_date} - ${formatTimeForUI(data.scheduled_date.start_time)} to ${formatTimeForUI(data.scheduled_date.end_time)}`,
         amount: consultingFee,
       };
 

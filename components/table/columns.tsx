@@ -266,6 +266,7 @@ export const requestsColumns = ({
       cell: ({ getValue, row }) => {
         const value = getValue() as DateRange;
         const appointment_date = row.original.appointment_date;
+        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -277,7 +278,7 @@ export const requestsColumns = ({
           return "Invalid Date";
         }
 
-        return `${appointment_date} - ${value.start_time} - ${value.end_time}`;
+        return visible_date;
       },
       filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
@@ -473,6 +474,7 @@ export const patientColumns = ({
       cell: ({ getValue, row }) => {
         const value = getValue() as any; // Adjust the type as needed
         const appointment_date = row.original.appointment_date;
+        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -484,9 +486,7 @@ export const patientColumns = ({
           return "Invalid Date";
         }
 
-        return `${appointment_date} - ${formatTimeForUI(
-          value.start_time
-        )} - ${formatTimeForUI(value.end_time)}`;
+        return visible_date;
       },
       filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
@@ -781,7 +781,7 @@ export const upcomingColumns =
                   {patient.given_name}
                 </div>
                 <div className="text-sm text-muted-foreground flex items-center">
-                  <MapPin className="mr-1 h-4 w-4" /> Florida , USA
+                  <MapPin className="mr-1 h-4 w-4" /> {patient.location}
                 </div>
               </div>
             </div>
@@ -807,6 +807,7 @@ export const upcomingColumns =
         cell: ({ getValue, row }) => {
           const value = getValue() as DateRange;
           const appointment_date = row.original.appointment_date;
+          const visible_date = row.original.visible_date;
 
           if (!appointment_date || !value) {
             return "N/A";
@@ -818,9 +819,7 @@ export const upcomingColumns =
             return "Invalid Date";
           }
 
-          return `${appointment_date} - ${formatTimeForUI(
-            value.start_time
-          )} - ${formatTimeForUI(value.end_time)}`;
+          return visible_date;
         },
         filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
           const appointment_date = row.original.appointment_date;
@@ -1010,6 +1009,7 @@ export const cancelledColumns = (): ColumnDef<Appointment>[] => {
       cell: ({ getValue, row }) => {
         const value = getValue() as any; // Adjust the type as needed
         const appointment_date = row.original.appointment_date;
+        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -1021,9 +1021,7 @@ export const cancelledColumns = (): ColumnDef<Appointment>[] => {
           return "Invalid Date";
         }
 
-        return `${appointment_date} - ${formatTimeForUI(
-          value.start_time
-        )} - ${formatTimeForUI(value.end_time)}`;
+        return visible_date;
       },
       filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
@@ -1091,6 +1089,7 @@ export const completedColumns = (): ColumnDef<Appointment>[] => {
       cell: ({ getValue, row }) => {
         const value = getValue() as any; // Adjust the type as needed
         const appointment_date = row.original.appointment_date;
+        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -1102,9 +1101,7 @@ export const completedColumns = (): ColumnDef<Appointment>[] => {
           return "Invalid Date";
         }
 
-        return `${appointment_date} - ${formatTimeForUI(
-          value.start_time
-        )} - ${formatTimeForUI(value.end_time)}`;
+        return visible_date;
       },
       filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
