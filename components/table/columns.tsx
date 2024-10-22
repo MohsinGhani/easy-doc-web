@@ -554,26 +554,29 @@ export const patientColumns = ({
         const appointment_date = row.original.appointment_date;
         const appointmentId = row.original.appointmentId;
         const reason = row.original.reason;
+        const status = row.original.status;
 
         return (
           <div className="flex items-center gap-1.5 text-muted-foreground">
             {/* Hidden on mobile, visible on larger screens */}
             <div className="hidden sm:flex items-center gap-1.5">
               <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href={`/my-appointments/${appointmentId}/checkout?appointmentReason=${reason}`}
-                      className={cn(
-                        buttonVariants({ size: "icon", variant: "default" }),
-                        "p-2"
-                      )}
-                    >
-                      <LucideCheck className="h-5 w-5 cursor-pointer text-primary" />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Complete Payment</TooltipContent>
-                </Tooltip>
+                {status === "PAYMENT_PENDING" && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={`/my-appointments/${appointmentId}/checkout?appointmentReason=${reason}`}
+                        className={cn(
+                          buttonVariants({ size: "icon", variant: "default" }),
+                          "p-2"
+                        )}
+                      >
+                        <LucideCheck className="h-5 w-5 cursor-pointer text-primary" />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">Complete Payment</TooltipContent>
+                  </Tooltip>
+                )}
 
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -641,22 +644,24 @@ export const patientColumns = ({
 
             {/* Visible on mobile, hidden on larger screens */}
             <div className="sm:hidden">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href={`/my-appointments/${appointmentId}/checkout?appointmentReason=${reason}`}
-                      className={cn(
-                        buttonVariants({ size: "icon", variant: "outline" }),
-                        "p-2"
-                      )}
-                    >
-                      <LucideCheck className="h-5 w-5 cursor-pointer text-white" />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Complete Payment</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {status === "PAYMENT_PENDING" && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={`/my-appointments/${appointmentId}/checkout?appointmentReason=${reason}`}
+                        className={cn(
+                          buttonVariants({ size: "icon", variant: "outline" }),
+                          "p-2"
+                        )}
+                      >
+                        <LucideCheck className="h-5 w-5 cursor-pointer text-white" />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">Complete Payment</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
 
               <Popover>
                 <PopoverTrigger
