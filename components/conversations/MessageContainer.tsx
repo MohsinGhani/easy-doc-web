@@ -90,7 +90,7 @@ const MessageContainer = ({
     <ScrollArea className="[&>div>div[style]]:!block relative w-full h-full">
       <div
         className={cn(
-          "flex items-center lg:gap-4 sm:gap-3 gap-1 lg:py-[33px] lg:px-[47px] sm:px5 sm:py-5 px-4 py-3 bg-white",
+          "flex items-center lg:gap-4 sm:gap-3 gap-1 lg:py-[33px] lg:px-[47px] sm:px5 sm:py-5 px-4 py-3",
           className
         )}
       >
@@ -154,7 +154,7 @@ const MessageContainer = ({
         </p>
 
         <div
-          className="relative flex flex-col gap-4 grow mb-20"
+          className="relative flex flex-col gap-4 grow sm:mb-32 mb-20"
           ref={messageContainerRef}
         >
           {fetchedConversation?.messages &&

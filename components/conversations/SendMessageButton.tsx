@@ -42,7 +42,7 @@ const SendMessageButton = ({ nonSticky = false }: { nonSticky: boolean }) => {
 
   return (
     <div
-      className={cn("bg-white", {
+      className={cn("bg-white rounded-xl", {
         "fixed bottom-0 z-50 right-0 w-full sm:max-w-[600px]": !nonSticky,
         "absolute bottom-0 z-50 right-0 w-full": nonSticky,
       })}

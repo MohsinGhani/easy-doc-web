@@ -32,7 +32,10 @@ export const conversationSlice = createSlice({
       } else {
         state.allConversations = state.allConversations.map((conv) => {
           if (conv.conversationId === action.payload.conversationId) {
-            conv.messages.push(action.payload);
+            if (!conv.messages) {
+              conv.messages = [];
+            }
+            Array.isArray(conv.messages) && conv.messages.push(action.payload);
             conv.lastMessage = action.payload.text ?? "Sent an attachment";
             conv.lastMessageAt = action.payload.sentAt;
             conv.lastMessageRead = false;

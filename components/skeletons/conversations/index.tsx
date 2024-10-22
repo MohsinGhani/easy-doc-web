@@ -31,7 +31,7 @@ const ConversationSkeletonOne = ({ className }: { className?: string }) => {
           <div className="animate-pulse bg-gray-300 h-4 w-24 rounded-md mx-auto" />
         </p>
         {/* Messages */}
-        <div className="relative flex flex-col gap-4 grow mb-20">
+        <div className="relative flex flex-col gap-4 grow sm:mb-32 mb-20">
           <div className="animate-pulse bg-gray-100 rounded-lg p-4 h-16 w-full" />
           <div className="animate-pulse bg-gray-100 rounded-lg p-4 h-16 w-full" />
         </div>

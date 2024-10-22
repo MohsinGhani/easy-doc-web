@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { conversationThunks } from "@/lib/features/conversation/conversationThunks";
 import { format } from "date-fns";
 import { ConversationSkeletonThree } from "../skeletons/conversations";
+import { DOMAIN } from "@/constants";
 
 const MessagesSidebar = ({
   className,
@@ -64,7 +65,12 @@ const MessagesSidebar = ({
       {Cloading ? (
         <ConversationSkeletonThree />
       ) : (
-        <Card className={cn("w-full flex", className)}>
+        <Card
+          className={cn("w-full flex", className, {
+            "border-none p-0 shadow-none":
+              window.location.href === `${DOMAIN}/conversations`,
+          })}
+        >
           <CardContent className="flex flex-col gap-6 w-full">
             <SearchInput
               value={searchValue}

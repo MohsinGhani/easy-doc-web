@@ -21,10 +21,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ContentLayout title="Dashboard | Messages" className="pb-2">
+    <ContentLayout
+      title="Dashboard | Messages"
+      className="pb-2 h-full max-h-[calc(100vh-56px-32px-20px-24px-24px)] min-h-[calc(100vh-20px-24px-12px)] flex flex-col"
+    >
       <h2 className="text-2xl font-medium mb-5">Messages</h2>
 
-      <main className="grid lg:grid-cols-3 grid-cols-1 gap-6 max-h-[calc(100vh-56px-32px-20px-24px-24px)]">
+      <main className="grid lg:grid-cols-3 grid-cols-1 gap-6 h-full grow">
         {!isMobile && <MssagesSidebar />}
 
         <Card className="lg:col-span-2 w-full h-full">

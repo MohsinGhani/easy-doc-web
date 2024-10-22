@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <PatientLayout>
+    <PatientLayout className="h-full">
       <h2 className="text-2xl font-medium mb-5">Messages</h2>
 
       <main className="grid lg:grid-cols-3 grid-cols-1 gap-6 h-[calc(100vh-56px-32px-20px-24px-24px)]">
