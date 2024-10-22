@@ -571,7 +571,7 @@ export const patientColumns = ({
                           "p-2"
                         )}
                       >
-                        <LucideCheck className="h-5 w-5 cursor-pointer text-primary" />
+                        <LucideCheck className="h-5 w-5 cursor-pointer text-white" />
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent side="top">Complete Payment</TooltipContent>
