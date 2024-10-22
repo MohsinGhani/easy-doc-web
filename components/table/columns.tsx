@@ -641,7 +641,7 @@ export const patientColumns = ({
 
             {/* Visible on mobile, hidden on larger screens */}
             <div className="sm:hidden">
-              <TooltipTrigger>
+              <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link
@@ -656,7 +656,7 @@ export const patientColumns = ({
                   </TooltipTrigger>
                   <TooltipContent side="top">Complete Payment</TooltipContent>
                 </Tooltip>
-              </TooltipTrigger>
+              </TooltipProvider>
 
               <Popover>
                 <PopoverTrigger
