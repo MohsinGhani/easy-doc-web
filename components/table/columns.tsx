@@ -27,8 +27,9 @@ import {
 } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import RejectAppointmentDialog from "../patient/RejectAppointmentDialog";
-import { cn, formatTimeForUI } from "@/lib/utils";
+import { cn, convertSlotTimeToUserTime } from "@/lib/utils";
 import Link from "next/link";
+import { APPOINTMENT_STATUSES } from "@/constants";
 
 interface requestsColumnsProps {
   handlePreview: (data: Appointment) => void;
@@ -210,17 +211,13 @@ export const requestsColumns = ({
               className="object-cover rounded-full object-top"
             />
             <AvatarFallback>
-              {row.original.patient?.given_name.charAt(0)}{" "}
-              {row.original.patient?.family_name.charAt(0)}
+              {row.original.patient?.display_name.slice(0, 1)}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">
-              {row.original.patient?.given_name}
+            <div className="font-medium max-w-20 truncate">
+              {row.original.patient?.display_name}
             </div>
-            {/* <div className="text-sm text-muted-foreground">
-              {row.getValue("email")}
-            </div> */}
             <div className="text-sm text-muted-foreground">
               {row.original.patient?.location}
             </div>
@@ -266,7 +263,6 @@ export const requestsColumns = ({
       cell: ({ getValue, row }) => {
         const value = getValue() as DateRange;
         const appointment_date = row.original.appointment_date;
-        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -278,7 +274,7 @@ export const requestsColumns = ({
           return "Invalid Date";
         }
 
-        return visible_date;
+        return `${appointment_date} - ${convertSlotTimeToUserTime(value)}`;
       },
       filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
@@ -346,7 +342,7 @@ export const requestsColumns = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <RejectRequestDialog
-                      name={row.original.patient?.given_name}
+                      name={row.original.patient?.display_name}
                       onReject={() => handleRejectRequest(row.original)}
                       trigger={
                         <Button variant="outline" size="icon">
@@ -397,7 +393,7 @@ export const requestsColumns = ({
                     <EyeIcon className="h-5 w-5 mr-2" /> View Request
                   </Button>
                   <RejectRequestDialog
-                    name={row.original.patient?.given_name}
+                    name={row.original.patient?.display_name}
                     onReject={() => handleRejectRequest(row.original)}
                     trigger={
                       <Button
@@ -440,15 +436,15 @@ export const patientColumns = ({
       cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
     },
     {
-      accessorKey: "patient.email",
-      id: "patient.email",
+      accessorKey: "doctor.email",
+      id: "doctor.email",
       header: ({ column }) => (
         <Button
           className="px-1.5"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Doctor's Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -474,7 +470,6 @@ export const patientColumns = ({
       cell: ({ getValue, row }) => {
         const value = getValue() as any; // Adjust the type as needed
         const appointment_date = row.original.appointment_date;
-        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -486,7 +481,7 @@ export const patientColumns = ({
           return "Invalid Date";
         }
 
-        return visible_date;
+        return `${appointment_date} - ${convertSlotTimeToUserTime(value)}`;
       },
       filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
@@ -533,14 +528,32 @@ export const patientColumns = ({
       accessorKey: "status",
       id: "status",
       header: ({ column }) => (
-        <Button
-          className="px-1.5"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <span>Status</span>
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button className="px-1.5" variant="ghost">
+              <span>Status</span>
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48">
+            <div className="flex flex-col gap-2 p-2">
+              {APPOINTMENT_STATUSES.map((status) => (
+                <Button
+                  key={status}
+                  variant="ghost"
+                  className="capitalize justify-start"
+                  onClick={() => {
+                    column.setFilterValue(
+                      status === "ALL" ? undefined : status
+                    );
+                  }}
+                >
+                  {status.split("_").join(" ").toLowerCase()}
+                </Button>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
       ),
       cell: ({ getValue }) => (
         <div className="capitalize">{getValue() as string}</div>
@@ -771,14 +784,16 @@ export const upcomingColumns =
                   alt="Avatar"
                   className="object-cover rounded-full object-top"
                 />
-                <AvatarFallback>{patient.given_name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>
+                  {patient.display_name.slice(0, 1)}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <div className="text-xs font-normal text-muted-foreground max-w-20 truncate">
                   # PA-{patient.userId}
                 </div>
                 <div className="text-base font-semibold">
-                  {patient.given_name}
+                  {patient.display_name}
                 </div>
                 <div className="text-sm text-muted-foreground flex items-center">
                   <MapPin className="mr-1 h-4 w-4" /> {patient.location}
@@ -807,7 +822,6 @@ export const upcomingColumns =
         cell: ({ getValue, row }) => {
           const value = getValue() as DateRange;
           const appointment_date = row.original.appointment_date;
-          const visible_date = row.original.visible_date;
 
           if (!appointment_date || !value) {
             return "N/A";
@@ -819,7 +833,7 @@ export const upcomingColumns =
             return "Invalid Date";
           }
 
-          return visible_date;
+          return `${appointment_date} - ${convertSlotTimeToUserTime(value)}`;
         },
         filterFn: (row, _, filterValue: { start: Date; end: Date }) => {
           const appointment_date = row.original.appointment_date;
@@ -1009,7 +1023,6 @@ export const cancelledColumns = (): ColumnDef<Appointment>[] => {
       cell: ({ getValue, row }) => {
         const value = getValue() as any; // Adjust the type as needed
         const appointment_date = row.original.appointment_date;
-        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -1021,7 +1034,7 @@ export const cancelledColumns = (): ColumnDef<Appointment>[] => {
           return "Invalid Date";
         }
 
-        return visible_date;
+        return `${appointment_date} - ${convertSlotTimeToUserTime(value)}`;
       },
       filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
@@ -1089,7 +1102,6 @@ export const completedColumns = (): ColumnDef<Appointment>[] => {
       cell: ({ getValue, row }) => {
         const value = getValue() as any; // Adjust the type as needed
         const appointment_date = row.original.appointment_date;
-        const visible_date = row.original.visible_date;
 
         if (!appointment_date || !value) {
           return "N/A";
@@ -1101,7 +1113,7 @@ export const completedColumns = (): ColumnDef<Appointment>[] => {
           return "Invalid Date";
         }
 
-        return visible_date;
+        return `${appointment_date} - ${convertSlotTimeToUserTime(value)}`;
       },
       filterFn: (row, _columnId, filterValue: { start: Date; end: Date }) => {
         const appointment_date = row.original.appointment_date;
