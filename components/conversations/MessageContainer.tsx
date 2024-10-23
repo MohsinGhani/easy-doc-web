@@ -86,6 +86,11 @@ const MessageContainer = ({
     );
   }
 
+  const location =
+    role === "doctor"
+      ? fetchedConversation?.metaData.patientLocation ?? ""
+      : fetchedConversation?.metaData.doctorLocation ?? "";
+
   return (
     <ScrollArea className="[&>div>div[style]]:!block relative w-full h-full">
       <div
@@ -131,8 +136,7 @@ const MessageContainer = ({
               {fetchedConversation?.metaData.patientName || "Annette Black"}
             </div>
             <div className="text-muted-foreground md:text-base text-sm font-normal sm:block leading-none hidden">
-              {/* TODO: this is not a good way */}
-              London , UK
+              {location}
             </div>
           </div>
         </div>

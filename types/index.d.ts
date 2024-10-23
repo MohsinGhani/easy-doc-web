@@ -210,6 +210,8 @@ declare type ConversationMetaData = {
   patientName: string;
   doctorProfilePicture: string;
   patientProfilePicture: string;
+  patientLocation: string;
+  doctorLocation: string;
 };
 
 declare interface Conversation {
@@ -221,9 +223,10 @@ declare interface Conversation {
   lastMessage: string;
   lastMessageRead: boolean;
   lastMessageId: string;
-  ttl: string;
+  ttl: number;
   note: string;
   messages: Message[];
+  createdAt: number;
   metaData: ConversationMetaData;
 }
 
@@ -243,7 +246,7 @@ declare interface Message {
   sentAt: number;
   attachments: Attachment[];
   isRead: boolean;
-  ttl: string;
+  ttl: number;
 }
 
 declare interface authState {

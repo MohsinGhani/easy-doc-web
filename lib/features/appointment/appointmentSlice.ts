@@ -106,7 +106,7 @@ export const appointmentSlice = createSlice({
         appointmentThunks.createAppointment.fulfilled,
         (state, action: PayloadAction<Appointment>) => {
           state.allAppointments.push(action.payload);
-          toast.success("Appointment created successfully.");
+          toast.success("Appointment created successfully, redirecting you to the checkout page");
           state.loading = false;
         }
       )

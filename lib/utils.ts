@@ -14,6 +14,7 @@ import createApiClient from "@/helpers/createApiClient";
 import { ApiServiceName, getServiceUrl } from "@/helpers/getServiceUrl";
 import { FileItem } from "@/components/appointment/FileUploadComponent";
 import axios from "axios";
+import { formatInTimeZone } from "date-fns-tz";
 
 export interface RatingsData {
   overallRating: number;
@@ -346,14 +347,28 @@ export const playNotificationSound = () => {
 };
 
 // Convert start_time and end_time to UTC
-export const convertSlotTimeToUTC = (time: string) => {
-  const [hours, minutes] = time.split(":").map(Number);
-  const now = new Date();
-  now.setHours(hours, minutes, 0, 0);
+export const convertSlotTimeToUserTime = ({
+  start_time,
+  end_time,
+}: DateRange) => {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // Convert to UTC time
-  const utcHours = now.getUTCHours().toString().padStart(2, "0");
-  const utcMinutes = now.getUTCMinutes().toString().padStart(2, "0");
+  const currentDate = formatInTimeZone(new Date(), timezone, "yyyy-MM-dd");
 
-  return `${utcHours}:${utcMinutes}`;
+  const startDateTimeString = `${currentDate}T${start_time}:00`;
+  const endDateTimeString = `${currentDate}T${end_time}:00`;
+
+  // Convert times to the user's timezone
+  const formattedStartTime = formatInTimeZone(
+    new Date(startDateTimeString),
+    timezone,
+    "hh:mm aa"
+  );
+  const formattedEndTime = formatInTimeZone(
+    new Date(endDateTimeString),
+    timezone,
+    "hh:mm aa"
+  );
+
+  return `${formattedStartTime} - ${formattedEndTime}`;
 };

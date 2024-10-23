@@ -14,7 +14,7 @@ import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectAppointmentDialog from "./RejectAppointmentDialog";
 import { useRouter } from "next/navigation";
-import { formatTimeForUI } from "@/lib/utils";
+import { convertSlotTimeToUserTime } from "@/lib/utils";
 
 interface AppointmentDetailsSheetProps {
   selectedAppointment: Appointment | null;
@@ -108,7 +108,7 @@ const AppointmentDetailsSheet = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Blood Group:</p>
-                  <p className="font-medium">{patient.blood_group}-</p>
+                  <p className="font-medium">{patient.blood_group}</p>
                 </div>
 
                 <div className="space-y-1">
@@ -131,9 +131,11 @@ const AppointmentDetailsSheet = ({
                   <p className="text-muted-foreground">
                     Appointment date & time:
                   </p>
-                  <p className="font-medium">
-                    {selectedAppointment?.visible_date}
-                  </p>
+                  <p className="font-medium">{`${
+                    selectedAppointment?.appointment_date
+                  } - ${convertSlotTimeToUserTime(
+                    selectedAppointment?.scheduled_date
+                  )}`}</p>
                 </div>
               </div>
 

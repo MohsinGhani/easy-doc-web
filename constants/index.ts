@@ -239,3 +239,14 @@ export const APPOINTMENTS_REASONS = ["Consultation", "Follow Up"].map(
     value: elem,
   })
 );
+
+export const APPOINTMENT_STATUSES = [
+  "ALL",
+  "PAYMENT_PENDING",
+  "PAYMENT_FAILED",
+  "PENDING_APPROVAL",
+  "REJECTED",
+  "UPCOMING",
+  "COMPLETED",
+  "CANCELLED",
+];

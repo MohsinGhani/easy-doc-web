@@ -67,13 +67,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       attachments: [],
     },
   });
-  const {
-    control,
-    handleSubmit,
-    watch,
-    // formState: { errors },
-  } = form;
-  // console.log("🚀 ~ errors:", errors);
+  const { control, handleSubmit, watch } = form;
   const speciality = watch("speciality");
   const consultation_type = watch("consultation_type");
   const consulting_for = watch("consulting_for");
@@ -136,6 +130,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
       form.setValue("blood_group", user?.blood_group || BLOOD_GROUPS[0].value);
       form.setValue("phone_number", user?.phone_number);
       form.setValue("email", user?.email);
+
+      form.trigger();
     }
   }, [consulting_for, form, user]);
 
@@ -152,6 +148,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
   }, [consultation_type, fetchedDoctor?.services]);
 
   const onSubmit = async (data: AppointmentCreationType) => {
+    debugger;
     try {
       // Step 0: Check if the patient's profile is complete if not then show toast error and then redirect to settings page
       if (
@@ -200,7 +197,6 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ doctorId }) => {
         ...(data.consulting_for === ConsultingFor.OTHER && { patientData }),
         doctorId,
         patientId: user.userId,
-        visible_date: `${data.appointment_date} - ${formatTimeForUI(data.scheduled_date.start_time)} to ${formatTimeForUI(data.scheduled_date.end_time)}`,
         amount: consultingFee,
       };
 

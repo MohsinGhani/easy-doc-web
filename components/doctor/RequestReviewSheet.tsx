@@ -11,7 +11,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import RejectRequestDialog from "../RejectRequestDialog";
-import { formatTimeForUI } from "@/lib/utils";
+import { convertSlotTimeToUserTime } from "@/lib/utils";
 
 interface RequestReviewSheetProps {
   selectedRequest: Appointment | null;
@@ -124,7 +124,11 @@ const RequestReviewSheet = ({
                   <p className="text-muted-foreground">
                     Appointment date & time:
                   </p>
-                  <p className="font-medium">{selectedRequest?.visible_date}</p>
+                  <p className="font-medium">{`${
+                    selectedRequest?.appointment_date
+                  } - ${convertSlotTimeToUserTime(
+                    selectedRequest?.scheduled_date
+                  )}`}</p>
                 </div>
               </div>
 

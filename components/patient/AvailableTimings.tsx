@@ -11,8 +11,8 @@ export default function AvailableTimings({
 }) {
   // State to keep track of the selected day
   const [activeDay, setActiveDay] = useState(availableDays[0]?.day);
-  // const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // The timezone of the user
-  const timezone = "Asia/Shanghai";
+  // The user's timezone
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   // Find the active day's slots based on selected day
   const activeSlotsForSelectedDay =
@@ -59,15 +59,16 @@ export default function AvailableTimings({
                   const endDateTimeString = `${currentDate}T${slot.end_time}:00`;
 
                   const startTime = formatInTimeZone(
-                    startDateTimeString,
+                    new Date(startDateTimeString),
                     timezone,
                     "hh:mm aa"
                   );
                   const endTime = formatInTimeZone(
-                    endDateTimeString,
+                    new Date(endDateTimeString),
                     timezone,
                     "hh:mm aa"
                   );
+
                   return { ...slot, start_time: startTime, end_time: endTime };
                 })
                 .map((slot, index) => {
@@ -92,6 +93,7 @@ export default function AvailableTimings({
   );
 }
 
+// TimeSlot component to display individual time slots
 const TimeSlot = ({
   startTime,
   endTime,

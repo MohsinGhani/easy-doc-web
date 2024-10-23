@@ -43,10 +43,12 @@ const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
       <div className="sm:p-0 p-4 space-y-4">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              {doctor.display_name} <Crown className="w-4 h-4" />
+            <h2 className="text-lg capitalize font-semibold flex items-center gap-2">
+              {doctor.display_name.toLowerCase()} <Crown className="w-4 h-4" />
             </h2>
-            <p className="text-sm text-primary">{doctor.designation}</p>
+            <p className="text-sm text-primary capitalize">
+              {doctor.designation.toLowerCase()}
+            </p>
           </div>
           {doctor.available && (
             <div className="px-2 py-1 bg-green-50 rounded">
@@ -122,11 +124,26 @@ const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
             >
               View details
             </Link>
-            <span
-              className={cn("flex-1", buttonVariants({ variant: "default" }))}
+
+            <Link
+              href={`/doctors/${doctor.userId}/book-appointment`}
+              className={cn(
+                "relative flex-1",
+                buttonVariants({ variant: "default" }), // You can customize your button style here
+                "group w-full" // Ensures the button fills its container and sets the group for hover effects
+              )}
             >
-              Fee: ${doctor.average_fee.toFixed(0)}
-            </span>
+              {/* Default state - Price or checkmark */}
+              <span className="absolute inset-0 flex items-center justify-center opacity-100 transition-opacity duration-300 group-hover:opacity-0">
+                {/* Fee: e.g $400 */}
+                Fee: ${doctor.average_fee.toFixed(0)}
+              </span>
+
+              {/* Hover state - Book Now */}
+              <span className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-white bg-black rounded-md">
+                Book Now
+              </span>
+            </Link>
           </div>
         )}
       </div>
