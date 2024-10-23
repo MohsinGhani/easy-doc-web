@@ -444,7 +444,7 @@ export const patientColumns = ({
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Doctor's Email
+          Doctor&aposs Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
