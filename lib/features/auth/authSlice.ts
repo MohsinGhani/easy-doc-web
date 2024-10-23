@@ -214,10 +214,9 @@ export const authSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           state.isLoggedIn = true;
           state.user = action.payload;
-          !Cookies.get("auth") &&
-            Cookies.set("auth", JSON.stringify(action.payload), {
-              expires: 1 / 24, // 1 hour
-            });
+          Cookies.set("auth", JSON.stringify(action.payload), {
+            expires: 1 / 24, // 1 hour
+          });
           state.loading = false;
         }
       )

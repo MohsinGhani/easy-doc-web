@@ -271,6 +271,7 @@ export const authThunks = {
           return response.data.data as User;
         }
       } catch (error) {
+        console.log("🚀 ~ error:", error);
         await signOut();
         dispatch(signoutAction());
 
