@@ -35,6 +35,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cdn-icons-png.freepik.com",
+        port: "",
+      },
+      {
+        protocol: "https",
         hostname: "easy-doc-profile-images-dev.s3.amazonaws.com",
         port: "",
       },
