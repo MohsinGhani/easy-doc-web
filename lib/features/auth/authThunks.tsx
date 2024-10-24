@@ -270,12 +270,16 @@ export const authThunks = {
             const parsedAuth = JSON.parse(auth) as User;
             return parsedAuth;
           } catch (parseError) {
-            console.error("🚀 ~ Error parsing auth JSON:", parseError);
-            await signOut();
-            dispatch(signoutAction());
-            return rejectWithValue(
-              "Invalid authentication data, please sign in again."
-            );
+            if (userId) {
+              const response = await functionsApiClient.get(`/auth/${userId}`);
+              return response.data.data as User;
+            } else {
+              await signOut();
+              dispatch(signoutAction());
+              return rejectWithValue(
+                "Invalid authentication data, please sign in again."
+              );
+            }
           }
         }
 
@@ -285,7 +289,6 @@ export const authThunks = {
           return response.data.data as User;
         }
       } catch (error) {
-        console.error("🚀 ~ error:", error);
         await signOut();
         dispatch(signoutAction());
         return rejectWithValue(
