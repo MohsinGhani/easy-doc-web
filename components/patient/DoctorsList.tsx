@@ -12,16 +12,17 @@ export default function DoctorsList() {
   const { allDoctors: doctors, loading } = useAppSelector(
     (state) => state.doctor
   );
+  const { userId } = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    dispatch(favouriteThunks.fetchAllFavourites());
-  }, [dispatch]);
+    userId && dispatch(favouriteThunks.fetchAllFavourites());
+  }, [dispatch, userId]);
 
   useEffect(() => {
     if (doctors.length === 0) {
       dispatch(doctorThunks.fetchAllDoctors());
     }
-  }, [dispatch, doctors.length]);
+  }, [dispatch, doctors.length, userId]);
 
   if (loading) return <Loader />;
 

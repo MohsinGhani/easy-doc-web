@@ -1,6 +1,5 @@
 import { calculateUpdatedRatings, functionsApiClient } from "@/lib/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { updateAuthState } from "../auth/authSlice";
 import { RootState } from "@/lib/store";
 
 // Fetch all doctors
@@ -11,7 +10,7 @@ const fetchAllDoctors = createAsyncThunk<User[]>(
       const response = await functionsApiClient.get(
         "/doctors/all?profile_status=COMPLETED"
       );
-      return response.data.data as User[];
+      return response.data.data;
     } catch (error: any) {
       // Extract error message from response or fallback to default
       const errorMessage =
@@ -49,7 +48,7 @@ const fetchDoctorById = createAsyncThunk<User, string>(
       const response = await functionsApiClient.get(
         `/doctors/${doctorId}?profile_status=COMPLETED`
       );
-      return response.data.data as User;
+      return response.data.data;
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message ||
