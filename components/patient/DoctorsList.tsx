@@ -5,12 +5,17 @@ import DoctorCard from "./DoctorCard";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { doctorThunks } from "@/lib/features/doctor/doctorThunks";
 import { Loader } from "../common/Loader";
+import { favouriteThunks } from "@/lib/features/favourite/favouriteThunks";
 
 export default function DoctorsList() {
   const dispatch = useAppDispatch();
   const { allDoctors: doctors, loading } = useAppSelector(
     (state) => state.doctor
   );
+
+  useEffect(() => {
+    dispatch(favouriteThunks.fetchAllFavourites());
+  }, [dispatch]);
 
   useEffect(() => {
     if (doctors.length === 0) {
@@ -28,4 +33,5 @@ export default function DoctorsList() {
         ))}
       </div>
     </div>
-)}
+  );
+}

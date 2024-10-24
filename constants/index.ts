@@ -59,6 +59,10 @@ export const NAV_LINKS_FOR_AUTH = [
     location: "/my-appointments",
   },
   {
+    label: "My Favourites",
+    location: "/my-favourites",
+  },
+  {
     label: "My Settings",
     location: "/my-settings",
   },

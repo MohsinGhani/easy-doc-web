@@ -19,6 +19,7 @@ export const patientRoutes = [
   "/my-conversations",
   "/my-payments",
   "/my-settings",
+  "/my-favourites",
   "/meeting",
 ];
 

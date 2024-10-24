@@ -249,6 +249,12 @@ declare interface Message {
   ttl: number;
 }
 
+declare interface Favourite {
+  favouriteId: string;
+  patientId: string;
+  doctor: User;
+}
+
 declare interface authState {
   user: User;
   loading: boolean;
@@ -293,6 +299,12 @@ declare interface conversationState {
   error: string | null | undefined;
   ClastEvaluatedKey: string | null;
   MlastEvaluatedKey: string | null;
+}
+declare interface favouriteState {
+  allFavourites: Favourite[];
+  loading: boolean;
+  error: string | null | undefined;
+  lastEvaluatedKey: string | null;
 }
 
 declare interface Notification {

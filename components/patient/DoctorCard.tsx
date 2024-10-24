@@ -10,6 +10,7 @@ import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import React from "react";
+import FavouriteButton from "./FavouriteButton";
 
 interface DoctorCardProps {
   doctor: User;
@@ -35,9 +36,8 @@ const DoctorCard = ({ doctor, isBookingCard = false }: DoctorCardProps) => {
             <Star className="w-4 h-4 mr-1 fill-current" />
             {doctor.overallRating}/5
           </div>
-          <button className="text-red-200 hover:text-red-300 transition-colors">
-            <Heart className="w-6 h-6 fill-white hover:fill-slate-200" />
-          </button>
+
+          <FavouriteButton doctorId={doctor.userId} />
         </div>
       </div>
       <div className="sm:p-0 p-4 space-y-4">

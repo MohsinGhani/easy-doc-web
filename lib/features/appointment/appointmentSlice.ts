@@ -36,7 +36,6 @@ export const appointmentSlice = createSlice({
       .addCase(
         appointmentThunks.fetchAllAppointments.rejected,
         (state, action) => {
-          console.log("🚀 ~ action:", action);
           state.loading = false;
           state.error = action.payload as string;
           toast.error(
@@ -67,7 +66,6 @@ export const appointmentSlice = createSlice({
       .addCase(
         appointmentThunks.fetchAppointmentsByPagination.rejected,
         (state, action) => {
-          console.log("🚀 ~ action:", action);
           state.loading = false;
           state.error = action.payload as string;
           toast.error(
@@ -106,7 +104,9 @@ export const appointmentSlice = createSlice({
         appointmentThunks.createAppointment.fulfilled,
         (state, action: PayloadAction<Appointment>) => {
           state.allAppointments.push(action.payload);
-          toast.success("Appointment created successfully, redirecting you to the checkout page");
+          toast.success(
+            "Appointment created successfully, redirecting you to the checkout page"
+          );
           state.loading = false;
         }
       )
