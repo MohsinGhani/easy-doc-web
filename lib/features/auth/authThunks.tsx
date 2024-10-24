@@ -263,22 +263,33 @@ export const authThunks = {
         const userId = Cookies.get("userId");
         const auth = Cookies.get("auth");
 
-        if (auth) {
-          const parsedAuth = JSON.parse(auth) as User;
-          return parsedAuth;
-        } else if (userId) {
+        // Check if auth exists and is not undefined
+        if (auth && auth !== "undefined") {
+          try {
+            // Attempt to parse auth JSON safely
+            const parsedAuth = JSON.parse(auth) as User;
+            return parsedAuth;
+          } catch (parseError) {
+            console.error("🚀 ~ Error parsing auth JSON:", parseError);
+            await signOut();
+            dispatch(signoutAction());
+            return rejectWithValue(
+              "Invalid authentication data, please sign in again."
+            );
+          }
+        }
+
+        // If no auth but userId exists, fetch user details
+        else if (userId) {
           const response = await functionsApiClient.get(`/auth/${userId}`);
           return response.data.data as User;
         }
       } catch (error) {
-        console.log("🚀 ~ error:", error);
+        console.error("🚀 ~ error:", error);
         await signOut();
         dispatch(signoutAction());
-
-        window.location.href = "/auth/sign-in";
-
         return rejectWithValue(
-          "Error in confirming your identity, Pease signin again!"
+          "Error in confirming your identity, please sign in again!"
         );
       }
     }
